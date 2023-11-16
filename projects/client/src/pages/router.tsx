@@ -6,6 +6,8 @@ import MainLayout from "./MainLayout";
 import Register from "./auth/Register";
 import Login from "./auth/Login";
 import CategoryPage from "./category/CategoryPage";
+import SSOCallback from "./auth/SSOCallback";
+import Verification from "./auth/Verification";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +17,14 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/verify",
+    element: <Verification />,
+  },
+  {
+    path: "/sso-callback",
+    element: <SSOCallback />,
   },
   {
     path: "/",
