@@ -2,8 +2,15 @@ import React from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import NavDropdown from "./NavDropdown";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, buttonVariants } from "./ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 import {
   Car,
   LogOut,
@@ -11,19 +18,41 @@ import {
   ShoppingCartIcon,
   Verified,
 } from "lucide-react";
+import { useClerk, useUser } from "@clerk/clerk-react";
 
 const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
+  const navigate = useNavigate();
+  const { signOut } = useClerk();
+  const { user } = useUser();
   return (
-    <NavDropdown icon={<NavAvatar />} setIsDim={setIsDim} className="p-4">
+    <NavDropdown
+      icon={<NavAvatar imageUrl={user?.imageUrl as string} />}
+      setIsDim={setIsDim}
+      className="p-4"
+    >
       <div className="flex gap-2 items-start">
-        <NavAvatar />
+        <NavAvatar imageUrl={user?.imageUrl as string} />
         <div className="flex flex-col text-sm">
           <span className="font-bold flex items-center">
-            <p>putu</p>
-            <Verified className="ml-2 w-4 h-4 text-primary" />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <p>{user?.username || "no username"}</p>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="font-sm font-normal max-w-[200px] text-center">
+                    you can complete your profile in user setting
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            {user?.hasVerifiedEmailAddress && (
+              <Verified className="ml-2 w-4 h-4 text-primary" />
+            )}
           </span>
 
-          <p className="text-xs">putuhendramahendra@gmail.com</p>
+          <p className="text-xs">{user?.emailAddresses[0].emailAddress}</p>
         </div>
       </div>
       <Separator className="my-2" />
@@ -59,7 +88,11 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
         >
           <Settings className="w-4 h-4 mr-2" /> <span>Setting</span>
         </Link>
-        <Button variant="ghost" className="w-full">
+        <Button
+          variant="ghost"
+          className="w-full"
+          onClick={() => signOut(() => navigate("/register"))}
+        >
           <LogOut className="w-4 h-4 mr-2" /> Logout
         </Button>
       </div>
@@ -67,11 +100,11 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
   );
 };
 
-const NavAvatar = () => {
+const NavAvatar = ({ imageUrl }: { imageUrl: string }) => {
   return (
     <>
       <Avatar className="w-8 h-8">
-        <AvatarImage src="https://github.com/putuhema.png" />
+        <AvatarImage src={imageUrl} />
         <AvatarFallback>CN</AvatarFallback>
       </Avatar>
     </>
