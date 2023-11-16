@@ -1,5 +1,6 @@
 import { HelloController } from '@/controllers/hello.controller';
 import { Routes } from '@/interfaces/routes.interface';
+import { AdminAuth } from '@/middlewares/auth.middleware';
 import { Router } from 'express';
 
 export class HelloRoute implements Routes {
@@ -11,6 +12,6 @@ export class HelloRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get('/api/greetings', this.hello.greeting);
+    this.router.get('/api/greetings', AdminAuth, this.hello.greeting);
   }
 }

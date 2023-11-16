@@ -1,9 +1,11 @@
-import React from "react";
+import React from "react"
+import { SignIn } from "@clerk/clerk-react"
 
 const Login = () => {
   return (
-    <main className="flex justify-center items-center  mt-24">
-      <div className="relative">
+    <main className="flex justify-center items-center mt-24">
+      <SignIn />
+      {/* <div className="relative">
         <div className="z-10">
           <p>login</p>
         </div>
@@ -14,9 +16,9 @@ const Login = () => {
             alt="laptop ilus"
           />
         </div>
-      </div>
+      </div> */}
     </main>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

@@ -1,9 +1,11 @@
-import React from "react";
+import React from "react"
+import { SignUp } from "@clerk/clerk-react"
 
 const Register = () => {
   return (
     <main className="flex justify-center items-center gap-2 mt-24">
-      <div className="w-[600px] self-end hidden lg:block">
+      <SignUp />
+      {/* <div className="w-[600px] self-end hidden lg:block">
         <img
           className="w-full"
           src="/ilus/campaign.svg"
@@ -12,9 +14,9 @@ const Register = () => {
       </div>
       <div>
         <p>form</p>
-      </div>
+      </div> */}
     </main>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register

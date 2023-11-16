@@ -1,11 +1,14 @@
-import React from "react";
-import { createBrowserRouter } from "react-router-dom";
+import React from "react"
+import { createBrowserRouter } from "react-router-dom"
 
-import Homepage from "./homepage/Homepage";
-import MainLayout from "./MainLayout";
-import Register from "./auth/Register";
-import Login from "./auth/Login";
-import CategoryPage from "./category/CategoryPage";
+import Homepage from "./homepage/Homepage"
+import MainLayout from "./MainLayout"
+import Register from "./auth/Register"
+import Login from "./auth/Login"
+import CategoryPage from "./category/CategoryPage"
+import DashboardPage from "./dashboard/DashboardPage"
+import ManageUser from "./dashboard/ManageUser"
+import Dashboard from "./dashboard/Dashboard"
 
 const router = createBrowserRouter([
   {
@@ -28,8 +31,22 @@ const router = createBrowserRouter([
         path: "/category",
         element: <CategoryPage />,
       },
+      {
+        path: "/dashboard",
+        element: <DashboardPage />,
+        children: [
+          {
+            path: "",
+            element: <Dashboard />,
+          },
+          {
+            path: "manage-user",
+            element: <ManageUser />,
+          },
+        ],
+      },
     ],
   },
-]);
+])
 
-export default router;
+export default router

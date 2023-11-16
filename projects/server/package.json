@@ -19,6 +19,7 @@
     "migration:run": "sequelize db:migrate"
   },
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^4.12.21",
     "axios": "1.6.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
