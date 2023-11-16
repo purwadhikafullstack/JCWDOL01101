@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 import { NODE_ENV, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE } from '@config';
 import { logger } from '@utils/logger';
-import UserModel from '@/models/users.models';
+import UserModel from '@/models/user.model';
 
 const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
   dialect: 'mysql',
@@ -28,7 +28,7 @@ const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
 sequelize.authenticate();
 
 export const DB = {
-  Users: UserModel(sequelize),
+  User: UserModel(sequelize),
   sequelize,
   Sequelize,
 };

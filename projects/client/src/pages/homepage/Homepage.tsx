@@ -1,9 +1,9 @@
-import React from "react";
-import MainCarousel from "@/components/MainCarousel";
-import { Link } from "react-router-dom";
-import CategoryCard from "./CategoryCard";
-import ProductCard from "@/components/ProductCard";
-import TopProductCard from "@/components/TopProductCard";
+import React from "react"
+import MainCarousel from "@/components/MainCarousel"
+import { Link } from "react-router-dom"
+import CategoryCard from "./CategoryCard"
+import ProductCard from "@/components/ProductCard"
+import TopProductCard from "@/components/TopProductCard"
 
 const Homepage = () => {
   return (
@@ -73,7 +73,7 @@ const Homepage = () => {
         </section>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Homepage;
+export default Homepage
