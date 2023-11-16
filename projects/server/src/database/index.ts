@@ -1,6 +1,8 @@
 import Sequelize from 'sequelize';
 import { NODE_ENV, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE } from '@config';
 import { logger } from '@utils/logger';
+import WarehouseModel from '@/models/warehouses.model';
+import warehouseModel from '@/models/warehouses.model';
 
 const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
   dialect: 'mysql',
@@ -27,6 +29,7 @@ const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
 sequelize.authenticate();
 
 export const DB = {
+  Warehouses:WarehouseModel(sequelize),
   sequelize,
   Sequelize,
 };
