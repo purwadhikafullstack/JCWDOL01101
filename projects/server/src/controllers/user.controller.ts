@@ -8,6 +8,7 @@ import Container from 'typedi';
 
 export class UserController {
   user = Container.get(UserService);
+
   public webhook = async (req: Request, res: Response, next: NextFunction) => {
     if (!WEBHOOK_SECRET) {
       throw new Error('You need a WEBHOOK_SECRET in your .env');

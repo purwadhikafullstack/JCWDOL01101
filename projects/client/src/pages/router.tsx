@@ -9,6 +9,10 @@ import CategoryPage from "./category/CategoryPage";
 import SSOCallback from "./auth/SSOCallback";
 import Verification from "./auth/Verification";
 
+import DashboardLayout from "./dashboard/DashboardLayout";
+import NotFound from "./dashboard/NotFound";
+import Product from "./dashboard/Product";
+
 const router = createBrowserRouter([
   {
     path: "/register",
@@ -29,6 +33,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <NotFound />,
     children: [
       {
         path: "",
@@ -37,6 +42,17 @@ const router = createBrowserRouter([
       {
         path: "/category",
         element: <CategoryPage />,
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: <DashboardLayout />,
+    errorElement: <NotFound />,
+    children: [
+      {
+        path: "product",
+        element: <Product />,
       },
     ],
   },
