@@ -12,6 +12,7 @@ import Verification from "./auth/Verification";
 import DashboardLayout from "./dashboard/DashboardLayout";
 import NotFound from "./dashboard/NotFound";
 import Product from "./dashboard/Product";
+import NewProductForm from "./dashboard/NewProductForm";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: "product",
         element: <Product />,
+      },
+      {
+        path: "product/create",
+        element: <NewProductForm />,
       },
     ],
   },

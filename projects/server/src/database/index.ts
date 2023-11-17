@@ -2,6 +2,7 @@ import Sequelize from 'sequelize';
 import { NODE_ENV, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE } from '@config';
 import { logger } from '@utils/logger';
 import UserModel from '@/models/user.model';
+import ProductModel from '@/models/product.model';
 
 const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
   dialect: 'mysql',
@@ -29,6 +30,7 @@ sequelize.authenticate();
 
 export const DB = {
   User: UserModel(sequelize),
+  Product: ProductModel(sequelize),
   sequelize,
   Sequelize,
 };
