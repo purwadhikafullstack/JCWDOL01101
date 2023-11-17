@@ -1,4 +1,5 @@
 import { WEBHOOK_SECRET } from '@/config';
+import { User } from '@/interfaces/user.interface';
 import { UserService } from '@/services/user.service';
 import clerkClient, { WebhookEvent } from '@clerk/clerk-sdk-node';
 import { Request, Response, NextFunction } from 'express';
@@ -49,15 +50,35 @@ export class UserController {
         role: (data.public_metadata.role as string) || 'CUSTOMER',
         status: (data.public_metadata.role as string) || 'ACTIVE',
       });
-      await clerkClient.users.updateUser(evt.data.id, {
-        publicMetadata: {
-          role: 'CUSTOMER',
-          status: 'ACTIVE',
-        },
+      if (data.id) {
+        await clerkClient.users.updateUser(evt.data.id, {
+          publicMetadata: {
+            role: 'CUSTOMER',
+            status: 'ACTIVE',
+          },
+        });
+      }
+    } else if (eventType === 'user.updated') {
+      const data = evt.data;
+      const findUser: User = await this.user.findUserByExternalId(data.id);
+      await this.user.updateUser(findUser.id, {
+        email: data.email_addresses[0].email_address,
+        externalId: data.id,
+        firstname: data.first_name,
+        lastname: data.last_name,
+        username: data.username,
+        imageUrl: data.image_url,
+        role: data.public_metadata.role as string,
+        status: data.public_metadata.role as string,
       });
+    } else if (eventType === 'user.deleted') {
+      const data = evt.data;
+      const findUser: User = await this.user.findUserByExternalId(data.id);
+      await this.user.deleteUser(findUser.id);
     }
 
     return res.status(200).json({
+      eventType,
       success: true,
     });
   };
