@@ -42,7 +42,6 @@ const Login = () => {
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     if (!isLoaded) return;
     try {
-      console.log("ts");
       const result = await signIn.create({
         identifier: values.email,
         password: values.password,
