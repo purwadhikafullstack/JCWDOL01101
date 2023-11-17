@@ -1,13 +1,20 @@
-import React from "react";
-import { createBrowserRouter } from "react-router-dom";
+import React from "react"
+import { createBrowserRouter } from "react-router-dom"
 
-import Homepage from "./homepage/Homepage";
-import MainLayout from "./MainLayout";
-import Register from "./auth/Register";
-import Login from "./auth/Login";
-import CategoryPage from "./category/CategoryPage";
-import SSOCallback from "./auth/SSOCallback";
-import Verification from "./auth/Verification";
+import Homepage from "./homepage/Homepage"
+import MainLayout from "./MainLayout"
+import Register from "./auth/Register"
+import Login from "./auth/Login"
+import CategoryPage from "./category/CategoryPage"
+import SSOCallback from "./auth/SSOCallback"
+import Verification from "./auth/Verification"
+
+import DashboardLayout from "./dashboard/DashboardLayout"
+import NotFound from "./dashboard/NotFound"
+import Product from "./dashboard/content/Product"
+import User from "./dashboard/content/User"
+import Dashboard from "./dashboard/content/Dashboard"
+import Warehouse from "./dashboard/content/Warehouse"
 
 const router = createBrowserRouter([
   {
@@ -29,6 +36,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <NotFound />,
     children: [
       {
         path: "",
@@ -40,6 +48,29 @@ const router = createBrowserRouter([
       },
     ],
   },
-]);
+  {
+    path: "/dashboard",
+    element: <DashboardLayout />,
+    errorElement: <NotFound />,
+    children: [
+      {
+        path: "",
+        element: <Dashboard />,
+      },
+      {
+        path: "warehouse",
+        element: <Warehouse />,
+      },
+      {
+        path: "user",
+        element: <User />,
+      },
+      {
+        path: "product",
+        element: <Product />,
+      },
+    ],
+  },
+])
 
-export default router;
+export default router
