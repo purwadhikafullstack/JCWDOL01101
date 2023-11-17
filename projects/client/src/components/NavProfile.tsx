@@ -37,7 +37,7 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <p>{user?.username || "no username"}</p>
+                  <p>{user?.username || user?.firstName || "no username"}</p>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="font-sm font-normal max-w-[200px] text-center">
@@ -51,7 +51,6 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
               <Verified className="ml-2 w-4 h-4 text-primary" />
             )}
           </span>
-
           <p className="text-xs">{user?.emailAddresses[0].emailAddress}</p>
         </div>
       </div>

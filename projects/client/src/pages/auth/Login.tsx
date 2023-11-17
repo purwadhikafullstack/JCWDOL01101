@@ -2,16 +2,18 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useSignIn } from "@clerk/clerk-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, Location, useLocation, useNavigate } from "react-router-dom";
 import z from "zod";
 
 const loginSchema = z.object({
@@ -20,7 +22,15 @@ const loginSchema = z.object({
     message: "Password must contain at least 8 character(s)",
   }),
 });
+
+type RedicrectLocationState = {
+  redirectTo: Location;
+};
 const Login = () => {
+  const { state: locationState } = useLocation();
+  const navigate = useNavigate();
+  const { signIn, isLoaded, setActive } = useSignIn();
+  const [error, setError] = useState("");
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -29,7 +39,36 @@ const Login = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof loginSchema>) => {};
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+    if (!isLoaded) return;
+    try {
+      const result = await signIn.create({
+        identifier: values.email,
+        password: values.password,
+      });
+
+      if (result.status === "complete") {
+        await setActive({ session: result.createdSessionId });
+        const { redirectTo } = locationState as RedicrectLocationState;
+        navigate(`${redirectTo.pathname}${redirectTo.search}`);
+      }
+    } catch (err: any) {
+      setError(err.errors[0].longMessage);
+    }
+  };
+
+  const signInWithGoogle = () => {
+    try {
+      const { redirectTo } = locationState as RedicrectLocationState;
+      signIn?.authenticateWithRedirect({
+        strategy: "oauth_google",
+        redirectUrl: "/sso-callback",
+        redirectUrlComplete: `${redirectTo.pathname}${redirectTo.search}`,
+      });
+    } catch (err: any) {
+      setError(err.errors[0].longMessage);
+    }
+  };
   return (
     <main className="flex justify-center items-center  mt-24">
       <div className="relative w-[350px] lg:w-[540px] mx-auto">
@@ -39,7 +78,11 @@ const Login = () => {
             src="/ilus/campaign.svg"
             alt="sign-in ilustration"
           />
-          <Button className="w-full" variant="outline">
+          <Button
+            onClick={() => signInWithGoogle()}
+            className="w-full"
+            variant="outline"
+          >
             Login with Google
           </Button>
           <div className="relative my-4">
@@ -84,6 +127,7 @@ const Login = () => {
                       <Input type="password" {...field} />
                     </FormControl>
                     <FormMessage />
+                    <FormDescription>{error}</FormDescription>
                   </FormItem>
                 )}
               />
