@@ -4,12 +4,37 @@ import { HttpException } from '@/exceptions/HttpException';
 import { Product } from '@/interfaces/product.interface';
 import { Service } from 'typedi';
 import { unlinkAsync } from './multer.service';
+import { Op } from 'sequelize';
+
+type ProductsOptions = {
+  offset: number;
+  limit: number;
+  where: {
+    status: string;
+    name?: {
+      [Op.like]: string;
+    };
+  };
+};
 
 @Service()
 export class ProductService {
-  public async getAllProduct(): Promise<Product[]> {
-    const findAllProduct = await DB.Product.findAll({ where: { status: 'ACTIVE' } });
-    return findAllProduct;
+  public async getAllProduct({ page, s }: { page: number; s: string }): Promise<{ products: Product[]; totalPages: number }> {
+    const PER_PAGE = 10;
+    const offset = (page - 1) * PER_PAGE;
+    const options: ProductsOptions = {
+      offset,
+      limit: PER_PAGE,
+      where: {
+        status: 'ACTIVE',
+        ...(s && { name: { [Op.like]: `%${s}%` } }),
+      },
+    };
+
+    const [findAllProduct, totalCount] = await Promise.all([DB.Product.findAll(options), DB.Product.count(options)]);
+    const totalPages = Math.ceil(totalCount / PER_PAGE);
+
+    return { totalPages, products: findAllProduct };
   }
 
   public async getProduct(productId: number): Promise<Product> {

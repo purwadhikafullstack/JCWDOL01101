@@ -4,7 +4,7 @@ import { useDropzone } from "react-dropzone";
 import z, { ZodError } from "zod";
 import { Upload } from "lucide-react";
 import { baseURL } from "@/service";
-import { Image } from "../NewProductForm";
+import { Image } from "./NewProductForm";
 
 const ImageUpload = ({
   image,

@@ -9,9 +9,13 @@ export class ProductController {
 
   public getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const proudcts: Product[] = await this.product.getAllProduct();
+      const { page, s } = req.query;
+      const { products, totalPages } = await this.product.getAllProduct({ page: Number(page), s: s as string });
       res.status(200).json({
-        data: proudcts,
+        data: {
+          products,
+          totalPages,
+        },
         message: 'get.products',
       });
     } catch (err) {

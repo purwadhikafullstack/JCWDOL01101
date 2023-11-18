@@ -14,18 +14,29 @@ export interface Product {
   status: string;
 }
 
-export const useProducts = () => {
-  const { data, isLoading } = useQuery<Product[]>({
-    queryKey: ["products"],
+type ProductOptions = {
+  page: number;
+  s: string;
+};
+export const useProducts = ({ page, s }: ProductOptions) => {
+  const { data, isLoading, isFetched } = useQuery<{
+    products: Product[];
+    totalPages: number;
+  }>({
+    queryKey: ["products", page, s],
     queryFn: async () => {
       const res = await service.get("/products", {
+        params: {
+          s,
+          page,
+        },
         withCredentials: true,
       });
       return res.data.data;
     },
   });
 
-  return { data, isLoading };
+  return { data, isLoading, isFetched };
 };
 
 export const useProduct = (productId: number) => {

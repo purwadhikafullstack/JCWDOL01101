@@ -13,109 +13,87 @@ import { Input } from "@/components/ui/input";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import { useEditProduct, useProduct } from "@/hooks/useProduct";
+import { useProductMutation } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
-import ImageUpload from "./components/ImageUpload";
-import ProductFormField from "./components/ProductFormField";
-import ProductSelectFormField from "./components/ProductSelectFormField";
-import { Image, productSchema } from "./NewProductForm";
+import ImageUpload from "./ImageUpload";
+import ProductFormField from "./ProductFormField";
+import ProductSelectFormField from "./ProductSelectFormField";
 import { useToast } from "@/components/ui/use-toast";
+
+export const productSchema = z.object({
+  name: z.string().min(2, "Product name is empty"),
+  categoryId: z.string().min(1, "Category is empty"),
+  formattedPrice: z.string().min(1, "Price is empty"),
+  price: z.coerce.number().min(1),
+  stock: z.coerce.number().min(1, "Stock is empty"),
+  weight: z.coerce.number().min(1, "Weight is empty"),
+  description: z.string().min(2, "Description is empty"),
+});
+
+export type Image = {
+  new: boolean;
+  url: string;
+  file: File | undefined;
+};
 
 const emptyValues = {
   name: "",
-  category: "",
+  categoryId: "",
   formattedPrice: "",
   price: 0,
   stock: 0,
   weight: 0,
   description: "",
 };
-const EditProductForm = () => {
+const NewProductForm = () => {
   const { toast } = useToast();
-  const navigate = useNavigate();
+  const [image, setImage] = useState<Image | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { productId } = useParams();
-
-  useEffect(() => {
-    if (!Number(productId)) {
-      navigate("/dashboard/product");
-    }
-  }, [productId, navigate]);
-  const { data: product } = useProduct(Number(productId));
-
-  const [image, setImage] = useState<Image | null>({
-    file: undefined,
-    url: product?.image || "",
-    new: !!productId,
-  });
-
-  const productMutation = useEditProduct(Number(productId));
-
+  const productMutation = useProductMutation();
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
     defaultValues: emptyValues,
   });
+
   const onSubmit = (values: z.infer<typeof productSchema>) => {
-    if (image?.new && !image?.file) {
+    if (!image?.file) {
       setError("Please upload a file");
       return;
     }
-
     const formData = new FormData();
-    if (image?.new) {
-      formData.set(
-        "product",
-        JSON.stringify({
-          ...values,
-        })
-      );
-      formData.set("image", image?.file as File);
-    } else {
-      formData.set(
-        "product",
-        JSON.stringify({
-          ...values,
-          image: image?.url as string,
-        })
-      );
-    }
+    formData.set("image", image?.file);
+    formData.set(
+      "product",
+      JSON.stringify({
+        ...values,
+      })
+    );
+
     productMutation.mutate(formData);
   };
 
   useEffect(() => {
-    if (productMutation.isSuccess) {
+    if (productMutation.status === "success") {
       toast({
-        title: "Product Updated",
-        description: "Successfully update product",
+        title: "Product Created",
+        description: "Successfully create a new product",
         duration: 3000,
       });
+      form.reset(emptyValues);
+      setImage(null);
     }
-  }, [productMutation.isSuccess, toast]);
+  }, [form, productMutation.status, toast]);
 
   const formatNumber = (value: string) => {
     const numericValue = value.replace(/\D/g, "");
     const formattedValue = formatToIDR(value);
     form.setValue("formattedPrice", formattedValue);
     form.setValue("price", Number(numericValue));
-
     return formattedValue;
   };
-
-  useEffect(() => {
-    if (product) {
-      form.setValue("name", product.name);
-      form.setValue("categoryId", String(product.categoryId));
-      form.setValue("price", product.price);
-      form.setValue("formattedPrice", formatToIDR(String(product.price)));
-      form.setValue("stock", product.stock);
-      form.setValue("weight", product.weight);
-      form.setValue("description", product.description);
-      setImage({ new: false, file: undefined, url: product.image });
-    }
-  }, [product, form]);
 
   return (
     <div className="w-full">
@@ -128,7 +106,7 @@ const EditProductForm = () => {
         </Link>
       </span>
       <div className="w-[768px] mx-auto">
-        <h2 className="text-xl mb-10">Edit Product</h2>
+        <h2 className="text-xl mb-10">Create New Product</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
             <div className="w-full grid grid-cols-2 gap-2">
@@ -167,12 +145,7 @@ const EditProductForm = () => {
             <div className="space-y-8">
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <ImageUpload
-                    image={image as Image}
-                    setImage={setImage}
-                    isEdit={true}
-                    mutationSuccess={productMutation.isSuccess}
-                  />
+                  <ImageUpload image={image as Image} setImage={setImage} />
                   <p className="text-xs text-primary">{error}</p>
                 </div>
                 <FormField
@@ -193,7 +166,7 @@ const EditProductForm = () => {
                   )}
                 />
               </div>
-              <Button type="submit">
+              <Button type="submit" className="px-8">
                 <Loader2
                   className={
                     productMutation.isPending
@@ -201,7 +174,7 @@ const EditProductForm = () => {
                       : "hidden"
                   }
                 />
-                Modify
+                Create Product
               </Button>
             </div>
           </form>
@@ -211,4 +184,4 @@ const EditProductForm = () => {
   );
 };
 
-export default EditProductForm;
+export default NewProductForm;

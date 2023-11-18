@@ -15,8 +15,8 @@ import Product from "./dashboard/content/Product";
 import User from "./dashboard/content/User";
 import Dashboard from "./dashboard/content/Dashboard";
 import Warehouse from "./dashboard/content/Warehouse";
-import NewProductForm from "./dashboard/NewProductForm";
-import EditProductForm from "./dashboard/EditProductForm";
+import NewProductForm from "./dashboard/components/NewProductForm";
+import EditProductForm from "./dashboard/components/EditProductForm";
 
 const router = createBrowserRouter([
   {
