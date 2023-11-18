@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useDeleteProduct } from "@/hooks/useProduct";
-import { Delete } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import React, { FormEvent } from "react";
 
 const DeleteProduct = ({ productId }: { productId: number }) => {
@@ -12,7 +12,12 @@ const DeleteProduct = ({ productId }: { productId: number }) => {
   return (
     <form onSubmit={onDeleteProduct}>
       <Button type="submit" variant="destructive" className="cursor-pointer ">
-        Delete <Delete className="h-4 w-4 ml-2" />
+        <Loader2
+          className={
+            deleteProduct.isPending ? "animate-spin w-4 h-4 mr-2" : "hidden"
+          }
+        />
+        Yes, delete product
       </Button>
     </form>
   );

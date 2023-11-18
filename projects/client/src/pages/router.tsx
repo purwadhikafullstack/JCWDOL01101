@@ -13,6 +13,7 @@ import DashboardLayout from "./dashboard/DashboardLayout";
 import NotFound from "./dashboard/NotFound";
 import Product from "./dashboard/Product";
 import NewProductForm from "./dashboard/NewProductForm";
+import EditProductForm from "./dashboard/EditProductForm";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: "product",
         element: <Product />,
+      },
+      {
+        path: "product/:productId",
+        element: <EditProductForm />,
       },
       {
         path: "product/create",

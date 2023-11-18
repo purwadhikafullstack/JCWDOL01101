@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export interface Product {
   id?: number;
-  categoryId?: number;
+  categoryId: number;
   name: string;
   price: number;
   stock: number;
@@ -28,6 +28,21 @@ export const useProducts = () => {
   return { data, isLoading };
 };
 
+export const useProduct = (productId: number) => {
+  const { data, isLoading } = useQuery<Product>({
+    queryKey: ["product", productId],
+    queryFn: async () => {
+      const res = await service.get(`/product/${productId}`, {
+        withCredentials: true,
+      });
+      return res.data.data;
+    },
+    enabled: !!productId,
+  });
+
+  return { data, isLoading };
+};
+
 export const useProductMutation = () => {
   const queryClient = useQueryClient();
   const productMutation = useMutation({
@@ -45,10 +60,28 @@ export const useProductMutation = () => {
   return productMutation;
 };
 
+export const useEditProduct = (productId: number) => {
+  const queryClient = useQueryClient();
+  const productMutation = useMutation({
+    mutationFn: async (product: FormData) =>
+      service.put(`/product/${productId}`, product, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["product", productId] });
+    },
+  });
+
+  return productMutation;
+};
+
 export const useDeleteProduct = (productId: number) => {
   const queryClient = useQueryClient();
   const productMutation = useMutation({
-    mutationFn: async () => service.put(`/product/${productId}`),
+    mutationFn: async () => service.put(`/product/delete/${productId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
     },

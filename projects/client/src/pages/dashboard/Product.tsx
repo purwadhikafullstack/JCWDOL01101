@@ -34,10 +34,13 @@ import { baseURL } from "@/service";
 import DeleteProduct from "./components/DeleteProduct";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { formatToIDR } from "@/lib/utils";
+import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton";
 
 const Product = () => {
-  // TODO: add skeleton for products table
   const { data: products, isLoading } = useProducts();
+  if (isLoading) {
+    return <ProductsPageSkeleton />;
+  }
   return (
     <div className="flex flex-col p-2 w-full">
       <Link
@@ -69,66 +72,88 @@ const Product = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products?.map((product, i) => (
-              <TableRow key={product.id}>
-                <TableCell className="w-[80px]">{i + 1}</TableCell>
-                <TableCell className="font-medium">{product.name}</TableCell>
-                <TableCell className="text-center">
-                  <img
-                    className="w-[40px] mx-auto"
-                    src={`${baseURL}/${product.image}`}
-                    alt={product.name}
-                  />
-                </TableCell>
-                <TableCell>{product.categoryId}</TableCell>
-                <TableCell>{product.description}</TableCell>
-                <TableCell>{formatToIDR(String(product.price))}</TableCell>
-                <TableCell className="text-center">
-                  {product.weight}
-                  <i className="text-xs"> grams</i>
-                </TableCell>
-                <TableCell className="text-center">{product.stock}</TableCell>
-                <TableCell className="text-center">{product.sold}</TableCell>
-                <TableCell className="text-center">
-                  <Dialog>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger
-                        className={buttonVariants({ variant: "ghost" })}
-                      >
-                        <DotsHorizontalIcon />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <DialogTrigger>Delete</DialogTrigger>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>
-                          Are you sure deleting {product.name} ?
-                        </DialogTitle>
-                        <DialogDescription>
-                          This action cannot be undone. This will permanently
-                          delete your product and remove your data from our
-                          servers.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <DialogFooter className="sm:justify-start">
-                        <DeleteProduct productId={Number(product.id)} />
-                        <DialogClose asChild>
-                          <Button type="button" variant="secondary">
-                            Cancel
-                          </Button>
-                        </DialogClose>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+            {products && products?.length > 0 ? (
+              <>
+                {products?.map((product, i) => (
+                  <TableRow key={product.id}>
+                    <TableCell className="w-[80px]">{i + 1}</TableCell>
+                    <TableCell className="font-medium">
+                      {product.name}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <img
+                        className="w-[40px] mx-auto"
+                        src={`${baseURL}/${product.image}`}
+                        alt={product.name}
+                      />
+                    </TableCell>
+                    <TableCell>{product.categoryId}</TableCell>
+                    <TableCell>{product.description}</TableCell>
+                    <TableCell>{formatToIDR(String(product.price))}</TableCell>
+                    <TableCell className="text-center">
+                      {product.weight}
+                      <i className="text-xs"> grams</i>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {product.stock}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {product.sold}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Dialog>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger
+                            className={buttonVariants({ variant: "ghost" })}
+                          >
+                            <DotsHorizontalIcon />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <Link to={`/dashboard/product/${product.id}`}>
+                              <DropdownMenuItem className="cursor-pointer">
+                                Edit
+                              </DropdownMenuItem>
+                            </Link>
+                            <DropdownMenuSeparator />
+                            <DialogTrigger className="w-full">
+                              <DropdownMenuItem className="w-full cursor-pointer">
+                                Delete
+                              </DropdownMenuItem>
+                            </DialogTrigger>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>
+                              Are you sure deleting {product.name} ?
+                            </DialogTitle>
+                            <DialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete your product and remove your
+                              data from our servers.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <DialogFooter className="sm:justify-start">
+                            <DeleteProduct productId={Number(product.id)} />
+                            <DialogClose asChild>
+                              <Button type="button" variant="secondary">
+                                Cancel
+                              </Button>
+                            </DialogClose>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </>
+            ) : (
+              <TableRow>
+                <TableCell colSpan={10} className="text-center h-24">
+                  No Products
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>

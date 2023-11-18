@@ -3,6 +3,7 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class ProductModel extends Model<Product> implements Product {
   public id?: number;
+  public categoryId?: number;
   public name: string;
   public price: number;
   public stock: number;
@@ -19,6 +20,10 @@ export default function (sequelize: Sequelize): typeof ProductModel {
       id: {
         autoIncrement: true,
         primaryKey: true,
+        type: DataTypes.INTEGER,
+      },
+      categoryId: {
+        allowNull: false,
         type: DataTypes.INTEGER,
       },
       name: {

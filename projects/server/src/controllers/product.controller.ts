@@ -19,6 +19,19 @@ export class ProductController {
     }
   };
 
+  public getProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const productId = Number(req.params.productId);
+      const proudct: Product = await this.product.getProduct(productId);
+      res.status(200).json({
+        data: proudct,
+        message: 'get.products',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   public createProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { product } = req.body;
@@ -44,21 +57,25 @@ export class ProductController {
 
   public updateProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const productId = Number(req.params.productId);
       const { product } = req.body;
       const parseProduct: ProductDto = JSON.parse(product);
-      const { path } = req.file as Express.Multer.File;
-      // TODO: check if image is updated, if update then delete the old image replace it with new image
-      const productData: Product = await this.product.createProduct({
+      let image = parseProduct.image;
+      if (!Boolean(image)) {
+        const { path } = req.file as Express.Multer.File;
+        image = path;
+      }
+      const updatedProduct = await this.product.updateProduct(productId, {
         ...parseProduct,
+        image,
         categoryId: Number(parseProduct.categoryId),
         price: Number(parseProduct.price),
         stock: Number(parseProduct.stock),
         weight: Number(parseProduct.weight),
-        image: path,
       });
 
       res.status(200).json({
-        data: productData,
+        data: updatedProduct,
         message: 'product.created',
       });
     } catch (err) {

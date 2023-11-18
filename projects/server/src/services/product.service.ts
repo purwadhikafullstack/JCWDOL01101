@@ -12,6 +12,13 @@ export class ProductService {
     return findAllProduct;
   }
 
+  public async getProduct(productId: number): Promise<Product> {
+    const findProduct: Product = await DB.Product.findByPk(productId);
+    if (!findProduct) throw new HttpException(409, "Product doesn't already exist");
+
+    return findProduct;
+  }
+
   public async createProduct(productData: ProductDto): Promise<Product> {
     const findProduct: Product = await DB.Product.findOne({ where: { name: productData.name } });
     if (findProduct) throw new HttpException(409, 'Product already exist');
@@ -24,6 +31,9 @@ export class ProductService {
     const findProduct: Product = await DB.Product.findByPk(productId);
     if (!findProduct) throw new HttpException(409, "Product doesn't already exist");
 
+    if (productData.image !== findProduct.image) {
+      unlinkAsync(findProduct.image);
+    }
     await DB.Product.update({ ...productData }, { where: { id: productId } });
     const updatedProduct: Product = await DB.Product.findByPk(productId);
     return updatedProduct;
