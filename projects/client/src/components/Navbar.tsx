@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import SearchInput from "./SearchInput";
 import NavProfile from "./NavProfile";
 import NavDelivery from "./NavDelivery";
@@ -11,6 +11,7 @@ import NavDropdown from "./NavDropdown";
 import { User2 } from "lucide-react";
 
 const Navbar = () => {
+  const location = useLocation();
   const [isDim, setIsDim] = useState(false);
   const { isSignedIn } = useUser();
   return (
@@ -38,6 +39,7 @@ const Navbar = () => {
                 <div className="hidden lg:flex items-center gap-2 ">
                   <Link
                     to="/login"
+                    state={{ redirectTo: location }}
                     className={buttonVariants({ variant: "outline" })}
                   >
                     Login
