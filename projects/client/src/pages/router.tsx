@@ -11,7 +11,10 @@ import Verification from "./auth/Verification";
 
 import DashboardLayout from "./dashboard/DashboardLayout";
 import NotFound from "./dashboard/NotFound";
-import Product from "./dashboard/Product";
+import Product from "./dashboard/content/Product";
+import User from "./dashboard/content/User";
+import Dashboard from "./dashboard/content/Dashboard";
+import Warehouse from "./dashboard/content/Warehouse";
 import NewProductForm from "./dashboard/NewProductForm";
 import EditProductForm from "./dashboard/EditProductForm";
 
@@ -52,6 +55,18 @@ const router = createBrowserRouter([
     element: <DashboardLayout />,
     errorElement: <NotFound />,
     children: [
+      {
+        path: "",
+        element: <Dashboard />,
+      },
+      {
+        path: "warehouse",
+        element: <Warehouse />,
+      },
+      {
+        path: "user",
+        element: <User />,
+      },
       {
         path: "product",
         element: <Product />,
