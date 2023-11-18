@@ -16,7 +16,7 @@ export class WarehouseRoute implements Routes {
     this.router.get(`${this.path}/get/:id(\\d+)`, this.warehouse.getWarehouseById);
     this.router.post(`${this.path}/post`, this.warehouse.createWarehouse);
     this.router.put(`${this.path}/put/:id(\\d+)`, this.warehouse.updateWarehouse);
-    this.router.delete(`${this.path}/:id(\\d+)`, this.warehouse.deleteWarehouse);
+    this.router.delete(`${this.path}/delete/:id(\\d+)`, this.warehouse.deleteWarehouse);
   }
 }
 

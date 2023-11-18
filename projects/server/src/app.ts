@@ -64,6 +64,7 @@ export class App {
       this.app.use('/', route.router);
     });
   }
+  
 
   private initializeSwagger() {
     const options = {

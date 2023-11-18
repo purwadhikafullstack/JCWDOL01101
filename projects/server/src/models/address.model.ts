@@ -1,5 +1,6 @@
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
 import { Address } from '@/interfaces/address.interface';
+import { WarehouseModel } from './warehouse.model';
 
 export class AddressModel extends Model<Address> implements Address {
   public id: number;
@@ -27,6 +28,15 @@ export default function (sequelize: Sequelize): typeof AddressModel {
       sequelize,
     },
   );
+
+  // AddressModel.hasOne(WarehouseModel, {
+  //   foreignKey: "address_id",
+  // });
+  
+  // WarehouseModel.belongsTo(AddressModel, {
+  //   foreignKey: "address_id",
+  // });
+  
  
 
   return AddressModel;

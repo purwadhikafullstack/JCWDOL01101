@@ -40,3 +40,5 @@ export const DB = {
   sequelize,
   Sequelize,
 };
+
+
