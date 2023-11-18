@@ -23,6 +23,18 @@ export class ProductController {
     }
   };
 
+  public getNewestProducts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const products: Product[] = await this.product.getAllNewestProduct();
+      res.status(200).json({
+        data: products,
+        message: 'get.products',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   public getProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const productId = Number(req.params.productId);

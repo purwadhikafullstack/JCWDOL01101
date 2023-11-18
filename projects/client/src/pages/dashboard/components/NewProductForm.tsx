@@ -52,7 +52,7 @@ const NewProductForm = () => {
   const { toast } = useToast();
   const [image, setImage] = useState<Image | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const productMutation = useProductMutation();
+  const { productMutation, error: resError } = useProductMutation();
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
     defaultValues: emptyValues,
@@ -76,16 +76,27 @@ const NewProductForm = () => {
   };
 
   useEffect(() => {
-    if (productMutation.status === "success") {
+    if (resError?.state) {
+      toast({
+        title: `Error: ${resError.status}`,
+        description: resError.message,
+        variant: "destructive",
+        duration: 2000,
+      });
+    }
+  }, [resError, toast]);
+
+  useEffect(() => {
+    if (!resError?.state && productMutation.status === "success") {
       toast({
         title: "Product Created",
         description: "Successfully create a new product",
-        duration: 3000,
+        duration: 2000,
       });
       form.reset(emptyValues);
       setImage(null);
     }
-  }, [form, productMutation.status, toast]);
+  }, [form, productMutation.status, toast, resError]);
 
   const formatNumber = (value: string) => {
     const numericValue = value.replace(/\D/g, "");

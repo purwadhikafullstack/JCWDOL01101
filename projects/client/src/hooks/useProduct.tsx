@@ -1,5 +1,7 @@
 import service from "@/service";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { useState } from "react";
 
 export interface Product {
   id?: number;
@@ -39,6 +41,26 @@ export const useProducts = ({ page, s }: ProductOptions) => {
   return { data, isLoading, isFetched };
 };
 
+type ProductUrlOptions = {
+  key: string;
+  url: string;
+};
+
+export const useProductUrl = ({ key, url }: ProductUrlOptions) => {
+  const { data, isLoading, isFetched } = useQuery<Product[]>({
+    queryKey: [key],
+    queryFn: async () => {
+      const res = await service.get(url, {
+        withCredentials: true,
+      });
+      return res.data.data;
+    },
+    refetchOnWindowFocus: true,
+  });
+
+  return { data, isLoading, isFetched };
+};
+
 export const useProduct = (productId: number) => {
   const { data, isLoading } = useQuery<Product>({
     queryKey: ["product", productId],
@@ -54,21 +76,43 @@ export const useProduct = (productId: number) => {
   return { data, isLoading };
 };
 
+type Error = { message: string; status: number; state: boolean };
 export const useProductMutation = () => {
   const queryClient = useQueryClient();
+  const [error, setError] = useState<Error>({
+    message: "",
+    status: 0,
+    state: false,
+  });
   const productMutation = useMutation({
-    mutationFn: async (product: FormData) =>
-      service.post("/product", product, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }),
+    mutationFn: async (product: FormData) => {
+      try {
+        await service.post("/product", product, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        setError({
+          message: "",
+          status: 0,
+          state: false,
+        });
+      } catch (err) {
+        if (err instanceof AxiosError) {
+          setError({
+            message: err.response?.data.message as string,
+            status: Number(err.response?.status),
+            state: true,
+          });
+        }
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
     },
   });
 
-  return productMutation;
+  return { error, productMutation };
 };
 
 export const useEditProduct = (productId: number) => {
@@ -82,7 +126,6 @@ export const useEditProduct = (productId: number) => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
-      queryClient.invalidateQueries({ queryKey: ["product", productId] });
     },
   });
 

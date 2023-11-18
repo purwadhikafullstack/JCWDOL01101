@@ -4,8 +4,13 @@ import { Link } from "react-router-dom";
 import CategoryCard from "./CategoryCard";
 import ProductCard from "@/components/ProductCard";
 import TopProductCard from "@/components/TopProductCard";
+import { useProductUrl } from "@/hooks/useProduct";
 
 const Homepage = () => {
+  const { data: newestProducts } = useProductUrl({
+    key: "new-products",
+    url: "/new-products",
+  });
   return (
     <>
       <MainCarousel />
@@ -54,22 +59,9 @@ const Homepage = () => {
         </section>
         <h3 className="font-bold text-xl my-2 mt-8">Try our newest products</h3>
         <section className="grid grid-cols-2 md:grid-cols-4  lg:grid-cols-6 gap-2 gap-y-6">
-          {Array(12)
-            .fill(0)
-            .map((v, i) => (
-              <ProductCard
-                key={i}
-                product={{
-                  name: "Black Shirt",
-                  imageUrl: "/placeholder/black-shirt.jpg",
-                  price: 1240000,
-                  sell: 10,
-                  stock: 123,
-                  place: "jakarta",
-                  rating: 4,
-                }}
-              />
-            ))}
+          {newestProducts?.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
         </section>
       </div>
     </>

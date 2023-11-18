@@ -185,7 +185,9 @@ const Product = () => {
       </div>
       <div className="flex gap-2 items-center justify-end mt-4">
         <div className="flex gap-2 items-center">
-          <p className="text-sm">Page 1 of {data?.totalPages || 0}</p>
+          <p className="text-sm">
+            Page {currentPage} of {data?.totalPages || 0}
+          </p>
           <Button
             disabled={currentPage <= 1}
             onClick={() => {

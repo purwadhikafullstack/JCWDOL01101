@@ -37,6 +37,17 @@ export class ProductService {
     return { totalPages, products: findAllProduct };
   }
 
+  public async getAllNewestProduct(): Promise<Product[]> {
+    const findAllProduct: Product[] = await DB.Product.findAll({
+      where: {
+        status: 'ACTIVE',
+      },
+      order: [['createdAt', 'DESC']],
+    });
+
+    return findAllProduct;
+  }
+
   public async getProduct(productId: number): Promise<Product> {
     const findProduct: Product = await DB.Product.findByPk(productId);
     if (!findProduct) throw new HttpException(409, "Product doesn't already exist");
