@@ -1,20 +1,22 @@
-import React from "react"
-import { createBrowserRouter } from "react-router-dom"
+import React from "react";
+import { createBrowserRouter } from "react-router-dom";
 
-import Homepage from "./homepage/Homepage"
-import MainLayout from "./MainLayout"
-import Register from "./auth/Register"
-import Login from "./auth/Login"
-import CategoryPage from "./category/CategoryPage"
-import SSOCallback from "./auth/SSOCallback"
-import Verification from "./auth/Verification"
+import Homepage from "./homepage/Homepage";
+import MainLayout from "./MainLayout";
+import Register from "./auth/Register";
+import Login from "./auth/Login";
+import CategoryPage from "./category/CategoryPage";
+import SSOCallback from "./auth/SSOCallback";
+import Verification from "./auth/Verification";
 
-import DashboardLayout from "./dashboard/DashboardLayout"
-import NotFound from "./dashboard/NotFound"
-import Product from "./dashboard/content/Product"
-import User from "./dashboard/content/User"
-import Dashboard from "./dashboard/content/Dashboard"
-import Warehouse from "./dashboard/content/Warehouse"
+import DashboardLayout from "./dashboard/DashboardLayout";
+import NotFound from "./dashboard/NotFound";
+import Product from "./dashboard/content/Product";
+import User from "./dashboard/content/User";
+import Dashboard from "./dashboard/content/Dashboard";
+import Warehouse from "./dashboard/content/Warehouse";
+import NewProductForm from "./dashboard/components/NewProductForm";
+import EditProductForm from "./dashboard/components/EditProductForm";
 
 const router = createBrowserRouter([
   {
@@ -69,8 +71,16 @@ const router = createBrowserRouter([
         path: "product",
         element: <Product />,
       },
+      {
+        path: "product/:productId",
+        element: <EditProductForm />,
+      },
+      {
+        path: "product/create",
+        element: <NewProductForm />,
+      },
     ],
   },
-])
+]);
 
-export default router
+export default router;

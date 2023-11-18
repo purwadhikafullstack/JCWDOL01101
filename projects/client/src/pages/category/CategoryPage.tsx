@@ -1,6 +1,5 @@
 import React from "react";
 import CategoryDropdown from "./CategoryDropdown";
-import ProductCard from "@/components/ProductCard";
 import {
   Select,
   SelectContent,
@@ -44,24 +43,7 @@ const CategoryPage = () => {
               <SelectItem value="rating">Highest Rating</SelectItem>
             </SelectContent>
           </Select>
-          <div className="pt-2 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
-            {Array(12)
-              .fill(0)
-              .map((v, i) => (
-                <ProductCard
-                  key={i}
-                  product={{
-                    name: "Black Shirt",
-                    imageUrl: "/placeholder/black-shirt.jpg",
-                    price: 1240000,
-                    sell: 10,
-                    stock: 123,
-                    place: "jakarta",
-                    rating: 4,
-                  }}
-                />
-              ))}
-          </div>
+          <div className="pt-2 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2"></div>
         </div>
       </div>
     </>
