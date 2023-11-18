@@ -1,6 +1,6 @@
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
-import { Warehouse } from '@/interfaces/warehouses.interface';
+import { Warehouse } from '@/interfaces/warehouse.interface';
 import { Service } from 'typedi';
 
 @Service()
@@ -31,11 +31,11 @@ export class WarehouseService {
     
 
         await DB.Warehouses.update({ ...warehouseData}, { where: { id: warehouseId } });
-        const updateUser: Warehouse = await DB.Warehouses.findByPk(warehouseId);
-        return updateUser;
+        const updateWarehouse: Warehouse = await DB.Warehouses.findByPk(warehouseId);
+        return updateWarehouse;
       }
     
-      public async deleteUser(warehouseId: number): Promise<Warehouse> {
+      public async deleteWarehouse(warehouseId: number): Promise<Warehouse> {
         const findWarehouse: Warehouse = await DB.Warehouses.findByPk(warehouseId);
         if (!findWarehouse) throw new HttpException(409, "Warehouse doesn't exist");
     

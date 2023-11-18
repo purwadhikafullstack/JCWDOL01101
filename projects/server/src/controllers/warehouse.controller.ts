@@ -1,5 +1,5 @@
-import { Warehouse } from "@/interfaces/warehouses.interface";
-import { WarehouseService } from "@/services/warehouses.service";
+import { Warehouse } from "@/interfaces/warehouse.interface";
+import { WarehouseService } from "@/services/warehouse.service";
 import { NextFunction, Request, Response } from "express";
 import Container from "typedi";
 
@@ -52,10 +52,10 @@ export class WarehouseController{
     
       public deleteWarehouse = async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const userId = Number(req.params.id);
-          const deleteUserData: Warehouse = await this.warehouse.deleteUser(userId);
+          const warehouseId = Number(req.params.id);
+          const deleteWarehouseData: Warehouse = await this.warehouse.deleteWarehouse(warehouseId);
     
-          res.status(200).json({ data: deleteUserData, message: 'deleted' });
+          res.status(200).json({ data: deleteWarehouseData, message: 'deleted' });
         } catch (error) {
           next(error);
         }

@@ -1,8 +1,7 @@
 import { App } from '@/app';
 import { ValidateEnv } from '@utils/validateEnv';
 import { UserRoute } from './routes/user.routes';
-// import { HelloRoute } from './routes/hello.routes';
-import { WarehouseRoute } from './routes/warehouses.routes';
+import { WarehouseRoute } from './routes/warehouse.routes';
 
 ValidateEnv();
 

@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
-import { Warehouse } from '@/interfaces/warehouses.interface';
+import { Warehouse } from '@/interfaces/warehouse.interface';
 
 export class WarehouseModel extends Model<Warehouse> implements Warehouse {
   public id: number;
