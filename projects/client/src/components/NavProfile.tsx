@@ -88,15 +88,19 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
         >
           <Settings className="w-4 h-4 mr-2" /> <span>Setting</span>
         </Link>
-        <Link
-          to="/dashboard"
-          className={buttonVariants({
-            variant: "ghost",
-            className: "w-full",
-          })}
+        <div
+          className={`${user?.publicMetadata.role !== "CUSTOMER" && "hidden"}`}
         >
-          <Wrench className="w-4 h-4 mr-2" /> <span>Dashboard</span>
-        </Link>
+          <Link
+            to="/dashboard"
+            className={buttonVariants({
+              variant: "ghost",
+              className: "w-full",
+            })}
+          >
+            <Wrench className="w-4 h-4 mr-2" /> <span>Admin</span>
+          </Link>
+        </div>
         <Button
           variant="ghost"
           className="w-full"

@@ -2,11 +2,10 @@ import React from "react"
 
 const Dashboard = () => {
   return (
-    <>
-      <div>
-        <p>Dashboard</p>
-      </div>
-    </>
+    <div>
+      <h2>This is Dashboard Page</h2>
+      <p>Insert your content here</p>
+    </div>
   )
 }
 

@@ -6,11 +6,16 @@ import MainLayout from "./MainLayout"
 import Register from "./auth/Register"
 import Login from "./auth/Login"
 import CategoryPage from "./category/CategoryPage"
-import DashboardLayout from "./dashboard/DashboardLayout"
-import ManageUser from "./dashboard/content/ManageUser"
-import Dashboard from "./dashboard/content/Dashboard"
 import SSOCallback from "./auth/SSOCallback"
 import Verification from "./auth/Verification"
+
+import DashboardLayout from "./dashboard/DashboardLayout"
+import NotFound from "./dashboard/NotFound"
+import Product from "./dashboard/content/Product"
+import User from "./dashboard/content/User"
+import Dashboard from "./dashboard/content/Dashboard"
+import Warehouse from "./dashboard/content/Warehouse"
+import Admin from "./dashboard/content/Admin"
 
 const router = createBrowserRouter([
   {
@@ -32,6 +37,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <NotFound />,
     children: [
       {
         path: "",
@@ -46,14 +52,27 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <DashboardLayout />,
+    errorElement: <NotFound />,
     children: [
       {
         path: "",
         element: <Dashboard />,
       },
       {
-        path: "manage-user",
-        element: <ManageUser />,
+        path: "warehouse",
+        element: <Warehouse />,
+      },
+      {
+        path: "user",
+        element: <User />,
+      },
+      {
+        path: "manage-admin",
+        element: <Admin />,
+      },
+      {
+        path: "product",
+        element: <Product />,
       },
     ],
   },
