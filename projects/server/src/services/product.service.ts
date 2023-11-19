@@ -5,6 +5,7 @@ import { GetFilterProduct, Product } from '@/interfaces/product.interface';
 import { Service } from 'typedi';
 import { unlinkAsync } from './multer.service';
 import { FindOptions, Op, literal } from 'sequelize';
+import fs from 'fs';
 
 type ProductsOptions = {
   offset: number;
@@ -127,7 +128,11 @@ export class ProductService {
     const findProduct: Product = await DB.Product.findByPk(productId);
     if (!findProduct) throw new HttpException(409, "Product doesn't already exist");
 
-    unlinkAsync(findProduct.image);
+    fs.access(findProduct.image, fs.constants.F_OK, err => {
+      if (!err) {
+        unlinkAsync(findProduct.image);
+      }
+    });
     await DB.Product.update({ status: 'DELETED' }, { where: { id: productId } });
     return findProduct;
   }
