@@ -53,6 +53,7 @@ const NewProductForm = () => {
   const [image, setImage] = useState<Image | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { productMutation, error: resError } = useProductMutation();
+
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
     defaultValues: emptyValues,

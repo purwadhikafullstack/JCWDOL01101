@@ -1,11 +1,11 @@
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 
-import Homepage from "./homepage/Homepage";
+import Homepage from "./homepage/content/Homepage";
 import MainLayout from "./MainLayout";
 import Register from "./auth/Register";
 import Login from "./auth/Login";
-import CategoryPage from "./category/CategoryPage";
+import CategoryPage from "./homepage/content/Category";
 import SSOCallback from "./auth/SSOCallback";
 import Verification from "./auth/Verification";
 

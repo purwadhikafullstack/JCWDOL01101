@@ -1,5 +1,10 @@
 import service from "@/service";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useState } from "react";
 
@@ -41,14 +46,34 @@ export const useProducts = ({ page, s }: ProductOptions) => {
   return { data, isLoading, isFetched };
 };
 
+export const useHomeProducts = ({ s, f }: { s: string; f: string }) => {
+  const { data, isLoading, isFetched } = useQuery<Product[]>({
+    queryKey: ["home/products", s, f],
+    queryFn: async () => {
+      const res = await service.get("/home-products", {
+        params: {
+          s,
+          f,
+        },
+        withCredentials: true,
+      });
+      return res.data.data;
+    },
+  });
+
+  return { data, isLoading, isFetched };
+};
+
+export const useProductInfinite = ({ s, f }: { s: string; f: string }) => {};
+
 type ProductUrlOptions = {
-  key: string;
+  key: string[];
   url: string;
 };
 
 export const useProductUrl = ({ key, url }: ProductUrlOptions) => {
   const { data, isLoading, isFetched } = useQuery<Product[]>({
-    queryKey: [key],
+    queryKey: key,
     queryFn: async () => {
       const res = await service.get(url, {
         withCredentials: true,

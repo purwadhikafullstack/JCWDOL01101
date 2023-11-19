@@ -4,7 +4,6 @@ import SearchInput from "./SearchInput";
 import NavProfile from "./NavProfile";
 import NavDelivery from "./NavDelivery";
 import NavCart from "./NavCart";
-import NavCategory from "./NavCategory";
 import { useUser } from "@clerk/clerk-react";
 import { buttonVariants } from "./ui/button";
 import NavDropdown from "./NavDropdown";
@@ -23,7 +22,9 @@ const Navbar = () => {
               当店 <p className="hidden lg:block">| Toten</p>
             </span>
           </Link>
-          <NavCategory setIsDim={setIsDim} />
+          <Link to="/category" className={buttonVariants({ variant: "ghost" })}>
+            All Products
+          </Link>
           <SearchInput />
           <div className="flex items-center">
             {isSignedIn ? (

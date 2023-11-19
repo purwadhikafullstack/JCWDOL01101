@@ -39,6 +39,7 @@
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.48.2",
+    "react-lazy-load-image-component": "^1.6.0",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.18.0",
     "react-scripts": "^5.0.1",
@@ -69,6 +70,7 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-private-property-in-object": "^7.23.3",
-    "@craco/craco": "^7.1.0"
+    "@craco/craco": "^7.1.0",
+    "@types/react-lazy-load-image-component": "^1.6.3"
   }
 }

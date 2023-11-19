@@ -23,12 +23,37 @@ export class ProductController {
     }
   };
 
+  public getProductsHomepage = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { s, f } = req.query;
+      const products = await this.product.getAllProductOnHomepage({ s: s as string, f: f as string });
+      res.status(200).json({
+        data: products,
+        message: 'get.products',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   public getNewestProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const products: Product[] = await this.product.getAllNewestProduct();
       res.status(200).json({
         data: products,
         message: 'get.products',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public getHigestSellProducts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const products: Product[] = await this.product.getHighestSell();
+      res.status(200).json({
+        data: products,
+        message: 'get.highest',
       });
     } catch (err) {
       next(err);
