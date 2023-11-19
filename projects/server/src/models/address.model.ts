@@ -29,13 +29,13 @@ export default function (sequelize: Sequelize): typeof AddressModel {
     },
   );
 
-  // AddressModel.hasOne(WarehouseModel, {
-  //   foreignKey: "address_id",
-  // });
+  AddressModel.hasOne(WarehouseModel, {
+    foreignKey: "address_id",
+  });
   
-  // WarehouseModel.belongsTo(AddressModel, {
-  //   foreignKey: "address_id",
-  // });
+  WarehouseModel.belongsTo(AddressModel, {
+    foreignKey: "address_id",
+  });
   
  
 

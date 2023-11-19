@@ -7,6 +7,7 @@ import provinceModel from '@/models/province.model';
 import addressModel from '@/models/address.model';
 import cityModel from '@/models/city.model';
 import ProductModel from '@/models/product.model';
+import CategoryModel from '@/models/category.model';
 
 const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
   dialect: 'mysql',
@@ -39,6 +40,7 @@ export const DB = {
   Provinces:provinceModel(sequelize),
   Cities:cityModel(sequelize),
   Product: ProductModel(sequelize),
+  Categories:CategoryModel(sequelize),
   sequelize,
   Sequelize,
 };

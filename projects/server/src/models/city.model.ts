@@ -1,12 +1,11 @@
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
-// import { Warehouse } from '@/interfaces/warehouses.interface';
-// import { Address } from '@/interfaces/address.interface';
 import { City } from '@/interfaces/city.interface';
+import { ProvinceModel } from './province.model';
 
 export class CityModel extends Model<City> implements City {
     public id: number;
-    public type:string;
-    public city:string;
+    public provinceId?: number;
+    public city: string;
     public postalCode: number;
 
     public readonly createdAt!: Date;
@@ -21,15 +20,15 @@ export default function (sequelize: Sequelize): typeof CityModel {
                 primaryKey: true,
                 type: DataTypes.INTEGER,
             },
-            type: {
+            provinceId: {
                 allowNull: false,
-                type: DataTypes.STRING(45),
+                type: DataTypes.INTEGER,
             },
             city: {
                 allowNull: false,
                 type: DataTypes.STRING(45),
             },
-            postalCode:{
+            postalCode: {
                 allowNull: false,
                 type: DataTypes.INTEGER,
             }
@@ -40,6 +39,13 @@ export default function (sequelize: Sequelize): typeof CityModel {
         },
     );
 
+    ProvinceModel.hasMany(CityModel, {
+        foreignKey: "provinceId",
+    });
+
+    CityModel.belongsTo(ProvinceModel, {
+        foreignKey: "provinceId",
+    });
 
     return CityModel;
 }
