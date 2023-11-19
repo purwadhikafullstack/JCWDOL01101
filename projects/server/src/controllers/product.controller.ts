@@ -1,5 +1,5 @@
 import { ProductDto } from '@/dtos/product.dto';
-import { Product } from '@/interfaces/product.interface';
+import { GetFilterProduct, Product } from '@/interfaces/product.interface';
 import { ProductService } from '@/services/product.service';
 import { NextFunction, Request, Response } from 'express';
 import Container from 'typedi';
@@ -7,10 +7,15 @@ import Container from 'typedi';
 export class ProductController {
   product = Container.get(ProductService);
 
-  public getProducts = async (req: Request, res: Response, next: NextFunction) => {
+  public getProducts = async (req: Request<{}, {}, {}, GetFilterProduct>, res: Response, next: NextFunction) => {
     try {
-      const { page, s } = req.query;
-      const { products, totalPages } = await this.product.getAllProduct({ page: Number(page), s: s as string });
+      const { page, s, order, filter } = req.query;
+      const { products, totalPages } = await this.product.getAllProduct({
+        s,
+        order,
+        filter,
+        page: Number(page),
+      });
       res.status(200).json({
         data: {
           products,

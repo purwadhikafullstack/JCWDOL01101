@@ -24,17 +24,21 @@ export interface Product {
 type ProductOptions = {
   page: number;
   s: string;
+  filter: string;
+  order: string;
 };
-export const useProducts = ({ page, s }: ProductOptions) => {
+export const useProducts = ({ page, s, filter, order }: ProductOptions) => {
   const { data, isLoading, isFetched } = useQuery<{
     products: Product[];
     totalPages: number;
   }>({
-    queryKey: ["products", page, s],
+    queryKey: ["products", page, s, filter, order],
     queryFn: async () => {
       const res = await service.get("/products", {
         params: {
           s,
+          filter,
+          order,
           page,
         },
         withCredentials: true,

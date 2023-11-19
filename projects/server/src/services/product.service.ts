@@ -1,7 +1,7 @@
 import { DB } from '@/database';
 import { ProductDto } from '@/dtos/product.dto';
 import { HttpException } from '@/exceptions/HttpException';
-import { Product } from '@/interfaces/product.interface';
+import { GetFilterProduct, Product } from '@/interfaces/product.interface';
 import { Service } from 'typedi';
 import { unlinkAsync } from './multer.service';
 import { FindOptions, Op, literal } from 'sequelize';
@@ -15,11 +15,12 @@ type ProductsOptions = {
       [Op.like]: string;
     };
   };
+  order?: Array<[string, string]>;
 };
 
 @Service()
 export class ProductService {
-  public async getAllProduct({ page, s }: { page: number; s: string }): Promise<{ products: Product[]; totalPages: number }> {
+  public async getAllProduct({ page, s, order, filter }: GetFilterProduct): Promise<{ products: Product[]; totalPages: number }> {
     const PER_PAGE = 10;
     const offset = (page - 1) * PER_PAGE;
     const options: ProductsOptions = {
@@ -29,6 +30,7 @@ export class ProductService {
         status: 'ACTIVE',
         ...(s && { name: { [Op.like]: `%${s}%` } }),
       },
+      ...(!!order && { order: [[filter, order]] }),
     };
 
     const [findAllProduct, totalCount] = await Promise.all([DB.Product.findAll(options), DB.Product.count(options)]);
