@@ -51,7 +51,7 @@ export class UserController {
         if (data.id) {
           await clerkClient.users.updateUser(evt.data.id, {
             publicMetadata: {
-              role: 'CUSTOMER',
+              role: (data.public_metadata.role as string) || 'CUSTOMER',
               status: 'ACTIVE',
             },
           });
@@ -90,6 +90,20 @@ export class UserController {
       res.status(200).json({
         data: user,
         message: 'warehouse admin created',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public manageAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = Number(req.params.userId);
+      const adminData = req.body;
+      const updatedAdmin = await this.user.updateAdmin(userId, adminData);
+      res.status(200).json({
+        data: updatedAdmin,
+        message: 'admin edited',
       });
     } catch (err) {
       next(err);

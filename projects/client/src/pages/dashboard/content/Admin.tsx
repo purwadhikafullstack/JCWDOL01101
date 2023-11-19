@@ -1,6 +1,6 @@
 import React, { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight, SearchIcon } from "lucide-react"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { ChevronLeft, ChevronRight, SearchIcon, Plus } from "lucide-react"
 import {
   Table,
   TableBody,
@@ -9,13 +9,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { useSearchParams } from "react-router-dom"
 import { useUsers } from "@/hooks/useUser"
 import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton"
 import { useDebounce } from "use-debounce"
 import { getDate } from "@/lib/utils"
+import NewAdminFrom from "../components/NewAdminForm"
 
 const Admin = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -30,6 +31,17 @@ const Admin = () => {
   })
   return (
     <div className="flex flex-col p-2 w-full">
+      <Dialog>
+        <DialogTrigger
+          className={buttonVariants({
+            variant: "default",
+            className: "self-end",
+          })}
+        >
+          <Plus className="w-4 h-4 mr-2" /> New Admin
+        </DialogTrigger>
+        <NewAdminFrom />
+      </Dialog>
       <div className="relative w-[300px]">
         <SearchIcon className="absolute h-4 w-4 text-muted-foreground left-3 top-1/2 -translate-y-1/2" />
         <Input
@@ -66,8 +78,8 @@ const Admin = () => {
                   {data?.users!.map((user, i) => (
                     <TableRow key={user.id}>
                       <TableCell className="w-[80px]">{i + 1}</TableCell>
-                      <TableCell className="font-medium">
-                        {user.firstname} {user.lastname}
+                      <TableCell className="capitalize font-medium">
+                        {user.firstname ? user.firstname : user.username}
                       </TableCell>
                       <TableCell className="text-center">
                         <Button>{user.status}</Button>

@@ -47,3 +47,38 @@ export const useUsers = ({ page, s, r }: UserOptions) => {
 
   return { data, isLoading, isFetched }
 }
+
+type Error = { message: string; status: number; state: boolean }
+export const useAdminMutation = () => {
+  const queryClient = useQueryClient()
+  const [error, setError] = useState<Error>({
+    message: "",
+    status: 0,
+    state: false,
+  })
+  const adminMutation = useMutation({
+    mutationFn: async () => {
+      try {
+        await service.post("/admin")
+        setError({
+          message: "",
+          status: 0,
+          state: false,
+        })
+      } catch (err) {
+        if (err instanceof AxiosError) {
+          setError({
+            message: err.response?.data.message as string,
+            status: Number(err.response?.status),
+            state: true,
+          })
+        }
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admins"] })
+    },
+  })
+
+  return { error, adminMutation }
+}

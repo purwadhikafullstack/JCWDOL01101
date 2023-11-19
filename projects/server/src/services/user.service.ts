@@ -6,6 +6,7 @@ import { Service } from 'typedi';
 import { Op } from 'sequelize';
 // import { v4 as uuidv4 } from 'uuid';
 import clerkClient from '@clerk/clerk-sdk-node';
+import { CreateAdminDto } from '@/dtos/admin.dto';
 
 type UserOptions = {
   offset: number;
@@ -28,17 +29,17 @@ export class UserService {
 
   public async createAdmin() {
     const random = Math.floor(Math.random() * 1000 + 1);
-    const admin = `adminadmin${random}`;
-    const user = await clerkClient.users.createUser({
-      emailAddress: ['admin@mail.com'],
-      username: admin,
-      password: `password${admin}`,
+    const adminUsername = `admin${random}`;
+    const admin = await clerkClient.users.createUser({
+      emailAddress: [`${adminUsername}@mail.com`],
+      username: adminUsername,
+      password: `AdminPassword${random}`,
       publicMetadata: {
         role: 'WAREHOUSE',
         status: 'ACTIVE',
       },
     });
-    return user;
+    return admin;
   }
 
   public async updateUser(userId: number, userData: CreateUserDto): Promise<User> {
@@ -48,6 +49,14 @@ export class UserService {
     await DB.User.update({ ...userData }, { where: { id: userId } });
     const updatedUser: User = await DB.User.findByPk(userId);
     return updatedUser;
+  }
+
+  public async updateAdmin(userId: number, adminData: CreateAdminDto) {
+    const findUser: User = await DB.User.findByPk(userId);
+    if (!findUser) throw new HttpException(409, "User doesn't exist");
+
+    const updatedAdmin = await clerkClient.users.updateUser(findUser.externalId, adminData);
+    return updatedAdmin;
   }
 
   public async findUserByExternalId(externalId: string): Promise<User> {
@@ -64,6 +73,17 @@ export class UserService {
     await DB.User.update({ status: 'DELETED' }, { where: { id: userId } });
     return findUser;
   }
+
+  // public async deleteAdmin(externalId: string, adminData: CreateAdminDto) {
+  //   const deletedUser = await clerkClient.users.updateUser(externalId, {
+  //     ...adminData,
+  //     publicMetadata: {
+  //       role: adminData.role,
+  //       status: 'DELETED',
+  //     },
+  //   });
+  //   return deletedUser;
+  // }
 
   public async findUserById(userId: number): Promise<User> {
     const user = await DB.User.findOne({ where: { id: userId } });
