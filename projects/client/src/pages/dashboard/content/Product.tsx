@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Plus, SearchIcon, X } from "lucide-react";
 import {
   Table,
