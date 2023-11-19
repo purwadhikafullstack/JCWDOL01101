@@ -19,6 +19,7 @@ import {
   DialogTrigger, DialogClose, DialogFooter,
 } from "@/components/ui/dialog"
 import service from "@/service";
+import { useDeleteWarehouse, useEditWarehouse, useGetWarehouse, useWarehouseMutation } from "@/hooks/useWarehouse";
 
 const Warehouse = () => {
   type WarehouseType = {
@@ -36,32 +37,41 @@ const Warehouse = () => {
   const [editWarehouse, setEditWarehouse] = useState({ id: 0, name: '', capacity: 0 });
   const [isEditing, setIsEditing] = useState(false);
 
-  useEffect(() => {
-    service.get("http://localhost:8000/warehouses/get")
-      .then(response => {
-        if (Array.isArray(response.data.data)) {
-          setWarehouses(response.data.data);
-        } else {
-          console.error("Data is not an array:", response.data.data);
-        }
-      })
-      .catch(error => {
-        console.error("There was an error!", error);
-      });
-  }, []);
+  const {data} = useGetWarehouse()
+  const warehouseMutation = useWarehouseMutation()
+  // const warehouseEdit = ({warehouseId}: {warehouseId:number})=>{
+  //   const edit = useEditWarehouse(warehouseId)
+  // }
+  // useEditWarehouse(warehouseId)
+
+
+  // useEffect(() => {
+  //   service.get("/warehouses/get")
+  //     .then(response => {
+  //       if (Array.isArray(response.data.data)) {
+  //         setWarehouses(response.data.data);
+  //       } else {
+  //         console.error("Data is not an array:", response.data.data);
+  //       }
+  //     })
+  //     .catch(error => {
+  //       console.error("There was an error!", error);
+  //     });
+  // }, []);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewWarehouse({ ...newWarehouse, [event.target.name]: event.target.value });
   };
 
   const handleAddWarehouse = () => {
-    service.post("http://localhost:8000/warehouses/post", newWarehouse)
-      .then(response => {
-        setWarehouses([...warehouses, response.data]);
-      })
-      .catch(error => {
-        console.error("There was an error!", error);
-      });
+    // service.post("http://localhost:8000/warehouses/post", newWarehouse)
+    //   .then(response => {
+    //     setWarehouses([...warehouses, response.data]);
+    //   })
+    //   .catch(error => {
+    //     console.error("There was an error!", error);
+    //   });
+    warehouseMutation.mutate(newWarehouse)
   };
 
   const handleEditWarehouse = (warehouse: WarehouseType) => {
@@ -163,7 +173,7 @@ const Warehouse = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {warehouses.map((warehouse) => (
+            {data?.map((warehouse) => (
               <TableRow key={warehouse.id}>
                 <TableCell className="font-medium">{warehouse.name}</TableCell>
                 <TableCell>{warehouse.capacity}</TableCell>
