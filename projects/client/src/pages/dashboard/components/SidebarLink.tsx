@@ -1,21 +1,21 @@
-import { ChevronDown } from "lucide-react"
-import React from "react"
-import { useState } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { ChevronDown } from "lucide-react";
+import React from "react";
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 type SidebarLink = {
-  title: string
-  path: string
-  icon: React.ReactElement
-  state?: boolean
-}
+  title: string;
+  path: string;
+  icon: React.ReactElement;
+  state?: boolean;
+};
 
 type Children = {
-  title: string
-  path: string
-  icon: React.ReactElement
-  state?: boolean
-}
+  title: string;
+  path: string;
+  icon: React.ReactElement;
+  state?: boolean;
+};
 
 export const DashboardLink = ({
   title,
@@ -42,8 +42,8 @@ export const DashboardLink = ({
         </span>
       </li>
     </Link>
-  )
-}
+  );
+};
 
 export const DropdownLink = ({
   title,
@@ -52,14 +52,14 @@ export const DropdownLink = ({
   children,
   path,
 }: {
-  title: string
-  path: string
-  icon: React.ReactElement
-  children: Children[]
-  state?: boolean
+  title: string;
+  path: string;
+  icon: React.ReactElement;
+  children: Children[];
+  state?: boolean;
 }) => {
-  const location = useLocation()
-  const [isOpen, setIsOpen] = useState(false)
+  const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
@@ -101,5 +101,5 @@ export const DropdownLink = ({
         </ul>
       </div>
     </>
-  )
-}
+  );
+};
