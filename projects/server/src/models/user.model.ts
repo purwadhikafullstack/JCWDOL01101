@@ -27,7 +27,9 @@ export default function (sequelize: Sequelize): typeof UserModel {
       },
       role: {
         allowNull: false,
-        type: DataTypes.STRING(10),
+        type: DataTypes.ENUM,
+        values: ['CUSTOMER', 'ADMIN', 'WAREHOUSE'],
+        defaultValue: 'ACTIVE',
       },
       username: {
         allowNull: true,
@@ -50,8 +52,9 @@ export default function (sequelize: Sequelize): typeof UserModel {
         type: DataTypes.STRING(255),
       },
       status: {
-        allowNull: false,
-        type: DataTypes.STRING(10),
+        type: DataTypes.ENUM,
+        values: ['ACTIVE', 'DEACTIVATED', 'DELETED'],
+        defaultValue: 'ACTIVE',
       },
     },
 

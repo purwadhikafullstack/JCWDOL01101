@@ -46,7 +46,7 @@ export class UserController {
           username: data.username,
           imageUrl: data.image_url,
           role: (data.public_metadata.role as string) || 'CUSTOMER',
-          status: (data.public_metadata.role as string) || 'ACTIVE',
+          status: (data.public_metadata.status as string) || 'ACTIVE',
         });
         if (data.id) {
           await clerkClient.users.updateUser(evt.data.id, {
@@ -67,7 +67,7 @@ export class UserController {
           username: data.username,
           imageUrl: data.image_url,
           role: data.public_metadata.role as string,
-          status: data.public_metadata.role as string,
+          status: data.public_metadata.status as string,
         });
       } else if (eventType === 'user.deleted') {
         const data = evt.data;
@@ -84,36 +84,31 @@ export class UserController {
     }
   };
 
-  public getUserbyId = async (req: Request, res: Response, next: NextFunction) => {
+  public createAdmin = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userId = Number(req.params.id);
-      const findUserData = await this.user.findUserById(userId);
-
-      res.status(200).json({ data: findUserData, message: 'find user data' });
-    } catch (error) {
-      next(error);
+      const user = await this.user.createAdmin();
+      res.status(200).json({
+        data: user,
+        message: 'warehouse admin created',
+      });
+    } catch (err) {
+      next(err);
     }
   };
 
   public getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const findAllUsersData = await this.user.findAllUser();
-
-      res.status(200).json({ data: findAllUsersData, message: 'find all user' });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  public manageUser = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const userId = Number(req.params.id);
-      const userData = req.body;
-      const manageUserData = await this.user.updateUser(userId, userData);
-
-      res.status(200).json({ data: manageUserData, message: 'user updated' });
-    } catch (error) {
-      next(error);
+      const { page, s, r } = req.query;
+      const { users, totalPages } = await this.user.getAllUser({ page: Number(page), s: s as string, r: r as string });
+      res.status(200).json({
+        data: {
+          users,
+          totalPages,
+        },
+        message: 'get.users',
+      });
+    } catch (err) {
+      next(err);
     }
   };
 }

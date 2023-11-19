@@ -11,11 +11,13 @@ import Verification from "./auth/Verification"
 
 import DashboardLayout from "./dashboard/DashboardLayout"
 import NotFound from "./dashboard/NotFound"
-import Product from "./dashboard/content/Product"
-import User from "./dashboard/content/User"
 import Dashboard from "./dashboard/content/Dashboard"
+import User from "./dashboard/content/User"
+import ManageAdmin from "./dashboard/content/Admin"
+import Product from "./dashboard/content/Product"
+import NewProductForm from "./dashboard/components/NewProductForm"
+import EditProductForm from "./dashboard/components/EditProductForm"
 import Warehouse from "./dashboard/content/Warehouse"
-import Admin from "./dashboard/content/Admin"
 
 const router = createBrowserRouter([
   {
@@ -68,11 +70,19 @@ const router = createBrowserRouter([
       },
       {
         path: "manage-admin",
-        element: <Admin />,
+        element: <ManageAdmin />,
       },
       {
         path: "product",
         element: <Product />,
+      },
+      {
+        path: "product/:productId",
+        element: <EditProductForm />,
+      },
+      {
+        path: "product/create",
+        element: <NewProductForm />,
       },
     ],
   },

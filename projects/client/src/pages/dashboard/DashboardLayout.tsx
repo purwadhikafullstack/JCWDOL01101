@@ -1,7 +1,8 @@
-import React from "react"
-import DashboardNavbar from "./components/Navbar"
-import { Outlet } from "react-router-dom"
-import DashboardSidebar from "./components/Sidebar"
+import React from "react";
+import DashboardNavbar from "./components/Navbar";
+import { Outlet } from "react-router-dom";
+import DashboardSidebar from "./components/Sidebar";
+import { Toaster } from "@/components/ui/toaster";
 
 const DashboardLayout = () => {
   return (
@@ -16,9 +17,10 @@ const DashboardLayout = () => {
             <Outlet />
           </main>
         </div>
+        <Toaster />
       </div>
     </>
-  )
-}
+  );
+};
 
-export default DashboardLayout
+export default DashboardLayout;

@@ -22,7 +22,7 @@ const DashboardNavbar = () => {
   return (
     <nav className="w-full sticky top-0 z-50">
       <div className="flex justify-between items-center bg-white p-6 border-b">
-        <h1 className="capitalize text-2xl font-medium">{site} Page</h1>
+        <h1 className="capitalize text-2xl font-medium">{site}</h1>
         <div className="flex items-center gap-4">
           <p className="text-lg font-medium">
             Welcome, {user?.fullName || "Admin"}
@@ -36,7 +36,7 @@ const DashboardNavbar = () => {
           >
             <Bell />
           </Link>
-          <Avatar>
+          <Avatar className="w-8 h-8">
             <AvatarImage src={user?.imageUrl as string} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>

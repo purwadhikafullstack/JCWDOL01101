@@ -1,15 +1,30 @@
 import { RequireAuthProp } from '@clerk/clerk-sdk-node';
 import { NextFunction, Request, Response } from 'express';
+import { UserService } from '@/services/user.service';
+import Container from 'typedi';
 
-export const AdminAuth = (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
-  try {
-    // const userRole = req.auth;
-    console.log(req.auth);
-    // if (userRole) {
-    //   next();
-    // }
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
+export class AuthMiddleware {
+  user = Container.get(UserService);
+
+  public PrivateAuth = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.auth.userId;
+      const user = await this.user.findUserByExternalId(userId);
+      console.log(user.role);
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public AdminAuth = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.auth.userId;
+      const user = await this.user.findUserByExternalId(userId);
+      console.log(user.role);
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
+}

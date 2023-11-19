@@ -3,11 +3,41 @@ import { CreateUserDto } from '@/dtos/user.dto';
 import { HttpException } from '@/exceptions/HttpException';
 import { User } from '@/interfaces/user.interface';
 import { Service } from 'typedi';
+import { Op } from 'sequelize';
+// import { v4 as uuidv4 } from 'uuid';
+import clerkClient from '@clerk/clerk-sdk-node';
+
+type UserOptions = {
+  offset: number;
+  limit: number;
+  where: {
+    status: string;
+    name?: {
+      [Op.like]: string;
+    };
+    role: string;
+  };
+};
 
 @Service()
 export class UserService {
   public async createUser(userData: CreateUserDto): Promise<User> {
     const user: User = await DB.User.create({ ...userData });
+    return user;
+  }
+
+  public async createAdmin() {
+    const random = Math.floor(Math.random() * 1000 + 1);
+    const admin = `adminadmin${random}`;
+    const user = await clerkClient.users.createUser({
+      emailAddress: ['admin@mail.com'],
+      username: admin,
+      password: `password${admin}`,
+      publicMetadata: {
+        role: 'WAREHOUSE',
+        status: 'ACTIVE',
+      },
+    });
     return user;
   }
 
@@ -41,7 +71,28 @@ export class UserService {
   }
 
   public async findAllUser(): Promise<User[]> {
-    const allUser = await DB.User.findAll();
+    const allUser = await DB.User.findAll({ where: { role: 'CUSTOMER' } });
     return allUser;
+  }
+
+  public async getAllUser({ page, s, r }: { page: number; s: string; r: string }): Promise<{ users: User[]; totalPages: number }> {
+    const PER_PAGE = 10;
+    const offset = (page - 1) * PER_PAGE;
+    const options: UserOptions = {
+      offset,
+      limit: PER_PAGE,
+      where: {
+        status: 'ACTIVE',
+        role: r,
+        ...(s && {
+          [Op.or]: [{ firstName: { [Op.like]: `%${s}%` } }, { lastName: { [Op.like]: `%${s}%` } }],
+        }),
+      },
+    };
+
+    const [findAllUser, totalCount] = await Promise.all([DB.User.findAll(options), DB.User.count(options)]);
+    const totalPages = Math.ceil(totalCount / PER_PAGE);
+
+    return { totalPages, users: findAllUser };
   }
 }
