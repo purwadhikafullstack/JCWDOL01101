@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CategoryDropdown from "../components/CategoryDropdown";
 import {
   Select,
@@ -8,17 +8,42 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Link, useSearchParams } from "react-router-dom";
-import { useHomeProducts } from "@/hooks/useProduct";
+import {
+  Product,
+  useHomeProducts,
+  useProductInfinite,
+} from "@/hooks/useProduct";
 import ProductCard from "@/components/ProductCard";
+import { useInView } from "react-intersection-observer";
+import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton";
+import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const CategoryPage = () => {
+  const { ref, inView } = useInView();
   const [searchParams, setSearchParams] = useSearchParams({
     s: "all",
   });
   const s = searchParams.get("s") || "all";
   const f = searchParams.get("f") || "";
 
-  const { data } = useHomeProducts({ s, f });
+  const {
+    data,
+    isLoading,
+    isSuccess,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useProductInfinite({
+    s,
+    f,
+  });
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, inView, hasNextPage]);
 
   return (
     <>
@@ -60,12 +85,28 @@ const CategoryPage = () => {
             </ul>
           </CategoryDropdown>
         </div>
-        <div className="flex flex-1 flex-col justify-end items-end">
-          <div className="pt-2 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
-            {data?.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+        <div className="pt-2 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 w-full">
+          {isLoading ? (
+            <NewestProductSekeleton product={10} />
+          ) : (
+            <>
+              {isSuccess &&
+                data.pages.map((page) =>
+                  page.map((product: Product, i: number) => {
+                    return page.length === i + 1 ? (
+                      <ProductCard
+                        ref={ref}
+                        key={product.id}
+                        product={product}
+                      />
+                    ) : (
+                      <ProductCard key={product.id} product={product} />
+                    );
+                  })
+                )}
+              {isFetchingNextPage && <NewestProductSekeleton product={5} />}
+            </>
+          )}
         </div>
       </div>
     </>

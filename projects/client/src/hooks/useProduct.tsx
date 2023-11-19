@@ -64,7 +64,28 @@ export const useHomeProducts = ({ s, f }: { s: string; f: string }) => {
   return { data, isLoading, isFetched };
 };
 
-export const useProductInfinite = ({ s, f }: { s: string; f: string }) => {};
+export const useProductInfinite = ({ s, f }: { s: string; f: string }) => {
+  const fetchProjects = async (page: number) => {
+    const res = await service.get("/home-products", {
+      params: {
+        page,
+        s,
+        f,
+      },
+    });
+    return res.data.data;
+  };
+
+  const query = useInfiniteQuery({
+    queryKey: ["home/products", s, f],
+    queryFn: ({ pageParam }) => fetchProjects(pageParam),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, page) =>
+      lastPage.length === 12 ? page.length + 1 : undefined,
+  });
+
+  return query;
+};
 
 type ProductUrlOptions = {
   key: string[];

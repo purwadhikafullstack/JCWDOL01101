@@ -37,8 +37,10 @@ export class ProductService {
     return { totalPages, products: findAllProduct };
   }
 
-  public async getAllProductOnHomepage({ s, f }: { s: string; f: string }): Promise<Product[]> {
+  public async getAllProductOnHomepage({ page, s, f }: { page: number; s: string; f: string }): Promise<Product[]> {
     const options: FindOptions = {
+      offset: (Number(page) - 1) * 12,
+      limit: 12,
       where: {
         status: 'ACTIVE',
         ...(s && s !== 'all' && { category: s }),

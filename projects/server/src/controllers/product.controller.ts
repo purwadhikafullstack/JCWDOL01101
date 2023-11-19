@@ -25,8 +25,10 @@ export class ProductController {
 
   public getProductsHomepage = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { s, f } = req.query;
-      const products = await this.product.getAllProductOnHomepage({ s: s as string, f: f as string });
+      const page = Number(req.query.page);
+      const s = req.query.s as string;
+      const f = req.query.f as string;
+      const products = await this.product.getAllProductOnHomepage({ page, s, f });
       res.status(200).json({
         data: products,
         message: 'get.products',

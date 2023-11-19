@@ -72,7 +72,7 @@ const Homepage = () => {
         </section>
         <h3 className="font-bold text-xl my-2 mt-8">Try our newest products</h3>
         {isLoading ? (
-          <NewestProductSekeleton />
+          <NewestProductSekeleton product={12} />
         ) : (
           <section className="grid grid-cols-2 md:grid-cols-4  lg:grid-cols-6 gap-2 gap-y-6">
             {newestProducts?.map((product) => (
