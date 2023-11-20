@@ -1,3 +1,4 @@
+import { useToast } from "@/components/ui/use-toast";
 import service from "@/service";
 import {
   useInfiniteQuery,
@@ -6,7 +7,6 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { useState } from "react";
 
 export interface Product {
   id?: number;
@@ -126,46 +126,36 @@ export const useProduct = (productId: number) => {
   return { data, isLoading };
 };
 
-type Error = { message: string; status: number; state: boolean };
 export const useProductMutation = () => {
   const queryClient = useQueryClient();
-  const [error, setError] = useState<Error>({
-    message: "",
-    status: 0,
-    state: false,
-  });
+  const { toast } = useToast();
   const productMutation = useMutation({
     mutationFn: async (product: FormData) => {
-      try {
-        await service.post("/product", product, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        setError({
-          message: "",
-          status: 0,
-          state: false,
-        });
-      } catch (err) {
-        if (err instanceof AxiosError) {
-          setError({
-            message: err.response?.data.message as string,
-            status: Number(err.response?.status),
-            state: true,
-          });
-        }
-      }
+      await service.post("/product", product, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
     },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast({
+          title: "Opps!, Something went Wrong",
+          description: error.response?.data.message,
+          variant: "destructive",
+        });
+      }
+    },
   });
 
-  return { error, productMutation };
+  return { productMutation };
 };
 
 export const useEditProduct = (productId: number) => {
+  const { toast } = useToast();
   const queryClient = useQueryClient();
   const productMutation = useMutation({
     mutationFn: async (product: FormData) =>
@@ -176,6 +166,16 @@ export const useEditProduct = (productId: number) => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast({
+          title: "Opps!, Something went Wrong",
+          description: error.response?.data.message,
+          variant: "destructive",
+        });
+      }
     },
   });
 

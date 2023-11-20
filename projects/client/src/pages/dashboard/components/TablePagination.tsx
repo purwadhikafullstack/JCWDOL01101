@@ -33,7 +33,7 @@ const TablePagination = ({
         <ChevronLeft />
       </Button>
       <Button
-        disabled={dataLength !== 10 || false}
+        disabled={!(currentPage < totalPages) || false}
         onClick={() => {
           setSearchParams((params) => {
             params.set("page", (currentPage + 1).toString());

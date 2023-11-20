@@ -5,30 +5,34 @@ import z, { ZodError } from "zod";
 import { Upload } from "lucide-react";
 import { baseURL } from "@/service";
 import { Image } from "./NewProductForm";
+import { useParams } from "react-router-dom";
+
+type ImageState = {
+  edit: boolean;
+  file: File;
+  url: string;
+};
 
 const ImageUpload = ({
   image,
-  setImage,
-  isEdit = false,
-  mutationSuccess,
+  setImageState,
 }: {
-  isEdit?: boolean;
   image: Image;
-  mutationSuccess?: boolean;
-  setImage: (val: Image) => void;
+  setImageState: (state: ImageState) => void;
 }) => {
-  const [edit, setEdit] = useState(isEdit);
+  const { productId } = useParams();
   const [error, setError] = useState<string | null>(null);
+  const [selectImage, setSelectImage] = useState(false);
+  const isEditing = !!productId;
   const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      acceptedFiles.forEach((file: File) => {
-        const reader = new FileReader();
+    async (acceptedFiles: File[]) => {
+      acceptedFiles.forEach(async (file: File) => {
+        try {
+          const { name, type, size } = file;
+          const sizeValidation = isEditing
+            ? z.number().min(0)
+            : z.number().min(1);
 
-        reader.onabort = () => setError("file reading was aborted");
-        reader.onerror = () => setError("file reading has failed");
-        reader.onload = () => {
-          setEdit(false);
-          setImage({ new: edit, url: reader.result as string, file });
           const fileSchema = z.object({
             name: z.string(),
             type: z
@@ -37,28 +41,32 @@ const ImageUpload = ({
                 /^image\/(jpeg|png)$/,
                 "Only accepting .jpg, .jpeg, and png"
               ),
-            size: z.number().max(5 * 1024 * 1024, "File too big"),
+            size: sizeValidation.max(5 * 1024 * 1024, "File too big"),
           });
 
-          try {
-            const fileData = {
-              name: file.name,
-              type: file.type,
-              size: file.size,
-            };
-            fileSchema.parse(fileData);
+          const fileData = { name, type, size };
+          await fileSchema.parseAsync(fileData);
 
-            setError(null);
-          } catch (err) {
-            if (err instanceof ZodError) {
-              setError(err.errors[0].message);
-            }
+          const reader = new FileReader();
+
+          reader.onabort = () => setError("file reading was aborted");
+          reader.onerror = () => setError("file reading has failed");
+
+          reader.onload = () => {
+            setSelectImage(true);
+            setImageState({ file, url: reader.result as string, edit: true });
+          };
+          reader.readAsDataURL(file);
+        } catch (err) {
+          if (err instanceof ZodError) {
+            setError(err.errors[0].message);
+          } else {
+            setError("An error occured during file processing");
           }
-        };
-        reader.readAsDataURL(file);
+        }
       });
     },
-    [edit, setImage]
+    [isEditing, setImageState]
   );
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
   return (
@@ -73,7 +81,7 @@ const ImageUpload = ({
         {!error && image ? (
           <img
             src={
-              (edit && image.url) || mutationSuccess
+              isEditing && image.url && !selectImage
                 ? `${baseURL}/${image.url}`
                 : (image.url as string)
             }
