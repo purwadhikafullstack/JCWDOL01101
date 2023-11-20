@@ -20,10 +20,10 @@ const ImageUpload = ({
   image: Image;
   setImageState: (state: ImageState) => void;
 }) => {
-  const { productId } = useParams();
+  const { slug } = useParams();
   const [error, setError] = useState<string | null>(null);
   const [selectImage, setSelectImage] = useState(false);
-  const isEditing = !!productId;
+  const isEditing = !!slug;
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
       acceptedFiles.forEach(async (file: File) => {

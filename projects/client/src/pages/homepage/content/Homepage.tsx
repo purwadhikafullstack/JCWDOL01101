@@ -12,6 +12,7 @@ const Homepage = () => {
     key: ["new-products"],
     url: "/new-products",
   });
+  // TODO: add skeletoon to highest sell product
   const { data: highestSell, isLoading: highestSellLoading } = useProductUrl({
     key: ["highest-sell"],
     url: "/highest-sell",

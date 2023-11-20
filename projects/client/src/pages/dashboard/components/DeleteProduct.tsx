@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useDeleteProduct } from "@/hooks/useProduct";
+import { useDeleteProduct } from "@/hooks/useProductMutation";
 import { Loader2 } from "lucide-react";
 import React, { FormEvent } from "react";
 

@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import { useProductMutation } from "@/hooks/useProduct";
+import { useProductMutation } from "@/hooks/useProductMutation";
 import { formatToIDR } from "@/lib/utils";
 import ImageUpload from "./ImageUpload";
 import ProductFormField from "./ProductFormField";

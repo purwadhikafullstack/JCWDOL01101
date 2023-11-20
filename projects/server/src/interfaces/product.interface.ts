@@ -9,6 +9,7 @@ export interface Product {
   weight: number;
   description: string;
   status: string;
+  slug: string;
 }
 
 export interface GetFilterProduct {

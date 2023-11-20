@@ -58,7 +58,7 @@ const ProductTableRow = ({ products }: { products: Product[] }) => {
                   <DotsHorizontalIcon />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <Link to={`/dashboard/product/${product.id}`}>
+                  <Link to={`/dashboard/product/${product.slug}`}>
                     <DropdownMenuItem className="cursor-pointer">
                       Edit
                     </DropdownMenuItem>

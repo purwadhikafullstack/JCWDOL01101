@@ -79,7 +79,7 @@ const DashboardSidebar = () => {
   return (
     <div className="p-4 flex h-full flex-col justify-between items-start">
       <div className="w-full">
-        <Link to="/">
+        <Link to="/dashboard">
           <div className="w-max mb-4">
             <span className="font-bold text-3xl text-primary">
               当店 | Toten

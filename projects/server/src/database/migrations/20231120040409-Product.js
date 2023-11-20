@@ -1,23 +1,9 @@
-import { Product } from '@/interfaces/product.interface';
-import { DataTypes, Model, Sequelize } from 'sequelize';
+'use strict';
 
-export class ProductModel extends Model<Product> implements Product {
-  public id?: number;
-  public categoryId?: number;
-  public name: string;
-  public price: number;
-  public stock: number;
-  public sold: number;
-  public image: string;
-  public weight: number;
-  public description: string;
-  public status: string;
-  public slug: string;
-}
-
-export default function (sequelize: Sequelize): typeof ProductModel {
-  ProductModel.init(
-    {
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up(queryInterface, { DataTypes }) {
+    await queryInterface.createTable('products', {
       id: {
         autoIncrement: true,
         primaryKey: true,
@@ -64,9 +50,10 @@ export default function (sequelize: Sequelize): typeof ProductModel {
         allowNull: false,
         type: DataTypes.STRING(255),
       },
-    },
-    { tableName: 'products', sequelize },
-  );
+    });
+  },
 
-  return ProductModel;
-}
+  async down(queryInterface) {
+    await queryInterface.dropTable('users');
+  },
+};

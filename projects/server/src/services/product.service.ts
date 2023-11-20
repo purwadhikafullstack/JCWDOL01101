@@ -97,9 +97,9 @@ export class ProductService {
     return findAllProduct;
   }
 
-  public async getProduct(productId: number): Promise<Product> {
-    const findProduct: Product = await DB.Product.findByPk(productId);
-    if (!findProduct) throw new HttpException(409, "Product doesn't already exist");
+  public async getProduct(slug: string): Promise<Product> {
+    const findProduct: Product = await DB.Product.findOne({ where: { slug } });
+    if (!findProduct) throw new HttpException(409, "Product doesn't exist");
 
     return findProduct;
   }
@@ -108,25 +108,34 @@ export class ProductService {
     const findProduct: Product = await DB.Product.findOne({ where: { name: productData.name } });
     if (findProduct) throw new HttpException(409, 'Product already exist');
 
-    const product: Product = await DB.Product.create({ ...productData });
+    const slug = productData.name
+      .toLocaleLowerCase()
+      .replace(/^a-z0-9\s/g, '')
+      .replace(/\s+/g, '-');
+
+    const product: Product = await DB.Product.create({ ...productData, slug });
     return product;
   }
 
-  public async updateProduct(productId: number, productData: ProductDto): Promise<Product> {
-    const findProduct: Product = await DB.Product.findByPk(productId);
+  public async updateProduct(slug: string, productData: ProductDto): Promise<Product> {
+    const findProduct: Product = await DB.Product.findOne({ where: { slug } });
     if (!findProduct) throw new HttpException(409, "Product doesn't already exist");
 
     if (productData.image !== findProduct.image) {
       unlinkAsync(findProduct.image);
     }
-    await DB.Product.update({ ...productData }, { where: { id: productId } });
-    const updatedProduct: Product = await DB.Product.findByPk(productId);
+    const newSlug = productData.name
+      .toLocaleLowerCase()
+      .replace(/^a-z0-9\s/g, '')
+      .replace(/\s+/g, '-');
+    await DB.Product.update({ ...productData, slug: newSlug }, { where: { slug } });
+    const updatedProduct: Product = await DB.Product.findOne({ where: { slug: newSlug } });
     return updatedProduct;
   }
 
   public async deleteProduct(productId: number): Promise<Product> {
     const findProduct: Product = await DB.Product.findByPk(productId);
-    if (!findProduct) throw new HttpException(409, "Product doesn't already exist");
+    if (!findProduct) throw new HttpException(409, "Product doesn't exist");
 
     fs.access(findProduct.image, fs.constants.F_OK, err => {
       if (!err) {
