@@ -15,3 +15,12 @@ export function formatToIDR(value: string) {
 
   return formattedValue;
 }
+
+export function convertToK(currencyValue: number): string {
+  if (currencyValue >= 1000) {
+    const valueInK = currencyValue / 1000;
+    return `${valueInK}K`;
+  } else {
+    return currencyValue.toString();
+  }
+}

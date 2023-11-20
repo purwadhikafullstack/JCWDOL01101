@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 const DashboardLayout = () => {
   return (
     <>
-      <div className="flex">
+      <div className="flex relative">
         <aside className="fixed h-full top-0 left-0 w-[300px] border-r">
           <DashboardSidebar />
         </aside>

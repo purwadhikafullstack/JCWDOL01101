@@ -13,7 +13,9 @@ export class ProductRoute implements Routes {
 
   private initializeMiddleware() {
     this.router.get('/api/products', this.product.getProducts);
+    this.router.get('/api/home-products', this.product.getProductsHomepage);
     this.router.get('/api/new-products', this.product.getNewestProducts);
+    this.router.get('/api/highest-sell', this.product.getHigestSellProducts);
     this.router.get('/api/product/:productId', this.product.getProduct);
     this.router.post('/api/product', upload.single('image'), this.product.createProduct);
     this.router.put('/api/product/:productId', upload.single('image'), this.product.updateProduct);

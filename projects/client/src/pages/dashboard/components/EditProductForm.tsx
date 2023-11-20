@@ -36,8 +36,8 @@ const emptyValues = {
 const EditProductForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
   const { productId } = useParams();
+  const isEditing = !!productId;
 
   useEffect(() => {
     if (!Number(productId)) {
@@ -48,8 +48,7 @@ const EditProductForm = () => {
 
   const [image, setImage] = useState<Image | null>({
     file: undefined,
-    url: product?.image || "",
-    new: !!productId,
+    url: "",
   });
 
   const productMutation = useEditProduct(Number(productId));
@@ -59,29 +58,16 @@ const EditProductForm = () => {
     defaultValues: emptyValues,
   });
   const onSubmit = (values: z.infer<typeof productSchema>) => {
-    if (image?.new && !image?.file) {
-      setError("Please upload a file");
-      return;
+    const formData = new FormData();
+    if (isEditing && image?.file) {
+      formData.set("product", JSON.stringify({ ...values }));
+      formData.set("image", image.file as File);
+    } else if (isEditing && image?.url) {
+      formData.set("product", JSON.stringify({ ...values, image: image.url }));
+    } else {
+      formData.set("product", JSON.stringify({ ...values }));
     }
 
-    const formData = new FormData();
-    if (image?.new) {
-      formData.set(
-        "product",
-        JSON.stringify({
-          ...values,
-        })
-      );
-      formData.set("image", image?.file as File);
-    } else {
-      formData.set(
-        "product",
-        JSON.stringify({
-          ...values,
-          image: image?.url as string,
-        })
-      );
-    }
     productMutation.mutate(formData);
   };
 
@@ -113,9 +99,21 @@ const EditProductForm = () => {
       form.setValue("stock", product.stock);
       form.setValue("weight", product.weight);
       form.setValue("description", product.description);
-      setImage({ new: false, file: undefined, url: product.image });
+      setImage({ file: undefined, url: product.image });
     }
   }, [product, form]);
+
+  const setImageState = ({
+    edit,
+    file,
+    url,
+  }: {
+    edit: boolean;
+    file: File;
+    url: string;
+  }) => {
+    setImage({ file, url });
+  };
 
   return (
     <div className="w-full">
@@ -155,7 +153,6 @@ const EditProductForm = () => {
                     <FormMessage />
                   </FormItem>
                 )}
-                rules={{}}
               />
               <ProductFormField name="stock" label="Stock" />
               <ProductFormField
@@ -169,11 +166,8 @@ const EditProductForm = () => {
                 <div>
                   <ImageUpload
                     image={image as Image}
-                    setImage={setImage}
-                    isEdit={true}
-                    mutationSuccess={productMutation.isSuccess}
+                    setImageState={setImageState}
                   />
-                  <p className="text-xs text-primary">{error}</p>
                 </div>
                 <FormField
                   control={form.control}
