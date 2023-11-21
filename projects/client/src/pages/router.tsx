@@ -19,6 +19,8 @@ import NewProductForm from "./dashboard/components/NewProductForm"
 import EditProductForm from "./dashboard/components/EditProductForm"
 import Warehouse from "./dashboard/content/Warehouse"
 import EditAdminForm from "./dashboard/components/EditAdminForm"
+import UserLayout from "./user/UserLayout"
+import Profile from "./user/content/Profile"
 
 const router = createBrowserRouter([
   {
@@ -49,6 +51,17 @@ const router = createBrowserRouter([
       {
         path: "/category",
         element: <CategoryPage />,
+      },
+    ],
+  },
+  {
+    path: "/user",
+    element: <UserLayout />,
+    errorElement: <NotFound />,
+    children: [
+      {
+        path: "profile",
+        element: <Profile />,
       },
     ],
   },
