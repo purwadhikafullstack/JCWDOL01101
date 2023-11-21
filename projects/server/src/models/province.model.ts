@@ -30,13 +30,13 @@ export default function (sequelize: Sequelize): typeof ProvinceModel {
     },
   );
 
-  ProvinceModel.hasOne(AddressModel, {
-    foreignKey: "provinceId",
-  });
+  // ProvinceModel.hasOne(AddressModel, {
+  //   foreignKey: "provinceId",
+  // });
   
-  AddressModel.belongsTo(ProvinceModel, {
-    foreignKey: "provinceId",
-  });
+  // AddressModel.belongsTo(ProvinceModel, {
+  //   foreignKey: "provinceId",
+  // });
 
   return ProvinceModel;
 }

@@ -22,6 +22,9 @@ export class WarehouseService {
         if (findWarehouse) throw new HttpException(409, 'Warehouse already exist');
 
         const createWarehouseData:Warehouse= await DB.Warehouses.create({...warehouseData});
+        await DB.Inventories.create({
+          stock:0,
+        })
         return createWarehouseData;
     }
 

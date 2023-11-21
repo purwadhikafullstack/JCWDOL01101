@@ -19,7 +19,7 @@ export class AddressService {
       }
 
     public async createAddress(addressData:Address):Promise<Address>{
-        const findAddress: Address=await DB.Addresses.findOne({where:{address:addressData.address}})
+        const findAddress: Address=await DB.Addresses.findOne({where:{addressDetail:addressData.addressDetail}})
         if (findAddress) throw new HttpException(409, 'Address already exist');
 
         const createAddressData:Address= await DB.Addresses.create({...addressData});

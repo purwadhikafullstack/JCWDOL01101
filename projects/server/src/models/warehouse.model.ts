@@ -5,6 +5,7 @@ export class WarehouseModel extends Model<Warehouse> implements Warehouse {
   public id: number;
   public name: string;
   public capacity: number;
+  public addressDetail:string;
   public addressId?:number;
 
   public readonly createdAt!: Date;
@@ -26,6 +27,10 @@ export default function (sequelize: Sequelize): typeof WarehouseModel {
       capacity: {
         allowNull: false,
         type: DataTypes.INTEGER,
+      },
+      addressDetail: {
+        allowNull: true,
+        type: DataTypes.STRING(45),
       },
       addressId: {
         allowNull: true,

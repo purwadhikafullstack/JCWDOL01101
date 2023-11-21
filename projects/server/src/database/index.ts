@@ -3,11 +3,12 @@ import { NODE_ENV, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE } from '@
 import { logger } from '@utils/logger';
 import WarehouseModel from '@/models/warehouse.model';
 import UserModel from '@/models/user.model';
-import provinceModel from '@/models/province.model';
-import addressModel from '@/models/address.model';
-import cityModel from '@/models/city.model';
+import ProvinceModel from '@/models/province.model';
+import AddressModel from '@/models/address.model';
+import CityModel from '@/models/city.model';
 import ProductModel from '@/models/product.model';
 import CategoryModel from '@/models/category.model';
+import InventoryModel  from '@/models/inventory.model';
 
 const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
   dialect: 'mysql',
@@ -36,11 +37,12 @@ sequelize.authenticate();
 export const DB = {
   User: UserModel(sequelize),
   Warehouses:WarehouseModel(sequelize),
-  Addresses:addressModel(sequelize),
-  Provinces:provinceModel(sequelize),
-  Cities:cityModel(sequelize),
+  Addresses:AddressModel(sequelize),
+  Provinces:ProvinceModel(sequelize),
+  Cities:CityModel(sequelize),
   Product: ProductModel(sequelize),
   Categories:CategoryModel(sequelize),
+  Inventories: InventoryModel(sequelize),
   sequelize,
   Sequelize,
 };

@@ -5,9 +5,10 @@ import { ProvinceModel } from './province.model';
 
 export class AddressModel extends Model<Address> implements Address {
   public id: number;
-  public address: string;
+  public addressDetail: string;
   public cityId:number;
   public provinceId:number;
+  
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -21,7 +22,7 @@ export default function (sequelize: Sequelize): typeof AddressModel {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
-      address: {
+      addressDetail: {
         allowNull: false,
         type: DataTypes.STRING(45),
       },
@@ -41,11 +42,11 @@ export default function (sequelize: Sequelize): typeof AddressModel {
   );
 
   AddressModel.hasOne(WarehouseModel, {
-    foreignKey: "address_id",
+    foreignKey: "addressId",
   });
 
   WarehouseModel.belongsTo(AddressModel, {
-    foreignKey: "address_id",
+    foreignKey: "addressId",
   });
 
   return AddressModel;

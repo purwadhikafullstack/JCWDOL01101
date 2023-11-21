@@ -20,58 +20,87 @@ import {
 } from "@/components/ui/dialog"
 import service from "@/service";
 import { useDeleteWarehouse, useEditWarehouse, useGetWarehouse, useWarehouseMutation } from "@/hooks/useWarehouse";
+import { response } from "express";
 
 const Warehouse = () => {
   type WarehouseType = {
     id: number;
     capacity: number;
     name: string;
-    address: string;
+    addressDetail: string;
     province: string;
     city: string;
     userId: number;
   };
 
+  type CityType = {
+    id: number;
+    city: string;
+    postal_code: number;
+    provinceId: number;
+  }
+
+  type ProvinceType = {
+    id: number;
+    province: string;
+  }
+
   const [warehouses, setWarehouses] = useState<WarehouseType[]>([]);
-  const [newWarehouse, setNewWarehouse] = useState({ name: '', capacity: 0 });
-  const [editWarehouse, setEditWarehouse] = useState({ id: 0, name: '', capacity: 0 });
+  const [newWarehouse, setNewWarehouse] = useState({ name: '', capacity: 0, addressDetail: '' });
+  const [editWarehouse, setEditWarehouse] = useState({ id: 0, name: '', capacity: 0, addressDetail: '' });
   const [isEditing, setIsEditing] = useState(false);
 
-  const {data} = useGetWarehouse()
-  const warehouseMutation = useWarehouseMutation()
+  const [cities, setCities] = useState<CityType[]>([]);
+  const [provinces, setProvinces] = useState<ProvinceType[]>([]);
+
+
+  // const {data} = useGetWarehouse()
+  // const warehouseMutation = useWarehouseMutation()
   // const warehouseEdit = ({warehouseId}: {warehouseId:number})=>{
   //   const edit = useEditWarehouse(warehouseId)
   // }
   // useEditWarehouse(warehouseId)
 
 
-  // useEffect(() => {
-  //   service.get("/warehouses/get")
-  //     .then(response => {
-  //       if (Array.isArray(response.data.data)) {
-  //         setWarehouses(response.data.data);
-  //       } else {
-  //         console.error("Data is not an array:", response.data.data);
-  //       }
-  //     })
-  //     .catch(error => {
-  //       console.error("There was an error!", error);
-  //     });
-  // }, []);
+  useEffect(() => {
+
+    service.get("/cities/get")
+      .then(response => {
+        setCities(response.data.data)
+      })
+
+    service.get("/provinces/get")
+      .then(response => {
+        setProvinces(response.data.data)
+      })
+
+    service.get("/warehouses/get")
+      .then(response => {
+        if (Array.isArray(response.data.data)) {
+          setWarehouses(response.data.data);
+        } else {
+          console.error("Data is not an array:", response.data.data);
+        }
+      })
+
+      .catch(error => {
+        console.error("There was an error!", error);
+      });
+  }, []);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewWarehouse({ ...newWarehouse, [event.target.name]: event.target.value });
   };
 
   const handleAddWarehouse = () => {
-    // service.post("http://localhost:8000/warehouses/post", newWarehouse)
-    //   .then(response => {
-    //     setWarehouses([...warehouses, response.data]);
-    //   })
-    //   .catch(error => {
-    //     console.error("There was an error!", error);
-    //   });
-    warehouseMutation.mutate(newWarehouse)
+    service.post("/warehouses/post", newWarehouse)
+      .then(response => {
+        setWarehouses([...warehouses, response.data]);
+      })
+      .catch(error => {
+        console.error("There was an error!", error);
+      });
+    // warehouseMutation.mutate(newWarehouse)
   };
 
   const handleEditWarehouse = (warehouse: WarehouseType) => {
@@ -80,7 +109,7 @@ const Warehouse = () => {
   };
 
   const handleUpdateWarehouse = () => {
-    service.put(`http://localhost:8000/warehouses/put/${editWarehouse.id}`, editWarehouse)
+    service.put(`/warehouses/put/${editWarehouse.id}`, editWarehouse)
       .then(response => {
         setWarehouses(warehouses.map(warehouse => warehouse.id === response.data.id ? response.data : warehouse));
         setIsEditing(false);
@@ -93,7 +122,7 @@ const Warehouse = () => {
   const handleDeleteWarehouse = (id: number) => {
     const confirmDelete = window.confirm("Are you sure you want to delete Warehouse?");
     if (confirmDelete) {
-      service.delete(`http://localhost:8000/warehouses/delete/${id}`)
+      service.delete(`/warehouses/delete/${id}`)
         .then(() => {
           setWarehouses(warehouses.filter(warehouse => warehouse.id !== id));
         })
@@ -123,6 +152,10 @@ const Warehouse = () => {
                 Capacity:
                 <input type="number" name="capacity" value={newWarehouse.capacity} onChange={(e) => setNewWarehouse({ ...newWarehouse, capacity: Number(e.target.value) })} required className="mt-1 p-2 border rounded" />
               </label>
+              <label className="block mb-2">
+                Address Detail:
+                <input type="text" name="addressDetail" value={newWarehouse.addressDetail} onChange={handleInputChange} required className="mt-1 p-2 border rounded" />
+              </label>
             </form>
             <div className="mt-4 flex justify-end">
               <DialogClose asChild>
@@ -151,12 +184,16 @@ const Warehouse = () => {
               Capacity:
               <input type="number" name="capacity" value={editWarehouse.capacity} onChange={(e) => setEditWarehouse({ ...editWarehouse, capacity: Number(e.target.value) })} />
             </label>
+            <label>
+              Address Detail:
+              <input type="text" name="addressDetail" value={editWarehouse.addressDetail} onChange={(e) => setEditWarehouse({ ...editWarehouse, addressDetail: e.target.value })} />
+            </label>
             <DialogFooter>
-            <Button onClick={handleUpdateWarehouse}>Update</Button>
-            <Button onClick={() => setIsEditing(false)}>Cancel</Button>
-          </DialogFooter>
+              <Button onClick={handleUpdateWarehouse}>Update</Button>
+              <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+            </DialogFooter>
           </DialogContent>
-          
+
         </Dialog>
       )}
       <div className="border rounded-md mt-8">
@@ -173,11 +210,11 @@ const Warehouse = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.map((warehouse) => (
+            {warehouses.map((warehouse) => (
               <TableRow key={warehouse.id}>
                 <TableCell className="font-medium">{warehouse.name}</TableCell>
                 <TableCell>{warehouse.capacity}</TableCell>
-                <TableCell>{warehouse.address}</TableCell>
+                <TableCell>{warehouse.addressDetail}</TableCell>
                 <TableCell>{warehouse.province}</TableCell>
                 <TableCell>{warehouse.city}</TableCell>
                 <TableCell>{warehouse.userId}</TableCell>
