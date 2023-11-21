@@ -21,6 +21,7 @@ import Warehouse from "./dashboard/content/Warehouse"
 import EditAdminForm from "./dashboard/components/EditAdminForm"
 import UserLayout from "./user/UserLayout"
 import Profile from "./user/content/Profile"
+import Address from "./user/content/Address"
 
 const router = createBrowserRouter([
   {
@@ -52,16 +53,20 @@ const router = createBrowserRouter([
         path: "/category",
         element: <CategoryPage />,
       },
-    ],
-  },
-  {
-    path: "/user",
-    element: <UserLayout />,
-    errorElement: <NotFound />,
-    children: [
       {
-        path: "profile",
-        element: <Profile />,
+        path: "/user",
+        element: <UserLayout />,
+        errorElement: <NotFound />,
+        children: [
+          {
+            path: "profile",
+            element: <Profile />,
+          },
+          {
+            path: "address",
+            element: <Address />,
+          },
+        ],
       },
     ],
   },
