@@ -38,7 +38,6 @@ const NewAdminFrom = () => {
       })
     }
   }, [adminMutation.status, toast, resError])
-  console.log(adminMutation)
   return (
     <DialogContent>
       <DialogHeader>

@@ -1,7 +1,12 @@
+import { useToast } from "@/components/ui/use-toast";
 import service from "@/service";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { useState } from "react";
 
 export interface Product {
   id?: number;
@@ -19,17 +24,21 @@ export interface Product {
 type ProductOptions = {
   page: number;
   s: string;
+  filter: string;
+  order: string;
 };
-export const useProducts = ({ page, s }: ProductOptions) => {
+export const useProducts = ({ page, s, filter, order }: ProductOptions) => {
   const { data, isLoading, isFetched } = useQuery<{
     products: Product[];
     totalPages: number;
   }>({
-    queryKey: ["products", page, s],
+    queryKey: ["products", page, s, filter, order],
     queryFn: async () => {
       const res = await service.get("/products", {
         params: {
           s,
+          filter,
+          order,
           page,
         },
         withCredentials: true,
@@ -41,14 +50,55 @@ export const useProducts = ({ page, s }: ProductOptions) => {
   return { data, isLoading, isFetched };
 };
 
+export const useHomeProducts = ({ s, f }: { s: string; f: string }) => {
+  const { data, isLoading, isFetched } = useQuery<Product[]>({
+    queryKey: ["home/products", s, f],
+    queryFn: async () => {
+      const res = await service.get("/home-products", {
+        params: {
+          s,
+          f,
+        },
+        withCredentials: true,
+      });
+      return res.data.data;
+    },
+  });
+
+  return { data, isLoading, isFetched };
+};
+
+export const useProductInfinite = ({ s, f }: { s: string; f: string }) => {
+  const fetchProjects = async (page: number) => {
+    const res = await service.get("/home-products", {
+      params: {
+        page,
+        s,
+        f,
+      },
+    });
+    return res.data.data;
+  };
+
+  const query = useInfiniteQuery({
+    queryKey: ["home/products", s, f],
+    queryFn: ({ pageParam }) => fetchProjects(pageParam),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, page) =>
+      lastPage.length === 12 ? page.length + 1 : undefined,
+  });
+
+  return query;
+};
+
 type ProductUrlOptions = {
-  key: string;
+  key: string[];
   url: string;
 };
 
 export const useProductUrl = ({ key, url }: ProductUrlOptions) => {
   const { data, isLoading, isFetched } = useQuery<Product[]>({
-    queryKey: [key],
+    queryKey: key,
     queryFn: async () => {
       const res = await service.get(url, {
         withCredentials: true,
@@ -76,46 +126,36 @@ export const useProduct = (productId: number) => {
   return { data, isLoading };
 };
 
-type Error = { message: string; status: number; state: boolean };
 export const useProductMutation = () => {
   const queryClient = useQueryClient();
-  const [error, setError] = useState<Error>({
-    message: "",
-    status: 0,
-    state: false,
-  });
+  const { toast } = useToast();
   const productMutation = useMutation({
     mutationFn: async (product: FormData) => {
-      try {
-        await service.post("/product", product, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        setError({
-          message: "",
-          status: 0,
-          state: false,
-        });
-      } catch (err) {
-        if (err instanceof AxiosError) {
-          setError({
-            message: err.response?.data.message as string,
-            status: Number(err.response?.status),
-            state: true,
-          });
-        }
-      }
+      await service.post("/product", product, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
     },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast({
+          title: "Opps!, Something went Wrong",
+          description: error.response?.data.message,
+          variant: "destructive",
+        });
+      }
+    },
   });
 
-  return { error, productMutation };
+  return { productMutation };
 };
 
 export const useEditProduct = (productId: number) => {
+  const { toast } = useToast();
   const queryClient = useQueryClient();
   const productMutation = useMutation({
     mutationFn: async (product: FormData) =>
@@ -126,6 +166,16 @@ export const useEditProduct = (productId: number) => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast({
+          title: "Opps!, Something went Wrong",
+          description: error.response?.data.message,
+          variant: "destructive",
+        });
+      }
     },
   });
 

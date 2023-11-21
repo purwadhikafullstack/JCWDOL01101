@@ -1,13 +1,17 @@
-import React from "react";
-import DashboardNavbar from "./components/Navbar";
-import { Outlet } from "react-router-dom";
-import DashboardSidebar from "./components/Sidebar";
-import { Toaster } from "@/components/ui/toaster";
+import React from "react"
+import DashboardNavbar from "./components/Navbar"
+import { Outlet } from "react-router-dom"
+import DashboardSidebar from "./components/Sidebar"
+import { Toaster } from "@/components/ui/toaster"
+import { useClerk, useUser } from "@clerk/clerk-react"
 
 const DashboardLayout = () => {
-  return (
+  const { user } = useUser()
+  const { redirectToHome } = useClerk()
+  return user?.publicMetadata.role !== "CUSTOMER" &&
+    user?.publicMetadata.status === "ACTIVE" ? (
     <>
-      <div className="flex">
+      <div className="flex relative">
         <aside className="fixed h-full top-0 left-0 w-[300px] border-r">
           <DashboardSidebar />
         </aside>
@@ -20,7 +24,9 @@ const DashboardLayout = () => {
         <Toaster />
       </div>
     </>
-  );
-};
+  ) : (
+    <>{redirectToHome()}</>
+  )
+}
 
-export default DashboardLayout;
+export default DashboardLayout

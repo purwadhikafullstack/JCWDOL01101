@@ -89,7 +89,7 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
           <Settings className="w-4 h-4 mr-2" /> <span>Setting</span>
         </Link>
         <div
-          className={`${user?.publicMetadata.role !== "CUSTOMER" && "hidden"}`}
+          className={`${user?.publicMetadata.role === "CUSTOMER" && "hidden"}`}
         >
           <Link
             to="/dashboard"

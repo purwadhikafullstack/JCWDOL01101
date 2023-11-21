@@ -10,3 +10,10 @@ export interface Product {
   description: string;
   status: string;
 }
+
+export interface GetFilterProduct {
+  page: number;
+  s: string;
+  filter: string;
+  order: string;
+}

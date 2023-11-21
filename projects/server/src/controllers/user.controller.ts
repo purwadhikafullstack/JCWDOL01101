@@ -1,5 +1,5 @@
 import { WEBHOOK_SECRET } from '@/config';
-import { User } from '@/interfaces/user.interface';
+import { GetFilterUser, User } from '@/interfaces/user.interface';
 import { UserService } from '@/services/user.service';
 import clerkClient, { WebhookEvent } from '@clerk/clerk-sdk-node';
 import { Request, Response, NextFunction } from 'express';
@@ -99,8 +99,8 @@ export class UserController {
   public manageAdmin = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = Number(req.params.userId);
-      const adminData = req.body;
-      const updatedAdmin = await this.user.updateAdmin(userId, adminData);
+      const data = req.body;
+      const updatedAdmin = await this.user.updateAdmin(userId, data);
       res.status(200).json({
         data: updatedAdmin,
         message: 'admin edited',
@@ -110,16 +110,48 @@ export class UserController {
     }
   };
 
-  public getUsers = async (req: Request, res: Response, next: NextFunction) => {
+  public deleteAdmin = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { page, s, r } = req.query;
-      const { users, totalPages } = await this.user.getAllUser({ page: Number(page), s: s as string, r: r as string });
+      const userId = Number(req.params.userId);
+      const deletedAdmin = await this.user.deleteAdmin(userId);
+      res.status(200).json({
+        data: deletedAdmin,
+        message: 'admin deleted',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public getUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.params.userId;
+      const user = await this.user.findUserById(Number(userId));
+      res.status(200).json({
+        data: user,
+        message: 'get user',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public getUsers = async (req: Request<{}, {}, {}, GetFilterUser>, res: Response, next: NextFunction) => {
+    try {
+      const { page, s, r, order, filter } = req.query;
+      const { users, totalPages } = await this.user.getAllUser({
+        page: Number(page),
+        s,
+        r,
+        order,
+        filter,
+      });
       res.status(200).json({
         data: {
           users,
           totalPages,
         },
-        message: 'get.users',
+        message: 'get users',
       });
     } catch (err) {
       next(err);

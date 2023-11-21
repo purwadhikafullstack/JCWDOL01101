@@ -10,7 +10,7 @@ export class AuthMiddleware {
     try {
       const userId = req.auth.userId;
       const user = await this.user.findUserByExternalId(userId);
-      console.log(user.role);
+      if (user.role !== 'CUSTOMER') next();
       next();
     } catch (error) {
       next(error);
@@ -21,8 +21,7 @@ export class AuthMiddleware {
     try {
       const userId = req.auth.userId;
       const user = await this.user.findUserByExternalId(userId);
-      console.log(user.role);
-      next();
+      if (user.role === 'ADMIN') next();
     } catch (error) {
       next(error);
     }

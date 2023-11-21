@@ -29,7 +29,7 @@ export default function (sequelize: Sequelize): typeof UserModel {
         allowNull: false,
         type: DataTypes.ENUM,
         values: ['CUSTOMER', 'ADMIN', 'WAREHOUSE'],
-        defaultValue: 'ACTIVE',
+        defaultValue: 'CUSTOMER',
       },
       username: {
         allowNull: true,

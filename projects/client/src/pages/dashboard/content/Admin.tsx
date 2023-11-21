@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Button, buttonVariants } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight, SearchIcon, Plus } from "lucide-react"
+import { SearchIcon, Plus } from "lucide-react"
 import {
   Table,
   TableBody,
@@ -16,11 +16,14 @@ import { useUsers } from "@/hooks/useUser"
 import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton"
 import { useDebounce } from "use-debounce"
 import { getDate } from "@/lib/utils"
+import TablePagination from "../components/TablePagination"
 import NewAdminFrom from "../components/NewAdminForm"
+import AdminAction from "../components/AdminAction"
+import ChangeOrderButton from "../components/ChangeOrderButton"
 
 const Admin = () => {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const currentPage = Number(searchParams.get("page")) || 1
+  const [searchParams, setSearchParams] = useSearchParams({ page: "1" })
+  const currentPage = Number(searchParams.get("page"))
   const [searchTerm, setSearchTerm] = useState("")
   const [debounceSearch] = useDebounce(searchTerm, 1000)
 
@@ -28,6 +31,8 @@ const Admin = () => {
     page: currentPage,
     s: debounceSearch,
     r: "WAREHOUSE",
+    filter: searchParams.get("filter") || "",
+    order: searchParams.get("order") || "",
   })
   return (
     <div className="flex flex-col p-2 w-full">
@@ -65,11 +70,25 @@ const Admin = () => {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[80px]">#</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead className="text-center">Status</TableHead>
-                <TableHead className="text-center">Role</TableHead>
-                <TableHead>Created At</TableHead>
-                <TableHead>Updated At</TableHead>
+                <TableHead>
+                  <ChangeOrderButton paramKey="username" name="Name" />
+                </TableHead>
+                <TableHead>
+                  <ChangeOrderButton paramKey="email" name="Email" />
+                </TableHead>
+                <TableHead className="text-center">
+                  <ChangeOrderButton paramKey="status" name="Status" />
+                </TableHead>
+                <TableHead className="text-center">
+                  <ChangeOrderButton paramKey="role" name="Role" />
+                </TableHead>
+                <TableHead className="text-center">
+                  <ChangeOrderButton paramKey="createdAt" name="Created At" />
+                </TableHead>
+                <TableHead className="text-center">
+                  <ChangeOrderButton paramKey="updatedAt" name="Updated At" />
+                </TableHead>
+                <TableHead className="text-center">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -81,14 +100,22 @@ const Admin = () => {
                       <TableCell className="capitalize font-medium">
                         {user.firstname ? user.firstname : user.username}
                       </TableCell>
+                      <TableCell className="font-medium">
+                        {user.email}
+                      </TableCell>
                       <TableCell className="text-center">
                         <Button>{user.status}</Button>
                       </TableCell>
                       <TableCell className="text-center">
                         <Button>{user.role}</Button>
                       </TableCell>
-                      <TableCell>{getDate(user.createdAt)}</TableCell>
-                      <TableCell>{getDate(user.updatedAt)}</TableCell>
+                      <TableCell className="text-center">
+                        {getDate(user.createdAt)}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {getDate(user.updatedAt)}
+                      </TableCell>
+                      <AdminAction user={user} />
                     </TableRow>
                   ))}
                 </>
@@ -104,37 +131,11 @@ const Admin = () => {
         )}
       </div>
       <div className="flex gap-2 items-center justify-end mt-4">
-        <div className="flex gap-2 items-center">
-          <p className="text-sm">
-            Page {currentPage} of {data?.totalPages || 0}
-          </p>
-          <Button
-            disabled={currentPage <= 1}
-            onClick={() => {
-              setSearchParams((params) => {
-                if (currentPage > 1) {
-                  params.set("page", (currentPage - 1).toString())
-                }
-                return params
-              })
-            }}
-            variant="outline"
-          >
-            <ChevronLeft />
-          </Button>
-          <Button
-            disabled={isFetched ? data?.users.length! !== 10 : false}
-            onClick={() => {
-              setSearchParams((params) => {
-                params.set("page", (currentPage + 1).toString())
-                return params
-              })
-            }}
-            variant="outline"
-          >
-            <ChevronRight />
-          </Button>
-        </div>
+        <TablePagination
+          currentPage={currentPage}
+          dataLength={data?.users.length!}
+          totalPages={data?.totalPages!}
+        />
       </div>
     </div>
   )

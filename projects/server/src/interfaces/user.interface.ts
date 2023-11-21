@@ -11,3 +11,11 @@ export interface User {
   imageUrl: string;
   status: string;
 }
+
+export interface GetFilterUser {
+  page: number;
+  s: string;
+  r: string;
+  order: string;
+  filter: string;
+}

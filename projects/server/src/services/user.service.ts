@@ -1,12 +1,10 @@
 import { DB } from '@/database';
 import { CreateUserDto } from '@/dtos/user.dto';
 import { HttpException } from '@/exceptions/HttpException';
-import { User } from '@/interfaces/user.interface';
+import { GetFilterUser, User } from '@/interfaces/user.interface';
 import { Service } from 'typedi';
 import { Op } from 'sequelize';
-// import { v4 as uuidv4 } from 'uuid';
 import clerkClient from '@clerk/clerk-sdk-node';
-import { CreateAdminDto } from '@/dtos/admin.dto';
 
 type UserOptions = {
   offset: number;
@@ -18,6 +16,17 @@ type UserOptions = {
     };
     role: string;
   };
+  order?: Array<[string, string]>;
+};
+
+type EditAdmin = {
+  role: string;
+  username: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  status: string;
+  password: string;
 };
 
 @Service()
@@ -29,17 +38,19 @@ export class UserService {
 
   public async createAdmin() {
     const random = Math.floor(Math.random() * 1000 + 1);
-    const adminUsername = `admin${random}`;
-    const admin = await clerkClient.users.createUser({
-      emailAddress: [`${adminUsername}@mail.com`],
-      username: adminUsername,
+    const admin = `admin${random}`;
+    const createAdmin = await clerkClient.users.createUser({
+      emailAddress: [`${admin}@gmail.com`],
+      username: admin,
+      firstName: 'admin',
+      lastName: String(random),
       password: `AdminPassword${random}`,
       publicMetadata: {
         role: 'WAREHOUSE',
         status: 'ACTIVE',
       },
     });
-    return admin;
+    return createAdmin;
   }
 
   public async updateUser(userId: number, userData: CreateUserDto): Promise<User> {
@@ -51,11 +62,22 @@ export class UserService {
     return updatedUser;
   }
 
-  public async updateAdmin(userId: number, adminData: CreateAdminDto) {
+  public async updateAdmin(userId: number, data: EditAdmin) {
     const findUser: User = await DB.User.findByPk(userId);
     if (!findUser) throw new HttpException(409, "User doesn't exist");
+    if (findUser.role === 'CUSTOMER') throw new HttpException(409, "User isn't an admin");
 
-    const updatedAdmin = await clerkClient.users.updateUser(findUser.externalId, adminData);
+    const updatedAdmin = await clerkClient.users.updateUser(findUser.externalId, {
+      emailAddress: [`${data.email}`],
+      username: data.username,
+      firstName: data.firstname,
+      lastName: data.lastname,
+      password: data.password,
+      publicMetadata: {
+        role: data.role,
+        status: data.status,
+      },
+    });
     return updatedAdmin;
   }
 
@@ -74,16 +96,19 @@ export class UserService {
     return findUser;
   }
 
-  // public async deleteAdmin(externalId: string, adminData: CreateAdminDto) {
-  //   const deletedUser = await clerkClient.users.updateUser(externalId, {
-  //     ...adminData,
-  //     publicMetadata: {
-  //       role: adminData.role,
-  //       status: 'DELETED',
-  //     },
-  //   });
-  //   return deletedUser;
-  // }
+  public async deleteAdmin(userId: number) {
+    const findUser: User = await DB.User.findByPk(userId);
+    if (!findUser) throw new HttpException(409, "User doesn't exist");
+    if (findUser.role === 'CUSTOMER') throw new HttpException(409, "Can't delete customer");
+
+    const deletedAdmin = await clerkClient.users.updateUser(findUser.externalId, {
+      publicMetadata: {
+        role: findUser.role,
+        status: 'DELETED',
+      },
+    });
+    return deletedAdmin;
+  }
 
   public async findUserById(userId: number): Promise<User> {
     const user = await DB.User.findOne({ where: { id: userId } });
@@ -95,19 +120,22 @@ export class UserService {
     return allUser;
   }
 
-  public async getAllUser({ page, s, r }: { page: number; s: string; r: string }): Promise<{ users: User[]; totalPages: number }> {
+  public async getAllUser({ page, s, r, order, filter }: GetFilterUser): Promise<{ users: User[]; totalPages: number }> {
     const PER_PAGE = 10;
     const offset = (page - 1) * PER_PAGE;
     const options: UserOptions = {
       offset,
       limit: PER_PAGE,
       where: {
-        status: 'ACTIVE',
+        status: {
+          [Op.not]: 'DELETED',
+        },
         role: r,
         ...(s && {
           [Op.or]: [{ firstName: { [Op.like]: `%${s}%` } }, { lastName: { [Op.like]: `%${s}%` } }],
         }),
       },
+      ...(!!order && { order: [[filter, order]] }),
     };
 
     const [findAllUser, totalCount] = await Promise.all([DB.User.findAll(options), DB.User.count(options)]);

@@ -2,6 +2,7 @@ import service from "@/service"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import { useState } from "react"
+import { useToast } from "@/components/ui/use-toast"
 
 export interface User {
   id?: number
@@ -21,22 +22,26 @@ export interface User {
 
 interface UserOptions {
   page: number
-  s?: string
-  r?: string
+  s: string
+  r: string
+  filter: string
+  order: string
 }
 
-export const useUsers = ({ page, s, r }: UserOptions) => {
+export const useUsers = ({ page, s, r, filter, order }: UserOptions) => {
   const { data, isLoading, isFetched } = useQuery<{
     users: User[]
     totalPages: number
   }>({
-    queryKey: ["users", page, r, s],
+    queryKey: ["users", page, r, s, filter, order],
     queryFn: async () => {
       const res = await service.get("/users", {
         params: {
+          s,
+          filter,
+          order,
           page,
           r,
-          s,
         },
         withCredentials: true,
       })
@@ -46,6 +51,21 @@ export const useUsers = ({ page, s, r }: UserOptions) => {
   })
 
   return { data, isLoading, isFetched }
+}
+
+export const useUser = (userId: number) => {
+  const { data, isLoading } = useQuery<User>({
+    queryKey: ["user", userId],
+    queryFn: async () => {
+      const res = await service.get(`/user/${userId}`, {
+        withCredentials: true,
+      })
+      return res.data.data
+    },
+    enabled: !!userId,
+  })
+
+  return { data, isLoading }
 }
 
 type Error = { message: string; status: number; state: boolean }
@@ -81,4 +101,50 @@ export const useAdminMutation = () => {
   })
 
   return { error, adminMutation }
+}
+
+type EditAdmin = {
+  role: string
+  username: string
+  firstname: string
+  lastname: string
+  email: string
+  status: string
+  password?: string
+}
+
+export const useEditAdmin = (userId: number) => {
+  const { toast } = useToast()
+  const queryClient = useQueryClient()
+  const adminMutation = useMutation({
+    mutationFn: async (admin: EditAdmin) =>
+      service.put(`/manage-admin/${userId}`, admin),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin"] })
+    },
+
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast({
+          title: "Opps!, Something went Wrong",
+          description: error.response?.data.message,
+          variant: "destructive",
+        })
+      }
+    },
+  })
+
+  return adminMutation
+}
+
+export const useDeleteAdmin = (userId: number) => {
+  const queryClient = useQueryClient()
+  const adminDeleteMutation = useMutation({
+    mutationFn: async () => service.delete(`/manage-admin/${userId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] })
+    },
+  })
+
+  return adminDeleteMutation
 }

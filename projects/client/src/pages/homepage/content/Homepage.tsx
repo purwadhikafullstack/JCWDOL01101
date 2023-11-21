@@ -1,15 +1,20 @@
 import React from "react"
 import MainCarousel from "@/components/MainCarousel"
 import { Link } from "react-router-dom"
-import CategoryCard from "./CategoryCard"
+import CategoryCard from "../components/CategoryCard"
 import ProductCard from "@/components/ProductCard"
 import TopProductCard from "@/components/TopProductCard"
 import { useProductUrl } from "@/hooks/useProduct"
+import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton"
 
 const Homepage = () => {
-  const { data: newestProducts } = useProductUrl({
-    key: "new-products",
+  const { data: newestProducts, isLoading } = useProductUrl({
+    key: ["new-products"],
     url: "/new-products",
+  })
+  const { data: highestSell, isLoading: highestSellLoading } = useProductUrl({
+    key: ["highest-sell"],
+    url: "/highest-sell",
   })
   return (
     <>
@@ -47,22 +52,34 @@ const Homepage = () => {
           </Link>
         </span>
         <section className="grid grid-cols-4 lg:grid-cols-6 gap-4">
-          <div className="col-span-4 lg:col-span-4 row-span-2">
-            <TopProductCard imageUrl="/placeholder/t-shirt-1.jpg" />
-          </div>
-          <div className="col-span-2 row-span-1">
-            <TopProductCard size="sm" imageUrl="/placeholder/black-shirt.jpg" />
-          </div>
-          <div className="col-span-2 row-span-1">
-            <TopProductCard size="sm" imageUrl="/placeholder/hoodie-1.jpg" />
-          </div>
-        </section>
-        <h3 className="font-bold text-xl my-2 mt-8">Try our newest products</h3>
-        <section className="grid grid-cols-2 md:grid-cols-4  lg:grid-cols-6 gap-2 gap-y-6">
-          {newestProducts?.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {highestSell?.map((product, i) => (
+            <div
+              key={product.id}
+              className={
+                i === 0
+                  ? `col-span-4 lg:col-span-4 row-span-2`
+                  : "col-span-2 row-span-1"
+              }
+            >
+              <TopProductCard
+                size={i !== 0 ? "sm" : ""}
+                name={product.name}
+                price={product.price}
+                image={product.image}
+              />
+            </div>
           ))}
         </section>
+        <h3 className="font-bold text-xl my-2 mt-8">Try our newest products</h3>
+        {isLoading ? (
+          <NewestProductSekeleton product={12} />
+        ) : (
+          <section className="grid grid-cols-2 md:grid-cols-4  lg:grid-cols-6 gap-2 gap-y-6">
+            {newestProducts?.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </section>
+        )}
       </div>
     </>
   )

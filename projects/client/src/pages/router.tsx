@@ -1,11 +1,11 @@
 import React from "react"
 import { createBrowserRouter } from "react-router-dom"
 
-import Homepage from "./homepage/Homepage"
+import Homepage from "./homepage/content/Homepage"
 import MainLayout from "./MainLayout"
 import Register from "./auth/Register"
 import Login from "./auth/Login"
-import CategoryPage from "./category/CategoryPage"
+import CategoryPage from "./homepage/content/Category"
 import SSOCallback from "./auth/SSOCallback"
 import Verification from "./auth/Verification"
 
@@ -18,6 +18,7 @@ import Product from "./dashboard/content/Product"
 import NewProductForm from "./dashboard/components/NewProductForm"
 import EditProductForm from "./dashboard/components/EditProductForm"
 import Warehouse from "./dashboard/content/Warehouse"
+import EditAdminForm from "./dashboard/components/EditAdminForm"
 
 const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: "manage-admin",
         element: <ManageAdmin />,
+      },
+      {
+        path: "manage-admin/:userId",
+        element: <EditAdminForm />,
       },
       {
         path: "product",
