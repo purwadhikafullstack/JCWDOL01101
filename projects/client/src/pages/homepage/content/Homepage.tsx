@@ -2,7 +2,7 @@ import React from "react";
 import MainCarousel from "@/components/MainCarousel";
 import { Link } from "react-router-dom";
 import CategoryCard from "../components/CategoryCard";
-import ProductCard from "@/components/ProductCard";
+import ProductCard from "@/pages/homepage/components/ProductCard";
 import TopProductCard from "@/components/TopProductCard";
 import { useProductUrl } from "@/hooks/useProduct";
 import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton";
@@ -12,7 +12,7 @@ const Homepage = () => {
     key: ["new-products"],
     url: "/new-products",
   });
-  // TODO: add skeletoon to highest sell product
+  // TODO: add skeleton to highest sell product
   const { data: highestSell, isLoading: highestSellLoading } = useProductUrl({
     key: ["highest-sell"],
     url: "/highest-sell",
@@ -62,12 +62,7 @@ const Homepage = () => {
                   : "col-span-2 row-span-1"
               }
             >
-              <TopProductCard
-                size={i !== 0 ? "sm" : ""}
-                name={product.name}
-                price={product.price}
-                image={product.image}
-              />
+              <TopProductCard size={i !== 0 ? "sm" : ""} product={product} />
             </div>
           ))}
         </section>

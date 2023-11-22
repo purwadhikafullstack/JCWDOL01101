@@ -1,13 +1,28 @@
-import { WEBHOOK_SECRET } from '@/config';
+import { CLERK_SECRET_KEY, WEBHOOK_SECRET } from '@/config';
 import { User } from '@/interfaces/user.interface';
+import { Role, Status } from '@/interfaces/';
 import { UserService } from '@/services/user.service';
-import clerkClient, { WebhookEvent } from '@clerk/clerk-sdk-node';
+import clerkClient, { WebhookEvent, WithAuthProp } from '@clerk/clerk-sdk-node';
 import { Request, Response, NextFunction } from 'express';
 import { Webhook } from 'svix';
 import Container from 'typedi';
+import axios from 'axios';
 
 export class UserController {
   user = Container.get(UserService);
+
+  public getUserByExternalId = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const externalId = req.params.externalId as string;
+      const findUser: User = await this.user.findUserByExternalId(externalId);
+      res.status(200).json({
+        data: findUser,
+        message: 'get.user',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
 
   public webhook = async (req: Request, res: Response, next: NextFunction) => {
     if (!WEBHOOK_SECRET) {
@@ -45,8 +60,8 @@ export class UserController {
           lastname: data.last_name,
           username: data.username,
           imageUrl: data.image_url,
-          role: (data.public_metadata.role as string) || 'CUSTOMER',
-          status: (data.public_metadata.role as string) || 'ACTIVE',
+          role: data.public_metadata.role as Role,
+          status: data.public_metadata.status as Status,
         });
         if (data.id) {
           await clerkClient.users.updateUser(evt.data.id, {
@@ -66,8 +81,8 @@ export class UserController {
           lastname: data.last_name,
           username: data.username,
           imageUrl: data.image_url,
-          role: data.public_metadata.role as string,
-          status: data.public_metadata.role as string,
+          role: data.public_metadata.role as Role,
+          status: data.public_metadata.status as Status,
         });
       } else if (eventType === 'user.deleted') {
         const data = evt.data;

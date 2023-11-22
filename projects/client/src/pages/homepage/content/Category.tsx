@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import CategoryDropdown from "../components/CategoryDropdown";
 import { Link, useSearchParams } from "react-router-dom";
 import { Product, useProductInfinite } from "@/hooks/useProduct";
-import ProductCard from "@/components/ProductCard";
+import ProductCard from "@/pages/homepage/components/ProductCard";
 import { useInView } from "react-intersection-observer";
 import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton";
 import Filter from "../components/Filter";

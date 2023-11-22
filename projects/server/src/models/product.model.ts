@@ -1,3 +1,4 @@
+import { Status } from '@/interfaces';
 import { Product } from '@/interfaces/product.interface';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
@@ -11,7 +12,7 @@ export class ProductModel extends Model<Product> implements Product {
   public image: string;
   public weight: number;
   public description: string;
-  public status: string;
+  public status: Status;
   public slug: string;
 }
 
@@ -50,7 +51,7 @@ export default function (sequelize: Sequelize): typeof ProductModel {
       },
       description: {
         allowNull: false,
-        type: DataTypes.STRING(256),
+        type: DataTypes.TEXT,
       },
       image: {
         allowNull: false,

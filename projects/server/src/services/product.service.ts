@@ -98,7 +98,9 @@ export class ProductService {
   }
 
   public async getProduct(slug: string): Promise<Product> {
-    const findProduct: Product = await DB.Product.findOne({ where: { slug } });
+    const findProduct: Product = await DB.Product.findOne({
+      where: { slug },
+    });
     if (!findProduct) throw new HttpException(409, "Product doesn't exist");
 
     return findProduct;

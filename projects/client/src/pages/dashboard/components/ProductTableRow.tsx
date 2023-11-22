@@ -25,8 +25,10 @@ import {
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
 import DeleteProduct from "./DeleteProduct";
+import { useUser } from "@clerk/clerk-react";
 
 const ProductTableRow = ({ products }: { products: Product[] }) => {
+  const { user } = useUser();
   return (
     <>
       {products.map((product, i) => (
@@ -49,49 +51,51 @@ const ProductTableRow = ({ products }: { products: Product[] }) => {
               alt={product.name}
             />
           </TableCell>
-          <TableCell className="text-center">
-            <Dialog>
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  className={buttonVariants({ variant: "ghost" })}
-                >
-                  <DotsHorizontalIcon />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <Link to={`/dashboard/product/${product.slug}`}>
-                    <DropdownMenuItem className="cursor-pointer">
-                      Edit
-                    </DropdownMenuItem>
-                  </Link>
-                  <DropdownMenuSeparator />
-                  <DialogTrigger className="w-full">
-                    <DropdownMenuItem className="w-full cursor-pointer">
-                      Delete
-                    </DropdownMenuItem>
-                  </DialogTrigger>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>
-                    Are you sure deleting {product.name} ?
-                  </DialogTitle>
-                  <DialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    your product and remove your data from our servers.
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter className="sm:justify-start">
-                  <DeleteProduct productId={Number(product.id)} />
-                  <DialogClose asChild>
-                    <Button type="button" variant="secondary">
-                      Cancel
-                    </Button>
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </TableCell>
+          {user?.publicMetadata.role === "ADMIN" && (
+            <TableCell className="text-center">
+              <Dialog>
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    className={buttonVariants({ variant: "ghost" })}
+                  >
+                    <DotsHorizontalIcon />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <Link to={`/dashboard/product/${product.slug}`}>
+                      <DropdownMenuItem className="cursor-pointer">
+                        Edit
+                      </DropdownMenuItem>
+                    </Link>
+                    <DropdownMenuSeparator />
+                    <DialogTrigger className="w-full">
+                      <DropdownMenuItem className="w-full cursor-pointer">
+                        Delete
+                      </DropdownMenuItem>
+                    </DialogTrigger>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>
+                      Are you sure deleting {product.name} ?
+                    </DialogTitle>
+                    <DialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your product and remove your data from our servers.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter className="sm:justify-start">
+                    <DeleteProduct productId={Number(product.id)} />
+                    <DialogClose asChild>
+                      <Button type="button" variant="secondary">
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </TableCell>
+          )}
         </TableRow>
       ))}
     </>

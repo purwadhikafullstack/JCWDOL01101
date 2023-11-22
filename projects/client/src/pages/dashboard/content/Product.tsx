@@ -18,8 +18,11 @@ import { useDebounce } from "use-debounce";
 import ProductTableRow from "../components/ProductTableRow";
 import TablePagination from "../components/TablePagination";
 import ChangeOrderButton from "../components/ChangeOrderButton";
+import { useUser } from "@clerk/clerk-react";
 
 const Product = () => {
+  const { user } = useUser();
+  const ROLE = user?.publicMetadata.role || "CUSTOMER";
   const [searchParams, setSearchParams] = useSearchParams({
     page: "1",
   });
@@ -35,15 +38,17 @@ const Product = () => {
   });
   return (
     <div className="flex flex-col p-2 w-full">
-      <Link
-        to="/dashboard/product/create"
-        className={buttonVariants({
-          variant: "default",
-          className: "self-end",
-        })}
-      >
-        <Plus className="w-4 h-4 mr-2" /> New Product
-      </Link>
+      {ROLE === "ADMIN" && (
+        <Link
+          to="/dashboard/product/create"
+          className={buttonVariants({
+            variant: "default",
+            className: "self-end",
+          })}
+        >
+          <Plus className="w-4 h-4 mr-2" /> New Product
+        </Link>
+      )}
       <div className="flex gap-2 items-center">
         <div className="relative w-[300px]">
           <SearchIcon className="absolute h-4 w-4 text-muted-foreground left-3 top-1/2 -translate-y-1/2" />
@@ -87,7 +92,9 @@ const Product = () => {
                 <TableHead>Category</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead className="text-center">Image</TableHead>
-                <TableHead className="text-center">Action</TableHead>
+                {ROLE === "ADMIN" && (
+                  <TableHead className="text-center">Action</TableHead>
+                )}
               </TableRow>
             </TableHeader>
             <TableBody>

@@ -8,7 +8,7 @@ export const useProductMutation = () => {
   const { toast } = useToast();
   const productMutation = useMutation({
     mutationFn: async (product: FormData) => {
-      await service.post("/product", product, {
+      await service.post("/products", product, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -36,7 +36,7 @@ export const useEditProduct = (slug: string) => {
   const queryClient = useQueryClient();
   const productMutation = useMutation({
     mutationFn: async (product: FormData) =>
-      service.put(`/product/${slug}`, product, {
+      service.put(`/products/${slug}`, product, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -62,7 +62,7 @@ export const useEditProduct = (slug: string) => {
 export const useDeleteProduct = (productId: number) => {
   const queryClient = useQueryClient();
   const productMutation = useMutation({
-    mutationFn: async () => service.put(`/product/delete/${productId}`),
+    mutationFn: async () => service.patch(`/products/delete/${productId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
     },

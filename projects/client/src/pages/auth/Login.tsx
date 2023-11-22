@@ -49,8 +49,14 @@ const Login = () => {
 
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
-        const { redirectTo } = locationState as RedicrectLocationState;
-        navigate(`${redirectTo.pathname}${redirectTo.search}`);
+        let url = "";
+        if (locationState) {
+          const { redirectTo } = locationState as RedicrectLocationState;
+          url = `${redirectTo.pathname}${redirectTo.search}`;
+        } else {
+          url = "/";
+        }
+        navigate(url);
       }
     } catch (err: any) {
       setError(err.errors[0].longMessage);
@@ -59,11 +65,17 @@ const Login = () => {
 
   const signInWithGoogle = () => {
     try {
-      const { redirectTo } = locationState as RedicrectLocationState;
+      let url = "";
+      if (locationState) {
+        const { redirectTo } = locationState as RedicrectLocationState;
+        url = `${redirectTo.pathname}${redirectTo.search}`;
+      } else {
+        url = "/";
+      }
       signIn?.authenticateWithRedirect({
         strategy: "oauth_google",
         redirectUrl: "/sso-callback",
-        redirectUrlComplete: `${redirectTo.pathname}${redirectTo.search}`,
+        redirectUrlComplete: url,
       });
     } catch (err: any) {
       setError(err.errors[0].longMessage);

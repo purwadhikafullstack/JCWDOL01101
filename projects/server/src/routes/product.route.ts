@@ -13,12 +13,12 @@ export class ProductRoute implements Routes {
 
   private initializeMiddleware() {
     this.router.get('/api/products', this.product.getProducts);
-    this.router.get('/api/home-products', this.product.getProductsHomepage);
-    this.router.get('/api/new-products', this.product.getNewestProducts);
-    this.router.get('/api/highest-sell', this.product.getHigestSellProducts);
-    this.router.get('/api/product/:slug', this.product.getProduct);
-    this.router.post('/api/product', upload.single('image'), this.product.createProduct);
-    this.router.put('/api/product/:slug', upload.single('image'), this.product.updateProduct);
-    this.router.put('/api/product/delete/:productId', this.product.deleteProduct);
+    this.router.get('/api/products/home', this.product.getProductsHomepage);
+    this.router.get('/api/products/new', this.product.getNewestProducts);
+    this.router.get('/api/products/highest-sell', this.product.getHigestSellProducts);
+    this.router.get('/api/products/:slug', this.product.getProduct);
+    this.router.post('/api/products', upload.single('image'), this.product.createProduct);
+    this.router.put('/api/products/:slug', upload.single('image'), this.product.updateProduct);
+    this.router.patch('/api/products/delete/:productId', this.product.deleteProduct);
   }
 }

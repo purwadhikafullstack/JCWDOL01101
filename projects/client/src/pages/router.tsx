@@ -18,6 +18,7 @@ import Warehouse from "./dashboard/content/Warehouse";
 import NewProductForm from "./dashboard/components/NewProductForm";
 import EditProductForm from "./dashboard/components/EditProductForm";
 import ProductDetail from "./homepage/content/ProductDetail";
+import Cart from "./homepage/content/Cart";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: "/product/:slug",
         element: <ProductDetail />,
+      },
+      {
+        path: "cart",
+        element: <Cart />,
       },
     ],
   },

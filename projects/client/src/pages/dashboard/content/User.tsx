@@ -1,6 +1,6 @@
-import React from "react"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
 const users = [
   {
@@ -27,7 +27,7 @@ const users = [
     created_at: 121212,
     updated_at: 121212,
   },
-]
+];
 
 const User = () => {
   return (
@@ -64,7 +64,7 @@ const User = () => {
         </Table>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default User
+export default User;

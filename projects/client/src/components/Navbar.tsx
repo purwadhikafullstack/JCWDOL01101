@@ -13,6 +13,7 @@ const Navbar = () => {
   const location = useLocation();
   const [isDim, setIsDim] = useState(false);
   const { isSignedIn } = useUser();
+
   return (
     <>
       <nav className="w-full sticky top-0 p-2 border-b bg-background z-50">
@@ -53,7 +54,7 @@ const Navbar = () => {
                   </Link>
                 </div>
                 <div className="block lg:hidden">
-                  <NavDropdown icon={<User2 />} setIsDim={setIsDim}>
+                  <NavDropdown path="/" icon={<User2 />} setIsDim={setIsDim}>
                     <div className="flex gap-2 items-center">
                       <Link
                         to="/login"

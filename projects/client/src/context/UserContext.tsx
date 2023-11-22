@@ -1,0 +1,43 @@
+import { Product } from "@/hooks/useProduct";
+import React from "react";
+
+export interface User {
+  id: number;
+  role: string;
+  externalId: string;
+  username: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  imageUrl: string;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+  userCart: Cart;
+}
+
+export interface Cart {
+  id: number;
+  userId: number;
+  createdAt: Date;
+  updatedAt: Date;
+  cartProducts: cartProducts[];
+}
+
+export interface cartProducts {
+  id: number;
+  cartId: number;
+  productId: number;
+  quantity: number;
+  product: Product;
+}
+
+interface UserContextProps {
+  user: User | undefined;
+}
+
+const UserContext = React.createContext<UserContextProps | undefined>(
+  undefined
+);
+
+export default UserContext;

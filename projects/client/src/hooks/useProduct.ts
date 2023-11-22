@@ -48,7 +48,7 @@ export const useHomeProducts = ({ s, f }: { s: string; f: string }) => {
   const { data, isLoading, isFetched } = useQuery<Product[]>({
     queryKey: ["home/products", s, f],
     queryFn: async () => {
-      const res = await service.get("/home-products", {
+      const res = await service.get("/products/home", {
         params: {
           s,
           f,
@@ -64,7 +64,7 @@ export const useHomeProducts = ({ s, f }: { s: string; f: string }) => {
 
 export const useProductInfinite = ({ s, f }: { s: string; f: string }) => {
   const fetchProjects = async (page: number) => {
-    const res = await service.get("/home-products", {
+    const res = await service.get("/products/home", {
       params: {
         page,
         s,
@@ -109,7 +109,7 @@ export const useProduct = (slug: string) => {
   const { data, isLoading } = useQuery<Product>({
     queryKey: ["product", slug],
     queryFn: async () => {
-      const res = await service.get(`/product/${slug}`, {
+      const res = await service.get(`/products/${slug}`, {
         withCredentials: true,
       });
       return res.data.data;
