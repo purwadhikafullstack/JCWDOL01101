@@ -1,6 +1,6 @@
 import React, { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { SearchIcon } from "lucide-react"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { SearchIcon, Plus } from "lucide-react"
 import {
   Table,
   TableBody,
@@ -9,17 +9,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import TablePagination from "../components/TablePagination"
-
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { useSearchParams } from "react-router-dom"
 import { useUsers } from "@/hooks/useUser"
 import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton"
 import { useDebounce } from "use-debounce"
 import { getDate } from "@/lib/utils"
+import TablePagination from "../components/TablePagination"
+import NewAdminFrom from "../components/NewAdminForm"
+import AdminAction from "../components/AdminAction"
 import ChangeOrderButton from "../components/ChangeOrderButton"
 
-const User = () => {
+const Admin = () => {
   const [searchParams, setSearchParams] = useSearchParams({ page: "1" })
   const currentPage = Number(searchParams.get("page"))
   const [searchTerm, setSearchTerm] = useState("")
@@ -28,12 +30,23 @@ const User = () => {
   const { data, isLoading, isFetched } = useUsers({
     page: currentPage,
     s: debounceSearch,
-    r: "CUSTOMER",
+    r: "WAREHOUSE",
     filter: searchParams.get("filter") || "",
     order: searchParams.get("order") || "",
   })
   return (
     <div className="flex flex-col p-2 w-full">
+      <Dialog>
+        <DialogTrigger
+          className={buttonVariants({
+            variant: "default",
+            className: "self-end",
+          })}
+        >
+          <Plus className="w-4 h-4 mr-2" /> New Admin
+        </DialogTrigger>
+        <NewAdminFrom />
+      </Dialog>
       <div className="relative w-[300px]">
         <SearchIcon className="absolute h-4 w-4 text-muted-foreground left-3 top-1/2 -translate-y-1/2" />
         <Input
@@ -58,7 +71,10 @@ const User = () => {
               <TableRow>
                 <TableHead className="w-[80px]">#</TableHead>
                 <TableHead className="text-center">
-                  <ChangeOrderButton paramKey="firstname" name="Name" />
+                  <ChangeOrderButton paramKey="username" name="Name" />
+                </TableHead>
+                <TableHead className="text-center">
+                  <ChangeOrderButton paramKey="email" name="Email" />
                 </TableHead>
                 <TableHead className="text-center">
                   <ChangeOrderButton paramKey="status" name="Status" />
@@ -72,6 +88,7 @@ const User = () => {
                 <TableHead className="text-center">
                   <ChangeOrderButton paramKey="updatedAt" name="Updated At" />
                 </TableHead>
+                <TableHead className="text-center">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -80,8 +97,11 @@ const User = () => {
                   {data?.users!.map((user, i) => (
                     <TableRow key={user.id}>
                       <TableCell className="w-[80px]">{i + 1}</TableCell>
+                      <TableCell className="capitalize font-medium text-center">
+                        {user.firstname ? user.firstname : user.username}
+                      </TableCell>
                       <TableCell className="font-medium text-center">
-                        {user.firstname} {user.lastname}
+                        {user.email}
                       </TableCell>
                       <TableCell className="text-center">
                         <Button>{user.status}</Button>
@@ -95,13 +115,14 @@ const User = () => {
                       <TableCell className="text-center">
                         {getDate(user.updatedAt)}
                       </TableCell>
+                      <AdminAction user={user} />
                     </TableRow>
                   ))}
                 </>
               ) : (
                 <TableRow>
                   <TableCell colSpan={10} className="text-center h-24">
-                    No Users
+                    No Admins
                   </TableCell>
                 </TableRow>
               )}
@@ -120,4 +141,4 @@ const User = () => {
   )
 }
 
-export default User
+export default Admin

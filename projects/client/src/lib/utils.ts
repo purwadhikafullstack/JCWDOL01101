@@ -24,3 +24,10 @@ export function convertToK(currencyValue: number): string {
     return currencyValue.toString();
   }
 }
+
+export function getDate(value: string) {
+  const splitter = value.split("T")
+  const date = splitter[0]
+
+  return date
+}

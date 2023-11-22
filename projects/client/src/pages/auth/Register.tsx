@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import React, { useState } from "react"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -7,61 +7,61 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
-import { Link, useNavigate } from "react-router-dom";
-import { useSignUp } from "@clerk/clerk-react";
-import { Loader } from "lucide-react";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import z from "zod"
+import { Link, useNavigate } from "react-router-dom"
+import { useSignUp } from "@clerk/clerk-react"
+import { Loader } from "lucide-react"
 
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
 
 const registerSchema = z.object({
   email: z.string().email().min(2),
-});
+})
 
 const Register = () => {
-  const navigate = useNavigate();
-  const { signUp } = useSignUp();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate()
+  const { signUp } = useSignUp()
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       email: "",
     },
-  });
+  })
 
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
       const register = await signUp?.create({
         emailAddress: values.email,
-      });
+      })
       const result = await register?.prepareVerification({
         strategy: "email_code",
-      });
+      })
       if (result) {
-        setIsLoading(false);
-        navigate(`/verify?uid=${result?.id}`);
+        setIsLoading(false)
+        navigate(`/verify?uid=${result?.id}`)
       }
     } catch (err: any) {
-      setIsLoading(false);
-      setError(err.errors[0].message);
+      setIsLoading(false)
+      setError(err.errors[0].message)
     }
-  };
+  }
 
   const signUpWithGoogle = () => {
     return signUp?.authenticateWithRedirect({
       strategy: "oauth_google",
       redirectUrl: "/sso-callback",
       redirectUrlComplete: "/",
-    });
-  };
+    })
+  }
 
   return (
     <main className="flex w-full h-screen">
@@ -180,7 +180,7 @@ const Register = () => {
         </div>
       </div>
     </main>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register

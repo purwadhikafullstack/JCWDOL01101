@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -7,68 +7,68 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useSignIn } from "@clerk/clerk-react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { Link, Location, useLocation, useNavigate } from "react-router-dom";
-import z from "zod";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { useSignIn } from "@clerk/clerk-react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import React, { useState } from "react"
+import { useForm } from "react-hook-form"
+import { Link, Location, useLocation, useNavigate } from "react-router-dom"
+import z from "zod"
 
 const loginSchema = z.object({
   email: z.string().email().min(2),
   password: z.string().min(2, {
     message: "Password must contain at least 8 character(s)",
   }),
-});
+})
 
 type RedicrectLocationState = {
-  redirectTo: Location;
-};
+  redirectTo: Location
+}
 const Login = () => {
-  const { state: locationState } = useLocation();
-  const navigate = useNavigate();
-  const { signIn, isLoaded, setActive } = useSignIn();
-  const [error, setError] = useState("");
+  const { state: locationState } = useLocation()
+  const navigate = useNavigate()
+  const { signIn, isLoaded, setActive } = useSignIn()
+  const [error, setError] = useState("")
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
-  });
+  })
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
-    if (!isLoaded) return;
+    if (!isLoaded) return
     try {
       const result = await signIn.create({
         identifier: values.email,
         password: values.password,
-      });
+      })
 
       if (result.status === "complete") {
-        await setActive({ session: result.createdSessionId });
-        const { redirectTo } = locationState as RedicrectLocationState;
-        navigate(`${redirectTo.pathname}${redirectTo.search}`);
+        await setActive({ session: result.createdSessionId })
+        const { redirectTo } = locationState as RedicrectLocationState
+        navigate(`${redirectTo.pathname}${redirectTo.search}`)
       }
     } catch (err: any) {
-      setError(err.errors[0].longMessage);
+      setError(err.errors[0].longMessage)
     }
-  };
+  }
 
   const signInWithGoogle = () => {
     try {
-      const { redirectTo } = locationState as RedicrectLocationState;
+      const { redirectTo } = locationState as RedicrectLocationState
       signIn?.authenticateWithRedirect({
         strategy: "oauth_google",
         redirectUrl: "/sso-callback",
         redirectUrlComplete: `${redirectTo.pathname}${redirectTo.search}`,
-      });
+      })
     } catch (err: any) {
-      setError(err.errors[0].longMessage);
+      setError(err.errors[0].longMessage)
     }
-  };
+  }
   return (
     <main className="flex justify-center items-center  mt-24">
       <div className="relative w-[350px] lg:w-[540px] mx-auto">
@@ -155,7 +155,7 @@ const Login = () => {
         </div>
       </div>
     </main>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

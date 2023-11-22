@@ -1,15 +1,15 @@
-import React from "react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import NavDropdown from "./NavDropdown";
-import { Link, useNavigate } from "react-router-dom";
-import { Button, buttonVariants } from "./ui/button";
+import React from "react"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { Separator } from "@/components/ui/separator"
+import NavDropdown from "./NavDropdown"
+import { Link, useNavigate } from "react-router-dom"
+import { Button, buttonVariants } from "./ui/button"
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ui/tooltip"
 
 import {
   Car,
@@ -18,13 +18,13 @@ import {
   ShoppingCartIcon,
   Verified,
   Wrench,
-} from "lucide-react";
-import { useClerk, useUser } from "@clerk/clerk-react";
+} from "lucide-react"
+import { useClerk, useUser } from "@clerk/clerk-react"
 
 const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
-  const navigate = useNavigate();
-  const { signOut } = useClerk();
-  const { user } = useUser();
+  const navigate = useNavigate()
+  const { signOut } = useClerk()
+  const { user } = useUser()
   return (
     <NavDropdown
       icon={<NavAvatar imageUrl={user?.imageUrl as string} />}
@@ -88,7 +88,9 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
         >
           <Settings className="w-4 h-4 mr-2" /> <span>Setting</span>
         </Link>
-        <div className={`${user?.publicMetadata.role !== "ADMIN" && "hidden"}`}>
+        <div
+          className={`${user?.publicMetadata.role === "CUSTOMER" && "hidden"}`}
+        >
           <Link
             to="/dashboard"
             className={buttonVariants({
@@ -108,8 +110,8 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
         </Button>
       </div>
     </NavDropdown>
-  );
-};
+  )
+}
 
 const NavAvatar = ({ imageUrl }: { imageUrl: string }) => {
   return (
@@ -119,7 +121,7 @@ const NavAvatar = ({ imageUrl }: { imageUrl: string }) => {
         <AvatarFallback>CN</AvatarFallback>
       </Avatar>
     </>
-  );
-};
+  )
+}
 
-export default NavProfile;
+export default NavProfile

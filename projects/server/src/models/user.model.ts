@@ -3,8 +3,8 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class UserModel extends Model<User> implements User {
   public id?: number;
-  public role: string;
   public externalId: string;
+  public role: string;
   public username: string;
   public firstname: string;
   public lastname: string;
@@ -21,13 +21,15 @@ export default function (sequelize: Sequelize): typeof UserModel {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
-      role: {
-        allowNull: false,
-        type: DataTypes.STRING(45),
-      },
       externalId: {
         allowNull: false,
         type: DataTypes.STRING(255),
+      },
+      role: {
+        allowNull: false,
+        type: DataTypes.ENUM,
+        values: ['CUSTOMER', 'ADMIN', 'WAREHOUSE'],
+        defaultValue: 'CUSTOMER',
       },
       username: {
         allowNull: true,
@@ -50,8 +52,9 @@ export default function (sequelize: Sequelize): typeof UserModel {
         type: DataTypes.STRING(255),
       },
       status: {
-        allowNull: false,
-        type: DataTypes.STRING(255),
+        type: DataTypes.ENUM,
+        values: ['ACTIVE', 'DEACTIVATED', 'DELETED'],
+        defaultValue: 'ACTIVE',
       },
     },
 

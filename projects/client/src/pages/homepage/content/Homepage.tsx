@@ -1,21 +1,21 @@
-import React from "react";
-import MainCarousel from "@/components/MainCarousel";
-import { Link } from "react-router-dom";
-import CategoryCard from "../components/CategoryCard";
-import ProductCard from "@/components/ProductCard";
-import TopProductCard from "@/components/TopProductCard";
-import { useProductUrl } from "@/hooks/useProduct";
-import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton";
+import React from "react"
+import MainCarousel from "@/components/MainCarousel"
+import { Link } from "react-router-dom"
+import CategoryCard from "../components/CategoryCard"
+import ProductCard from "@/components/ProductCard"
+import TopProductCard from "@/components/TopProductCard"
+import { useProductUrl } from "@/hooks/useProduct"
+import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton"
 
 const Homepage = () => {
   const { data: newestProducts, isLoading } = useProductUrl({
     key: ["new-products"],
     url: "/new-products",
-  });
+  })
   const { data: highestSell, isLoading: highestSellLoading } = useProductUrl({
     key: ["highest-sell"],
     url: "/highest-sell",
-  });
+  })
   return (
     <>
       <MainCarousel />
@@ -82,7 +82,7 @@ const Homepage = () => {
         )}
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Homepage;
+export default Homepage

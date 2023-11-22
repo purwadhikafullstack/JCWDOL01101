@@ -1,22 +1,24 @@
-import React from "react";
-import { createBrowserRouter } from "react-router-dom";
+import React from "react"
+import { createBrowserRouter } from "react-router-dom"
 
-import Homepage from "./homepage/content/Homepage";
-import MainLayout from "./MainLayout";
-import Register from "./auth/Register";
-import Login from "./auth/Login";
-import CategoryPage from "./homepage/content/Category";
-import SSOCallback from "./auth/SSOCallback";
-import Verification from "./auth/Verification";
+import Homepage from "./homepage/content/Homepage"
+import MainLayout from "./MainLayout"
+import Register from "./auth/Register"
+import Login from "./auth/Login"
+import CategoryPage from "./homepage/content/Category"
+import SSOCallback from "./auth/SSOCallback"
+import Verification from "./auth/Verification"
 
-import DashboardLayout from "./dashboard/DashboardLayout";
-import NotFound from "./dashboard/NotFound";
-import Product from "./dashboard/content/Product";
-import User from "./dashboard/content/User";
-import Dashboard from "./dashboard/content/Dashboard";
-import Warehouse from "./dashboard/content/Warehouse";
-import NewProductForm from "./dashboard/components/NewProductForm";
-import EditProductForm from "./dashboard/components/EditProductForm";
+import DashboardLayout from "./dashboard/DashboardLayout"
+import NotFound from "./dashboard/NotFound"
+import Dashboard from "./dashboard/content/Dashboard"
+import User from "./dashboard/content/User"
+import ManageAdmin from "./dashboard/content/Admin"
+import Product from "./dashboard/content/Product"
+import NewProductForm from "./dashboard/components/NewProductForm"
+import EditProductForm from "./dashboard/components/EditProductForm"
+import Warehouse from "./dashboard/content/Warehouse"
+import EditAdminForm from "./dashboard/components/EditAdminForm"
 
 const router = createBrowserRouter([
   {
@@ -68,6 +70,14 @@ const router = createBrowserRouter([
         element: <User />,
       },
       {
+        path: "manage-admin",
+        element: <ManageAdmin />,
+      },
+      {
+        path: "manage-admin/:userId",
+        element: <EditAdminForm />,
+      },
+      {
         path: "product",
         element: <Product />,
       },
@@ -81,6 +91,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-]);
+])
 
-export default router;
+export default router
