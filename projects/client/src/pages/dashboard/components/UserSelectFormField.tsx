@@ -15,6 +15,11 @@ import {
 import React from "react"
 import { useFormContext } from "react-hook-form"
 
+type UserSelectFormFieldProps = {
+  name: string
+  label: string
+}
+
 const role = [
   {
     value: "CUSTOMER",
@@ -41,25 +46,23 @@ const status = [
   },
 ]
 
-const UserSelectFormField = ({ select }: { select: number }) => {
+const UserSelectFormField = ({ name, label }: UserSelectFormFieldProps) => {
   const { control } = useFormContext()
   return (
     <FormField
       control={control}
-      name={select === 0 ? "role" : "status"}
+      name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{select === 0 ? "Role" : "Status"}</FormLabel>
+          <FormLabel>{label}</FormLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>
               <SelectTrigger>
-                <SelectValue
-                  placeholder={`Select ${select === 0 ? "Role" : "Status"}`}
-                />
+                <SelectValue placeholder={`Select ${label}`} />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {select === 0
+              {name === "role"
                 ? role.map(({ category, value }) => (
                     <SelectItem key={value} value={value.toString()}>
                       {category}

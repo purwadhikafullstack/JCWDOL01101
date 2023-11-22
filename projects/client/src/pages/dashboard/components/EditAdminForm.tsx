@@ -14,17 +14,18 @@ import { adminEditSchema } from "./AdminAction"
 import { useToast } from "@/components/ui/use-toast"
 
 let emptyValues = {
-  role: "CUSTOMER",
+  role: "",
   username: "",
   firstname: "",
   lastname: "",
   email: "",
   status: "ACTIVE",
+  password: undefined,
 }
 const EditAdminForm = () => {
   const { toast } = useToast()
-  const navigate = useNavigate()
   const { userId } = useParams()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!Number(userId)) {
@@ -92,8 +93,8 @@ const EditAdminForm = () => {
               />
             </div>
             <div className="w-full grid grid-cols-2 gap-2">
-              <UserSelectFormField select={0} />
-              <UserSelectFormField select={1} />
+              <UserSelectFormField name="role" label="Role" />
+              <UserSelectFormField name="status" label="Status" />
             </div>
             <div className="w-full flex justify-center gap-4 mt-10">
               <Button

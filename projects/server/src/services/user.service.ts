@@ -5,12 +5,16 @@ import { GetFilterUser, User } from '@/interfaces/user.interface';
 import { Service } from 'typedi';
 import { Op } from 'sequelize';
 import clerkClient from '@clerk/clerk-sdk-node';
+import { CLERK_SECRET_KEY } from '@/config';
+import axios from 'axios';
 
 type UserOptions = {
   offset: number;
   limit: number;
   where: {
-    status: string;
+    status: {
+      [Op.not]: string;
+    };
     name?: {
       [Op.like]: string;
     };
@@ -19,38 +23,11 @@ type UserOptions = {
   order?: Array<[string, string]>;
 };
 
-type EditAdmin = {
-  role: string;
-  username: string;
-  firstname: string;
-  lastname: string;
-  email: string;
-  status: string;
-  password: string;
-};
-
 @Service()
 export class UserService {
   public async createUser(userData: CreateUserDto): Promise<User> {
     const user: User = await DB.User.create({ ...userData });
     return user;
-  }
-
-  public async createAdmin() {
-    const random = Math.floor(Math.random() * 1000 + 1);
-    const admin = `admin${random}`;
-    const createAdmin = await clerkClient.users.createUser({
-      emailAddress: [`${admin}@gmail.com`],
-      username: admin,
-      firstName: 'admin',
-      lastName: String(random),
-      password: `AdminPassword${random}`,
-      publicMetadata: {
-        role: 'WAREHOUSE',
-        status: 'ACTIVE',
-      },
-    });
-    return createAdmin;
   }
 
   public async updateUser(userId: number, userData: CreateUserDto): Promise<User> {
@@ -62,52 +39,11 @@ export class UserService {
     return updatedUser;
   }
 
-  public async updateAdmin(userId: number, data: EditAdmin) {
-    const findUser: User = await DB.User.findByPk(userId);
-    if (!findUser) throw new HttpException(409, "User doesn't exist");
-    if (findUser.role === 'CUSTOMER') throw new HttpException(409, "User isn't an admin");
-
-    const updatedAdmin = await clerkClient.users.updateUser(findUser.externalId, {
-      emailAddress: [`${data.email}`],
-      username: data.username,
-      firstName: data.firstname,
-      lastName: data.lastname,
-      password: data.password,
-      publicMetadata: {
-        role: data.role,
-        status: data.status,
-      },
-    });
-    return updatedAdmin;
-  }
-
   public async findUserByExternalId(externalId: string): Promise<User> {
     const findUser: User = await DB.User.findOne({ where: { externalId } });
     if (!findUser) throw new HttpException(409, "User doesn't exist");
 
     return findUser;
-  }
-
-  public async deleteUser(userId: number): Promise<User> {
-    const findUser: User = await DB.User.findByPk(userId);
-    if (!findUser) throw new HttpException(409, "User doesn't exist");
-
-    await DB.User.update({ status: 'DELETED' }, { where: { id: userId } });
-    return findUser;
-  }
-
-  public async deleteAdmin(userId: number) {
-    const findUser: User = await DB.User.findByPk(userId);
-    if (!findUser) throw new HttpException(409, "User doesn't exist");
-    if (findUser.role === 'CUSTOMER') throw new HttpException(409, "Can't delete customer");
-
-    const deletedAdmin = await clerkClient.users.updateUser(findUser.externalId, {
-      publicMetadata: {
-        role: findUser.role,
-        status: 'DELETED',
-      },
-    });
-    return deletedAdmin;
   }
 
   public async findUserById(userId: number): Promise<User> {
@@ -118,6 +54,14 @@ export class UserService {
   public async findAllUser(): Promise<User[]> {
     const allUser = await DB.User.findAll({ where: { role: 'CUSTOMER' } });
     return allUser;
+  }
+
+  public async deleteUser(userId: number): Promise<User> {
+    const findUser: User = await DB.User.findByPk(userId);
+    if (!findUser) throw new HttpException(409, "User doesn't exist");
+
+    await DB.User.update({ status: 'DELETED' }, { where: { id: userId } });
+    return findUser;
   }
 
   public async getAllUser({ page, s, r, order, filter }: GetFilterUser): Promise<{ users: User[]; totalPages: number }> {
@@ -142,5 +86,47 @@ export class UserService {
     const totalPages = Math.ceil(totalCount / PER_PAGE);
 
     return { totalPages, users: findAllUser };
+  }
+
+  public async updateEmail(externalId: string, email: string) {
+    const oldEmailId = (await clerkClient.users.getUser(externalId)).primaryEmailAddressId;
+    const createEmail = await axios.post(
+      `https://api.clerk.com/v1/email_addresses/`,
+      {
+        user_id: externalId,
+        email_address: email as string,
+        verify: true,
+        primary: false,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${CLERK_SECRET_KEY}`,
+        },
+      },
+    );
+
+    const updateEmail = await axios.patch(
+      `https://api.clerk.com/v1/email_addresses/${createEmail.data.id}`,
+      {
+        verified: true,
+        primary: true,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${CLERK_SECRET_KEY}`,
+        },
+      },
+    );
+
+    await axios.delete(`https://api.clerk.com/v1/email_addresses/${oldEmailId}`, {
+      headers: {
+        Authorization: `Bearer ${CLERK_SECRET_KEY}`,
+      },
+    });
+
+    return {
+      emailId: updateEmail.data.id,
+      email: updateEmail.data.email_address,
+    };
   }
 }
