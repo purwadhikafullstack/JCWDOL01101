@@ -57,7 +57,7 @@ const User = () => {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[80px]">#</TableHead>
-                <TableHead>
+                <TableHead className="text-center">
                   <ChangeOrderButton paramKey="firstname" name="Name" />
                 </TableHead>
                 <TableHead className="text-center">
@@ -80,7 +80,7 @@ const User = () => {
                   {data?.users!.map((user, i) => (
                     <TableRow key={user.id}>
                       <TableCell className="w-[80px]">{i + 1}</TableCell>
-                      <TableCell className="font-medium">
+                      <TableCell className="font-medium text-center">
                         {user.firstname} {user.lastname}
                       </TableCell>
                       <TableCell className="text-center">

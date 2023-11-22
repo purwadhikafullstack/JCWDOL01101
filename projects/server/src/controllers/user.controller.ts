@@ -1,6 +1,7 @@
 import { WEBHOOK_SECRET } from '@/config';
 import { GetFilterUser, User } from '@/interfaces/user.interface';
 import { UserService } from '@/services/user.service';
+import { AdminService } from '@/services/admin.service';
 import clerkClient, { WebhookEvent } from '@clerk/clerk-sdk-node';
 import { Request, Response, NextFunction } from 'express';
 import { Webhook } from 'svix';
@@ -8,6 +9,7 @@ import Container from 'typedi';
 
 export class UserController {
   user = Container.get(UserService);
+  admin = Container.get(AdminService);
 
   public webhook = async (req: Request, res: Response, next: NextFunction) => {
     if (!WEBHOOK_SECRET) {
@@ -86,7 +88,7 @@ export class UserController {
 
   public createAdmin = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const user = await this.user.createAdmin();
+      const user = await this.admin.createAdmin();
       res.status(200).json({
         data: user,
         message: 'warehouse admin created',
@@ -100,7 +102,7 @@ export class UserController {
     try {
       const userId = Number(req.params.userId);
       const data = req.body;
-      const updatedAdmin = await this.user.updateAdmin(userId, data);
+      const updatedAdmin = await this.admin.updateAdmin(userId, data);
       res.status(200).json({
         data: updatedAdmin,
         message: 'admin edited',
@@ -113,7 +115,7 @@ export class UserController {
   public deleteAdmin = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = Number(req.params.userId);
-      const deletedAdmin = await this.user.deleteAdmin(userId);
+      const deletedAdmin = await this.admin.deleteAdmin(userId);
       res.status(200).json({
         data: deletedAdmin,
         message: 'admin deleted',

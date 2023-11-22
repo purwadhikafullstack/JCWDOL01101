@@ -9,7 +9,7 @@ const DashboardLayout = () => {
   const { user } = useUser()
   const { redirectToHome } = useClerk()
   return user?.publicMetadata.role !== "CUSTOMER" &&
-    user?.publicMetadata.status === "ACTIVE" ? (
+    user?.publicMetadata.status !== ("DEACTIVATED" || "DELETED") ? (
     <>
       <div className="flex relative">
         <aside className="fixed h-full top-0 left-0 w-[300px] border-r">

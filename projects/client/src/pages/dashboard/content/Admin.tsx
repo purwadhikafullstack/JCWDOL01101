@@ -70,10 +70,10 @@ const Admin = () => {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[80px]">#</TableHead>
-                <TableHead>
+                <TableHead className="text-center">
                   <ChangeOrderButton paramKey="username" name="Name" />
                 </TableHead>
-                <TableHead>
+                <TableHead className="text-center">
                   <ChangeOrderButton paramKey="email" name="Email" />
                 </TableHead>
                 <TableHead className="text-center">
@@ -97,10 +97,10 @@ const Admin = () => {
                   {data?.users!.map((user, i) => (
                     <TableRow key={user.id}>
                       <TableCell className="w-[80px]">{i + 1}</TableCell>
-                      <TableCell className="capitalize font-medium">
+                      <TableCell className="capitalize font-medium text-center">
                         {user.firstname ? user.firstname : user.username}
                       </TableCell>
-                      <TableCell className="font-medium">
+                      <TableCell className="font-medium text-center">
                         {user.email}
                       </TableCell>
                       <TableCell className="text-center">

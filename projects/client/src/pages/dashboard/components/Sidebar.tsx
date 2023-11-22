@@ -81,7 +81,11 @@ const DashboardSidebar = () => {
     <div className="p-4 flex h-full flex-col justify-between items-start">
       <div className="w-full">
         <div className="w-max mb-4">
-          <span className="font-bold text-3xl text-primary">当店 | Toten</span>
+          <Link to="/">
+            <span className="font-bold text-3xl text-primary">
+              当店 | Toten
+            </span>
+          </Link>
           <p className="text-base text-muted-foreground tracking-widest">
             Dashboard
           </p>
