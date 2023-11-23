@@ -85,7 +85,7 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
             to="/user/profile"
             className={buttonVariants({
               variant: "ghost",
-              className: "w-full",
+              className: "w-full lg:justify-start",
             })}
           >
             <Settings className="w-4 h-4 mr-2" /> <span>Setting</span>
@@ -97,15 +97,15 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
               to="/dashboard"
               className={buttonVariants({
                 variant: "ghost",
-                className: "w-full",
+                className: "w-full lg:justify-start",
               })}
             >
-              <Wrench className="w-4 h-4 mr-2" /> <span>Admin</span>
+              <Wrench className="w-4 h-4 mr-2" /> <span>Admin Dashboard</span>
             </Link>
           </div>
           <Button
             variant="ghost"
-            className="w-full"
+            className="w-full justify-start"
             onClick={() => signOut(() => navigate("/register"))}
           >
             <LogOut className="w-4 h-4 mr-2" /> Logout

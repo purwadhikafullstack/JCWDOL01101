@@ -1,3 +1,24 @@
+export interface User {
+  id?: number;
+  warehouseId?: number;
+  addressId?: number;
+  externalId: string;
+  role: string;
+  username: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  imageUrl: string;
+  status: string;
+}
+
+export interface GetFilterUser {
+  page: number;
+  s: string;
+  r: string;
+  order: string;
+  filter: string;
+}
 import { CartModel } from '@/models/cart.model';
 import { Role, Status } from '.';
 
@@ -15,20 +36,4 @@ export interface User {
   imageUrl: string;
   status: Status;
   userCart?: CartModel;
-}
-
-export interface GetFilterUser {
-  page: number;
-  s: string;
-  r: string;
-  order: string;
-  filter: string;
-}
-
-export interface GetFilterUser {
-  page: number;
-  s: string;
-  r: string;
-  order: string;
-  filter: string;
 }

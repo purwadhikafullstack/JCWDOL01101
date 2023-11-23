@@ -69,8 +69,7 @@ const CartItem = ({
         }
       );
     }
-  }, [deleteMutation.isSuccess, cancelDeleteMutation]);
-
+  }, [deleteMutation.isSuccess]);
   return (
     <>
       <div key={product.id} className="w-full space-y-2">

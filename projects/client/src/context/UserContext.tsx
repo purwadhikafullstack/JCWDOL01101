@@ -3,6 +3,8 @@ import React from "react";
 
 export interface User {
   id: number;
+  warehouseId?: number;
+  addressId?: number;
   role: string;
   externalId: string;
   username: string;

@@ -90,10 +90,10 @@ const User = () => {
                         <Button>{user.role}</Button>
                       </TableCell>
                       <TableCell className="text-center">
-                        {getDate(user.createdAt)}
+                        {getDate(user.createdAt.toLocaleString())}
                       </TableCell>
                       <TableCell className="text-center">
-                        {getDate(user.updatedAt)}
+                        {getDate(user.updatedAt.toLocaleString())}
                       </TableCell>
                     </TableRow>
                   ))}

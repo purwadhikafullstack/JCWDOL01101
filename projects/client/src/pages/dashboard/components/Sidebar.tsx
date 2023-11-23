@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard,
   LogOut,
@@ -13,10 +13,10 @@ import {
   PackageSearch,
   Settings,
   ArrowLeftFromLine,
-} from "lucide-react"
-import React from "react"
-import { useLocation, Link } from "react-router-dom"
-import { DashboardLink, DropdownLink } from "./SidebarLink"
+} from "lucide-react";
+import React from "react";
+import { useLocation, Link } from "react-router-dom";
+import { DashboardLink, DropdownLink } from "./SidebarLink";
 
 const links = [
   {
@@ -73,10 +73,10 @@ const links = [
     icon: <ClipboardList className="w-4 h-4" />,
     path: "/dashboard/report",
   },
-]
+];
 
 const DashboardSidebar = () => {
-  const location = useLocation()
+  const location = useLocation();
   return (
     <div className="p-4 flex h-full flex-col justify-between items-start">
       <div className="w-full">
@@ -85,11 +85,11 @@ const DashboardSidebar = () => {
             <span className="font-bold text-3xl text-primary">
               当店 | Toten
             </span>
-          </Link>
-          <p className="text-base text-muted-foreground tracking-widest">
-            Dashboard
-          </p>
-        </div>
+            <p className="text-base text-muted-foreground tracking-widest">
+              Dashboard
+            </p>
+          </div>
+        </Link>
         <ul className="my-4 space-y-1 w-full">
           {links.map((link) =>
             link.children ? (
@@ -140,7 +140,7 @@ const DashboardSidebar = () => {
         </Button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardSidebar
+export default DashboardSidebar;
