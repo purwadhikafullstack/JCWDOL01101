@@ -29,7 +29,7 @@ const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
 });
 
 sequelize.authenticate();
-
+// sequelize.sync({ force: true });
 export const DB = {
   User: UserModel(sequelize),
   Cart: CartModel(sequelize),

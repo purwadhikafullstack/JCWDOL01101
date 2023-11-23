@@ -16,3 +16,19 @@ export interface User {
   status: Status;
   userCart?: CartModel;
 }
+
+export interface GetFilterUser {
+  page: number;
+  s: string;
+  r: string;
+  order: string;
+  filter: string;
+}
+
+export interface GetFilterUser {
+  page: number;
+  s: string;
+  r: string;
+  order: string;
+  filter: string;
+}
