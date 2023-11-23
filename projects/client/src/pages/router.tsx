@@ -59,7 +59,7 @@ const router = createBrowserRouter([
         errorElement: <NotFound />,
         children: [
           {
-            path: "profile",
+            path: "",
             element: <Profile />,
           },
           {

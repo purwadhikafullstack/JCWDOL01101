@@ -80,7 +80,7 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
           </Link>
         </div>
         <Link
-          to="/user/profile"
+          to="/user"
           className={buttonVariants({
             variant: "ghost",
             className: "w-full",

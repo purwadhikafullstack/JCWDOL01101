@@ -1,17 +1,17 @@
 import React from "react"
-import { LayoutDashboard } from "lucide-react"
+import { Home, User } from "lucide-react"
 import { useLocation } from "react-router-dom"
 import { DashboardLink } from "@/pages/dashboard/components/SidebarLink"
 
 const links = [
   {
-    title: "User Details",
-    icon: <LayoutDashboard className="w-4 h-4" />,
+    title: "Profile",
+    icon: <User className="w-4 h-4" />,
     path: "/user",
   },
   {
     title: "Address",
-    icon: <LayoutDashboard className="w-4 h-4" />,
+    icon: <Home className="w-4 h-4" />,
     path: "/user/address",
   },
 ]
