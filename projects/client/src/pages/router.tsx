@@ -22,6 +22,7 @@ import EditAdminForm from "./dashboard/components/EditAdminForm";
 import ProductDetail from "./homepage/content/ProductDetail";
 import Cart from "./homepage/content/Cart";
 import ProtectedRoute from "./ProtectedRoute";
+import Checkout from "./homepage/content/Checkout";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +63,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Cart />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "checkout",
+        element: (
+          <ProtectedRoute>
+            <Checkout />
           </ProtectedRoute>
         ),
       },

@@ -19,15 +19,17 @@ import {
 } from "@/components/ui/dialog";
 import { formatToIDR } from "@/lib/utils";
 import { Loader } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 const Cart = () => {
+  const navigate = useNavigate();
   const userContext = useContext(UserContext);
   if (!userContext) {
     throw new Error("useUser must be used within a UserProvider");
   }
   const { user } = userContext;
   const { data: cart } = useCart(user?.id!);
-  const deleteAllCart = useDeleteAllCartProduct(cart?.cart.id!);
   const cartProducts = useMemo(() => cart?.cart.cartProducts || [], [cart]);
+  const deleteAllCart = useDeleteAllCartProduct(cart?.cart.id!);
   const totalQuantity = cart?.totalQuantity || 0;
   const totalPrice = cart?.totalPrice || 0;
 
@@ -182,7 +184,14 @@ const Cart = () => {
               <p className="text-lg">GrandTotal</p>
               <p>{formatToIDR(totalPrice.toString())}</p>
             </span>
-            <Button className="w-full">Buy({totalQuantity})</Button>
+            <Button
+              onClick={() => {
+                navigate("/checkout");
+              }}
+              className="w-full"
+            >
+              Buy({totalQuantity})
+            </Button>
           </div>
         </div>
       </div>
