@@ -37,7 +37,6 @@ const Filter = () => {
           </SelectContent>
         </Select>
       </div>
-      {/* TODO: refactor filter */}
       <div className="flex gap-2 items-center justify-between py-2">
         <p>Arrival</p>
         <Select

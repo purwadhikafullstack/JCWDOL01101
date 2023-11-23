@@ -10,9 +10,10 @@ import { Service } from 'typedi';
 
 @Service()
 export class CartService {
-  public async getCart(userId: number): Promise<Cart> {
-    const findCarts = await DB.Cart.findOne({
+  public async getCart(userId: number): Promise<{ cart: Cart; totalQuantity: number; totalPrice: number }> {
+    const findCart: Cart = await DB.Cart.findOne({
       where: { status: 'ACTIVE', userId },
+      attributes: ['id'],
       include: [
         {
           model: CartProductModel,
@@ -25,13 +26,35 @@ export class CartService {
             {
               model: ProductModel,
               as: 'product',
+              where: {
+                status: 'ACTIVE',
+              },
+              required: false,
             },
           ],
         },
       ],
     });
 
-    return findCarts;
+    if (!findCart) throw new HttpException(409, "Cart doesn't exist");
+    const totalQuantity = await CartProductModel.sum('quantity', {
+      where: {
+        cartId: findCart.id,
+        status: 'ACTIVE',
+      },
+    });
+
+    const totalPrice: { total: number }[] = await DB.sequelize.query(
+      `SELECT SUM(price * quantity) as total 
+  FROM cart_product 
+  WHERE cart_id = :cartId AND status = 'ACTIVE'`,
+      {
+        replacements: { cartId: findCart.id },
+        type: DB.Sequelize.QueryTypes.SELECT,
+      },
+    );
+
+    return { cart: findCart, totalQuantity, totalPrice: totalPrice[0].total || 0 };
   }
 
   public async getCartProduct(productId: number): Promise<CartProduct> {
@@ -106,13 +129,29 @@ export class CartService {
 
     return findCart;
   }
+  public async deleteAllCartProduct(cartId: number, keys: string[]) {
+    const findCartProduct = await DB.CartProduct.findAll({ where: { cartId, status: 'ACTIVE' } });
+    if (!findCartProduct) throw new HttpException(409, `Items doesn't exist`);
+
+    const productsIds = keys.map(Number);
+
+    await DB.CartProduct.update({ status: 'DELETED' }, { where: { cartId, productId: productsIds } });
+    return findCartProduct;
+  }
 
   public async deleteCartProduct(cartProductId: number) {
     const findCartProduct = await DB.CartProduct.findByPk(cartProductId);
     if (!findCartProduct) throw new HttpException(409, `Item doesn't exist`);
 
     await DB.CartProduct.update({ status: 'DELETED' }, { where: { id: cartProductId } });
+    return findCartProduct;
+  }
 
+  public async cancelDeleteCartProduct(cartProductId: number) {
+    const findCartProduct = await DB.CartProduct.findByPk(cartProductId);
+    if (!findCartProduct) throw new HttpException(409, `Item doesn't exist`);
+
+    await DB.CartProduct.update({ status: 'ACTIVE' }, { where: { id: cartProductId } });
     return findCartProduct;
   }
 }

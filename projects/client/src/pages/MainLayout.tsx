@@ -5,13 +5,14 @@ import UserContext from "@/context/UserContext";
 import { useCurrentUser } from "@/hooks/useUser";
 import { useUser } from "@clerk/clerk-react";
 import React from "react";
+import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router-dom";
 
 const MainLayout = () => {
-  const { user, isSignedIn } = useUser();
+  const { user, isSignedIn, isLoaded } = useUser();
   const { data: userBackend } = useCurrentUser({
     externalId: user?.id!,
-    enabled: !!isSignedIn,
+    enabled: isLoaded && !!isSignedIn,
   });
   return (
     <UserContext.Provider value={{ user: userBackend }}>
@@ -21,6 +22,7 @@ const MainLayout = () => {
         <Outlet />
       </main>
       <Footer />
+      <Toaster />
     </UserContext.Provider>
   );
 };

@@ -34,6 +34,10 @@ export class UserService {
             {
               model: CartProductModel,
               as: 'cartProducts',
+              where: {
+                status: 'ACTIVE',
+              },
+              required: false,
               include: [
                 {
                   model: ProductModel,

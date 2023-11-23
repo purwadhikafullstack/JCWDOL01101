@@ -30,12 +30,15 @@ const ProductDetail = () => {
           <span className="flex items-center gap-2">
             Sold <span className="text-muted-foreground">{product?.sold}+</span>
           </span>
-          <span className="flex items-center ">
+          <span className="flex items-center gap-2 leading-3">
             <Star className="w-4 h-4" />5
-            <span className="text-muted-foreground ml-2">(27 rating)</span>
+            <span className="text-muted-foreground ml-2 text-sm">
+              (27 rating)
+            </span>
           </span>
           <span className="flex items-center">
-            Discution <span className="text-muted-foreground">(2)</span>
+            Discution{" "}
+            <span className="text-muted-foreground text-sm ml-2">(2)</span>
           </span>
         </div>
         <p className="font-bold text-2xl">
@@ -67,8 +70,8 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
-      <div className="w-full h-32 shipment-variant">
-        <div className="">
+      <div className="w-full shipment-variant">
+        <div>
           <p className="font-bold">Shipment</p>
           <span className="flex gap-2 items-center">
             <MapPin className="w-4 h-4 text-muted-foreground" />
@@ -96,11 +99,7 @@ const ProductDetail = () => {
               See More
             </Link>
           </span>
-          <div className="grid grid-cols-6 gap-4">
-            {/* {products.map((product) => (
-              <Product key={product.name} product={product} />
-            ))} */}
-          </div>
+          <div className="grid grid-cols-6 gap-4"></div>
         </div>
       </div>
     </div>

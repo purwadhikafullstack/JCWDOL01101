@@ -10,7 +10,7 @@ export class CartContoller {
   public getCarts = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = Number(req.params.userId);
-      const findCarts: Cart = await this.cart.getCart(userId);
+      const findCarts = await this.cart.getCart(userId);
       res.status(200).json({
         data: findCarts,
         message: 'get.carts',
@@ -48,15 +48,43 @@ export class CartContoller {
     }
   };
 
+  public deleteAllCartProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const cartId = Number(req.params.cartId);
+      const keys = req.body.key;
+      const deletedCartProduct: CartProduct[] = await this.cart.deleteAllCartProduct(cartId, keys);
+
+      res.status(200).json({
+        data: deletedCartProduct,
+        message: 'delete.cartProducts',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   public deleteCartProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const cartProductId = Number(req.params.cartProductId);
-
       const deletedCartProduct: CartProduct = await this.cart.deleteCartProduct(cartProductId);
 
       res.status(200).json({
         data: deletedCartProduct,
         message: 'delete.cartProduct',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public cancelDeleteCartProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const cartProductId = Number(req.params.cartProductId);
+      const cancelDeletedCartProduct: CartProduct = await this.cart.cancelDeleteCartProduct(cartProductId);
+
+      res.status(200).json({
+        data: cancelDeletedCartProduct,
+        message: 'delete.cancel',
       });
     } catch (err) {
       next(err);
@@ -75,7 +103,6 @@ export class CartContoller {
         messasge: 'cart.created',
       });
     } catch (err) {
-      console.log(err);
       next(err);
     }
   };

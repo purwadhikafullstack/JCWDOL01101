@@ -19,6 +19,7 @@ import NewProductForm from "./dashboard/components/NewProductForm";
 import EditProductForm from "./dashboard/components/EditProductForm";
 import ProductDetail from "./homepage/content/ProductDetail";
 import Cart from "./homepage/content/Cart";
+import ProtectedRoute from "./ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -56,7 +57,11 @@ const router = createBrowserRouter([
       },
       {
         path: "cart",
-        element: <Cart />,
+        element: (
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
+        ),
       },
     ],
   },

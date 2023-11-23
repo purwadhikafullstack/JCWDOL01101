@@ -38,11 +38,11 @@ const CategoryPage = () => {
       <div className="product_banner">
         <img src="/carousel/ads.jpg" alt="ads banner" />
       </div>
-      <div className="w-full flex items-center justify-end my-4  product_filter ">
+      <div className="w-full flex items-center justify-end my-4   product_filter ">
         <div className="sticky top-[100px]"></div>
       </div>
       <div className="w-full lg:w-[280px] product_side">
-        <div className="sticky top-[100px]">
+        <div className="sticky pt-10 md:pt-0 lg:top-[100px]">
           <Link to="/category?s=all" className="uppercase tracking-wide">
             All Products
           </Link>

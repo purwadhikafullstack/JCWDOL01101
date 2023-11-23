@@ -12,7 +12,7 @@ import { User2 } from "lucide-react";
 const Navbar = () => {
   const location = useLocation();
   const [isDim, setIsDim] = useState(false);
-  const { isSignedIn } = useUser();
+  const { isSignedIn, isLoaded } = useUser();
 
   return (
     <>
@@ -23,12 +23,18 @@ const Navbar = () => {
               当店 <p className="hidden lg:block">| Toten</p>
             </span>
           </Link>
-          <Link to="/category" className={buttonVariants({ variant: "ghost" })}>
+          <Link
+            to="/category"
+            className={buttonVariants({
+              variant: "ghost",
+              className: "hidden md:block",
+            })}
+          >
             All Products
           </Link>
           <SearchInput />
           <div className="flex items-center">
-            {isSignedIn ? (
+            {isLoaded && isSignedIn ? (
               <>
                 <div className="items-center hidden lg:flex">
                   <NavCart setIsDim={setIsDim} />

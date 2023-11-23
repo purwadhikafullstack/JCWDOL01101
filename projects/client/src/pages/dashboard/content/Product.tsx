@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { buttonVariants } from "@/components/ui/button";
-import { Plus, SearchIcon, X } from "lucide-react";
+import { Plus, SearchIcon } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -27,7 +27,7 @@ const Product = () => {
     page: "1",
   });
   const currentPage = Number(searchParams.get("page"));
-  const [searchTerm, setSearchTerm] = useState("");
+  const searchTerm = searchParams.get("s") || "";
   const [debounceSearch] = useDebounce(searchTerm, 1000);
 
   const { data, isLoading, isFetched } = useProducts({
@@ -59,7 +59,6 @@ const Product = () => {
                 params.set("s", e.target.value);
                 return params;
               });
-              setSearchTerm(e.target.value);
             }}
             className=" w-full pl-10"
             placeholder="search product ..."

@@ -16,9 +16,8 @@ const NavCart = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
   const { user } = userContext;
   const { data: carts } = useCart(user?.id!);
 
-  const totalProducts: number = carts?.cartProducts
-    ? carts?.cartProducts.reduce((prev, cur) => prev + cur.quantity, 0)
-    : 0;
+  const totalProducts: number = carts?.totalQuantity || 0;
+  const cartProducts = carts?.cart ? carts.cart.cartProducts : [];
   return (
     <NavDropdown
       path="/cart"
@@ -38,7 +37,7 @@ const NavCart = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
             </div>
             <Separator className="mb-2" />
             <div className="space-y-2">
-              {carts?.cartProducts.map(({ product, quantity }, i) => (
+              {cartProducts.map(({ product, quantity }, i) => (
                 <div key={product.id} className="py-1">
                   <div className="w-full flex justify-between items-center">
                     <img
@@ -61,7 +60,7 @@ const NavCart = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
                       {formatToIDR(product.price.toString())}
                     </span>
                   </div>
-                  {i + 1 !== carts?.cartProducts.length && (
+                  {i + 1 !== cartProducts.length && (
                     <Separator className="mt-2" />
                   )}
                 </div>

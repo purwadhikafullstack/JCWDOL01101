@@ -16,6 +16,8 @@ export class CartRoute implements Routes {
     this.router.get(`${this.path}/:userId`, this.cart.getCarts);
     this.router.post(`${this.path}`, this.cart.createCart);
     this.router.put(`${this.path}/quantity`, this.cart.changeQuantity);
-    this.router.patch('/api/cart-product/:cartProductId', this.cart.deleteCartProduct);
+    this.router.patch('/api/cart/product/:cartProductId', this.cart.deleteCartProduct);
+    this.router.patch('/api/cart/products/:cartId', this.cart.deleteAllCartProduct);
+    this.router.patch('/api/cart/product/:cartProductId/cancel', this.cart.cancelDeleteCartProduct);
   }
 }

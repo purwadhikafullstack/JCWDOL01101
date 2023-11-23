@@ -5,6 +5,7 @@ import { useAddCart } from "@/hooks/useCartMutation";
 import UserContext from "@/context/UserContext";
 import { formatToIDR } from "@/lib/utils";
 import { useCartProduct } from "@/hooks/useCart";
+import { useNavigate } from "react-router-dom";
 
 const ProductCartOptions = ({
   price,
@@ -15,6 +16,7 @@ const ProductCartOptions = ({
   productId: number;
   totalStock: number;
 }) => {
+  const navigate = useNavigate();
   const userContext = useContext(UserContext);
   if (!userContext) {
     throw new Error("useUser must be used within a UserProvider");
@@ -23,10 +25,15 @@ const ProductCartOptions = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState("");
-  const { data: cartProduct } = useCartProduct(productId);
+  const isUserCartProducts =
+    (user && user?.userCart.cartProducts.length > 0) || false;
+  const { data: cartProduct } = useCartProduct(isUserCartProducts, productId);
   const cartMutation = useAddCart(cartProduct?.productId);
 
   const addToCart = () => {
+    if (!user) {
+      return navigate("/register");
+    }
     if (totalStock > 0) {
       cartMutation.mutate({
         quantity,
@@ -118,10 +125,10 @@ const ProductCartOptions = ({
             className="w-full select-none"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Keranjang
+            Cart
           </Button>
           <Button className="w-full" variant="outline">
-            Beli Langsung
+            Buy
           </Button>
         </div>
         <div className="mt-4">
