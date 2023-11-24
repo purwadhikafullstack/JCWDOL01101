@@ -41,18 +41,26 @@ export default function (sequelize: Sequelize): typeof CityModel {
 
     ProvinceModel.hasMany(CityModel, {
         foreignKey: "provinceId",
+        as:'provinceData'
     });
 
     CityModel.belongsTo(ProvinceModel, {
         foreignKey: "provinceId",
+        as:'provinceData'
+
     });
 
     CityModel.hasOne(AddressModel, {
         foreignKey: "cityId",
-    });
+        as: 'cityData' // define alias here
+      });
+      
 
     AddressModel.belongsTo(CityModel, {
         foreignKey: "cityId",
+        as: 'cityData' // define alias here
+        // as: 'city' // define alias here
+        
     });
 
     return CityModel;

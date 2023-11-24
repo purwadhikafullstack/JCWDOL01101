@@ -23,15 +23,15 @@ export default function (sequelize: Sequelize): typeof AddressModel {
         type: DataTypes.INTEGER,
       },
       addressDetail: {
-        allowNull: false,
+        allowNull: true,
         type: DataTypes.STRING(45),
       },
       provinceId: {
-        allowNull: false,
+        allowNull: true,
         type: DataTypes.INTEGER,
       },
       cityId: {
-        allowNull: false,
+        allowNull: true,
         type: DataTypes.INTEGER,
     },
     },
@@ -43,10 +43,12 @@ export default function (sequelize: Sequelize): typeof AddressModel {
 
   AddressModel.hasOne(WarehouseModel, {
     foreignKey: "addressId",
+    as: 'address' // add this line
   });
-
+  
   WarehouseModel.belongsTo(AddressModel, {
     foreignKey: "addressId",
+    as: 'address' // add this line
   });
 
   return AddressModel;

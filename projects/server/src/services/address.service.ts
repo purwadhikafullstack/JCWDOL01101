@@ -1,6 +1,5 @@
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
-// import { Warehouse } from '@/interfaces/warehouse.interface';
 import { Address } from '@/interfaces/address.interface';
 import { Service } from 'typedi';
 
@@ -16,11 +15,11 @@ export class AddressService {
         if (!findAddress) throw new HttpException(409, "Address doesn't exist");
     
         return findAddress;
-      }
+    }
 
     public async createAddress(addressData:Address):Promise<Address>{
-        const findAddress: Address=await DB.Addresses.findOne({where:{addressDetail:addressData.addressDetail}})
-        if (findAddress) throw new HttpException(409, 'Address already exist');
+        // const findAddress: Address=await DB.Addresses.findOne({where:{addressDetail:addressData.addressDetail}})
+        // if (findAddress) throw new HttpException(409, 'Address already exist');
 
         const createAddressData:Address= await DB.Addresses.create({...addressData});
         return createAddressData;
@@ -34,15 +33,15 @@ export class AddressService {
         await DB.Addresses.update({ ...addressData}, { where: { id: addressId } });
         const updateAddress: Address = await DB.Addresses.findByPk(addressId);
         return updateAddress;
-      }
+    }
     
-      public async deleteAddress(addressId: number): Promise<Address> {
-        const findAddress: Address = await DB.Addresses.findByPk(addressId);
-        if (!findAddress) throw new HttpException(409, "Address doesn't exist");
+    public async deleteAddress(addressId: number): Promise<Address> {
+      const findAddress: Address = await DB.Addresses.findByPk(addressId);
+      if (!findAddress) throw new HttpException(409, "Address doesn't exist");
     
-        await DB.Addresses.destroy({ where: { id: addressId } });
+      await DB.Addresses.destroy({ where: { id: addressId } });
     
-        return findAddress;
-      }
+      return findAddress;
+    }
 
 }

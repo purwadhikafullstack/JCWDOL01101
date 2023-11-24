@@ -6,7 +6,24 @@ import { Service } from 'typedi';
 @Service()
 export class WarehouseService {
     public async findAllWarehouse():Promise<Warehouse[]> {
-        const allWarehouse: Warehouse[] = await DB.Warehouses.findAll();
+      const allWarehouse: Warehouse[] = await DB.Warehouses.findAll({
+        include: [{
+          model: DB.Addresses,
+          as: 'address',
+          attributes: ['addressDetail'],
+          include: [{
+            model: DB.Cities,
+            as: 'cityData',
+            attributes: ['city'],
+            include: [{
+              model: DB.Provinces,
+              as: 'provinceData',
+              attributes: ['province']
+            }]
+          }]
+        }]
+      });
+      
         return allWarehouse;
     }
 

@@ -4,18 +4,6 @@ import { NextFunction, Request, Response } from "express";
 import Container from "typedi";
 
 export class WarehouseController {
-  // public getWarehouseAddress = async (req: Request, res: Response, next: NextFunction) => {
-  //   try {
-  //     const warehouseId = Number(req.params.id);
-  //     const findOneWarehouseData: Warehouse = await this.warehouse.findWarehouseById(warehouseId);
-  //     const warehouseAddress = findOneWarehouseData.addressId;
-
-  //     res.status(200).json({ data: warehouseAddress, message: 'find Warehouse Address' });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
-
   public warehouse = Container.get(WarehouseService);
 
   public getWarehouse = async (req: Request, res: Response, next: NextFunction) => {

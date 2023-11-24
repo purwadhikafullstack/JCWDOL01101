@@ -4,6 +4,5 @@ export interface Warehouse{
     addressId?:number;
     userId?:number;
     name:string;
-    addressDetail:string;
     capacity:number;
 }

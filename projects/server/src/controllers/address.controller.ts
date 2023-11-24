@@ -1,5 +1,3 @@
-// import { Warehouse } from "@/interfaces/warehouse.interface";
-// import { WarehouseService } from "@/services/warehouse.service";
 import { Address } from "@/interfaces/address.interface";
 import { AddressService } from "@/services/address.service";
 import { NextFunction, Request, Response } from "express";
