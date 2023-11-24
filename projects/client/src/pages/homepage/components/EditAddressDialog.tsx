@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/custom-dialog";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, LocateFixed, X } from "lucide-react";
+import { ArrowLeft, Loader2, LocateFixed, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,19 +24,9 @@ import z from "zod";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import toast from "react-hot-toast";
-import { useGetLocationOnGeo } from "@/hooks/useAddress";
-import { usePostAddress } from "@/hooks/useAddressMutation";
-
-export const addressSchema = z.object({
-  recepient: z.string().min(4, "required").max(50),
-  phone: z.string().min(9, "required").max(15),
-  formatPhone: z.string().min(9, "required").max(15),
-  label: z.string().min(3, "required").max(30),
-  city: z.string().min(3, "required"),
-  address: z.string().min(3, "required"),
-  notes: z.string().optional(),
-  isMain: z.boolean().default(false),
-});
+import { useAddressById, useGetLocationOnGeo } from "@/hooks/useAddress";
+import { usePutAddress } from "@/hooks/useAddressMutation";
+import { addressSchema } from "./AddNewAddressDialog";
 
 const emptyValues = {
   recepient: "",
@@ -52,25 +42,39 @@ type Coordinates = {
   latitude: number;
   langitude: number;
 };
-const AddNewAddressDialog = ({
-  name,
+const EditAddressDialog = ({
   userId,
+  addressId,
   handleToggleDialog,
 }: {
+  addressId: number | null;
   userId: number;
-  name: string;
   handleToggleDialog: (main?: boolean, add?: boolean, edit?: boolean) => void;
 }) => {
   const [location, setLocation] = useState<Coordinates | null>(null);
-  const [tos, setTos] = useState(false);
   const { data: currentLocation, isLoading } = useGetLocationOnGeo(location);
-  const addressMutation = usePostAddress();
+  const { data: currentAddress } = useAddressById(addressId!);
   const cityInputRef = useRef<HTMLDivElement | null>(null);
   const [showCurrentLocBtn, setShowCurrentLocBtn] = useState(false);
+  const updateAddress = usePutAddress(addressId!);
+
   const form = useForm<z.infer<typeof addressSchema>>({
     resolver: zodResolver(addressSchema),
     defaultValues: emptyValues,
   });
+
+  useEffect(() => {
+    if (currentAddress) {
+      form.setValue("recepient", currentAddress.recepient);
+      form.setValue("phone", currentAddress.phone);
+      form.setValue("formatPhone", currentAddress.phone);
+      form.setValue("label", currentAddress.label);
+      form.setValue("city", currentAddress.city);
+      form.setValue("address", currentAddress.address);
+      form.setValue("notes", currentAddress.notes);
+      form.setValue("isMain", currentAddress.isMain);
+    }
+  }, [currentAddress]);
 
   useEffect(() => {
     if (currentLocation) {
@@ -83,14 +87,14 @@ const AddNewAddressDialog = ({
   }, [currentLocation]);
 
   const onSubmit = (values: z.infer<typeof addressSchema>) => {
-    addressMutation.mutate({ userId, ...values });
+    updateAddress.mutate({ userId, ...values });
   };
   useEffect(() => {
-    if (addressMutation.isSuccess) {
+    if (updateAddress.isSuccess) {
       form.reset(emptyValues);
       handleToggleDialog();
     }
-  }, [addressMutation.isSuccess]);
+  }, [updateAddress.isSuccess]);
 
   const formatPhoneNumber = (value: string) => {
     const numericValue = value.replace(/\D/g, "");
@@ -140,7 +144,17 @@ const AddNewAddressDialog = ({
     <DialogContent className="sm:max-w-[712px]">
       <DialogClose
         onClick={() => {
-          handleToggleDialog(true, false);
+          handleToggleDialog(true);
+        }}
+        className="absolute left-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        <span className="sr-only">Back</span>
+      </DialogClose>
+
+      <DialogClose
+        onClick={() => {
+          handleToggleDialog(true);
         }}
         className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
       >
@@ -148,13 +162,12 @@ const AddNewAddressDialog = ({
         <span className="sr-only">Close</span>
       </DialogClose>
       <DialogHeader>
-        <DialogTitle className="text-center text-3xl">Add Address</DialogTitle>
+        <DialogTitle className="text-center text-3xl">
+          Modify Your Address
+        </DialogTitle>
       </DialogHeader>
       <Separator />
       <div className="w-full max-h-[500px] overflow-y-auto pb-10 p-4">
-        <h3 className="font-bold text-lg mb-10">
-          Complete the detailed address
-        </h3>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
@@ -285,27 +298,15 @@ const AddNewAddressDialog = ({
                 </FormItem>
               )}
             />
-            <div className="flex items-center gap-2 text-xs">
-              <Checkbox
-                checked={tos}
-                onCheckedChange={(state) => setTos(!!state)}
-              />
-              <label>
-                I agree to the <b>Terms & Conditions</b> and{" "}
-                <b>Privacy Policy</b>
-                address settings in Toten.
-              </label>
-            </div>
             <div className="flex w-full justify-center">
               <Button
-                disabled={!tos}
                 type="submit"
                 className="w-[60%] text-lg font-bold lg:py-6"
               >
-                {addressMutation.isPending && (
+                {updateAddress.isPending && (
                   <Loader2 className="animate-spin w-4 h-4 mr-2" />
                 )}
-                Submit
+                Modify
               </Button>
             </div>
           </form>
@@ -315,4 +316,4 @@ const AddNewAddressDialog = ({
   );
 };
 
-export default AddNewAddressDialog;
+export default EditAddressDialog;

@@ -33,6 +33,11 @@ export class AddressService {
     return findAddress;
   }
 
+  public async getAddressbyId(addressId: number): Promise<Address> {
+    const findAddress = await DB.Address.findOne({ where: { deletedAt: null, id: addressId } });
+    return findAddress;
+  }
+
   public async getActiveAddress(): Promise<Address> {
     const findAddress = await DB.Address.findOne({ where: { deletedAt: null, isActive: true } });
 
@@ -61,11 +66,43 @@ export class AddressService {
       await transaction.commit();
       return newAddress;
     } catch (err) {
-      console.log(err);
       await transaction.rollback();
       throw new HttpException(500, 'Something went wrong');
     }
   }
+
+  public async updateAddress(addressId: number, addressData: AddressDto): Promise<Address> {
+    const transaction = await DB.sequelize.transaction();
+    try {
+      const findAddress = await DB.Address.findOne({ where: { deletedAt: null, id: addressId, userId: addressData.userId } });
+      if (!findAddress) throw new HttpException(409, "Address doesn't exist");
+
+      await DB.Address.update({ ...addressData }, { where: { id: addressId } });
+
+      if (addressData.isMain) {
+        await DB.Address.update(
+          {
+            isMain: false,
+          },
+          { where: {}, transaction },
+        );
+
+        await DB.Address.update(
+          {
+            isMain: true,
+          },
+          { where: { id: addressId }, transaction },
+        );
+      }
+      await transaction.commit();
+      const updatedAddress = await DB.Address.findByPk(addressId);
+      return updatedAddress;
+    } catch (err) {
+      await transaction.rollback();
+      throw new HttpException(500, 'Something went wrong');
+    }
+  }
+
   public async toggleAddress(addressId: number, field: string): Promise<Address> {
     const transaction = await DB.sequelize.transaction();
     try {

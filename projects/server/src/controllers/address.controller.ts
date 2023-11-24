@@ -34,6 +34,28 @@ export class AdressController {
       next(err);
     }
   };
+  public checkActiveParam = async (req: Request, res: Response, next: NextFunction) => {
+    const addressId = req.params.addressId;
+    if (addressId === 'active') {
+      next('route');
+    } else {
+      next();
+    }
+  };
+
+  public getAddressById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const addressId = Number(req.params.addressId);
+      const findAddress: Address = await this.address.getAddressbyId(addressId);
+
+      res.status(200).json({
+        message: 'get.getAddress',
+        data: findAddress,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
 
   public getActiveAddress = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -56,6 +78,21 @@ export class AdressController {
       res.status(200).json({
         message: 'post.address',
         data: createdAddress,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public updateAddress = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const addressId = Number(req.params.addressId);
+      const addressData: AddressDto = req.body;
+      const updatedAddress: Address = await this.address.updateAddress(addressId, { ...addressData });
+
+      res.status(200).json({
+        message: 'put.address',
+        data: updatedAddress,
       });
     } catch (err) {
       next(err);

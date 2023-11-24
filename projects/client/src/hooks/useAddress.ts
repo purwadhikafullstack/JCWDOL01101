@@ -63,6 +63,19 @@ export const useAddress = () => {
   return query;
 };
 
+export const useAddressById = (addressId: number) => {
+  const query = useQuery<Address>({
+    queryKey: ["address", addressId],
+    queryFn: async () => {
+      const res = await service.get(`/address/${addressId}`);
+      return res.data.data;
+    },
+    enabled: !!addressId,
+  });
+
+  return query;
+};
+
 export const useActiveAddress = () => {
   const query = useQuery<Address>({
     queryKey: ["active-address"],

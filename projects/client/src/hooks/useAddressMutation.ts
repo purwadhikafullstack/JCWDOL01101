@@ -26,6 +26,20 @@ export const usePostAddress = () => {
   return addressMutation;
 };
 
+export const usePutAddress = (addressId: number) => {
+  const queryClient = useQueryClient();
+  const addressMutation = useMutation({
+    mutationFn: async (addressData: AddressData) => {
+      return await service.put(`/address/${addressId}`, addressData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["address"] });
+    },
+  });
+
+  return addressMutation;
+};
+
 export const useToggleAddress = (addressId: number, field: string) => {
   const queryClient = useQueryClient();
   const addressMutation = useMutation({

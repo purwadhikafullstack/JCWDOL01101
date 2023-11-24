@@ -5,7 +5,7 @@ import UserContext from "@/context/UserContext";
 import { useCart } from "@/hooks/useCart";
 import { formatToIDR } from "@/lib/utils";
 import { baseURL } from "@/service";
-import { ArrowLeft, Check, Verified, X } from "lucide-react";
+import { Verified } from "lucide-react";
 import React, { useContext, useMemo, useState } from "react";
 import {
   Select,
@@ -29,6 +29,13 @@ import { Input } from "@/components/ui/input";
 import ChekoutAddress from "../components/ChekoutAddress";
 import AddNewAddressDialog from "../components/AddNewAddressDialog";
 import { useActiveAddress, useAddress } from "@/hooks/useAddress";
+import EditAddressDialog from "../components/EditAddressDialog";
+
+export type Dialog = {
+  main: boolean;
+  add: boolean;
+  edit: boolean;
+};
 
 const Checkout = () => {
   const userContext = useContext(UserContext);
@@ -41,13 +48,17 @@ const Checkout = () => {
   const { data: activeAddress } = useActiveAddress();
   const cartProducts = useMemo(() => cart?.cart.cartProducts || [], [cart]);
   const totalPrice = cart?.totalPrice || 0;
-  const [isFirstDialogOpen, setIsFirstDialogOpen] = useState(false);
-  const [isSecondDialogOpen, setSecondDialogOpen] = useState(false);
+  const [mainDialog, setMainDialog] = useState(false);
+  const [addDialog, setAddDialog] = useState(false);
+  const [editDialog, setEditDialog] = useState(false);
+  const [modifyAddressId, setModifyAddressId] = useState<number | null>(null);
 
-  const handleToggleDialog = (first = false, second = false) => {
-    setIsFirstDialogOpen(first);
-    setSecondDialogOpen(second);
+  const toggleDialog = (main = false, add = false, edit = false) => {
+    setMainDialog(main);
+    setAddDialog(add);
+    setEditDialog(edit);
   };
+
   return (
     <div className="flex w-full gap-8">
       <section className="flex-1">
@@ -69,7 +80,10 @@ const Checkout = () => {
         </div>
         <Separator className="my-2" />
         <div>
-          <Dialog open={isFirstDialogOpen} onOpenChange={setIsFirstDialogOpen}>
+          <Dialog
+            open={mainDialog}
+            onOpenChange={(value) => setMainDialog(value)}
+          >
             <DialogTrigger asChild>
               <Button variant="secondary">Choose Other Address</Button>
             </DialogTrigger>
@@ -83,8 +97,7 @@ const Checkout = () => {
                 <Input placeholder="Search your address" />
                 <Button
                   onClick={() => {
-                    setIsFirstDialogOpen(false);
-                    setSecondDialogOpen(true);
+                    toggleDialog(false, true);
                   }}
                   variant="outline"
                   className="w-full my-4 mb-6 text-primary border-primary hover:text-primary/80 font-bold"
@@ -96,9 +109,11 @@ const Checkout = () => {
                     <>
                       {address.map((add) => (
                         <ChekoutAddress
+                          userId={user?.id!}
                           key={add.id}
                           add={add}
-                          handleToggleDialog={handleToggleDialog}
+                          getId={setModifyAddressId}
+                          handleToggleDialog={toggleDialog}
                         />
                       ))}
                     </>
@@ -112,13 +127,23 @@ const Checkout = () => {
             </DialogContent>
           </Dialog>
           <CustomDialog
-            open={isSecondDialogOpen}
-            onOpenChange={setSecondDialogOpen}
+            open={addDialog}
+            onOpenChange={(value) => setAddDialog(value)}
           >
             <AddNewAddressDialog
               name={user?.firstname || ""}
               userId={user?.id!}
-              handleToggleDialog={handleToggleDialog}
+              handleToggleDialog={toggleDialog}
+            />
+          </CustomDialog>
+          <CustomDialog
+            open={editDialog}
+            onOpenChange={(value) => setEditDialog(value)}
+          >
+            <EditAddressDialog
+              userId={user?.id!}
+              addressId={modifyAddressId}
+              handleToggleDialog={toggleDialog}
             />
           </CustomDialog>
         </div>

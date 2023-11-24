@@ -6,13 +6,17 @@ import { useToggleAddress } from "@/hooks/useAddressMutation";
 import { Check, Loader } from "lucide-react";
 import React, { useEffect } from "react";
 import toast from "react-hot-toast";
+import type { Dialog } from "../content/Checkout";
 
 const ChekoutAddress = ({
   add,
   handleToggleDialog,
+  getId,
 }: {
+  userId: number;
   add: Address;
-  handleToggleDialog: (first?: boolean, second?: boolean) => void;
+  getId: (id: number) => void;
+  handleToggleDialog: (main?: boolean, add?: boolean, edit?: boolean) => void;
 }) => {
   const toggleActiveAddress = useToggleAddress(add.id!, "isActive");
   const toggleMainAddress = useToggleAddress(add.id!, "isMain");
@@ -27,7 +31,7 @@ const ChekoutAddress = ({
 
   useEffect(() => {
     if (toggleActiveAddress.isSuccess) {
-      handleToggleDialog(false);
+      handleToggleDialog();
 
       toast(
         () => (
@@ -43,6 +47,7 @@ const ChekoutAddress = ({
       );
     }
   }, [toggleActiveAddress.isSuccess]);
+
   return !toggleMainAddress.isPending ? (
     <div
       className={`flex gap-2 ${
@@ -69,7 +74,8 @@ const ChekoutAddress = ({
         <div className="flex items-center gap-2 h-max">
           <Button
             onClick={() => {
-              handleToggleDialog(false, true);
+              getId(add.id!);
+              handleToggleDialog(false, false, true);
             }}
             variant="ghost"
             className="font-semibold text-primary/95 hover:bg-transparent hover:text-primary"
