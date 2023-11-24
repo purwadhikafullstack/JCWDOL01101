@@ -69,8 +69,8 @@ export class ProductController {
 
   public getProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const productId = Number(req.params.productId);
-      const proudct: Product = await this.product.getProduct(productId);
+      const slug = String(req.params.slug);
+      const proudct: Product = await this.product.getProduct(slug);
       res.status(200).json({
         data: proudct,
         message: 'get.products',
@@ -105,7 +105,7 @@ export class ProductController {
 
   public updateProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const productId = Number(req.params.productId);
+      const slug = String(req.params.slug);
       const { product } = req.body;
       const parseProduct: ProductDto = JSON.parse(product);
       let image = parseProduct.image;
@@ -113,7 +113,7 @@ export class ProductController {
         const { path } = req.file as Express.Multer.File;
         image = path;
       }
-      const updatedProduct = await this.product.updateProduct(productId, {
+      const updatedProduct = await this.product.updateProduct(slug, {
         ...parseProduct,
         image,
         categoryId: Number(parseProduct.categoryId),

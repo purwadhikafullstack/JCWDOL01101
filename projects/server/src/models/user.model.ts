@@ -1,16 +1,17 @@
 import { User } from '@/interfaces/user.interface';
+import { Role, Status } from '@/interfaces';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class UserModel extends Model<User> implements User {
   public id?: number;
+  public role: Role;
   public externalId: string;
-  public role: string;
   public username: string;
   public firstname: string;
   public lastname: string;
   public imageUrl: string;
   public email: string;
-  public status: string;
+  public status: Status;
 }
 
 export default function (sequelize: Sequelize): typeof UserModel {
@@ -21,15 +22,14 @@ export default function (sequelize: Sequelize): typeof UserModel {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
+      role: {
+        type: DataTypes.ENUM,
+        values: ['CUSTOMER', 'ADMIN', 'WAREHOUSE ADMIN'],
+        defaultValue: 'CUSTOMER',
+      },
       externalId: {
         allowNull: false,
         type: DataTypes.STRING(255),
-      },
-      role: {
-        allowNull: false,
-        type: DataTypes.ENUM,
-        values: ['CUSTOMER', 'ADMIN', 'WAREHOUSE'],
-        defaultValue: 'CUSTOMER',
       },
       username: {
         allowNull: true,

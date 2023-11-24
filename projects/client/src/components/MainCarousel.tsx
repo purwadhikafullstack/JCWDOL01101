@@ -14,9 +14,6 @@ const MainCarousel = () => {
       showStatus={false}
     >
       <div>
-        <img src="/carousel/ads.jpg" alt="carousel 1" className="rounded-lg" />
-      </div>
-      <div>
         <img src="/carousel/1.jpg" alt="carousel 1" className="rounded-lg" />
       </div>
       <div>

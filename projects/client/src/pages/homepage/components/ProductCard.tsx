@@ -14,7 +14,7 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
   ({ product, ...props }, ref: Ref<HTMLDivElement>) => {
     const productContent = (
       <>
-        <Link to={`/product/${product.name}`}>
+        <Link to={`/product/${product.slug}`}>
           <div className="rounded-md shadow-sm border overflow-hidden">
             <LazyLoadImage
               className="w-full h-[200px] object-cover"

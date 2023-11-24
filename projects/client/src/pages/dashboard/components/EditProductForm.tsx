@@ -16,7 +16,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import { useEditProduct, useProduct } from "@/hooks/useProduct";
+import { useEditProduct } from "@/hooks/useProductMutation";
+import { useProduct } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import ImageUpload from "./ImageUpload";
 import ProductFormField from "./ProductFormField";
@@ -36,22 +37,22 @@ const emptyValues = {
 const EditProductForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { productId } = useParams();
-  const isEditing = !!productId;
+  const { slug } = useParams();
+  const isEditing = !!slug;
 
   useEffect(() => {
-    if (!Number(productId)) {
+    if (!slug) {
       navigate("/dashboard/product");
     }
-  }, [productId, navigate]);
-  const { data: product } = useProduct(Number(productId));
+  }, [slug, navigate]);
+  const { data: product } = useProduct(slug || "");
 
   const [image, setImage] = useState<Image | null>({
     file: undefined,
     url: "",
   });
 
-  const productMutation = useEditProduct(Number(productId));
+  const productMutation = useEditProduct(slug || "");
 
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
@@ -104,7 +105,6 @@ const EditProductForm = () => {
   }, [product, form]);
 
   const setImageState = ({
-    edit,
     file,
     url,
   }: {

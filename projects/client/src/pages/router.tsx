@@ -19,9 +19,13 @@ import NewProductForm from "./dashboard/components/NewProductForm"
 import EditProductForm from "./dashboard/components/EditProductForm"
 import Warehouse from "./dashboard/content/Warehouse"
 import EditAdminForm from "./dashboard/components/EditAdminForm"
+import ProductDetail from "./homepage/content/ProductDetail"
+import Cart from "./homepage/content/Cart"
+import { ProtectedRoute, AdminRoute } from "./ProtectedRoute"
 import UserLayout from "./user/UserLayout"
 import Profile from "./user/content/Profile"
 import Address from "./user/content/Address"
+import NewAddressForm from "./user/components/NewAddressForm"
 
 const router = createBrowserRouter([
   {
@@ -54,6 +58,18 @@ const router = createBrowserRouter([
         element: <CategoryPage />,
       },
       {
+        path: "/product/:slug",
+        element: <ProductDetail />,
+      },
+      {
+        path: "cart",
+        element: (
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "/user",
         element: <UserLayout />,
         errorElement: <NotFound />,
@@ -66,13 +82,21 @@ const router = createBrowserRouter([
             path: "address",
             element: <Address />,
           },
+          {
+            path: "address/create",
+            element: <NewAddressForm />,
+          },
         ],
       },
     ],
   },
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <AdminRoute>
+        <DashboardLayout />
+      </AdminRoute>
+    ),
     errorElement: <NotFound />,
     children: [
       {
@@ -100,7 +124,7 @@ const router = createBrowserRouter([
         element: <Product />,
       },
       {
-        path: "product/:productId",
+        path: "product/:slug",
         element: <EditProductForm />,
       },
       {

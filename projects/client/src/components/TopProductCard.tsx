@@ -5,20 +5,22 @@ import { Link } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { convertToK, formatToIDR } from "@/lib/utils";
+import { Product } from "@/hooks/useProduct";
 
 type TopProductCardProps = {
-  name: string;
-  image: string;
-  price: number;
+  product: Product;
   size?: string;
 };
-const TopProductCard = ({ name, image, price, size }: TopProductCardProps) => {
+const TopProductCard = ({ product, size }: TopProductCardProps) => {
   return (
-    <Link to="product/1" className="relative block aspect-square h-full w-full">
+    <Link
+      to={`/product/${product.slug}`}
+      className="relative block aspect-square h-full w-full"
+    >
       <div className="group flex h-full w-full items-center justify-center overflow-hidden rounded-lg border bg-background hover:border-primary relative border-muted ">
         <LazyLoadImage
           className="relative h-full w-full object-contain transition duration-300 ease-in-out group-hover:scale-105"
-          src={`${baseURL}/${image}`}
+          src={`${baseURL}/${product.image}`}
           alt="black shirt"
         />
         <div className="absolute top-0 left-0 p-4">
@@ -39,11 +41,11 @@ const TopProductCard = ({ name, image, price, size }: TopProductCardProps) => {
               <h3
                 className={`${
                   size === "sm" &&
-                  "max-w-[60px] lg:max-w-full overflow-hidden whitespace-nowrap text-ellipsis"
+                  "max-w-[60px] lg:max-w-[150px] overflow-hidden whitespace-nowrap text-ellipsis"
                 }
                  lg:line-clamp-2 text-xs lg:text-lg  flex-grow text-background mr-2 leading-none tracking-tight`}
               >
-                {name}
+                {product.name}
               </h3>
               <span
                 className={`${
@@ -52,13 +54,15 @@ const TopProductCard = ({ name, image, price, size }: TopProductCardProps) => {
               >
                 {size === "sm" ? (
                   <>
-                    <p className="lg:hidden block">{convertToK(price)}</p>
+                    <p className="lg:hidden block">
+                      {convertToK(product.price)}
+                    </p>
                     <p className="hidden lg:block">
-                      {formatToIDR(price.toString())}
+                      {formatToIDR(product.price.toString())}
                     </p>
                   </>
                 ) : (
-                  <>{formatToIDR(price.toString())}</>
+                  <>{formatToIDR(product.price.toString())}</>
                 )}
               </span>
             </div>

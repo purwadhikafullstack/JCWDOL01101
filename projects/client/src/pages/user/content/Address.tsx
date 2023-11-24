@@ -37,7 +37,7 @@ const Address = () => {
     <>
       <div className="flex flex-col p-2 space-y-4">
         <Link
-          to="/dashboard/product/create"
+          to={`/user/address/create`}
           className={buttonVariants({
             variant: "default",
             className: "self-end",
