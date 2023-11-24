@@ -24,7 +24,8 @@ export class AdressController {
 
   public getAllAddress = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const findAllAddress = await this.address.getAllAddress();
+      const search = String(req.query.search);
+      const findAllAddress = await this.address.getAllAddress(search);
 
       res.status(200).json({
         message: 'get.address',

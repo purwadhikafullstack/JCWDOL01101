@@ -1,21 +1,12 @@
 import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import UserContext from "@/context/UserContext";
 import { useCart } from "@/hooks/useCart";
 import { formatToIDR } from "@/lib/utils";
 import { baseURL } from "@/service";
-import { Verified } from "lucide-react";
+import { Search, Verified } from "lucide-react";
 import React, { useContext, useMemo, useState } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -30,6 +21,9 @@ import ChekoutAddress from "../components/ChekoutAddress";
 import AddNewAddressDialog from "../components/AddNewAddressDialog";
 import { useActiveAddress, useAddress } from "@/hooks/useAddress";
 import EditAddressDialog from "../components/EditAddressDialog";
+import SelectCourier from "../components/SelectCourier";
+import AddressModalSkeleton from "@/components/skeleton/AddressModalSkeleton";
+import { useDebounce } from "use-debounce";
 
 export type Dialog = {
   main: boolean;
@@ -43,16 +37,19 @@ const Checkout = () => {
     throw new Error("useUser must be used within a UserProvider");
   }
   const { user } = userContext;
+  const [search, setSearch] = useState("");
+  const [debounceSearch] = useDebounce(search, 1000);
+
   const { data: cart } = useCart(user?.id!, !!user?.userCart);
-  const { data: address } = useAddress();
   const { data: activeAddress } = useActiveAddress();
+  const { data: address, isLoading } = useAddress(debounceSearch);
+
   const cartProducts = useMemo(() => cart?.cart.cartProducts || [], [cart]);
   const totalPrice = cart?.totalPrice || 0;
   const [mainDialog, setMainDialog] = useState(false);
   const [addDialog, setAddDialog] = useState(false);
   const [editDialog, setEditDialog] = useState(false);
   const [modifyAddressId, setModifyAddressId] = useState<number | null>(null);
-
   const toggleDialog = (main = false, add = false, edit = false) => {
     setMainDialog(main);
     setAddDialog(add);
@@ -65,27 +62,47 @@ const Checkout = () => {
         <h3 className="font-bold text-xl pt-4">Checkout</h3>
         <h4 className="font-bold my-2 mt-8">Shipping Address</h4>
         <Separator />
-        <div className="py-2">
-          <div className="flex text-sm gap-2 items-center">
-            <b>{activeAddress?.recepient}</b>
-            <span>({activeAddress?.label})</span>
-            <Badge variant="default" className="rounded-md">
-              default
-            </Badge>
+        {activeAddress ? (
+          <>
+            <div className="py-2">
+              <div className="flex text-sm gap-2 items-center">
+                <b>{activeAddress?.recepient}</b>
+                <span>({activeAddress?.label})</span>
+                <Badge variant="default" className="rounded-md">
+                  default
+                </Badge>
+              </div>
+              <div className="flex flex-col text-sm text-muted-foreground">
+                <span>{activeAddress?.address}</span>
+                <span>
+                  {`${activeAddress?.city.cityName}, ${activeAddress.city.province}`}
+                </span>
+              </div>
+            </div>
+            <Separator className="my-2" />
+          </>
+        ) : (
+          <div className="w-full text-center">
+            <img
+              className="w-[150px] mx-auto"
+              src="/ilus/directions.svg"
+              alt="directions ilustration"
+            />
+            <p>Oops, you don't have an address? </p>
+            <p className="text-sm text-muted-foreground">
+              Don't worry, though—you can create one!
+            </p>
           </div>
-          <div className="flex flex-col text-sm text-muted-foreground">
-            <span>{activeAddress?.address}</span>
-            <span>{activeAddress?.city} </span>
-          </div>
-        </div>
-        <Separator className="my-2" />
+        )}
         <div>
           <Dialog
             open={mainDialog}
             onOpenChange={(value) => setMainDialog(value)}
           >
             <DialogTrigger asChild>
-              <Button variant="secondary">Choose Other Address</Button>
+              <Button variant="secondary">
+                {activeAddress ? "Choose Other Address" : "Create New Address"}
+              </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[712px] pb-10">
               <DialogHeader>
@@ -94,7 +111,15 @@ const Checkout = () => {
                 </DialogTitle>
               </DialogHeader>
               <div>
-                <Input placeholder="Search your address" />
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 w-5 h-5 -translate-y-1/2" />
+                  <Input
+                    className="pl-10"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search recepient / city / label"
+                  />
+                </div>
                 <Button
                   onClick={() => {
                     toggleDialog(false, true);
@@ -105,22 +130,36 @@ const Checkout = () => {
                   Add New Address
                 </Button>
                 <div className="space-y-4 overflow-y-auto max-h-[580px] ">
-                  {address && address?.length > 0 ? (
+                  {!isLoading ? (
                     <>
-                      {address.map((add) => (
-                        <ChekoutAddress
-                          userId={user?.id!}
-                          key={add.id}
-                          add={add}
-                          getId={setModifyAddressId}
-                          handleToggleDialog={toggleDialog}
-                        />
-                      ))}
+                      {address && address?.length > 0 ? (
+                        <>
+                          {address.map((add) => (
+                            <ChekoutAddress
+                              key={add.id}
+                              add={add}
+                              getId={setModifyAddressId}
+                              userId={user?.id!}
+                              handleToggleDialog={toggleDialog}
+                            />
+                          ))}
+                        </>
+                      ) : (
+                        <div className="text-center">
+                          <img
+                            className="w-[150px] mx-auto"
+                            src="/ilus/directions.svg"
+                            alt="directions ilustration"
+                          />
+                          <p>Oops, you don't have an address? </p>
+                          <p className="text-sm text-muted-foreground">
+                            Don't worry, though—you can create one!
+                          </p>
+                        </div>
+                      )}
                     </>
                   ) : (
-                    <p className="text-center text-muted-foreground">
-                      no address
-                    </p>
+                    <AddressModalSkeleton />
                   )}
                 </div>
               </div>
@@ -148,7 +187,7 @@ const Checkout = () => {
           </CustomDialog>
         </div>
         <div className="border border-y-4 border-x-0 py-2 my-4 space-y-4">
-          {cartProducts.map(({ product, id }) => (
+          {cartProducts.map(({ product, id, quantity }) => (
             <div key={id} className="grid grid-cols-2 gap-4">
               <div>
                 <div className="flex flex-col">
@@ -175,28 +214,11 @@ const Checkout = () => {
                 <Separator className="my-2" />
               </div>
               <div className="flex flex-col gap-2 px-4">
-                <span className="font-bold text-sm">Choose Duration</span>
-                <Select>
-                  <SelectTrigger
-                    className={buttonVariants({
-                      variant: "default",
-                      className:
-                        "rounded-lg lg:justify-between py-4 font-semibold",
-                    })}
-                  >
-                    <SelectValue placeholder="Select a fruit" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Fruits</SelectLabel>
-                      <SelectItem value="apple">Apple</SelectItem>
-                      <SelectItem value="banana">Banana</SelectItem>
-                      <SelectItem value="blueberry">Blueberry</SelectItem>
-                      <SelectItem value="grapes">Grapes</SelectItem>
-                      <SelectItem value="pineapple">Pineapple</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                <SelectCourier
+                  quantity={quantity}
+                  product={product}
+                  address={activeAddress}
+                />
               </div>
             </div>
           ))}

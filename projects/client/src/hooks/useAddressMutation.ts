@@ -6,7 +6,7 @@ type AddressData = {
   recepient: string;
   phone: string;
   label: string;
-  city: string;
+  cityId: string;
   address: string;
   notes?: string;
   isMain: boolean;
@@ -20,6 +20,7 @@ export const usePostAddress = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["address"] });
+      queryClient.invalidateQueries({ queryKey: ["active-address"] });
     },
   });
 
@@ -49,6 +50,9 @@ export const useToggleAddress = (addressId: number, field: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["address"] });
       queryClient.invalidateQueries({ queryKey: ["active-address"] });
+      queryClient.invalidateQueries({ queryKey: ["courier", "jne"] });
+      queryClient.invalidateQueries({ queryKey: ["courier", "pos"] });
+      queryClient.invalidateQueries({ queryKey: ["courier", "tiki"] });
     },
   });
 

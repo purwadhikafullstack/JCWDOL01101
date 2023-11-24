@@ -4,7 +4,7 @@ export interface Address {
   recepient: string;
   phone: string;
   label: string;
-  city: string;
+  cityId: string;
   address: string;
   notes?: string;
   isMain: boolean;

@@ -19,7 +19,7 @@ export class AddressDto {
 
   @IsNotEmpty()
   @IsString()
-  public city: string;
+  public cityId: string;
 
   @IsNotEmpty()
   @IsString()

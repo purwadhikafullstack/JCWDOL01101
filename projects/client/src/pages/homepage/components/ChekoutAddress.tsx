@@ -1,20 +1,20 @@
+import AddressModalSkeleton from "@/components/skeleton/AddressModalSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Address } from "@/hooks/useAddress";
+import { ModalAddress } from "@/hooks/useAddress";
 import { useToggleAddress } from "@/hooks/useAddressMutation";
 import { Check, Loader } from "lucide-react";
 import React, { useEffect } from "react";
 import toast from "react-hot-toast";
-import type { Dialog } from "../content/Checkout";
 
 const ChekoutAddress = ({
   add,
-  handleToggleDialog,
   getId,
+  handleToggleDialog,
 }: {
   userId: number;
-  add: Address;
+  add: ModalAddress;
   getId: (id: number) => void;
   handleToggleDialog: (main?: boolean, add?: boolean, edit?: boolean) => void;
 }) => {
@@ -68,8 +68,8 @@ const ChekoutAddress = ({
         </span>
         <span className="font-bold text-lg">{add.recepient}</span>
         <p>{add.phone}</p>
-        <p className="text-ellipsis overflow-hidden whitespace-nowrap lg:max-w-[400px]">
-          {`${add.address}, ${add.city}`}
+        <p className="text-ellipsis overflow-hidden whitespace-nowrap text-sm lg:max-w-[400px]">
+          {`${add.address}, ${add["city.cityName"]}, ${add["city.province"]}`}
         </p>
         <div className="flex items-center gap-2 h-max">
           <Button
@@ -111,7 +111,7 @@ const ChekoutAddress = ({
       )}
     </div>
   ) : (
-    <p>isLoading</p>
+    <AddressModalSkeleton />
   );
 };
 

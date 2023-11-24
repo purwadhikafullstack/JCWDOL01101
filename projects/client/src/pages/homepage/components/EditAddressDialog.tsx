@@ -69,7 +69,7 @@ const EditAddressDialog = ({
       form.setValue("phone", currentAddress.phone);
       form.setValue("formatPhone", currentAddress.phone);
       form.setValue("label", currentAddress.label);
-      form.setValue("city", currentAddress.city);
+      form.setValue("cityId", currentAddress.cityId);
       form.setValue("address", currentAddress.address);
       form.setValue("notes", currentAddress.notes);
       form.setValue("isMain", currentAddress.isMain);
@@ -80,7 +80,7 @@ const EditAddressDialog = ({
     if (currentLocation) {
       const loc = currentLocation.components;
       form.setValue(
-        "city",
+        "cityId",
         `${loc.city_district}, Kota ${loc.city}, ${loc.state}`
       );
     }
@@ -92,7 +92,7 @@ const EditAddressDialog = ({
   useEffect(() => {
     if (updateAddress.isSuccess) {
       form.reset(emptyValues);
-      handleToggleDialog();
+      handleToggleDialog(true);
     }
   }, [updateAddress.isSuccess]);
 
@@ -105,10 +105,7 @@ const EditAddressDialog = ({
   const handleGetGeolocation = () => {
     if (currentLocation) {
       const loc = currentLocation.components;
-      form.setValue(
-        "city",
-        `${loc.city_district}, Kota ${loc.city}, ${loc.state}`
-      );
+      form.setValue("cityId", loc.city);
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -221,7 +218,7 @@ const EditAddressDialog = ({
             <div>
               <FormField
                 control={form.control}
-                name="city"
+                name="cityId"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>City & District</FormLabel>
