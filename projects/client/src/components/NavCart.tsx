@@ -14,7 +14,7 @@ const NavCart = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
     throw new Error("useUser must be used within a UserProvider");
   }
   const { user } = userContext;
-  const { data: carts } = useCart(user?.id!);
+  const { data: carts } = useCart(user?.id!, !!user?.userCart);
 
   const totalProducts: number = carts?.totalQuantity || 0;
   const cartProducts = carts?.cart ? carts.cart.cartProducts : [];

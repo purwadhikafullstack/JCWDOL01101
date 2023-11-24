@@ -27,7 +27,7 @@ const Cart = () => {
     throw new Error("useUser must be used within a UserProvider");
   }
   const { user } = userContext;
-  const { data: cart } = useCart(user?.id!);
+  const { data: cart } = useCart(user?.id!, !!user?.userCart);
   const cartProducts = useMemo(() => cart?.cart.cartProducts || [], [cart]);
   const deleteAllCart = useDeleteAllCartProduct(cart?.cart.id!);
   const totalQuantity = cart?.totalQuantity || 0;
@@ -185,6 +185,7 @@ const Cart = () => {
               <p>{formatToIDR(totalPrice.toString())}</p>
             </span>
             <Button
+              disabled={!someTrue}
               onClick={() => {
                 navigate("/checkout");
               }}

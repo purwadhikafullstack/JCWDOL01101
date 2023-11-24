@@ -2,7 +2,7 @@ import { Cart, cartProducts } from "@/context/UserContext";
 import service from "@/service";
 import { useQuery } from "@tanstack/react-query";
 
-export const useCart = (userId: number) => {
+export const useCart = (userId: number, hasCart: boolean) => {
   const cart = useQuery<{
     cart: Cart;
     totalQuantity: number;
@@ -13,7 +13,7 @@ export const useCart = (userId: number) => {
       const res = await service.get(`/cart/${userId}`);
       return res.data.data;
     },
-    enabled: !!userId,
+    enabled: !!userId && hasCart,
   });
 
   return cart;

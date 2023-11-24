@@ -5,6 +5,7 @@ import UserModel from '@/models/user.model';
 import ProductModel from '@/models/product.model';
 import CartModel from '@/models/cart.model';
 import CartProductModel from '@/models/cartProduct.model';
+import AddressModel from '@/models/address.model';
 
 const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
   dialect: 'mysql',
@@ -29,15 +30,19 @@ const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
 });
 
 sequelize.authenticate();
-// sequelize.sync({ force: true });
+
 export const DB = {
   User: UserModel(sequelize),
   Cart: CartModel(sequelize),
   CartProduct: CartProductModel(sequelize),
   Product: ProductModel(sequelize),
+  Address: AddressModel(sequelize),
   sequelize,
   Sequelize,
 };
+
+DB.User.hasMany(DB.Address, { foreignKey: 'user_id', as: 'userAddress' });
+DB.Address.belongsTo(DB.User, { foreignKey: 'user_id', as: 'user' });
 
 DB.User.hasOne(DB.Cart, { foreignKey: 'user_id', as: 'userCart' });
 DB.Cart.belongsTo(DB.User, { foreignKey: 'user_id', as: 'userCart' });

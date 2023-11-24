@@ -28,6 +28,7 @@ import { Dialog as CustomDialog } from "@/components/ui/custom-dialog";
 import { Input } from "@/components/ui/input";
 import ChekoutAddress from "../components/ChekoutAddress";
 import AddNewAddressDialog from "../components/AddNewAddressDialog";
+import { useActiveAddress, useAddress } from "@/hooks/useAddress";
 
 const Checkout = () => {
   const userContext = useContext(UserContext);
@@ -35,14 +36,17 @@ const Checkout = () => {
     throw new Error("useUser must be used within a UserProvider");
   }
   const { user } = userContext;
-  const { data: cart } = useCart(user?.id!);
+  const { data: cart } = useCart(user?.id!, !!user?.userCart);
+  const { data: address } = useAddress();
+  const { data: activeAddress } = useActiveAddress();
   const cartProducts = useMemo(() => cart?.cart.cartProducts || [], [cart]);
   const totalPrice = cart?.totalPrice || 0;
   const [isFirstDialogOpen, setIsFirstDialogOpen] = useState(false);
   const [isSecondDialogOpen, setSecondDialogOpen] = useState(false);
 
-  const handleOpenFirstDialog = () => {
-    setIsFirstDialogOpen(true);
+  const handleToggleDialog = (first = false, second = false) => {
+    setIsFirstDialogOpen(first);
+    setSecondDialogOpen(second);
   };
   return (
     <div className="flex w-full gap-8">
@@ -52,15 +56,15 @@ const Checkout = () => {
         <Separator />
         <div className="py-2">
           <div className="flex text-sm gap-2 items-center">
-            <b>Tetsu Tetsu Hero</b>
-            <span>(Rumah)</span>
+            <b>{activeAddress?.recepient}</b>
+            <span>({activeAddress?.label})</span>
             <Badge variant="default" className="rounded-md">
               default
             </Badge>
           </div>
           <div className="flex flex-col text-sm text-muted-foreground">
-            <span>BTN Kepala 45 Blok. E26 Jl. Sakura</span>
-            <span>Denpasar, Kab. Denpasar, 19003</span>
+            <span>{activeAddress?.address}</span>
+            <span>{activeAddress?.city} </span>
           </div>
         </div>
         <Separator className="my-2" />
@@ -69,7 +73,7 @@ const Checkout = () => {
             <DialogTrigger asChild>
               <Button variant="secondary">Choose Other Address</Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[712px] pb-20">
+            <DialogContent className="sm:max-w-[712px] pb-10">
               <DialogHeader>
                 <DialogTitle className="text-center text-xl">
                   Select Shipment Address
@@ -87,9 +91,22 @@ const Checkout = () => {
                 >
                   Add New Address
                 </Button>
-                <div className="space-y-4">
-                  <ChekoutAddress pick={true} />
-                  <ChekoutAddress />
+                <div className="space-y-4 overflow-y-auto max-h-[580px] ">
+                  {address && address?.length > 0 ? (
+                    <>
+                      {address.map((add) => (
+                        <ChekoutAddress
+                          key={add.id}
+                          add={add}
+                          handleToggleDialog={handleToggleDialog}
+                        />
+                      ))}
+                    </>
+                  ) : (
+                    <p className="text-center text-muted-foreground">
+                      no address
+                    </p>
+                  )}
                 </div>
               </div>
             </DialogContent>
@@ -99,7 +116,9 @@ const Checkout = () => {
             onOpenChange={setSecondDialogOpen}
           >
             <AddNewAddressDialog
-              handleOpenFirstDialog={handleOpenFirstDialog}
+              name={user?.firstname || ""}
+              userId={user?.id!}
+              handleToggleDialog={handleToggleDialog}
             />
           </CustomDialog>
         </div>

@@ -13,5 +13,9 @@ export class AddressRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`${this.path}/current/:lat/:lng`, this.address.getCurrentLocation);
+    this.router.get(`${this.path}/active/`, this.address.getActiveAddress);
+    this.router.get(`${this.path}`, this.address.getAllAddress);
+    this.router.post(`${this.path}`, this.address.createAddress);
+    this.router.patch(`${this.path}/toggle/:field/:addressId`, this.address.toggleAddress);
   }
 }

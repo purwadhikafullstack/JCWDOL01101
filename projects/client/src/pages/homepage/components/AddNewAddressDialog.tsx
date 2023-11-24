@@ -25,41 +25,50 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import toast from "react-hot-toast";
 import { useGetLocationOnGeo } from "@/hooks/useAddress";
+import { usePostAddress } from "@/hooks/useAddressMutation";
 const addressSchema = z.object({
-  name: z.string().min(4, "required").max(50),
-  phone: z.coerce.number().min(9, "required").max(15),
+  recepient: z.string().min(4, "required").max(50),
+  phone: z.string().min(9, "required").max(15),
   formatPhone: z.string().min(9, "required").max(15),
   label: z.string().min(3, "required").max(30),
   city: z.string().min(3, "required"),
   address: z.string().min(3, "required"),
   notes: z.string().optional(),
-  primary: z.boolean().default(false).optional(),
+  isMain: z.boolean().default(false),
 });
+
+const emptyValues = {
+  recepient: "",
+  phone: "",
+  label: "",
+  city: "",
+  address: "",
+  notes: "",
+  isMain: false,
+};
 
 type Coordinates = {
   latitude: number;
   langitude: number;
 };
 const AddNewAddressDialog = ({
-  handleOpenFirstDialog,
+  name,
+  userId,
+  handleToggleDialog,
 }: {
-  handleOpenFirstDialog: () => void;
+  userId: number;
+  name: string;
+  handleToggleDialog: (first?: boolean, second?: boolean) => void;
 }) => {
   const [location, setLocation] = useState<Coordinates | null>(null);
   const [tos, setTos] = useState(false);
   const { data: currentLocation, isLoading } = useGetLocationOnGeo(location);
+  const addressMutation = usePostAddress();
   const cityInputRef = useRef<HTMLDivElement | null>(null);
   const [showCurrentLocBtn, setShowCurrentLocBtn] = useState(false);
   const form = useForm<z.infer<typeof addressSchema>>({
     resolver: zodResolver(addressSchema),
-    defaultValues: {
-      name: "",
-      phone: 0,
-      label: "",
-      city: "",
-      address: "",
-      notes: "",
-    },
+    defaultValues: emptyValues,
   });
 
   useEffect(() => {
@@ -73,12 +82,18 @@ const AddNewAddressDialog = ({
   }, [currentLocation]);
 
   const onSubmit = (values: z.infer<typeof addressSchema>) => {
-    console.log(values);
+    addressMutation.mutate({ userId, ...values });
   };
+  useEffect(() => {
+    if (addressMutation.isSuccess) {
+      form.reset(emptyValues);
+      handleToggleDialog(true, false);
+    }
+  }, [addressMutation.isSuccess]);
 
   const formatPhoneNumber = (value: string) => {
     const numericValue = value.replace(/\D/g, "");
-    form.setValue("phone", +numericValue);
+    form.setValue("phone", numericValue);
     return numericValue;
   };
 
@@ -123,7 +138,7 @@ const AddNewAddressDialog = ({
   return (
     <DialogContent className="sm:max-w-[712px]">
       <DialogClose
-        onClick={handleOpenFirstDialog}
+        onClick={() => handleToggleDialog(true)}
         className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
       >
         <X className="h-4 w-4" />
@@ -141,7 +156,7 @@ const AddNewAddressDialog = ({
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
-              name="name"
+              name="recepient"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Recepeint's name</FormLabel>
@@ -251,7 +266,7 @@ const AddNewAddressDialog = ({
             />
             <FormField
               control={form.control}
-              name="primary"
+              name="isMain"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -284,6 +299,9 @@ const AddNewAddressDialog = ({
                 type="submit"
                 className="w-[60%] text-lg font-bold lg:py-6"
               >
+                {addressMutation.isPending && (
+                  <Loader2 className="animate-spin w-4 h-4 mr-2" />
+                )}
                 Submit
               </Button>
             </div>
