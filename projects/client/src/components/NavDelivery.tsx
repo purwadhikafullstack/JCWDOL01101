@@ -24,7 +24,12 @@ const process = [
 
 const NavDelivery = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
   return (
-    <NavDropdown icon={<Package />} title="Delivery" setIsDim={setIsDim}>
+    <NavDropdown
+      path="/delivery"
+      icon={<Package />}
+      title="Delivery"
+      setIsDim={setIsDim}
+    >
       <div className="min-w-[300px] px-2 space-y-2">
         <span className="flex justify-between">
           <p className="font-bold hidden">Delivery</p>

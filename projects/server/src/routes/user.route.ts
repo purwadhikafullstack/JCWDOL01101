@@ -14,6 +14,7 @@ export class UserRoute implements Routes {
   }
 
   private initializeRoutes() {
+    this.router.get('/api/user/:externalId', this.user.getUserByExternalId);
     this.router.post('/api/webhook', bodyParser.raw({ type: 'application/json' }), this.user.webhook);
     this.router.get('/api/user/:userId', this.user.getUser);
     this.router.get('/api/users', this.user.getUsers);

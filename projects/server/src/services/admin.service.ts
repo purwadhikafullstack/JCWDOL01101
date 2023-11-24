@@ -30,7 +30,7 @@ export class AdminService {
       lastName: String(random),
       password: `AdminPassword${random}`,
       publicMetadata: {
-        role: 'WAREHOUSE',
+        role: 'WAREHOUSE ADMIN',
         status: 'ACTIVE',
       },
     });

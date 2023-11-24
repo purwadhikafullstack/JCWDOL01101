@@ -12,7 +12,6 @@ import { RouterProvider } from "react-router-dom";
 import router from "@/pages/router";
 import { ClerkProvider } from "@clerk/clerk-react";
 import toast from "react-hot-toast";
-import { AxiosError } from "axios";
 
 const clerkPubKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 

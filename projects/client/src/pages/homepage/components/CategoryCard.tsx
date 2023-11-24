@@ -1,5 +1,4 @@
 import React from "react";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
 
 const CategoryCard = ({
@@ -10,17 +9,10 @@ const CategoryCard = ({
   imageUrl: string;
 }) => {
   return (
-    <div className="w-full h-full rounded-lg max-h-[320px] overflow-hidden group">
+    <div className="w-full  rounded-lg overflow-hidden group">
       <Link to={`/category/${category}`} className="relative">
-        <LazyLoadImage
-          className="w-full h-full object-cover rounded-lg relative  transition duration-300 ease-in-out group-hover:scale-105"
-          src={imageUrl}
-          alt={category}
-        />
-        <div className="w-full h-full bg-blue-400">
-          <span className="absolute top-0 left-0 px-[5%] py-[10%] font-bold text-primary-foreground text-sm md:text-xl">
-            {category}
-          </span>
+        <div className="w-full h-full bg-gradient-to-tr from-primary to-pink-300 shadow-sm text-base text-center lg:text-2xl p-2 py-6 font-bold text-primary-foreground ">
+          {category}
         </div>
       </Link>
     </div>
