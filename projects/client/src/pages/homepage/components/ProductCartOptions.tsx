@@ -26,8 +26,12 @@ const ProductCartOptions = ({
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState("");
   const isUserCartProducts =
-    (user && user?.userCart.cartProducts.length > 0) || false;
-  const { data: cartProduct } = useCartProduct(isUserCartProducts, productId);
+    (user?.userCart && user?.userCart.cartProducts.length > 0) || false;
+  const isProductInCart =
+    isUserCartProducts &&
+    user?.userCart.cartProducts.find((product) => product.id === productId) !==
+      undefined;
+  const { data: cartProduct } = useCartProduct(isProductInCart, productId);
   const cartMutation = useAddCart(cartProduct?.productId);
 
   const addToCart = () => {

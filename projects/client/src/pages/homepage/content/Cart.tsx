@@ -1,9 +1,9 @@
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import UserContext from "@/context/UserContext";
 import { useCart } from "@/hooks/useCart";
-import React, { useContext, useEffect, useMemo, useState } from "react";
 import CartItem from "../components/CartItem";
 import { useDeleteAllCartProduct } from "@/hooks/useCartMutation";
 import toast from "react-hot-toast";
@@ -19,15 +19,20 @@ import {
 } from "@/components/ui/dialog";
 import { formatToIDR } from "@/lib/utils";
 import { Loader } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useBoundStore } from "@/store/client/useStore";
 const Cart = () => {
+  const clearCheckout = useBoundStore((state) => state.clear);
+  clearCheckout();
+  const navigate = useNavigate();
   const userContext = useContext(UserContext);
   if (!userContext) {
     throw new Error("useUser must be used within a UserProvider");
   }
   const { user } = userContext;
-  const { data: cart } = useCart(user?.id!);
-  const deleteAllCart = useDeleteAllCartProduct(cart?.cart.id!);
+  const { data: cart } = useCart(user?.id!, !!user?.userCart);
   const cartProducts = useMemo(() => cart?.cart.cartProducts || [], [cart]);
+  const deleteAllCart = useDeleteAllCartProduct(cart?.cart.id!);
   const totalQuantity = cart?.totalQuantity || 0;
   const totalPrice = cart?.totalPrice || 0;
 
@@ -171,7 +176,7 @@ const Cart = () => {
       </section>
       <div className="w-[320px] relative ">
         <div className="w-ful sticky top-[77px] ">
-          <div className="w-full h-full px-4 py-6 border rounded-lg space-y-3">
+          <div className="w-full h-full px-4 py-6 border rounded-lg space-y-2">
             <p className="font-bold">Shopping Summary</p>
             <span className="w-full flex text-sm items-center justify-between text-muted-foreground">
               <p>Total Price(item)</p>
@@ -182,7 +187,15 @@ const Cart = () => {
               <p className="text-lg">GrandTotal</p>
               <p>{formatToIDR(totalPrice.toString())}</p>
             </span>
-            <Button className="w-full">Buy({totalQuantity})</Button>
+            <Button
+              disabled={!someTrue}
+              onClick={() => {
+                navigate("/checkout");
+              }}
+              className="w-full"
+            >
+              Buy({totalQuantity})
+            </Button>
           </div>
         </div>
       </div>

@@ -29,7 +29,6 @@ export class UserController {
     if (!WEBHOOK_SECRET) {
       throw new Error('You need a WEBHOOK_SECRET in your .env');
     }
-    console.log(WEBHOOK_SECRET);
     const headers = req.headers;
     const payload = req.body;
 

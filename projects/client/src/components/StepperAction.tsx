@@ -9,8 +9,8 @@ const StepperAction = ({
   isDone,
 }: {
   step: number;
-  title: string;
-  detail: string;
+  title?: string;
+  detail?: string;
   isActive?: boolean;
   isDone?: boolean;
 }) => {
