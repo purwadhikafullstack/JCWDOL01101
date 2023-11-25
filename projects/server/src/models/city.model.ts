@@ -52,14 +52,13 @@ export default function (sequelize: Sequelize): typeof CityModel {
 
     CityModel.hasOne(AddressModel, {
         foreignKey: "cityId",
-        as: 'cityData' // define alias here
+        as: 'cityData' 
       });
       
 
     AddressModel.belongsTo(CityModel, {
         foreignKey: "cityId",
-        as: 'cityData' // define alias here
-        // as: 'city' // define alias here
+        as: 'cityData' 
         
     });
 

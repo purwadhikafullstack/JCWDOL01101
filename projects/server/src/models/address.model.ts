@@ -43,12 +43,12 @@ export default function (sequelize: Sequelize): typeof AddressModel {
 
   AddressModel.hasOne(WarehouseModel, {
     foreignKey: "addressId",
-    as: 'address' // add this line
+    as: 'address' 
   });
   
   WarehouseModel.belongsTo(AddressModel, {
     foreignKey: "addressId",
-    as: 'address' // add this line
+    as: 'address' 
   });
 
   return AddressModel;
