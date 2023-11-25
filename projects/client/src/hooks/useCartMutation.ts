@@ -14,6 +14,7 @@ export const useAddCart = (productId: number | undefined) => {
       await service.post("/cart", cartData);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["cart-product", productId] });
     },

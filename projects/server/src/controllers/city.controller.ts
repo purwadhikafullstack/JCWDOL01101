@@ -18,7 +18,7 @@ export class CityController {
 
   public getCityById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const cityId = Number(req.params.id);
+      const cityId = req.params.id;
       const findOneCityData: City = await this.city.findCityById(cityId);
 
       res.status(200).json({ data: findOneCityData, message: 'find City By Id' });
@@ -29,7 +29,7 @@ export class CityController {
 
   public getCityByProvinceId = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const provinceId = Number(req.params.id);
+      const provinceId = req.params.id;
       const findAllCityData: City[] = await this.city.findAllCityByProvince(provinceId);
 
       res.status(200).json({ data: findAllCityData, message: 'find all City' });

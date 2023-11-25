@@ -24,7 +24,8 @@ export class AdressController {
 
   public getAllAddress = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const findAllAddress = await this.address.getAllAddress();
+      const search = String(req.query.search);
+      const findAllAddress = await this.address.getAllAddress(search);
 
       res.status(200).json({
         message: 'get.address',
@@ -43,6 +44,29 @@ export class AdressController {
       res.status(200).json({
         message: 'get.address',
         data: findAllAddress,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public checkActiveParam = async (req: Request, res: Response, next: NextFunction) => {
+    const addressId = req.params.addressId;
+    if (addressId === 'active') {
+      next('route');
+    } else {
+      next();
+    }
+  };
+
+  public getAddressById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const addressId = Number(req.params.addressId);
+      const findAddress: Address = await this.address.getAddressbyId(addressId);
+
+      res.status(200).json({
+        message: 'get.getAddress',
+        data: findAddress,
       });
     } catch (err) {
       next(err);
@@ -79,12 +103,12 @@ export class AdressController {
   public updateAddress = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const addressId = Number(req.params.addressId);
-      const data = req.body;
-      const findAllAddress = await this.address.updateAddress(addressId, data);
+      const addressData: AddressDto = req.body;
+      const updatedAddress: Address = await this.address.updateAddress(addressId, { ...addressData });
 
       res.status(200).json({
-        message: 'update.address',
-        data: findAllAddress,
+        message: 'put.address',
+        data: updatedAddress,
       });
     } catch (err) {
       next(err);

@@ -26,6 +26,7 @@ import UserLayout from "./user/UserLayout"
 import Profile from "./user/content/Profile"
 import Address from "./user/content/Address"
 import NewAddressForm from "./user/components/NewAddressForm"
+import Checkout from "./homepage/content/Checkout"
 
 const router = createBrowserRouter([
   {

@@ -11,7 +11,7 @@ const AddressCard = ({ address }: { address: Address }) => {
       <div className="py-1 mt-2">
         <span className="flex items-end gap-2 ">
           <h3 className="text-2xl font-bold text-red-500">{address.label}</h3>
-          {address.isPrimary && (
+          {address.isMain && (
             <p className="text-white rounded-md bg-red-500 text-sm px-2 py-1 font-semibold">
               primary
             </p>
@@ -25,7 +25,7 @@ const AddressCard = ({ address }: { address: Address }) => {
       <AddressDetail label="address" name="daan mogot" />
       <span className="flex justify-end">
         <Button variant="ghost">edit</Button>
-        <div className={`${address.isPrimary && "hidden"}`}>
+        <div className={`${address.isMain && "hidden"}`}>
           <Button variant="ghost" className="text-red-300">
             delete
           </Button>

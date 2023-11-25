@@ -26,7 +26,7 @@ const ProductCartOptions = ({
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState("");
   const isUserCartProducts =
-    (user && user?.userCart.cartProducts.length > 0) || false;
+    (user?.userCart && user?.userCart.cartProducts.length > 0) || false;
   const { data: cartProduct } = useCartProduct(isUserCartProducts, productId);
   const cartMutation = useAddCart(cartProduct?.productId);
 

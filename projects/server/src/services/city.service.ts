@@ -10,14 +10,14 @@ export class CityService {
     return allCity;
   }
 
-  public async findCityById(cityId: number): Promise<City> {
+  public async findCityById(cityId: string): Promise<City> {
     const findCity: City = await DB.City.findByPk(cityId);
     if (!findCity) throw new HttpException(409, "City doesn't exist");
 
     return findCity;
   }
 
-  public async findAllCityByProvince(provinceId: number): Promise<City[]> {
+  public async findAllCityByProvince(provinceId: string): Promise<City[]> {
     const allCity: City[] = await DB.City.findAll({ where: { provinceId: provinceId } });
     return allCity;
   }

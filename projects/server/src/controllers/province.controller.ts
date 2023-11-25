@@ -18,7 +18,7 @@ export class ProvinceController {
 
   public getProvinceById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const provinceId = Number(req.params.id);
+      const provinceId = req.params.id;
       const findOneProvinceData: Province = await this.province.findProvinceById(provinceId);
 
       res.status(200).json({ data: findOneProvinceData, message: 'find Province By Id' });

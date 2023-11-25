@@ -16,7 +16,8 @@
     "deploy:prod": "npm run build && pm2 start ecosystem.config.js --only prod",
     "deploy:dev": "pm2 start ecosystem.config.js --only dev",
     "migration:generate": "sequelize migration:generate --name",
-    "migration:run": "sequelize db:migrate"
+    "migration:run": "sequelize db:migrate",
+    "db:seed": "sequelize db:seed:all"
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.12.21",

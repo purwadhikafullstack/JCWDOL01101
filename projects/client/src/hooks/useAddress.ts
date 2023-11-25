@@ -11,6 +11,7 @@ export type OpenCageResults = {
   components: {
     road: string;
     city: string;
+    city_code: string;
     city_district: string;
     country: string;
     county: string;
@@ -27,12 +28,38 @@ export interface Address {
   recepient: string;
   phone: string;
   label: string;
-  cityId: number;
+  cityId: string;
   address: string;
   notes?: string;
-  isPrimary: boolean;
+  isMain: boolean;
   isActive: boolean;
   deletedAt: Date | null;
+  city: City;
+}
+
+export interface ModalAddress {
+  id?: number;
+  userId?: number;
+  recepient: string;
+  phone: string;
+  label: string;
+  cityId: string;
+  address: string;
+  notes?: string;
+  isMain: boolean;
+  isActive: boolean;
+  deletedAt: Date | null;
+  "city.cityName": string;
+  "city.province": string;
+}
+
+export interface City {
+  cityId: string;
+  provinceId: string;
+  province: string;
+  cityName: string;
+  postalCode: string;
+  type: string;
 }
 
 export const useGetLocationOnGeo = (coordinates: Coordinates | null) => {
@@ -51,11 +78,40 @@ export const useGetLocationOnGeo = (coordinates: Coordinates | null) => {
   return coords;
 };
 
-export const useAddress = () => {
-  const query = useQuery<Address[]>({
-    queryKey: ["address"],
+export const useAddress = (search: string) => {
+  const query = useQuery<ModalAddress[]>({
+    queryKey: ["address", search],
     queryFn: async () => {
-      const res = await service.get("/address");
+      const res = await service.get("/address", {
+        params: {
+          search,
+        },
+      });
+      return res.data.data;
+    },
+  });
+
+  return query;
+};
+
+export const useAddressById = (addressId: number) => {
+  const query = useQuery<Address>({
+    queryKey: ["address", addressId],
+    queryFn: async () => {
+      const res = await service.get(`/address/${addressId}`);
+      return res.data.data;
+    },
+    enabled: !!addressId,
+  });
+
+  return query;
+};
+
+export const useActiveAddress = () => {
+  const query = useQuery<Address>({
+    queryKey: ["active-address"],
+    queryFn: async () => {
+      const res = await service.get("/address/active");
       return res.data.data;
     },
   });
@@ -75,25 +131,6 @@ export const useAddressByUserId = (userId: number) => {
 
   return { data, isFetched, isLoading };
 };
-
-export const useActiveAddress = () => {
-  const query = useQuery<Address>({
-    queryKey: ["active-address"],
-    queryFn: async () => {
-      const res = await service.get("/address/active");
-      return res.data.data;
-    },
-  });
-
-  return query;
-};
-
-export interface City {
-  id: number
-  provinceId: number
-  city: string
-  postalCode: number
-}
 
 export interface Province {
   id: number
