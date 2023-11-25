@@ -147,7 +147,6 @@ const Warehouse = () => {
     service.post("/addresses/post", addressData)
       .then(response => {
         const newAddressId = response.data.data.id;
-        console.log(response);
         
         const warehouseData = {
           ...newWarehouse,
