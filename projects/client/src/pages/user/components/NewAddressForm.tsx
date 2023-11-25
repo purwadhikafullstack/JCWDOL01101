@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useEffect, useContext } from "react"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 
@@ -12,13 +12,9 @@ import AddressFormField from "./AddressFormField"
 import CitySelectFormField from "./CitySelectFormField"
 import ProvinceSelectFormField from "./ProvinceSelectFormField"
 import { useToast } from "@/components/ui/use-toast"
-import {
-  useAddressMutation,
-  useCity,
-  useCityByProvinceId,
-} from "@/hooks/useAddress"
-import { useUser } from "@clerk/clerk-react"
-import { getValue } from "@testing-library/user-event/dist/utils"
+import { useCity, useCityByProvinceId } from "@/hooks/useAddress"
+import UserContext from "@/context/UserContext"
+import { usePostAddress } from "@/hooks/useAddressMutation"
 
 export const AddressSchema = z.object({
   cityId: z.string().min(1, "Must select city"),
@@ -36,34 +32,37 @@ let emptyValues = {
 
 const NewAddressForm = () => {
   const { toast } = useToast()
-  const { user, isLoaded } = useUser()
-  const userId = isLoaded && user
-  const { addressMutation } = useAddressMutation(String(userId))
-
-  const form = useForm<z.infer<typeof AddressSchema>>({
-    resolver: zodResolver(AddressSchema),
-    defaultValues: emptyValues,
-  })
-  const onSubmit = (values: z.infer<typeof AddressSchema>) => {
-    // addressMutation.mutate(values)
-    console.log(values)
+  const userContext = useContext(UserContext)
+  if (!userContext) {
+    throw new Error("useUser must be used within a UserProvider")
   }
+  const { user } = userContext
+  // const { addressMutation } = usePostAddress(user?.id)
 
-  useEffect(() => {
-    if (addressMutation.isSuccess) {
-      toast({
-        title: "Address Created",
-        description: "Successfully create new address",
-        duration: 3000,
-      })
-    }
-  }, [addressMutation.isSuccess, toast])
+  // const form = useForm<z.infer<typeof AddressSchema>>({
+  //   resolver: zodResolver(AddressSchema),
+  //   defaultValues: emptyValues,
+  // })
+  // const onSubmit = (values: z.infer<typeof AddressSchema>) => {
+  //   // addressMutation.mutate(values)
+  //   console.log(values)
+  // }
 
-  const { data: cityByProvince, isFetched } = useCityByProvinceId(
-    Number(form.getValues("provinceId"))
-  )
+  // useEffect(() => {
+  //   if (addressMutation.isSuccess) {
+  //     toast({
+  //       title: "Address Created",
+  //       description: "Successfully create new address",
+  //       duration: 3000,
+  //     })
+  //   }
+  // }, [addressMutation.isSuccess, toast])
 
-  console.log(Number(form.getValues("provinceId")))
+  // const { data: cityByProvince, isFetched } = useCityByProvinceId(
+  //   Number(form.getValues("provinceId"))
+  // )
+
+  // console.log(Number(form.getValues("provinceId")))
 
   return (
     <div className="w-full">
@@ -73,7 +72,7 @@ const NewAddressForm = () => {
         </Link>{" "}
         <p className="text-primary"> new-address</p>
       </span>
-      <div className="w-[768px] mx-auto">
+      {/* <div className="w-[768px] mx-auto">
         <h2 className="text-xl mb-10">New Address</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -101,7 +100,7 @@ const NewAddressForm = () => {
             </div>
           </form>
         </Form>
-      </div>
+      </div> */}
     </div>
   )
 }

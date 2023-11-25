@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useFormContext } from "react-hook-form"
-import { City } from "@/context/UserContext"
+import { City } from "@/hooks/useAddress"
 
 type CitySelectFormField = {
   data?: City[]

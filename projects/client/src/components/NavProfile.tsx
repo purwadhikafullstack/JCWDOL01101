@@ -28,7 +28,7 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
   return (
     isLoaded && (
       <NavDropdown
-        path="/profile"
+        path="/user"
         icon={<NavAvatar imageUrl={user?.imageUrl as string} />}
         setIsDim={setIsDim}
         className="p-4"

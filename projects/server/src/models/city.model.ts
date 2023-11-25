@@ -1,6 +1,5 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import { City } from '@/interfaces/city.interface';
-import { ProvinceModel } from './province.model';
 
 export class CityModel extends Model<City> implements City {
   public id?: number;
@@ -36,14 +35,6 @@ export default function (sequelize: Sequelize): typeof CityModel {
       timestamps: false,
     },
   );
-
-  ProvinceModel.hasMany(CityModel, {
-    foreignKey: 'provinceId',
-  });
-
-  CityModel.belongsTo(ProvinceModel, {
-    foreignKey: 'provinceId',
-  });
 
   return CityModel;
 }

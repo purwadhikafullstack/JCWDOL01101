@@ -18,28 +18,6 @@ export interface User {
   userCart: Cart
 }
 
-export interface City {
-  id: number
-  provinceId: number
-  city: string
-  postalCode: number
-}
-
-export interface Province {
-  id: number
-  province: string
-}
-
-export interface Address {
-  id: number
-  cityId: number
-  userId?: number
-  latitude?: string
-  longitude?: string
-  addressDetail?: string
-  isPrimary: boolean
-}
-
 export interface Cart {
   id: number
   userId: number

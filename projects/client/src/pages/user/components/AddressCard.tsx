@@ -1,31 +1,25 @@
 import React from "react"
 import { Button } from "@/components/ui/button"
+import { Address } from "@/hooks/useAddress"
 
-type AddressType = {
-  id: number
-  userId: number
-  cityId: number
-  provinceId: number
-  addressDetail: string
-  isPrimary: boolean
-}
-
-const AddressCard = ({ address, i }: { address: AddressType; i: number }) => {
+const AddressCard = ({ address }: { address: Address }) => {
   return (
     <div
       key={address.id}
       className="w-full bg-zinc-50 rounded-md border shadow-sm overflow-hidden p-2 px-6 capitalize"
     >
-      <span className="flex items-end gap-2 my-2">
-        <h3 className="text-2xl font-bold">Address {i + 1}</h3>
-        <p
-          className={`${
-            !address.isPrimary && "hidden"
-          } text-primary px-2 py-1 rounded-lg bg-red-50 text-sm`}
-        >
-          primary
-        </p>
-      </span>
+      <div className="py-1 mt-2">
+        <span className="flex items-end gap-2 ">
+          <h3 className="text-2xl font-bold text-red-500">{address.label}</h3>
+          {address.isPrimary && (
+            <p className="text-white rounded-md bg-red-500 text-sm px-2 py-1 font-semibold">
+              primary
+            </p>
+          )}
+        </span>
+        <p className="text-lg font-bold mt-1">{address.recepient}</p>
+        <p className="text-sm">{address.phone}</p>
+      </div>
       <AddressDetail label="province" name="jakarta" />
       <AddressDetail label="city" name="jakarta barat" />
       <AddressDetail label="address" name="daan mogot" />
@@ -44,7 +38,6 @@ const AddressCard = ({ address, i }: { address: AddressType; i: number }) => {
 const AddressDetail = ({ label, name }: { label: string; name: string }) => {
   return (
     <span className="flex items-end gap-2">
-      <p className="text-lg">{label}:</p>
       <p className="text-md">{name}</p>
     </span>
   )

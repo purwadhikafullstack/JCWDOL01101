@@ -2,6 +2,7 @@ import Sequelize from 'sequelize';
 import { NODE_ENV, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE } from '@config';
 import { logger } from '@utils/logger';
 import UserModel from '@/models/user.model';
+import AddressModel from '@/models/address.model';
 import ProvinceModel from '@/models/province.model';
 import CityModel from '@/models/city.model';
 import ProductModel from '@/models/product.model';
@@ -39,9 +40,13 @@ export const DB = {
   Product: ProductModel(sequelize),
   Province: ProvinceModel(sequelize),
   City: CityModel(sequelize),
+  Address: AddressModel(sequelize),
   sequelize,
   Sequelize,
 };
+
+DB.User.hasMany(DB.Address, { foreignKey: 'user_id', as: 'userAddress' });
+DB.Address.belongsTo(DB.User, { foreignKey: 'user_id', as: 'user' });
 
 DB.User.hasOne(DB.Cart, { foreignKey: 'user_id', as: 'userCart' });
 DB.Cart.belongsTo(DB.User, { foreignKey: 'user_id', as: 'userCart' });
@@ -52,3 +57,9 @@ DB.Cart.hasMany(DB.CartProduct, { foreignKey: 'cart_id', as: 'cartProducts' });
 DB.CartProduct.belongsTo(DB.Cart, { foreignKey: 'cart_id', as: 'cart' });
 DB.Product.hasMany(DB.CartProduct, { foreignKey: 'product_id', as: 'cartProducts' });
 DB.CartProduct.belongsTo(DB.Product, { foreignKey: 'product_id', as: 'product' });
+
+DB.Province.hasMany(DB.City, { foreignKey: 'province_id', as: 'provinces' });
+DB.City.belongsTo(DB.Province, { foreignKey: 'province_id', as: 'cityProvince' });
+
+DB.City.hasMany(DB.Address, { foreignKey: 'city_id', as: 'cities' });
+DB.Address.belongsTo(DB.City, { foreignKey: 'city_id', as: 'cityAddress' });

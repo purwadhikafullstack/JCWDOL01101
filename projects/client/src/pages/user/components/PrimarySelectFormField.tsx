@@ -3,38 +3,34 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { useFormContext } from "react-hook-form"
+import { Checkbox } from "@/components/ui/checkbox"
 
-const UserSelectFormField = () => {
+const PrimarySelectFormField = ({
+  name,
+  label,
+}: {
+  name: string
+  label: string
+}) => {
   const { control } = useFormContext()
   return (
     <FormField
       control={control}
-      name="isPrimary"
+      name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Select this address as primary address</FormLabel>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <FormControl>
-              <SelectTrigger>
-                <SelectValue placeholder={`Select Primary`} />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectItem value="true">Yes</SelectItem>
-              <SelectItem value="false">No</SelectItem>
-            </SelectContent>
-          </Select>
+          <FormControl>
+            <div className="flex gap-2 items-center">
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+              <span>{label}</span>
+            </div>
+          </FormControl>
           <FormMessage />
         </FormItem>
       )}
@@ -42,4 +38,4 @@ const UserSelectFormField = () => {
   )
 }
 
-export default UserSelectFormField
+export default PrimarySelectFormField

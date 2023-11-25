@@ -1,14 +1,103 @@
 import service from "@/service";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { useToast } from "@/components/ui/use-toast";
-import { Address, City, Province } from "@/context/UserContext";
+import { useQuery } from "@tanstack/react-query";
 
-type AddresForm = {
-  cityId: string,
-  provinceId: string,
-  addressDetail?: string,
-  isPrimary?: string,
+type Coordinates = {
+  latitude: number;
+  langitude: number;
+};
+
+export type OpenCageResults = {
+  formatted: string;
+  components: {
+    road: string;
+    city: string;
+    city_district: string;
+    country: string;
+    county: string;
+    postcode: string;
+    state: string;
+    region: string;
+    village: string;
+  };
+};
+
+export interface Address {
+  id?: number;
+  userId?: number;
+  recepient: string;
+  phone: string;
+  label: string;
+  cityId: number;
+  address: string;
+  notes?: string;
+  isPrimary: boolean;
+  isActive: boolean;
+  deletedAt: Date | null;
+}
+
+export const useGetLocationOnGeo = (coordinates: Coordinates | null) => {
+  const coords = useQuery<OpenCageResults>({
+    queryKey: ["location", coordinates?.latitude, coordinates?.langitude],
+    queryFn: async () => {
+      const res = await service.get(
+        `/address/current/${coordinates?.latitude}/${coordinates?.langitude}`
+      );
+
+      return res.data.data;
+    },
+    enabled: !!coordinates?.latitude && !!coordinates?.langitude,
+  });
+
+  return coords;
+};
+
+export const useAddress = () => {
+  const query = useQuery<Address[]>({
+    queryKey: ["address"],
+    queryFn: async () => {
+      const res = await service.get("/address");
+      return res.data.data;
+    },
+  });
+
+  return query;
+};
+
+export const useAddressByUserId = (userId: number) => {
+  const { data, isFetched, isLoading } = useQuery<Address[]>({
+    queryKey: ["address", userId],
+    queryFn: async () => {
+      const res = await service.get(`/address/user/${userId}`);
+      return res.data.data;
+    },
+    enabled: !!userId
+  });
+
+  return { data, isFetched, isLoading };
+};
+
+export const useActiveAddress = () => {
+  const query = useQuery<Address>({
+    queryKey: ["active-address"],
+    queryFn: async () => {
+      const res = await service.get("/address/active");
+      return res.data.data;
+    },
+  });
+
+  return query;
+};
+
+export interface City {
+  id: number
+  provinceId: number
+  city: string
+  postalCode: number
+}
+
+export interface Province {
+  id: number
+  province: string
 }
 
 export const useCity = () => {
@@ -52,79 +141,4 @@ export const useProvince = () => {
   });
 
   return { data, isFetched };
-};
-
-export const useAddress = (userId: number) => {
-  const { data, isLoading } = useQuery<Address>({
-    queryKey: ["address", userId],
-    queryFn: async () => {
-      const res = await service.get(`/addresses/user/${userId}`, {
-        withCredentials: true,
-      });
-      return res.data.data;
-    },
-    enabled: !!userId,
-  });
-
-  return { data, isLoading };
-};
-
-export const useAddressMutation = (userId: string) => {
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
-  const addressMutation = useMutation({
-    mutationFn: async (address: AddresForm) => {
-      await service.post("/address", { userId, ...address });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["addresses"] });
-    },
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        toast({
-          title: "Opps!, Something went Wrong",
-          description: error.response?.data.message,
-          variant: "destructive",
-        });
-      }
-    },
-  });
-
-  return { addressMutation };
-};
-
-export const useEditAddress = ({ addressId, userId }: { addressId: number; userId: number }) => {
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const addressMutation = useMutation({
-    mutationFn: async (address: AddresForm) =>
-      service.put(`/addresses/${addressId}`, { userId, ...address }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["addresses"] });
-    },
-
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        toast({
-          title: "Opps!, Something went Wrong",
-          description: error.response?.data.message,
-          variant: "destructive",
-        });
-      }
-    },
-  });
-
-  return addressMutation;
-};
-
-export const useDeleteAddress = (addressId: number) => {
-  const queryClient = useQueryClient();
-  const addressMutation = useMutation({
-    mutationFn: async () => service.delete(`/address/${addressId}`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["addresses"] });
-    },
-  });
-
-  return addressMutation;
 };

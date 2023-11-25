@@ -1,9 +1,18 @@
 import { buttonVariants } from "@/components/ui/button"
-import React from "react"
-import { Link } from "react-router-dom"
+import React, { useContext } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { Plus } from "lucide-react"
 
 import AddressCard from "../components/AddressCard"
+import NewAddressDialog from "../components/NewAddressDialog"
+import UserContext from "@/context/UserContext"
+import { useAddressByUserId } from "@/hooks/useAddress"
 
 const maps = [
   {
@@ -33,21 +42,38 @@ const maps = [
 ]
 
 const Address = () => {
+  const userContext = useContext(UserContext)
+  if (!userContext) {
+    throw new Error("useUser must be used within a UserProvider")
+  }
+  const { user } = userContext
+  const {
+    data: addresses,
+    isFetched,
+    isLoading,
+  } = useAddressByUserId(Number(user?.id))
+
   return (
     <>
       <div className="flex flex-col p-2 space-y-4">
-        <Link
-          to={`/user/address/create`}
-          className={buttonVariants({
-            variant: "default",
-            className: "self-end",
-          })}
-        >
-          <Plus className="w-4 h-4 mr-2" /> New Address
-        </Link>
-        {maps.map((address, i) => (
-          <AddressCard address={address} i={i} />
-        ))}
+        <Dialog>
+          <DialogTrigger
+            className={buttonVariants({
+              variant: "default",
+              className: "self-end",
+            })}
+          >
+            <Plus className="w-4 h-4 mr-2" /> New Address
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>New Address</DialogTitle>
+            </DialogHeader>
+            <NewAddressDialog name={user?.firstname || ""} userId={user?.id!} />
+          </DialogContent>
+        </Dialog>
+        {isFetched &&
+          addresses?.map((address) => <AddressCard address={address} />)}
       </div>
     </>
   )

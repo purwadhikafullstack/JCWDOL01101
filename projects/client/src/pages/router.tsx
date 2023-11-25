@@ -82,10 +82,6 @@ const router = createBrowserRouter([
             path: "address",
             element: <Address />,
           },
-          {
-            path: "address/create",
-            element: <NewAddressForm />,
-          },
         ],
       },
     ],
