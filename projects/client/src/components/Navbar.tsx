@@ -4,7 +4,6 @@ import SearchInput from "./SearchInput";
 import NavProfile from "./NavProfile";
 import NavDelivery from "./NavDelivery";
 import NavCart from "./NavCart";
-import NavCategory from "./NavCategory";
 import { useUser } from "@clerk/clerk-react";
 import { buttonVariants } from "./ui/button";
 import NavDropdown from "./NavDropdown";
@@ -13,7 +12,8 @@ import { User2 } from "lucide-react";
 const Navbar = () => {
   const location = useLocation();
   const [isDim, setIsDim] = useState(false);
-  const { isSignedIn } = useUser();
+  const { isSignedIn, isLoaded } = useUser();
+
   return (
     <>
       <nav className="w-full sticky top-0 p-2 border-b bg-background z-50">
@@ -23,10 +23,18 @@ const Navbar = () => {
               当店 <p className="hidden lg:block">| Toten</p>
             </span>
           </Link>
-          <NavCategory setIsDim={setIsDim} />
+          <Link
+            to="/category"
+            className={buttonVariants({
+              variant: "ghost",
+              className: "hidden md:block",
+            })}
+          >
+            All Products
+          </Link>
           <SearchInput />
           <div className="flex items-center">
-            {isSignedIn ? (
+            {isLoaded && isSignedIn ? (
               <>
                 <div className="items-center hidden lg:flex">
                   <NavCart setIsDim={setIsDim} />
@@ -52,7 +60,7 @@ const Navbar = () => {
                   </Link>
                 </div>
                 <div className="block lg:hidden">
-                  <NavDropdown icon={<User2 />} setIsDim={setIsDim}>
+                  <NavDropdown path="/" icon={<User2 />} setIsDim={setIsDim}>
                     <div className="flex gap-2 items-center">
                       <Link
                         to="/login"

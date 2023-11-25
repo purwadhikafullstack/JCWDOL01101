@@ -12,6 +12,7 @@ import {
   PackagePlus,
   PackageSearch,
   Settings,
+  ArrowLeftFromLine,
 } from "lucide-react";
 import React from "react";
 import { useLocation, Link } from "react-router-dom";
@@ -79,7 +80,7 @@ const DashboardSidebar = () => {
   return (
     <div className="p-4 flex h-full flex-col justify-between items-start">
       <div className="w-full">
-        <Link to="/">
+        <Link to="/dashboard">
           <div className="w-max mb-4">
             <span className="font-bold text-3xl text-primary">
               当店 | Toten
@@ -120,6 +121,15 @@ const DashboardSidebar = () => {
           >
             <Settings className="w-4 h-4 mr-4 group-hover:translate-x-1" />
             Setting
+          </Button>
+        </Link>
+        <Link to="/" className="w-full">
+          <Button
+            variant="ghost"
+            className="text-muted-foreground w-full justify-start"
+          >
+            <ArrowLeftFromLine className="w-4 h-4 mr-4 group-hover:translate-x-1" />
+            Main page
           </Button>
         </Link>
         <Button

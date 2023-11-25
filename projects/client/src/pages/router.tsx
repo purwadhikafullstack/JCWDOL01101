@@ -1,22 +1,27 @@
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 
-import Homepage from "./homepage/Homepage";
+import Homepage from "./homepage/content/Homepage";
 import MainLayout from "./MainLayout";
 import Register from "./auth/Register";
 import Login from "./auth/Login";
-import CategoryPage from "./category/CategoryPage";
+import CategoryPage from "./homepage/content/Category";
 import SSOCallback from "./auth/SSOCallback";
 import Verification from "./auth/Verification";
 
 import DashboardLayout from "./dashboard/DashboardLayout";
 import NotFound from "./dashboard/NotFound";
-import Product from "./dashboard/content/Product";
-import User from "./dashboard/content/User";
 import Dashboard from "./dashboard/content/Dashboard";
-import Warehouse from "./dashboard/content/Warehouse";
+import User from "./dashboard/content/User";
+import ManageAdmin from "./dashboard/content/Admin";
+import Product from "./dashboard/content/Product";
 import NewProductForm from "./dashboard/components/NewProductForm";
 import EditProductForm from "./dashboard/components/EditProductForm";
+import Warehouse from "./dashboard/content/Warehouse";
+import EditAdminForm from "./dashboard/components/EditAdminForm";
+import ProductDetail from "./homepage/content/ProductDetail";
+import Cart from "./homepage/content/Cart";
+import ProtectedRoute from "./ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +53,18 @@ const router = createBrowserRouter([
         path: "/category",
         element: <CategoryPage />,
       },
+      {
+        path: "/product/:slug",
+        element: <ProductDetail />,
+      },
+      {
+        path: "cart",
+        element: (
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
   {
@@ -68,11 +85,19 @@ const router = createBrowserRouter([
         element: <User />,
       },
       {
+        path: "manage-admin",
+        element: <ManageAdmin />,
+      },
+      {
+        path: "manage-admin/:userId",
+        element: <EditAdminForm />,
+      },
+      {
         path: "product",
         element: <Product />,
       },
       {
-        path: "product/:productId",
+        path: "product/:slug",
         element: <EditProductForm />,
       },
       {

@@ -1,22 +1,23 @@
-import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useUser } from "@clerk/clerk-react";
-import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { Bell } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import React from "react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useUser } from "@clerk/clerk-react"
+import { useState, useEffect } from "react"
+import { useLocation } from "react-router-dom"
+import { Bell } from "lucide-react"
+import { buttonVariants } from "@/components/ui/button"
+import { Link } from "react-router-dom"
 
 const DashboardNavbar = () => {
-  const { user } = useUser();
-  const [site, setSite] = useState("Dashboard");
-  const location = useLocation();
+  const { user } = useUser()
+  const [site, setSite] = useState("Dashboard")
+  const location = useLocation()
 
   useEffect(() => {
-    const paths = location.pathname.split("/");
-    const site = paths[paths.length - 1];
-    setSite(site || "Dashboard");
-  }, [location.pathname]);
+    const paths = location.pathname.split("/")
+    const site = paths[paths.length - 1]
+    const formatSite = site.replace(/-/g, " ")
+    setSite(formatSite || "Dashboard")
+  }, [location.pathname])
 
   return (
     <nav className="w-full sticky top-0 z-50">
@@ -42,7 +43,7 @@ const DashboardNavbar = () => {
         </div>
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default DashboardNavbar;
+export default DashboardNavbar

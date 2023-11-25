@@ -1,13 +1,14 @@
+import { Role, Status } from '@/interfaces';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
-  public role: string;
+  public role: Role;
 
   @IsNotEmpty()
   @IsString()
-  public externalId: string;
+  public role: string;
 
   @IsNotEmpty()
   @IsString()
@@ -31,5 +32,5 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
-  public status: string;
+  public status: Status;
 }

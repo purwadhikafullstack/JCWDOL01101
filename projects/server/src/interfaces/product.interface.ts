@@ -1,6 +1,9 @@
+import { Status } from '.';
+
 export interface Product {
   id?: number;
   categoryId?: number;
+  cartId?: number;
   name: string;
   price: number;
   stock: number;
@@ -8,5 +11,13 @@ export interface Product {
   image: string;
   weight: number;
   description: string;
-  status: string;
+  status: Status;
+  slug: string;
+}
+
+export interface GetFilterProduct {
+  page: number;
+  s: string;
+  filter: string;
+  order: string;
 }

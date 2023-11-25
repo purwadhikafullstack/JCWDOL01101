@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import { useProductMutation } from "@/hooks/useProduct";
+import { useProductMutation } from "@/hooks/useProductMutation";
 import { formatToIDR } from "@/lib/utils";
 import ImageUpload from "./ImageUpload";
 import ProductFormField from "./ProductFormField";
@@ -34,7 +34,6 @@ export const productSchema = z.object({
 });
 
 export type Image = {
-  new: boolean;
   url: string;
   file: File | undefined;
 };
@@ -52,7 +51,8 @@ const NewProductForm = () => {
   const { toast } = useToast();
   const [image, setImage] = useState<Image | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { productMutation, error: resError } = useProductMutation();
+  const { productMutation } = useProductMutation();
+
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
     defaultValues: emptyValues,
@@ -76,18 +76,7 @@ const NewProductForm = () => {
   };
 
   useEffect(() => {
-    if (resError?.state) {
-      toast({
-        title: `Error: ${resError.status}`,
-        description: resError.message,
-        variant: "destructive",
-        duration: 2000,
-      });
-    }
-  }, [resError, toast]);
-
-  useEffect(() => {
-    if (!resError?.state && productMutation.status === "success") {
+    if (productMutation.status === "success") {
       toast({
         title: "Product Created",
         description: "Successfully create a new product",
@@ -96,7 +85,7 @@ const NewProductForm = () => {
       form.reset(emptyValues);
       setImage(null);
     }
-  }, [form, productMutation.status, toast, resError]);
+  }, [form, productMutation.status, toast]);
 
   const formatNumber = (value: string) => {
     const numericValue = value.replace(/\D/g, "");
@@ -106,6 +95,16 @@ const NewProductForm = () => {
     return formattedValue;
   };
 
+  const setImageState = ({
+    file,
+    url,
+  }: {
+    edit?: boolean;
+    file: File;
+    url: string;
+  }) => {
+    setImage({ file, url });
+  };
   return (
     <div className="w-full">
       <span className="text-sm">
@@ -156,7 +155,10 @@ const NewProductForm = () => {
             <div className="space-y-8">
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <ImageUpload image={image as Image} setImage={setImage} />
+                  <ImageUpload
+                    image={image as Image}
+                    setImageState={setImageState}
+                  />
                   <p className="text-xs text-primary">{error}</p>
                 </div>
                 <FormField

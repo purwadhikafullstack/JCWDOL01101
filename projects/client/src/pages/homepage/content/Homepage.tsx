@@ -1,15 +1,21 @@
 import React from "react";
 import MainCarousel from "@/components/MainCarousel";
 import { Link } from "react-router-dom";
-import CategoryCard from "./CategoryCard";
-import ProductCard from "@/components/ProductCard";
+import CategoryCard from "../components/CategoryCard";
+import ProductCard from "@/pages/homepage/components/ProductCard";
 import TopProductCard from "@/components/TopProductCard";
 import { useProductUrl } from "@/hooks/useProduct";
+import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton";
+import HighestSellSkeleton from "@/components/skeleton/HighestSellSkeleton";
 
 const Homepage = () => {
-  const { data: newestProducts } = useProductUrl({
-    key: "new-products",
-    url: "/new-products",
+  const { data: newestProducts, isLoading } = useProductUrl({
+    key: ["new-products"],
+    url: "/products/new",
+  });
+  const { data: highestSell, isLoading: highestSellLoading } = useProductUrl({
+    key: ["highest-sell"],
+    url: "/products/highest-sell",
   });
   return (
     <>
@@ -46,22 +52,35 @@ const Homepage = () => {
             See All
           </Link>
         </span>
-        <section className="grid grid-cols-4 lg:grid-cols-6 gap-4">
-          <div className="col-span-4 lg:col-span-4 row-span-2">
-            <TopProductCard imageUrl="/placeholder/t-shirt-1.jpg" />
-          </div>
-          <div className="col-span-2 row-span-1">
-            <TopProductCard size="sm" imageUrl="/placeholder/black-shirt.jpg" />
-          </div>
-          <div className="col-span-2 row-span-1">
-            <TopProductCard size="sm" imageUrl="/placeholder/hoodie-1.jpg" />
-          </div>
-        </section>
+        {highestSellLoading ? (
+          <HighestSellSkeleton />
+        ) : (
+          <section className="grid grid-cols-4 lg:grid-cols-6 gap-4">
+            {highestSell?.map((product, i) => (
+              <div
+                key={product.id}
+                className={
+                  i === 0
+                    ? `col-span-4 lg:col-span-4 row-span-2`
+                    : "col-span-2 row-span-1"
+                }
+              >
+                <TopProductCard size={i !== 0 ? "sm" : ""} product={product} />
+              </div>
+            ))}
+          </section>
+        )}
         <h3 className="font-bold text-xl my-2 mt-8">Try our newest products</h3>
         <section className="grid grid-cols-2 md:grid-cols-4  lg:grid-cols-6 gap-2 gap-y-6">
-          {newestProducts?.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {isLoading ? (
+            <NewestProductSekeleton product={6} />
+          ) : (
+            <>
+              {newestProducts?.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </>
+          )}
         </section>
       </div>
     </>

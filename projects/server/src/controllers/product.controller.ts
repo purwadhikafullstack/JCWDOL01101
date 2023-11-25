@@ -1,5 +1,5 @@
 import { ProductDto } from '@/dtos/product.dto';
-import { Product } from '@/interfaces/product.interface';
+import { GetFilterProduct, Product } from '@/interfaces/product.interface';
 import { ProductService } from '@/services/product.service';
 import { NextFunction, Request, Response } from 'express';
 import Container from 'typedi';
@@ -7,15 +7,35 @@ import Container from 'typedi';
 export class ProductController {
   product = Container.get(ProductService);
 
-  public getProducts = async (req: Request, res: Response, next: NextFunction) => {
+  public getProducts = async (req: Request<{}, {}, {}, GetFilterProduct>, res: Response, next: NextFunction) => {
     try {
-      const { page, s } = req.query;
-      const { products, totalPages } = await this.product.getAllProduct({ page: Number(page), s: s as string });
+      const { page, s, order, filter } = req.query;
+      const { products, totalPages } = await this.product.getAllProduct({
+        s,
+        order,
+        filter,
+        page: Number(page),
+      });
       res.status(200).json({
         data: {
           products,
           totalPages,
         },
+        message: 'get.products',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public getProductsHomepage = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const page = Number(req.query.page);
+      const s = req.query.s as string;
+      const f = req.query.f as string;
+      const products = await this.product.getAllProductOnHomepage({ page, s, f });
+      res.status(200).json({
+        data: products,
         message: 'get.products',
       });
     } catch (err) {
@@ -35,10 +55,22 @@ export class ProductController {
     }
   };
 
+  public getHigestSellProducts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const products: Product[] = await this.product.getHighestSell();
+      res.status(200).json({
+        data: products,
+        message: 'get.highest',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   public getProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const productId = Number(req.params.productId);
-      const proudct: Product = await this.product.getProduct(productId);
+      const slug = String(req.params.slug);
+      const proudct: Product = await this.product.getProduct(slug);
       res.status(200).json({
         data: proudct,
         message: 'get.products',
@@ -73,7 +105,7 @@ export class ProductController {
 
   public updateProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const productId = Number(req.params.productId);
+      const slug = String(req.params.slug);
       const { product } = req.body;
       const parseProduct: ProductDto = JSON.parse(product);
       let image = parseProduct.image;
@@ -81,7 +113,7 @@ export class ProductController {
         const { path } = req.file as Express.Multer.File;
         image = path;
       }
-      const updatedProduct = await this.product.updateProduct(productId, {
+      const updatedProduct = await this.product.updateProduct(slug, {
         ...parseProduct,
         image,
         categoryId: Number(parseProduct.categoryId),

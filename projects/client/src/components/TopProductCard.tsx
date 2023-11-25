@@ -1,20 +1,26 @@
-import { Crown } from "lucide-react";
 import React from "react";
+import { baseURL } from "@/service";
+import { Crown } from "lucide-react";
 import { Link } from "react-router-dom";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
+import { convertToK, formatToIDR } from "@/lib/utils";
+import { Product } from "@/hooks/useProduct";
 
-const TopProductCard = ({
-  imageUrl,
-  size,
-}: {
-  imageUrl: string;
+type TopProductCardProps = {
+  product: Product;
   size?: string;
-}) => {
+};
+const TopProductCard = ({ product, size }: TopProductCardProps) => {
   return (
-    <Link to="product/1" className="relative block aspect-square h-full w-full">
+    <Link
+      to={`/product/${product.slug}`}
+      className="relative block aspect-square h-full w-full"
+    >
       <div className="group flex h-full w-full items-center justify-center overflow-hidden rounded-lg border bg-background hover:border-primary relative border-muted ">
-        <img
+        <LazyLoadImage
           className="relative h-full w-full object-contain transition duration-300 ease-in-out group-hover:scale-105"
-          src={imageUrl}
+          src={`${baseURL}/${product.image}`}
           alt="black shirt"
         />
         <div className="absolute top-0 left-0 p-4">
@@ -33,10 +39,13 @@ const TopProductCard = ({
               } justify-between flex  bg-black/80 p-2 backdrop-blur-sm rounded-full items-center pl-4 font-semibold`}
             >
               <h3
-                className={`
-                 line-clamp-2 text-sm lg:text-lg  flex-grow text-background mr-2 leading-none tracking-tight`}
+                className={`${
+                  size === "sm" &&
+                  "max-w-[60px] lg:max-w-[150px] overflow-hidden whitespace-nowrap text-ellipsis"
+                }
+                 lg:line-clamp-2 text-xs lg:text-lg  flex-grow text-background mr-2 leading-none tracking-tight`}
               >
-                Black shirt
+                {product.name}
               </h3>
               <span
                 className={`${
@@ -45,11 +54,15 @@ const TopProductCard = ({
               >
                 {size === "sm" ? (
                   <>
-                    <p className="lg:hidden block">54K</p>
-                    <p className="hidden lg:block">Rp. 54.000</p>
+                    <p className="lg:hidden block">
+                      {convertToK(product.price)}
+                    </p>
+                    <p className="hidden lg:block">
+                      {formatToIDR(product.price.toString())}
+                    </p>
                   </>
                 ) : (
-                  "Rp. 54.000"
+                  <>{formatToIDR(product.price.toString())}</>
                 )}
               </span>
             </div>
