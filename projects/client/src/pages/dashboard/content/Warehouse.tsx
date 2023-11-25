@@ -23,7 +23,7 @@ import { useDeleteWarehouse, useEditWarehouse, useGetWarehouse, useWarehouseMuta
 import { response } from "express";
 
 const Warehouse = () => {
-  type AddressType = {
+  type WarehouseAddressType = {
     id: number;
     addressDetail: string;
     cityId: number;
@@ -38,7 +38,7 @@ const Warehouse = () => {
     capacity: number;
     addressId: number; //
     userId: number;
-    address?: AddressType; 
+    warehouseAddress?: WarehouseAddressType; 
   };
   
   
@@ -58,8 +58,8 @@ const Warehouse = () => {
 
 
   const [warehouses, setWarehouses] = useState<WarehouseType[]>([]);
-  const [newWarehouse, setNewWarehouse] = useState({ name: '', capacity: 0, addressDetail: '' }); // add addressDetail here
-  const [editWarehouse, setEditWarehouse] = useState({ id: 0, name: '', capacity: 0,addressId:0 });
+  const [newWarehouse, setNewWarehouse] = useState({ name: '', capacity: 0, addressDetail: '' }); 
+  const [editWarehouse, setEditWarehouse] = useState({ id: 0, name: '', capacity: 0, addressId:0 });
   const [isEditing, setIsEditing] = useState(false);
 
   const [cities, setCities] = useState<CityType[]>([]);
@@ -68,7 +68,7 @@ const Warehouse = () => {
   const [selectedProvince, setSelectedProvince] = useState<ProvinceType | null>(null);
 
   useEffect(() => {
-    service.get("/warehouses/get")
+    service.get("/warehouses")
       .then(response => {
         if (Array.isArray(response.data.data)) {
           setWarehouses(response.data.data);
@@ -80,7 +80,7 @@ const Warehouse = () => {
         console.error("There was an error!", error);
       });
       
-    service.get("/cities/get")
+    service.get("/cities")
       .then(response => {
         if (Array.isArray(response.data.data)) {
           setCities(response.data.data);
@@ -92,19 +92,7 @@ const Warehouse = () => {
         console.error("There was an error!", error);
       });
 
-    service.get("/provinces/get")
-      .then(response => {
-        if (Array.isArray(response.data.data)) {
-          setProvinces(response.data.data);
-        } else {
-          console.error("Data is not an array:", response.data.data);
-        }
-      })
-      .catch(error => {
-        console.error("There was an error!", error);
-      });
-
-      service.get("/user/get")
+    service.get("/provinces")
       .then(response => {
         if (Array.isArray(response.data.data)) {
           setProvinces(response.data.data);
@@ -144,17 +132,17 @@ const Warehouse = () => {
       addressDetail: newWarehouse.addressDetail, 
     };
   
-    service.post("/addresses/post", addressData)
+    service.post("/warehouseAddresses", addressData)
       .then(response => {
         const newAddressId = response.data.data.id;
-        
+        console.log(newAddressId);
         const warehouseData = {
           ...newWarehouse,
-          addressId: newAddressId,
+          warehouseAddressId: newAddressId,
         };
 
 
-        service.post("/warehouses/post", warehouseData)
+        service.post("/warehouses", warehouseData)
           .then(response => {
             setWarehouses([...warehouses, response.data]);
           })
@@ -179,14 +167,14 @@ const Warehouse = () => {
       addressDetail: newWarehouse.addressDetail, 
     };
   
-    service.put(`/addresses/put/${editWarehouse.addressId}`, addressData)
+    service.put(`/warehouseAddresses/${editWarehouse.addressId}`, addressData)
       .then(response => {
         const warehouseData = {
           ...editWarehouse,
           addressId: response.data.id,
         };
   
-        service.put(`/warehouses/put/${editWarehouse.id}`, warehouseData)
+        service.put(`/warehouses/${editWarehouse.id}`, warehouseData)
           .then(response => {
             setWarehouses(warehouses.map(warehouse => warehouse.id === response.data.id ? response.data : warehouse));
             setIsEditing(false);
@@ -203,7 +191,7 @@ const Warehouse = () => {
   const handleDeleteWarehouse = (id: number) => {
     const confirmDelete = window.confirm("Are you sure you want to delete Warehouse?");
     if (confirmDelete) {
-      service.delete(`/warehouses/delete/${id}`)
+      service.delete(`/warehouses/${id}`)
         .then(() => {
           setWarehouses(warehouses.filter(warehouse => warehouse.id !== id));
         })
@@ -325,9 +313,9 @@ const Warehouse = () => {
               <TableRow key={warehouse.id}>
                 <TableCell className="font-medium">{warehouse.name}</TableCell>
                 <TableCell>{warehouse.capacity}</TableCell>
-                <TableCell>{warehouse.address?.addressDetail}</TableCell> 
-                <TableCell>{warehouse.address?.cityData?.provinceData?.province}</TableCell> 
-                <TableCell>{warehouse.address?.cityData?.city}</TableCell> 
+                <TableCell>{warehouse.warehouseAddress?.addressDetail}</TableCell> 
+                <TableCell>{warehouse.warehouseAddress?.cityData?.provinceData?.province}</TableCell> 
+                <TableCell>{warehouse.warehouseAddress?.cityData?.city}</TableCell> 
                 <TableCell>{warehouse.userId}</TableCell>
                 <Button onClick={() => handleEditWarehouse(warehouse)} className="self-end mt-1.5 mr-1">
                   Edit

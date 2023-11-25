@@ -12,8 +12,8 @@ export class ProvinceRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}/get`, this.Province.getProvince);
-    this.router.get(`${this.path}/get/:id(\\d+)`, this.Province.getProvinceById);
+    this.router.get(`${this.path}`, this.Province.getProvince);
+    this.router.get(`${this.path}/:id(\\d+)`, this.Province.getProvinceById);
   }
 }
 

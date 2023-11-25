@@ -1,21 +1,20 @@
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
-import { Address } from '@/interfaces/address.interface';
+import { WarehouseAddress } from '@/interfaces/warehouseAddress.interface';
 import { WarehouseModel } from './warehouse.model';
 import { ProvinceModel } from './province.model';
 
-export class AddressModel extends Model<Address> implements Address {
+export class WarehouseAddressModel extends Model<WarehouseAddress> implements WarehouseAddress {
   public id: number;
   public addressDetail: string;
   public cityId:number;
   public provinceId:number;
   
-
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
 
-export default function (sequelize: Sequelize): typeof AddressModel {
-  AddressModel.init(
+export default function (sequelize: Sequelize): typeof WarehouseAddressModel {
+  WarehouseAddressModel.init(
     {
       id: {
         autoIncrement: true,
@@ -36,20 +35,11 @@ export default function (sequelize: Sequelize): typeof AddressModel {
     },
     },
     {
-      tableName: 'addresses',
+      tableName: 'warehouseAddresses',
       sequelize,
     },
   );
 
-  AddressModel.hasOne(WarehouseModel, {
-    foreignKey: "addressId",
-    as: 'address' 
-  });
-  
-  WarehouseModel.belongsTo(AddressModel, {
-    foreignKey: "addressId",
-    as: 'address' 
-  });
 
-  return AddressModel;
+  return WarehouseAddressModel;
 }

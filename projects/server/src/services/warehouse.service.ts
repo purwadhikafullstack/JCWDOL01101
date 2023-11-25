@@ -8,8 +8,8 @@ export class WarehouseService {
     public async findAllWarehouse():Promise<Warehouse[]> {
       const allWarehouse: Warehouse[] = await DB.Warehouses.findAll({
         include: [{
-          model: DB.Addresses,
-          as: 'address',
+          model: DB.WarehouseAddresses,
+          as: 'warehouseAddress',
           attributes: ['addressDetail'],
           include: [{
             model: DB.Cities,

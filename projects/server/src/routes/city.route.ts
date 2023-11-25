@@ -12,8 +12,8 @@ export class CityRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}/get`, this.City.getCity);
-    this.router.get(`${this.path}/get/:id(\\d+)`, this.City.getCityById);
+    this.router.get(`${this.path}`, this.City.getCity);
+    this.router.get(`${this.path}/:id(\\d+)`, this.City.getCityById);
   }
 }
 

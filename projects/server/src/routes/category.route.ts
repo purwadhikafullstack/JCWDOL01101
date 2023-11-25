@@ -12,11 +12,11 @@ export class CategoryRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}/get`, this.category.getCategory);
-    this.router.get(`${this.path}/get/:id(\\d+)`, this.category.getCategoryById);
-    this.router.post(`${this.path}/post`, this.category.createCategory);
-    this.router.put(`${this.path}/put/:id(\\d+)`, this.category.updateCategory);
-    this.router.delete(`${this.path}/delete/:id(\\d+)`, this.category.deleteCategory);
+    this.router.get(`${this.path}`, this.category.getCategory);
+    this.router.get(`${this.path}/:id(\\d+)`, this.category.getCategoryById);
+    this.router.post(`${this.path}`, this.category.createCategory);
+    this.router.put(`${this.path}/:id(\\d+)`, this.category.updateCategory);
+    this.router.delete(`${this.path}/:id(\\d+)`, this.category.deleteCategory);
   }
 }
 

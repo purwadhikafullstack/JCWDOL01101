@@ -1,5 +1,6 @@
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
 import { Category } from '@/interfaces/category.interface';
+import { ProductModel } from './product.model';
 
 export class CategoryModel extends Model<Category> implements Category {
     public id: number;
@@ -24,7 +25,7 @@ export default function (sequelize: Sequelize): typeof CategoryModel {
             },
             imageUrl: {
                 allowNull: false,
-                type: DataTypes.STRING(45),
+                type: DataTypes.STRING(255),
             },
         },
         {
@@ -32,7 +33,6 @@ export default function (sequelize: Sequelize): typeof CategoryModel {
             sequelize,
         },
     );
-
 
     return CategoryModel;
 }

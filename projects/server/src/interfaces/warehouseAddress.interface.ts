@@ -1,4 +1,4 @@
-export interface Address{
+export interface WarehouseAddress{
     id?:number;
     cityId?:number;
     provinceId?:number;
