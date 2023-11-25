@@ -1,15 +1,6 @@
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
-import React from "react";
-import { createBrowserRouter } from "react-router-dom";
 
-import Homepage from "./homepage/content/Homepage";
-import MainLayout from "./MainLayout";
-import Register from "./auth/Register";
-import Login from "./auth/Login";
-import CategoryPage from "./homepage/content/Category";
-import SSOCallback from "./auth/SSOCallback";
-import Verification from "./auth/Verification";
 import Homepage from "./homepage/content/Homepage";
 import MainLayout from "./MainLayout";
 import Register from "./auth/Register";
@@ -76,10 +67,6 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/product/:slug",
-        element: <ProductDetail />,
-      },
-      {
         path: "cart",
         element: (
           <ProtectedRoute>
@@ -128,7 +115,6 @@ const router = createBrowserRouter([
       },
       {
         path: "product/:slug",
-        path: "product/:slug",
         element: <EditProductForm />,
       },
       {
@@ -138,7 +124,5 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-]);
 
-export default router;
 export default router;

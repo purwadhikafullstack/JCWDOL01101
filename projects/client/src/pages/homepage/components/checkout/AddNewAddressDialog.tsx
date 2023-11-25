@@ -23,6 +23,7 @@ export const addressSchema = z.object({
   formatPhone: z.string().min(9, "required").max(15),
   label: z.string().min(3, "required").max(30),
   cityId: z.string().min(3, "required"),
+  cityName: z.string().min(3, "required"),
   address: z.string().min(3, "required"),
   notes: z.string().optional(),
   isMain: z.boolean().default(false),
@@ -65,13 +66,13 @@ const AddNewAddressDialog = ({
   useEffect(() => {
     if (currentLocation) {
       const loc = currentLocation.components;
-      form.setValue("cityId", loc.city);
+      form.setValue("cityId", loc.city_code);
+      form.setValue("cityName", loc.city);
     }
   }, [currentLocation]);
 
   const onSubmit = (values: z.infer<typeof addressSchema>) => {
-    // addressMutation.mutate({ userId, ...values });
-    console.log(values);
+    addressMutation.mutate({ userId, ...values });
   };
 
   useEffect(() => {
@@ -84,7 +85,8 @@ const AddNewAddressDialog = ({
   const handleGetGeolocation = () => {
     if (currentLocation) {
       const loc = currentLocation.components;
-      form.setValue("cityId", loc.city);
+      form.setValue("cityId", loc.city_code);
+      form.setValue("cityName", loc.city);
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => {

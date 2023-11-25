@@ -83,10 +83,8 @@ const EditAddressDialog = ({
   useEffect(() => {
     if (currentLocation) {
       const loc = currentLocation.components;
-      form.setValue(
-        "cityId",
-        `${loc.city_district}, Kota ${loc.city}, ${loc.state}`
-      );
+      form.setValue("cityName", loc.city);
+      form.setValue("cityId", loc.city_code);
     }
   }, [currentLocation]);
 
@@ -103,7 +101,8 @@ const EditAddressDialog = ({
   const handleGetGeolocation = () => {
     if (currentLocation) {
       const loc = currentLocation.components;
-      form.setValue("cityId", loc.city);
+      form.setValue("cityId", loc.city_code);
+      form.setValue("cityName", loc.city);
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => {

@@ -28,9 +28,15 @@ const CityField = ({
   const ref = useRef<HTMLDivElement | null>(null);
   const [show, setShow] = useState(false);
   const form = useFormContext();
-  const [search, setSearch] = useState("");
+  const cityName = form.getValues("cityName");
+  const [search, setSearch] = useState(cityName || "");
   const [debounceSearch] = useDebounce(search, 500);
   const { data: cities, isLoading: citiesLoading } = useCity(debounceSearch);
+  useEffect(() => {
+    if (cityName) {
+      setSearch(cityName);
+    }
+  }, [cityName]);
 
   useOutsideClick(ref, () => {
     setShow(false);
@@ -38,7 +44,7 @@ const CityField = ({
   return (
     <FormField
       control={form.control}
-      name="cityId"
+      name="cityName"
       render={({ field }) => (
         <FormItem>
           <FormLabel htmlFor="city" className="font-bold">
@@ -76,19 +82,28 @@ const CityField = ({
                       </div>
                     ) : (
                       <>
-                        {cities.map((city) => (
-                          <div
-                            onClick={() => {
-                              setSearch(city.cityName);
-                              setShow(false);
-                              form.setValue("cityId", city.cityId);
-                            }}
-                            key={city.cityId}
-                            className="w-full p-2 rounded-md hover:bg-muted"
-                          >
-                            {city.cityName}
-                          </div>
-                        ))}
+                        {cities.length > 0 ? (
+                          <>
+                            {cities.map((city) => (
+                              <div
+                                onClick={() => {
+                                  setSearch(city.cityName);
+                                  setShow(false);
+                                  form.setValue("cityId", city.cityId);
+                                  form.setValue("cityName", city.cityName);
+                                }}
+                                key={city.cityId}
+                                className="w-full p-2 rounded-md hover:bg-muted"
+                              >
+                                {city.cityName}
+                              </div>
+                            ))}
+                          </>
+                        ) : (
+                          <p className="text-center p-2 mx-auto">
+                            no city found
+                          </p>
+                        )}
                       </>
                     )}
                   </div>
