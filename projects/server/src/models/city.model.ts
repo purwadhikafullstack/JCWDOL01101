@@ -1,39 +1,29 @@
-import { Sequelize, DataTypes, Model } from 'sequelize';
 import { City } from '@/interfaces/city.interface';
+import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class CityModel extends Model<City> implements City {
-  public id?: number;
-  public provinceId?: number;
-  public city: string;
-  public postalCode: number;
+  public cityId: string;
+  public provinceId: string;
+  public province: string;
+  public cityName: string;
+  public postalCode: string;
+  public type: string;
 }
 
 export default function (sequelize: Sequelize): typeof CityModel {
   CityModel.init(
     {
-      id: {
-        autoIncrement: true,
+      cityId: {
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING(256),
       },
-      provinceId: {
-        allowNull: false,
-        type: DataTypes.INTEGER,
-      },
-      city: {
-        allowNull: false,
-        type: DataTypes.STRING(100),
-      },
-      postalCode: {
-        allowNull: false,
-        type: DataTypes.INTEGER,
-      },
+      provinceId: DataTypes.STRING(256),
+      province: DataTypes.STRING(256),
+      cityName: DataTypes.STRING(256),
+      postalCode: DataTypes.STRING(256),
+      type: DataTypes.STRING(256),
     },
-    {
-      tableName: 'cities',
-      sequelize,
-      timestamps: false,
-    },
+    { sequelize, tableName: 'cities', timestamps: false },
   );
 
   return CityModel;

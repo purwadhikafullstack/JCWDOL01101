@@ -19,7 +19,7 @@ export class AddressDto {
 
   @IsNotEmpty()
   @IsString()
-  public cityId: number;
+  public cityId: string;
 
   @IsNotEmpty()
   @IsString()
@@ -32,5 +32,5 @@ export class AddressDto {
 
   @IsNotEmpty()
   @IsBoolean()
-  public isPrimary: boolean;
+  public isMain: boolean;
 }

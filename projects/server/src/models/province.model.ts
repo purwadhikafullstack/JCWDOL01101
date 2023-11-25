@@ -1,29 +1,21 @@
-import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
 import { Province } from '@/interfaces/province.interface';
+import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class ProvinceModel extends Model<Province> implements Province {
-  public id?: number;
+  public provinceId: string;
   public province: string;
 }
 
 export default function (sequelize: Sequelize): typeof ProvinceModel {
   ProvinceModel.init(
     {
-      id: {
-        autoIncrement: true,
+      provinceId: {
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING(256),
       },
-      province: {
-        allowNull: false,
-        type: DataTypes.STRING(45),
-      },
+      province: DataTypes.STRING(256),
     },
-    {
-      tableName: 'provinces',
-      sequelize,
-      timestamps: false,
-    },
+    { sequelize, tableName: 'province', timestamps: false },
   );
 
   return ProvinceModel;

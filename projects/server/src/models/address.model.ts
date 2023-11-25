@@ -1,16 +1,14 @@
 import { Address } from '@/interfaces/address.interface';
-import { DataTypes, Model, Sequelize } from 'sequelize';
+import { DataTypes, Model, Op, Sequelize } from 'sequelize';
 
 export class AddressModel extends Model<Address> implements Address {
-  userId?: number;
-  addressDetail: string;
   public id?: number;
   public recepient: string;
   public phone: string;
   public label: string;
-  public cityId: number;
+  public cityId: string;
   public address: string;
-  public isPrimary: boolean;
+  public isMain: boolean;
   public isActive: boolean;
   public deletedAt: Date;
   public notes?: string;
@@ -38,7 +36,7 @@ export default function (sequelize: Sequelize): typeof AddressModel {
       },
       cityId: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING(255),
       },
       address: {
         allowNull: false,
@@ -48,7 +46,7 @@ export default function (sequelize: Sequelize): typeof AddressModel {
         allowNull: true,
         type: DataTypes.STRING(255),
       },
-      isPrimary: {
+      isMain: {
         allowNull: false,
         type: DataTypes.BOOLEAN,
         defaultValue: false,
@@ -70,6 +68,43 @@ export default function (sequelize: Sequelize): typeof AddressModel {
     {
       sequelize,
       tableName: 'address',
+      paranoid: true,
+      hooks: {
+        afterCreate: async (address, options) => {
+          if (address.isMain) {
+            await AddressModel.update(
+              {
+                isMain: false,
+              },
+              {
+                where: {
+                  id: {
+                    [Op.not]: address.id,
+                  },
+                },
+                transaction: options.transaction,
+              },
+            );
+          }
+        },
+        afterUpdate: async (address, options) => {
+          if (address.isMain) {
+            await AddressModel.update(
+              {
+                isMain: false,
+              },
+              {
+                where: {
+                  id: {
+                    [Op.not]: address.id,
+                  },
+                },
+                transaction: options.transaction,
+              },
+            );
+          }
+        },
+      },
     },
   );
 

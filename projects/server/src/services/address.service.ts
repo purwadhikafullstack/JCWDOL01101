@@ -34,7 +34,7 @@ export class AddressService {
   }
 
   public async getAllAddressByUserId(userId: number): Promise<Address[]> {
-    const findAddress = await DB.Address.findAll({ where: { deletedAt: null, userId }, order: [['isPrimary', 'DESC']] });
+    const findAddress = await DB.Address.findAll({ where: { deletedAt: null, userId }, order: [['isMain', 'DESC']] });
 
     return findAddress;
   }
@@ -47,17 +47,17 @@ export class AddressService {
 
   public async createAddress(addressData: AddressDto): Promise<Address> {
     const newAddress: Address = await DB.Address.create({ ...addressData });
-    if (addressData.isPrimary) {
+    if (addressData.isMain) {
       await DB.Address.update(
         {
-          isPrimary: false,
+          isMain: false,
         },
         { where: {} },
       );
 
       await DB.Address.update(
         {
-          isPrimary: true,
+          isMain: true,
         },
         { where: { id: newAddress.id } },
       );
@@ -69,10 +69,10 @@ export class AddressService {
     const findAddress: Address = await DB.Address.findOne({ where: { id: addressId } });
     if (!findAddress) throw new HttpException(409, "Address doesn't exists");
 
-    if (addressData.isPrimary) {
+    if (addressData.isMain) {
       await DB.Address.update(
         {
-          isPrimary: false,
+          isMain: false,
         },
         { where: {} },
       );

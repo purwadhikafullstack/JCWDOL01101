@@ -24,8 +24,8 @@ const addressSchema = z.object({
   recepient: z.string().min(4, "required").max(50),
   phone: z.string().min(9, "required").max(15),
   label: z.string().min(3, "required").max(30),
-  provinceId: z.number().min(1, "required"),
-  cityId: z.number().min(1, "required"),
+  provinceId: z.string().min(1, "required"),
+  cityId: z.string().min(1, "required"),
   address: z.string().min(3, "required"),
   isPrimary: z.boolean().default(false),
 })
@@ -34,8 +34,8 @@ const emptyValues = {
   recepient: "",
   phone: "",
   label: "",
-  cityId: 0,
-  provinceId: 0,
+  cityId: "0",
+  provinceId: "0",
   address: "",
   isPrimary: false,
 }
@@ -78,8 +78,13 @@ const NewAddressDialog = ({
   }, [name, form])
 
   const onSubmit = (values: z.infer<typeof addressSchema>) => {
-    // addressMutation.mutate({ userId, ...values })
-    console.log(values)
+    const formData = {
+      ...values,
+      cityId: Number(form.getValues("cityId")),
+      provinceId: Number(form.getValues("provinceId")),
+    }
+    console.log(formData)
+    // addressMutation.mutate({ userId, ...formData })
   }
 
   useEffect(() => {
@@ -128,7 +133,7 @@ const NewAddressDialog = ({
   }, [cityInputRef])
 
   const { data: cityByProvince, isFetched } = useCityByProvinceId(
-    form.getValues("provinceId")
+    Number(form.getValues("provinceId"))
   )
 
   return (

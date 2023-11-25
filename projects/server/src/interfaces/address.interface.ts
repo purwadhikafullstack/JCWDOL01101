@@ -4,10 +4,10 @@ export interface Address {
   recepient: string;
   phone: string;
   label: string;
-  cityId: number;
+  cityId: string;
   address: string;
   notes?: string;
-  isPrimary: boolean;
+  isMain: boolean;
   isActive: boolean;
   deletedAt: Date | null;
 }
