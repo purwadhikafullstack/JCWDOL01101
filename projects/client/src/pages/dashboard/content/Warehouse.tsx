@@ -22,41 +22,40 @@ import service from "@/service";
 import { useDeleteWarehouse, useEditWarehouse, useGetWarehouse, useWarehouseMutation } from "@/hooks/useWarehouse";
 import { response } from "express";
 
+type WarehouseAddressType = {
+  id: number;
+  addressDetail: string;
+  cityId: number;
+  provinceId: number;
+  cityData?: CityType; 
+};
+
+
+type WarehouseType = {
+  id: number;
+  name: string;
+  capacity: number;
+  addressId: number; //
+  userId: number;
+  warehouseAddress?: WarehouseAddressType; 
+};
+
+
+type CityType = {
+  id: number;
+  city: string;
+  provinceId: number;
+  postal_code: number;
+  provinceData?: ProvinceType; 
+};
+
+
+type ProvinceType = {
+  id: number;
+  province: string;
+};
+
 const Warehouse = () => {
-  type WarehouseAddressType = {
-    id: number;
-    addressDetail: string;
-    cityId: number;
-    provinceId: number;
-    cityData?: CityType; 
-  };
-  
-  
-  type WarehouseType = {
-    id: number;
-    name: string;
-    capacity: number;
-    addressId: number; //
-    userId: number;
-    warehouseAddress?: WarehouseAddressType; 
-  };
-  
-  
-  type CityType = {
-    id: number;
-    city: string;
-    provinceId: number;
-    postal_code: number;
-    provinceData?: ProvinceType; 
-  };
-  
-
-  type ProvinceType = {
-    id: number;
-    province: string;
-  };
-
-
   const [warehouses, setWarehouses] = useState<WarehouseType[]>([]);
   const [newWarehouse, setNewWarehouse] = useState({ name: '', capacity: 0, addressDetail: '' }); 
   const [editWarehouse, setEditWarehouse] = useState({ id: 0, name: '', capacity: 0, addressId:0 });
