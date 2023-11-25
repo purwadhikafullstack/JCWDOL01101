@@ -21,7 +21,12 @@ export class WarehouseService {
               attributes: ['province']
             }]
           }]
-        }]
+        },{
+          model:DB.User,
+          as:'userData',
+          attributes:['username']
+        }
+      ]
       });
       
         return allWarehouse;

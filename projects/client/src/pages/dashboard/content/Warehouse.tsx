@@ -103,6 +103,18 @@ const Warehouse = () => {
       .catch(error => {
         console.error("There was an error!", error);
       });
+
+      service.get("/user/get")
+      .then(response => {
+        if (Array.isArray(response.data.data)) {
+          setProvinces(response.data.data);
+        } else {
+          console.error("Data is not an array:", response.data.data);
+        }
+      })
+      .catch(error => {
+        console.error("There was an error!", error);
+      });
   }, []);
 
   const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -214,31 +226,31 @@ const Warehouse = () => {
           <div className="p-4">
             <h2 className="text-lg font-bold mb-2">Add New Warehouse</h2>
             <form>
-              <label className="block mb-2">
+              <label className="block mb-2 flex justify-between">
                 Name:
                 <input type="text" name="name" value={newWarehouse.name} onChange={handleInputChange} required className="mt-1 p-2 border rounded" />
               </label>
-              <label className="block mb-2">
+              <label className="block mb-2 flex justify-between">
                 Capacity:
                 <input type="number" name="capacity" value={newWarehouse.capacity} onChange={(e) => setNewWarehouse({ ...newWarehouse, capacity: Number(e.target.value) })} required className="mt-1 p-2 border rounded" />
               </label>
 
-              <label className="block mb-2">
+              <label className="block mb-2 flex justify-between">
                 Address Detail:
                 <input type="text" name="addressDetail" value={newWarehouse.addressDetail} onChange={handleInputChange} required className="mt-1 p-2 border rounded" />
               </label>
 
-              <label className="block mb-2">
+              <label className="block mb-2 flex justify-between">
                 City:
                 <select name="city" value={selectedCity?.id || ''} onChange={handleCityChange} required className="mt-1 p-2 border rounded">
-                  <option value="">Select a city</option>
+                  <option value="" >Select a city</option>
                   {cities.map(city => (
                     <option key={city.id} value={city.id}>{city.city}</option>
                   ))}
                 </select>
               </label>
 
-              <label className="block mb-2">
+              <label className="block mb-2 flex justify-between">
                 Province:
                 <input type="text" value={selectedProvince?.province || ''} readOnly className="mt-1 p-2 border rounded" />
               </label>
@@ -263,30 +275,31 @@ const Warehouse = () => {
         <Dialog open={isEditing}>
         <DialogTitle>Edit Warehouse</DialogTitle>
         <DialogContent>
-          <label>
+          <h2 className="text-lg font-bold mb-2">Edit Warehouse</h2>
+          <label className="block flex justify-between">
             Name:
-            <input type="text" name="name" value={editWarehouse.name} onChange={(e) => setEditWarehouse({ ...editWarehouse, name: e.target.value })} />
+            <input type="text" name="name" value={editWarehouse.name} onChange={(e) => setEditWarehouse({ ...editWarehouse, name: e.target.value })}  className=" p-2 border rounded"/>
           </label>
-          <label>
+          <label className="block flex justify-between">
             Capacity:
-            <input type="number" name="capacity" value={editWarehouse.capacity} onChange={(e) => setEditWarehouse({ ...editWarehouse, capacity: Number(e.target.value) })} />
+            <input type="number" name="capacity" value={editWarehouse.capacity} onChange={(e) => setEditWarehouse({ ...editWarehouse, capacity: Number(e.target.value) })} className="p-2 border rounded" />
           </label>
-          <label>
+          <label className="block flex justify-between">
             Address Detail:
-            <input type="text" name="addressDetail" value={newWarehouse.addressDetail} onChange={handleInputChange} />
+            <input type="text" name="addressDetail" value={newWarehouse.addressDetail} onChange={handleInputChange} className="mt-1 p-2 border rounded"/>
           </label>
-          <label>
+          <label className="block flex justify-between">
             City:
-            <select name="city" value={selectedCity?.id || ''} onChange={handleCityChange}>
+            <select name="city" value={selectedCity?.id || ''} onChange={handleCityChange} className="p-2 border rounded">
               <option value="">Select a city</option>
               {cities.map(city => (
                 <option key={city.id} value={city.id}>{city.city}</option>
               ))}
             </select>
           </label>
-          <label>
+          <label className="block flex justify-between">
             Province:
-            <input type="text" value={selectedProvince?.province || ''} readOnly />
+            <input type="text" value={selectedProvince?.province || ''} readOnly  className="p-2 border rounded"/>
           </label>
           <DialogFooter>
             <Button onClick={handleUpdateWarehouse}>Update</Button>
