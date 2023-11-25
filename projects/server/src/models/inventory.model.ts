@@ -35,17 +35,5 @@ export default function (sequelize: Sequelize): typeof InventoryModel {
         },
     );
 
-    // WarehouseModel.hasMany(InventoryModel, {
-    //   foreignKey: "inventoryId",
-    // });
-
-    // InventoryModel.belongsTo(WarehouseModel);
-
-    // ProductModel.hasMany(InventoryModel, {
-    //   foreignKey: "productId",
-    // });
-
-    // InventoryModel.belongsTo(ProductModel);
-
     return InventoryModel;
 }

@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { Routes } from '@interfaces/routes.interface';
-// import { WarehouseController } from '@/controllers/warehouse.controller';
 import { CityController } from '@/controllers/city.controller';
 
 export class CityRoute implements Routes {
