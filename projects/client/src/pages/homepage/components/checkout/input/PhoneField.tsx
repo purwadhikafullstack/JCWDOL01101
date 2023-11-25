@@ -8,6 +8,7 @@ import {
 import { Input } from "@/components/ui/input";
 import React from "react";
 import { useFormContext } from "react-hook-form";
+const LIMIT = 15;
 
 const PhoneField = () => {
   const form = useFormContext();
@@ -22,16 +23,29 @@ const PhoneField = () => {
       name="formatPhone"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Phone Number</FormLabel>
+          <FormLabel className="font-bold" htmlFor="phone">
+            Phone Number
+          </FormLabel>
           <FormControl>
-            <Input
-              {...field}
-              value={form.watch("formatPhone") || ""}
-              onChange={(e) => {
-                const formattedPhoneNumber = formatPhoneNumber(e.target.value);
-                field.onChange(formattedPhoneNumber);
-              }}
-            />
+            <div className="w-full flex flex-col gap-2">
+              <Input
+                id="phone"
+                {...field}
+                value={form.watch("formatPhone") || ""}
+                onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  e.target.value = e.target.value.slice(0, LIMIT);
+                }}
+                onChange={(e) => {
+                  const formattedPhoneNumber = formatPhoneNumber(
+                    e.target.value
+                  );
+                  field.onChange(formattedPhoneNumber);
+                }}
+              />
+              <span className="self-end text-xs text-muted-foreground">{`${
+                form.getValues("phone").length
+              }/${LIMIT}`}</span>
+            </div>
           </FormControl>
           <FormMessage />
         </FormItem>

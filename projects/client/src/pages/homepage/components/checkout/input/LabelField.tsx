@@ -11,6 +11,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 const labels = ["Rumah", "Apartemen", "Kantor", "Kos"];
+const LIMIT = 30;
 
 const LabelField = () => {
   const [show, setShow] = useState(false);
@@ -33,24 +34,38 @@ const LabelField = () => {
       name="label"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Label Address</FormLabel>
+          <FormLabel className="font-bold" htmlFor="label">
+            Label Address
+          </FormLabel>
           <FormControl>
-            <div ref={ref}>
-              <Input {...field} onClick={() => setShow(true)} />
-
-              {show && (
-                <div className="flex gap-2 items-center mt-8">
-                  {labels.map((label) => (
-                    <span
-                      key={label}
-                      onClick={() => setLabel(label)}
-                      className="py-1 px-4 rounded-md border border-primary text-primary bg-background transition-all duration-200 hover:bg-primary/5 cursor-pointer"
-                    >
-                      {label}
-                    </span>
-                  ))}
-                </div>
-              )}
+            <div className="flex flex-col gap-2 w-full">
+              <Input
+                id="label"
+                {...field}
+                value={field.value}
+                onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  e.target.value = e.target.value.slice(0, LIMIT);
+                }}
+                onClick={() => setShow(true)}
+              />
+              <span className="self-end text-xs text-muted-foreground">{`${
+                form.getValues("label").length
+              }/${LIMIT}`}</span>
+              <div ref={ref}>
+                {show && (
+                  <div className="flex gap-2 items-center">
+                    {labels.map((label) => (
+                      <span
+                        key={label}
+                        onClick={() => setLabel(label)}
+                        className="py-1 px-4 rounded-md border border-primary text-primary bg-background transition-all duration-200 hover:bg-primary/5 cursor-pointer"
+                      >
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </FormControl>
           <FormMessage />

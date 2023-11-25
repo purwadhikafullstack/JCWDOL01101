@@ -29,7 +29,7 @@ const EditCityField = ({
   const [show, setShow] = useState(false);
   const form = useFormContext();
   const [search, setSearch] = useState(form.getValues("cityName"));
-  const [debounceSearch] = useDebounce(search, 1000);
+  const [debounceSearch] = useDebounce(search, 500);
   const { data: cities, isLoading: citiesLoading } = useCity(debounceSearch);
 
   useOutsideClick(ref, () => {
@@ -41,7 +41,9 @@ const EditCityField = ({
       name="cityName"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>City</FormLabel>
+          <FormLabel className="font-bold" htmlFor="city">
+            City
+          </FormLabel>
           <FormControl>
             <div ref={ref}>
               <div className="flex gap-2 items-center">
@@ -56,6 +58,7 @@ const EditCityField = ({
                   )}
                 </div>
                 <Input
+                  id="city"
                   {...field}
                   value={search}
                   onChange={(e) => {

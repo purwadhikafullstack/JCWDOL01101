@@ -8,6 +8,7 @@ import {
 import { Input } from "@/components/ui/input";
 import React from "react";
 import { useFormContext } from "react-hook-form";
+const LIMIT = 50;
 
 const RecepientField = () => {
   const form = useFormContext();
@@ -17,9 +18,23 @@ const RecepientField = () => {
       name="recepient"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Recepeint's name</FormLabel>
+          <FormLabel className="font-bold" htmlFor="recepient">
+            Recepeint's name
+          </FormLabel>
           <FormControl>
-            <Input {...field} />
+            <div className="w-full flex flex-col gap-2">
+              <Input
+                id="recepient"
+                {...field}
+                value={field.value}
+                onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  e.target.value = e.target.value.slice(0, LIMIT);
+                }}
+              />
+              <span className="self-end text-xs text-muted-foreground">{`${
+                form.getValues("recepient").length
+              }/${LIMIT}`}</span>
+            </div>
           </FormControl>
           <FormMessage />
         </FormItem>

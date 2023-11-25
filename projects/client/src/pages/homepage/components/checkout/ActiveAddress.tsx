@@ -16,11 +16,14 @@ const ActiveAddress = ({
             <div className="flex text-sm gap-2 items-center">
               <b>{activeAddress?.recepient}</b>
               <span>({activeAddress?.label})</span>
-              <Badge variant="default" className="rounded-md">
-                default
-              </Badge>
+              {activeAddress?.isMain && (
+                <Badge variant="default" className="rounded-md">
+                  Main
+                </Badge>
+              )}
             </div>
             <div className="flex flex-col text-sm text-muted-foreground">
+              <span>{activeAddress?.phone}</span>
               <span>{activeAddress?.address}</span>
               <span>
                 {`${activeAddress?.city.cityName}, ${activeAddress.city.province}`}

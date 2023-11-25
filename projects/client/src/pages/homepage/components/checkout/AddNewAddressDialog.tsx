@@ -70,7 +70,8 @@ const AddNewAddressDialog = ({
   }, [currentLocation]);
 
   const onSubmit = (values: z.infer<typeof addressSchema>) => {
-    addressMutation.mutate({ userId, ...values });
+    // addressMutation.mutate({ userId, ...values });
+    console.log(values);
   };
 
   useEffect(() => {
@@ -133,7 +134,7 @@ const AddNewAddressDialog = ({
             Complete the detailed address
           </h3>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
               <AddAddressForm
                 isPending={addressMutation.isPending}
                 location={location}

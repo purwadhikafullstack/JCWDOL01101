@@ -49,7 +49,7 @@ const AddAddressForm = ({
         <Button
           disabled={!tos}
           type="submit"
-          className="w-[60%] text-lg font-bold lg:py-6"
+          className="w-[60%] text-lg font-bold lg:py-6 mt-4"
         >
           {isPending && <Loader2 className="animate-spin w-4 h-4 mr-2" />}
           Submit

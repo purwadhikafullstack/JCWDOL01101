@@ -8,6 +8,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import React from "react";
 import { useFormContext } from "react-hook-form";
+const LIMIT = 200;
 
 const AddressField = () => {
   const form = useFormContext();
@@ -17,9 +18,24 @@ const AddressField = () => {
       name="address"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Address</FormLabel>
+          <FormLabel htmlFor="address" className="font-bold">
+            Address
+          </FormLabel>
           <FormControl>
-            <Textarea className="resize-none" {...field} />
+            <div className="flex flex-col gap-2 w-full">
+              <Textarea
+                id="address"
+                className="resize-none"
+                {...field}
+                value={field.value}
+                onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                  e.target.value = e.target.value.slice(0, LIMIT);
+                }}
+              />
+              <span className="self-end text-xs text-muted-foreground">{`${
+                form.getValues("address").length
+              }/${LIMIT}`}</span>
+            </div>
           </FormControl>
           <FormMessage />
         </FormItem>
