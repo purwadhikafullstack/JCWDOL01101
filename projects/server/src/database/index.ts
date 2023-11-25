@@ -38,6 +38,8 @@ export const DB = {
   User: UserModel(sequelize),
   Cart: CartModel(sequelize),
   CartProduct: CartProductModel(sequelize),
+  Cart: CartModel(sequelize),
+  CartProduct: CartProductModel(sequelize),
   Product: ProductModel(sequelize),
   Address: AddressModel(sequelize),
   Provice: ProvinceModel(sequelize),
