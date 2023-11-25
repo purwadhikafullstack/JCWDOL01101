@@ -94,6 +94,23 @@ export const useAddress = (search: string) => {
   return query;
 };
 
+export const useCity = (search: string) => {
+  const query = useQuery<City[]>({
+    queryKey: ["address/city", search],
+    queryFn: async () => {
+      const res = await service.get("/address/city", {
+        params: {
+          search,
+        },
+      });
+      return res.data.data;
+    },
+    enabled: !!search,
+  });
+
+  return query;
+};
+
 export const useAddressById = (addressId: number) => {
   const query = useQuery<Address>({
     queryKey: ["address", addressId],

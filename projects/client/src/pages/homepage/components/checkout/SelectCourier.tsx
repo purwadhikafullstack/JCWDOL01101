@@ -1,4 +1,3 @@
-import SelectCourierSkeleton from "@/components/skeleton/SelectCourierSkeleton";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Select,
@@ -8,11 +7,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Address } from "@/hooks/useAddress";
 import { useCourier } from "@/hooks/useCheckout";
 import { Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
+import { useBoundStore } from "@/store/client/useStore";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 type Service = {
@@ -34,6 +33,10 @@ const SelectCourier = ({
   quantity: number;
   address: Address | undefined;
 }) => {
+  const addShippingFee = useBoundStore((state) => state.addShippingFee);
+  const getTotalShippingFee = useBoundStore(
+    (state) => state.getTotalShippingFee
+  );
   const [courier, setCourier] = useState("jne");
   const [service, setService] = useState("0");
   const { data, isLoading } = useCourier({
@@ -45,6 +48,13 @@ const SelectCourier = ({
   const selectedService: Service = data
     ? data?.costs[Number(service)]
     : { service: "", description: "", cost: [] };
+
+  useEffect(() => {
+    if (selectedService.cost.length > 0) {
+      addShippingFee(product.id!, selectedService.cost[0].value);
+      getTotalShippingFee();
+    }
+  }, [selectedService]);
 
   return (
     <div className="w-full">
@@ -73,7 +83,12 @@ const SelectCourier = ({
         <>
           <div className="mt-2 text-muted-foreground grid grid-cols-2 gap-2">
             <span>{data?.name}</span>
-            <Select value={service} onValueChange={setService}>
+            <Select
+              value={service}
+              onValueChange={(value) => {
+                setService(value);
+              }}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select Service" />
               </SelectTrigger>

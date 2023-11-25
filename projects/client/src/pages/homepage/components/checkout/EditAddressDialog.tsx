@@ -1,0 +1,167 @@
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/custom-dialog";
+import { Separator } from "@/components/ui/separator";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowLeft, X } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Form } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useAddressById, useGetLocationOnGeo } from "@/hooks/useAddress";
+import { usePutAddress } from "@/hooks/useAddressMutation";
+import EditForm from "./EditForm";
+import z from "zod";
+
+export const editAddressSchema = z.object({
+  recepient: z.string().min(4, "required").max(50),
+  phone: z.string().min(9, "required").max(15),
+  formatPhone: z.string().min(9, "required").max(15),
+  label: z.string().min(3, "required").max(30),
+  cityId: z.string().min(1, "required"),
+  cityName: z.string().min(1, "required"),
+  address: z.string().min(3, "required"),
+  notes: z.string().optional(),
+  isMain: z.boolean().default(false),
+});
+
+const emptyValues = {
+  recepient: "",
+  phone: "",
+  label: "",
+  city: "",
+  address: "",
+  notes: "",
+  isMain: false,
+};
+
+type Coordinates = {
+  latitude: number;
+  langitude: number;
+};
+const EditAddressDialog = ({
+  userId,
+  open,
+  addressId,
+  setEditDialog,
+  handleToggleDialog,
+}: {
+  open: boolean;
+  addressId: number | null;
+  userId: number;
+  setEditDialog: (value: boolean) => void;
+  handleToggleDialog: (main?: boolean, add?: boolean, edit?: boolean) => void;
+}) => {
+  const [location, setLocation] = useState<Coordinates | null>(null);
+  const { data: currentLocation } = useGetLocationOnGeo(location);
+  const { data: currentAddress } = useAddressById(addressId!);
+  const updateAddress = usePutAddress(addressId!);
+
+  const form = useForm<z.infer<typeof editAddressSchema>>({
+    resolver: zodResolver(editAddressSchema),
+    defaultValues: emptyValues,
+  });
+
+  useEffect(() => {
+    if (currentAddress) {
+      form.setValue("recepient", currentAddress.recepient);
+      form.setValue("phone", currentAddress.phone);
+      form.setValue("formatPhone", currentAddress.phone);
+      form.setValue("label", currentAddress.label);
+      form.setValue("cityId", currentAddress.city.cityId);
+      form.setValue("cityName", currentAddress.city.cityName);
+      form.setValue("address", currentAddress.address);
+      form.setValue("notes", currentAddress.notes);
+      form.setValue("isMain", currentAddress.isMain);
+    }
+  }, [currentAddress]);
+
+  useEffect(() => {
+    if (currentLocation) {
+      const loc = currentLocation.components;
+      form.setValue(
+        "cityId",
+        `${loc.city_district}, Kota ${loc.city}, ${loc.state}`
+      );
+    }
+  }, [currentLocation]);
+
+  const onSubmit = (values: z.infer<typeof editAddressSchema>) => {
+    updateAddress.mutate({ userId, ...values });
+  };
+  useEffect(() => {
+    if (updateAddress.isSuccess) {
+      form.reset(emptyValues);
+      handleToggleDialog(true);
+    }
+  }, [updateAddress.isSuccess]);
+
+  const handleGetGeolocation = () => {
+    if (currentLocation) {
+      const loc = currentLocation.components;
+      form.setValue("cityId", loc.city);
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setLocation({
+          latitude: pos.coords.latitude,
+          langitude: pos.coords.longitude,
+        });
+      },
+      (err) => {
+        toast.error(
+          "Location not detected. Please activate location via Settings on your device."
+        );
+      }
+    );
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={(value) => setEditDialog(value)}>
+      <DialogContent className="sm:max-w-[712px]">
+        <DialogClose
+          onClick={() => {
+            handleToggleDialog(true);
+          }}
+          className="absolute left-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span className="sr-only">Back</span>
+        </DialogClose>
+
+        <DialogClose
+          onClick={() => {
+            handleToggleDialog(true);
+          }}
+          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+        >
+          <X className="h-4 w-4" />
+          <span className="sr-only">Close</span>
+        </DialogClose>
+        <DialogHeader>
+          <DialogTitle className="text-center text-3xl">
+            Modify Your Address
+          </DialogTitle>
+        </DialogHeader>
+        <Separator />
+        <div className="w-full max-h-[500px] overflow-y-auto pb-10 p-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <EditForm
+                handleGetGeolocation={handleGetGeolocation}
+                isPending={updateAddress.isPending}
+                location={location}
+              />
+            </form>
+          </Form>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default EditAddressDialog;

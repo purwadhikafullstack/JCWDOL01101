@@ -21,6 +21,19 @@ export class AdressController {
       next(err);
     }
   };
+  public getCitiesByName = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const search = String(req.query.search);
+      const findCity = await this.address.getCityByName(search);
+
+      res.status(200).json({
+        message: 'get.city',
+        data: findCity,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
 
   public getAllAddress = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -37,7 +50,7 @@ export class AdressController {
   };
   public checkActiveParam = async (req: Request, res: Response, next: NextFunction) => {
     const addressId = req.params.addressId;
-    if (addressId === 'active') {
+    if (addressId === 'active' || addressId === 'city') {
       next('route');
     } else {
       next();

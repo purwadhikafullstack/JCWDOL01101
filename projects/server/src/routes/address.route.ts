@@ -13,6 +13,7 @@ export class AddressRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`${this.path}/active`, this.address.getActiveAddress);
+    this.router.get(`${this.path}/city`, this.address.getCitiesByName);
     this.router.get(`${this.path}/:addressId`, this.address.checkActiveParam, this.address.getAddressById);
     this.router.get(`${this.path}/current/:lat/:lng`, this.address.getCurrentLocation);
     this.router.get(`${this.path}`, this.address.getAllAddress);

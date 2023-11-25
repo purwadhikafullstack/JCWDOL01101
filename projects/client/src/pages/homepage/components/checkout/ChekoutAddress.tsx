@@ -57,14 +57,14 @@ const ChekoutAddress = ({
       <div className="flex-1 p-4 flex flex-col">
         <span className="font-semibold text-muted-foreground flex items-center gap-2">
           {add.label}
-          {add.isMain && (
+          {add.isMain ? (
             <Badge
               className="rounded-sm font-normal border border-primary text-primary"
               variant="outline"
             >
               Primary
             </Badge>
-          )}
+          ) : null}
         </span>
         <span className="font-bold text-lg">{add.recepient}</span>
         <p>{add.phone}</p>

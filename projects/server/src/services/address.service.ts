@@ -35,6 +35,19 @@ export class AddressService {
     return place;
   }
 
+  public async getCityByName(search: string): Promise<City[]> {
+    const options: FindOptions<City> = {
+      where: search
+        ? {
+            [Op.or]: [{ cityName: { [Op.like]: `%${search}%` } }],
+          }
+        : {},
+    };
+    const findCity: City[] = await DB.City.findAll(options);
+
+    return findCity;
+  }
+
   public async getAllAddress(search: string): Promise<Address[]> {
     const options: FindOptions<Address> = {
       paranoid: true,
@@ -64,7 +77,15 @@ export class AddressService {
   }
 
   public async getAddressbyId(addressId: number): Promise<Address> {
-    const findAddress = await DB.Address.findOne({ where: { deletedAt: null, id: addressId } });
+    const findAddress = await DB.Address.findOne({
+      where: { deletedAt: null, id: addressId },
+      include: [
+        {
+          model: CityModel,
+          as: 'city',
+        },
+      ],
+    });
     return findAddress;
   }
 
@@ -85,10 +106,7 @@ export class AddressService {
   public async createAddress(addressData: AddressDto): Promise<Address> {
     const transaction = await DB.sequelize.transaction();
     try {
-      const findCity: City = await DB.City.findOne({ where: { cityName: { [Op.like]: `%${addressData.cityId}%` } } });
-      if (!findCity) throw new HttpException(409, "City doesn't exist");
-      const address = await DB.Address.create({ ...addressData, cityId: findCity.cityId || addressData.cityId });
-
+      const address = await DB.Address.create({ ...addressData });
       await transaction.commit();
       return address;
     } catch (err) {
@@ -102,6 +120,9 @@ export class AddressService {
     try {
       const findAddress = await DB.Address.findByPk(addressId, { paranoid: true });
       if (!findAddress) throw new HttpException(409, "Address doesn't exist");
+      if (addressData.isMain) {
+        await DB.Address.update({ isMain: false }, { where: { isMain: true }, transaction });
+      }
       await DB.Address.update({ ...addressData }, { where: { id: addressId }, transaction });
 
       await transaction.commit();
