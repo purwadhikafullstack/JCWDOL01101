@@ -18,7 +18,6 @@ export class WarehouseAddressService {
     }
 
     public async createWarehouseAddress(addressData:WarehouseAddress):Promise<WarehouseAddress>{
-
         const createAddressData:WarehouseAddress= await DB.WarehouseAddresses.create({...addressData});
         return createAddressData;
     }
