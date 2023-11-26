@@ -10,14 +10,24 @@ export interface QuantitySlice {
   addQuantity: (by: number) => void;
 }
 
+type Service = {
+  service: string;
+  description: string;
+  cost: {
+    value: number;
+    etd: string;
+    note: string;
+  }[];
+};
+
 interface Fee {
-  [productId: string]: number;
+  [productId: string]: Service;
 }
 
 export interface ShippingFeeSlice {
   fee: Fee;
   totalShipping: number;
-  addShippingFee: (productId: number, fee: number) => void;
+  addShippingFee: (productId: number, fee: Service) => void;
   getTotalShippingFee: () => void;
   clear: () => void;
 }
@@ -53,11 +63,11 @@ export const createShippingSlice: StateCreator<
   getTotalShippingFee: () =>
     set((state) => ({
       totalShipping: Object.values(state.fee).reduce(
-        (prev, fee) => prev + fee,
+        (prev, fee) => prev + fee.cost[0].value,
         0
       ),
     })),
-  addShippingFee: (productId: number, fee: number) =>
+  addShippingFee: (productId: number, fee: Service) =>
     set((state) => ({ fee: { ...state.fee, [productId]: fee } })),
   clear: () => set((state) => ({ fee: {}, totalShipping: 0 })),
 });

@@ -51,7 +51,7 @@ const SelectCourier = ({
 
   useEffect(() => {
     if (selectedService.cost.length > 0) {
-      addShippingFee(product.id!, selectedService.cost[0].value);
+      addShippingFee(product.id!, selectedService);
       getTotalShippingFee();
     }
   }, [selectedService]);

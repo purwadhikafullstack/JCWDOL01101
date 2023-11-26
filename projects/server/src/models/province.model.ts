@@ -6,7 +6,7 @@ export class ProvinceModel extends Model<Province> implements Province {
   public province: string;
 }
 
-export default function (sequelize: Sequelize): typeof ProvinceModel {
+export default function(sequelize: Sequelize): typeof ProvinceModel {
   ProvinceModel.init(
     {
       provinceId: {

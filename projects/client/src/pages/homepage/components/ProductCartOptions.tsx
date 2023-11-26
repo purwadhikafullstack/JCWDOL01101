@@ -31,6 +31,7 @@ const ProductCartOptions = ({
     isUserCartProducts &&
     user?.userCart.cartProducts.find((product) => product.id === productId) !==
       undefined;
+  console.log(isProductInCart);
   const { data: cartProduct } = useCartProduct(isProductInCart, productId);
   const cartMutation = useAddCart(cartProduct?.productId);
 

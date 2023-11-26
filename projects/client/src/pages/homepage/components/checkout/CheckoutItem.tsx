@@ -23,7 +23,8 @@ const CheckoutItem = ({
 }) => {
   const fee = useBoundStore((state) => state.fee);
   const [show, setShow] = useState(false);
-  const total = product.price * quantity + fee[product.id!];
+  const shippingCost = fee[product.id!] ? fee[product.id!].cost[0].value : 0;
+  const total = product.price * quantity + shippingCost;
 
   return (
     <div className="my-4">
@@ -84,7 +85,7 @@ const CheckoutItem = ({
           </div>
           <div className="w-full flex justify-between items-center text-sm">
             <p className="text-muted-foreground">Shipping Fee</p>
-            <b>{formatToIDR(fee[product.id!].toString())}</b>
+            <b>{formatToIDR(shippingCost.toString())}</b>
           </div>
         </>
       )}

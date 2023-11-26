@@ -8,6 +8,9 @@ import CartProductModel from '@/models/cartProduct.model';
 import AddressModel from '@/models/address.model';
 import ProvinceModel from '@/models/province.model';
 import CityModel from '@/models/city.model';
+import OrderModel from '@/models/order.model';
+import OrderProdcutModel from '@/models/orderProduct.model';
+import ShipmentModel from '@/models/shipment.model';
 import associations from './associations';
 
 const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
@@ -38,9 +41,10 @@ export const DB = {
   User: UserModel(sequelize),
   Cart: CartModel(sequelize),
   CartProduct: CartProductModel(sequelize),
-  Cart: CartModel(sequelize),
-  CartProduct: CartProductModel(sequelize),
   Product: ProductModel(sequelize),
+  Order: OrderModel(sequelize),
+  OrderProduct: OrderProdcutModel(sequelize),
+  Shipment: ShipmentModel(sequelize),
   Address: AddressModel(sequelize),
   Provice: ProvinceModel(sequelize),
   City: CityModel(sequelize),
