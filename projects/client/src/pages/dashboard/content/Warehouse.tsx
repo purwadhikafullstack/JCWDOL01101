@@ -35,7 +35,7 @@ type WarehouseType = {
   id: number;
   name: string;
   capacity: number;
-  addressId: number; //
+  addressId: number; 
   userId: number;
   warehouseAddress?: WarehouseAddressType; 
 };
@@ -341,9 +341,6 @@ const Warehouse = () => {
                 <Button onClick={() => handleEditWarehouse(warehouse)} className="self-end mt-1.5 mr-1">
                   Edit
                 </Button>
-                {/* <Button className="self-end mt-1.5 mr-1">
-                  Disable
-                </Button> */}
                 <Button onClick={() => handleDeleteWarehouse(warehouse.id)}>
                   Delete
                 </Button>
