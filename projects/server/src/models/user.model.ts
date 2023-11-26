@@ -1,6 +1,7 @@
 import { User } from '@/interfaces/user.interface';
 import { Role, Status } from '@/interfaces';
 import { DataTypes, Model, Sequelize } from 'sequelize';
+import {WarehouseModel} from './warehouse.model';
 
 export class UserModel extends Model<User> implements User {
   public id?: number;
@@ -63,6 +64,8 @@ export default function (sequelize: Sequelize): typeof UserModel {
       sequelize,
     },
   );
+
+
 
   return UserModel;
 }
