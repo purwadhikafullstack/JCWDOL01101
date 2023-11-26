@@ -87,23 +87,6 @@ export default function (sequelize: Sequelize): typeof AddressModel {
             );
           }
         },
-        afterUpdate: async (address, options) => {
-          if (address.isMain) {
-            await AddressModel.update(
-              {
-                isMain: false,
-              },
-              {
-                where: {
-                  id: {
-                    [Op.not]: address.id,
-                  },
-                },
-                transaction: options.transaction,
-              },
-            );
-          }
-        },
       },
     },
   );

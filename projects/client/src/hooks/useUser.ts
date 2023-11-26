@@ -115,7 +115,7 @@ export const useAdminMutation = () => {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admins"] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
 
@@ -139,7 +139,7 @@ export const useEditAdmin = (userId: number) => {
     mutationFn: async (admin: EditAdmin) =>
       service.put(`/manage-admin/${userId}`, admin),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin"] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
 
     onError: (error) => {

@@ -21,6 +21,19 @@ export class AdressController {
       next(err);
     }
   };
+  public getCitiesByName = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const search = String(req.query.search);
+      const findCity = await this.address.getCityByName(search);
+
+      res.status(200).json({
+        message: 'get.city',
+        data: findCity,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
 
   public getAllAddress = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -52,7 +65,7 @@ export class AdressController {
 
   public checkActiveParam = async (req: Request, res: Response, next: NextFunction) => {
     const addressId = req.params.addressId;
-    if (addressId === 'active') {
+    if (addressId === 'active' || addressId === 'city') {
       next('route');
     } else {
       next();
@@ -118,11 +131,11 @@ export class AdressController {
   public deleteAddress = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const addressId = Number(req.params.addressId);
-      const findAllAddress = await this.address.deleteAddress(addressId);
+      const deleteAddress = await this.address.deleteAddress(addressId);
 
       res.status(200).json({
         message: 'delete.address',
-        data: findAllAddress,
+        data: deleteAddress,
       });
     } catch (err) {
       next(err);
@@ -134,6 +147,20 @@ export class AdressController {
       const addressId = Number(req.params.addressId);
       const field = String(req.params.field);
       const updatedAddress: Address = await this.address.toggleAddress(addressId, field);
+
+      res.status(200).json({
+        message: 'patch.address',
+        data: updatedAddress,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public setMainAddress = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const addressId = Number(req.params.addressId);
+      const updatedAddress: Address = await this.address.setMainAddress(addressId);
 
       res.status(200).json({
         message: 'patch.address',

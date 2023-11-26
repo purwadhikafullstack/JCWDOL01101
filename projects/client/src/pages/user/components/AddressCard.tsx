@@ -1,45 +1,58 @@
 import React from "react"
-import { Button } from "@/components/ui/button"
 import { Address } from "@/hooks/useAddress"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
+import SetMainDialog from "./SetMainDialog"
+import DeleteAddressDialog from "./DeleteAddressDialog"
+import EditAddressDialog from "./EditAddressDialog"
 
 const AddressCard = ({ address }: { address: Address }) => {
   return (
-    <div
-      key={address.id}
-      className="w-full bg-zinc-50 rounded-md border shadow-sm overflow-hidden p-2 px-6 capitalize"
-    >
-      <div className="py-1 mt-2">
+    <div className="w-full bg-zinc-50 rounded-md border shadow-sm overflow-hidden py-4 px-6 capitalize">
+      <div className="mb-1 -space-y-0.5">
         <span className="flex items-end gap-2 ">
-          <h3 className="text-2xl font-bold text-red-500">{address.label}</h3>
+          <h3 className="text-lg font-bold text-red-500">{address.label}</h3>
           {address.isMain && (
-            <p className="text-white rounded-md bg-red-500 text-sm px-2 py-1 font-semibold">
+            <p className="text-white rounded-md bg-red-500 text-xs px-2 py-1 font-semibold">
               primary
             </p>
           )}
         </span>
-        <p className="text-lg font-bold mt-1">{address.recepient}</p>
-        <p className="text-sm">{address.phone}</p>
+        <p className="text-2xl font-bold">{address.recepient}</p>
+        <p className="text-lg">{address.phone}</p>
       </div>
-      <AddressDetail label="province" name="jakarta" />
-      <AddressDetail label="city" name="jakarta barat" />
-      <AddressDetail label="address" name="daan mogot" />
-      <span className="flex justify-end">
-        <Button variant="ghost">edit</Button>
+      <span className="flex items-end gap-2">
+        <p className="capitalize text-md">
+          {address.city.province}, {address.city.cityName}, {address.address},{" "}
+          {address.city.postalCode}
+        </p>
+      </span>
+      <span className="text-primary flex justify-between mt-4">
+        <div className="flex">
+          <Dialog>
+            <DialogTrigger>
+              <p className="mr-4">edit</p>
+            </DialogTrigger>
+            <EditAddressDialog address={address} />
+          </Dialog>
+          <Dialog>
+            <DialogTrigger>
+              <p className={`${address.isMain && "hidden"} border-l pl-4`}>
+                Set main address
+              </p>
+            </DialogTrigger>
+            <SetMainDialog addressId={Number(address.id)} />
+          </Dialog>
+        </div>
         <div className={`${address.isMain && "hidden"}`}>
-          <Button variant="ghost" className="text-red-300">
-            delete
-          </Button>
+          <Dialog>
+            <DialogTrigger>
+              <p>delete</p>
+            </DialogTrigger>
+            <DeleteAddressDialog addressId={Number(address.id)} />
+          </Dialog>
         </div>
       </span>
     </div>
-  )
-}
-
-const AddressDetail = ({ label, name }: { label: string; name: string }) => {
-  return (
-    <span className="flex items-end gap-2">
-      <p className="text-md">{name}</p>
-    </span>
   )
 }
 

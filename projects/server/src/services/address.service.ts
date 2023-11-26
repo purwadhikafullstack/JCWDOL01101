@@ -35,6 +35,19 @@ export class AddressService {
     return place;
   }
 
+  public async getCityByName(search: string): Promise<City[]> {
+    const options: FindOptions<City> = {
+      where: search
+        ? {
+          [Op.or]: [{ cityName: { [Op.like]: `%${search}%` } }],
+        }
+        : {},
+    };
+    const findCity: City[] = await DB.City.findAll(options);
+
+    return findCity;
+  }
+
   public async getAllAddress(search: string): Promise<Address[]> {
     const options: FindOptions<Address> = {
       paranoid: true,
@@ -64,13 +77,30 @@ export class AddressService {
   }
 
   public async getAllAddressByUserId(userId: number): Promise<Address[]> {
-    const findAddress = await DB.Address.findAll({ where: { deletedAt: null, userId }, order: [['isMain', 'DESC']] });
+    const findAddress = await DB.Address.findAll({
+      where: { deletedAt: null, userId },
+      include: [
+        {
+          model: CityModel,
+          as: 'city',
+        },
+      ],
+      order: [['isMain', 'DESC']],
+    });
 
     return findAddress;
   }
 
   public async getAddressbyId(addressId: number): Promise<Address> {
-    const findAddress = await DB.Address.findOne({ where: { deletedAt: null, id: addressId } });
+    const findAddress = await DB.Address.findOne({
+      where: { deletedAt: null, id: addressId },
+      include: [
+        {
+          model: CityModel,
+          as: 'city',
+        },
+      ],
+    });
     return findAddress;
   }
 
@@ -91,10 +121,7 @@ export class AddressService {
   public async createAddress(addressData: AddressDto): Promise<Address> {
     const transaction = await DB.sequelize.transaction();
     try {
-      const findCity: City = await DB.City.findOne({ where: { cityName: { [Op.like]: `%${addressData.cityId}%` } } });
-      if (!findCity) throw new HttpException(409, "City doesn't exist");
-      const address = await DB.Address.create({ ...addressData, cityId: findCity.cityId || addressData.cityId });
-
+      const address = await DB.Address.create({ ...addressData });
       await transaction.commit();
       return address;
     } catch (err) {
@@ -108,6 +135,9 @@ export class AddressService {
     try {
       const findAddress = await DB.Address.findByPk(addressId, { paranoid: true });
       if (!findAddress) throw new HttpException(409, "Address doesn't exist");
+      if (addressData.isMain) {
+        await DB.Address.update({ isMain: false }, { where: { isMain: true }, transaction });
+      }
       await DB.Address.update({ ...addressData }, { where: { id: addressId }, transaction });
 
       await transaction.commit();
@@ -119,14 +149,14 @@ export class AddressService {
     }
   }
 
-  public async deleteAddress(addressId: number) {
+  public async deleteAddress(addressId: number): Promise<Address> {
     const findAddress: Address = await DB.Address.findOne({ where: { id: addressId } });
     if (!findAddress) throw new HttpException(409, "Address doesn't exists");
 
     const date = new Date();
     await DB.Address.update({ deletedAt: date }, { where: { id: addressId } });
     const updatedAddress = await DB.Address.findOne({ where: { id: addressId } });
-    return updatedAddress.deletedAt;
+    return updatedAddress;
   }
 
   public async toggleAddress(addressId: number, field: string): Promise<Address> {
@@ -156,5 +186,12 @@ export class AddressService {
       await transaction.rollback();
       throw new HttpException(500, 'Something went wrong');
     }
+  }
+
+  public async setMainAddress(addressId: number): Promise<Address> {
+    await DB.Address.update({ isMain: false }, { where: { isMain: true } });
+    await DB.Address.update({ isMain: true }, { where: { id: addressId } });
+    const updatedAddress = await DB.Address.findByPk(addressId);
+    return updatedAddress;
   }
 }

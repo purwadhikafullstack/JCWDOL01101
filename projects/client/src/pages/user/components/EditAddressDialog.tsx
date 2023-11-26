@@ -20,10 +20,10 @@ import NotesField from "@/components/input/NotesField"
 import MainCheckboxField from "@/components/input/MainCheckboxField"
 import PhoneField from "@/components/input/PhoneField"
 import toast from "react-hot-toast"
-import { useGetLocationOnGeo } from "@/hooks/useAddress"
-import { usePostAddress } from "@/hooks/useAddressMutation"
+import { Address, useGetLocationOnGeo } from "@/hooks/useAddress"
+import { usePutAddress } from "@/hooks/useAddressMutation"
 import { addressSchema } from "@/pages/homepage/components/checkout/AddNewAddressDialog"
-
+import { Coordinates } from "./NewAddressDialog"
 const emptyValues = {
   recepient: "",
   phone: "",
@@ -34,21 +34,11 @@ const emptyValues = {
   isMain: false,
 }
 
-export type Coordinates = {
-  latitude: number
-  langitude: number
-}
-const NewAddressDialog = ({
-  name,
-  userId,
-}: {
-  userId: number
-  name: string
-}) => {
+function EditAddressDialog({ address }: { address: Address }) {
   const [location, setLocation] = useState<Coordinates | null>(null)
-  const [tos, setTos] = useState(false)
+  const [tos, setTos] = useState(true)
   const { data: currentLocation } = useGetLocationOnGeo(location)
-  const addressMutation = usePostAddress()
+  const addressMutation = usePutAddress(Number(address.id))
   const form = useForm<z.infer<typeof addressSchema>>({
     resolver: zodResolver(addressSchema),
     defaultValues: emptyValues,
@@ -63,13 +53,21 @@ const NewAddressDialog = ({
   }, [currentLocation])
 
   useEffect(() => {
-    if (name) {
-      form.setValue("recepient", name)
+    if (address) {
+      form.setValue("recepient", address.recepient)
+      form.setValue("phone", address.phone)
+      form.setValue("formatPhone", address.phone)
+      form.setValue("label", address.label)
+      form.setValue("cityId", address.cityId)
+      form.setValue("cityName", address.city.cityName)
+      form.setValue("address", address.address)
+      form.setValue("notes", address.notes)
+      form.setValue("isMain", address.isMain)
     }
-  }, [name, form])
+  }, [address, form])
 
   const onSubmit = (values: z.infer<typeof addressSchema>) => {
-    addressMutation.mutate({ userId, ...values })
+    addressMutation.mutate({ userId: Number(address.userId), ...values })
   }
 
   useEffect(() => {
@@ -101,13 +99,13 @@ const NewAddressDialog = ({
 
   useEffect(() => {
     if (addressMutation.isSuccess) {
-      toast.success("Successfully create a new address")
+      toast.success("Successfully update address data")
     }
   }, [addressMutation.isSuccess])
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>New Address</DialogTitle>
+        <DialogTitle>Edit Address</DialogTitle>
       </DialogHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
@@ -142,7 +140,7 @@ const NewAddressDialog = ({
               {addressMutation.isPending && (
                 <Loader2 className="animate-spin w-4 h-4 mr-2" />
               )}
-              Submit
+              Edit Address
             </Button>
           </div>
         </form>
@@ -151,4 +149,4 @@ const NewAddressDialog = ({
   )
 }
 
-export default NewAddressDialog
+export default EditAddressDialog

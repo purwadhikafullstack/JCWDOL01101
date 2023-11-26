@@ -41,6 +41,18 @@ export const usePutAddress = (addressId: number) => {
   return addressMutation;
 };
 
+export const useDeleteAddress = (addressId: number) => {
+  const queryClient = useQueryClient();
+  const addressMutation = useMutation({
+    mutationFn: async () => service.delete(`/address/${addressId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["address"] });
+    },
+  });
+
+  return addressMutation;
+}
+
 export const useToggleAddress = (addressId: number, field: string) => {
   const queryClient = useQueryClient();
   const addressMutation = useMutation({
@@ -53,6 +65,20 @@ export const useToggleAddress = (addressId: number, field: string) => {
       queryClient.invalidateQueries({ queryKey: ["courier", "jne"] });
       queryClient.invalidateQueries({ queryKey: ["courier", "pos"] });
       queryClient.invalidateQueries({ queryKey: ["courier", "tiki"] });
+    },
+  });
+
+  return addressMutation;
+};
+
+export const useSetMainAddress = (addressId: number) => {
+  const queryClient = useQueryClient();
+  const addressMutation = useMutation({
+    mutationFn: async () => {
+      return await service.patch(`/address/set-main/${addressId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["address"] });
     },
   });
 

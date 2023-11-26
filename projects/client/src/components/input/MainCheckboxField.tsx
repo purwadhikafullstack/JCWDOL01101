@@ -1,25 +1,19 @@
-import React from "react"
 import {
-  FormControl,
   FormField,
   FormItem,
+  FormControl,
   FormMessage,
-} from "@/components/ui/form"
-import { useFormContext } from "react-hook-form"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
+import React from "react";
+import { useFormContext } from "react-hook-form";
 
-const PrimarySelectFormField = ({
-  name,
-  label,
-}: {
-  name: string
-  label: string
-}) => {
-  const { control } = useFormContext()
+const MainCheckboxField = () => {
+  const form = useFormContext();
   return (
     <FormField
-      control={control}
-      name={name}
+      control={form.control}
+      name="isMain"
       render={({ field }) => (
         <FormItem>
           <FormControl>
@@ -28,14 +22,14 @@ const PrimarySelectFormField = ({
                 checked={field.value}
                 onCheckedChange={field.onChange}
               />
-              <span>{label}</span>
+              <span>Make it main address</span>
             </div>
           </FormControl>
           <FormMessage />
         </FormItem>
       )}
     />
-  )
-}
+  );
+};
 
-export default PrimarySelectFormField
+export default MainCheckboxField;

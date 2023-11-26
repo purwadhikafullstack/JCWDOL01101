@@ -25,7 +25,6 @@ import { ProtectedRoute, AdminRoute } from "./ProtectedRoute"
 import UserLayout from "./user/UserLayout"
 import Profile from "./user/content/Profile"
 import Address from "./user/content/Address"
-import NewAddressForm from "./user/components/NewAddressForm"
 import Checkout from "./homepage/content/Checkout"
 
 const router = createBrowserRouter([
@@ -72,7 +71,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/user",
-        element: <UserLayout />,
+        element: (
+          <ProtectedRoute>
+            <UserLayout />
+          </ProtectedRoute>
+        ),
         errorElement: <NotFound />,
         children: [
           {
@@ -85,7 +88,23 @@ const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path: "cart",
+        element: (
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
+        ),
+      },
     ],
+  },
+  {
+    path: "checkout",
+    element: (
+      <ProtectedRoute>
+        <Checkout />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/dashboard",

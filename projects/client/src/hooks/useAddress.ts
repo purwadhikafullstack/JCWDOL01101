@@ -94,6 +94,23 @@ export const useAddress = (search: string) => {
   return query;
 };
 
+export const useCity = (search: string) => {
+  const query = useQuery<City[]>({
+    queryKey: ["address/city", search],
+    queryFn: async () => {
+      const res = await service.get("/address/city", {
+        params: {
+          search,
+        },
+      });
+      return res.data.data;
+    },
+    enabled: !!search,
+  });
+
+  return query;
+};
+
 export const useAddressById = (addressId: number) => {
   const query = useQuery<Address>({
     queryKey: ["address", addressId],
@@ -130,52 +147,4 @@ export const useAddressByUserId = (userId: number) => {
   });
 
   return { data, isFetched, isLoading };
-};
-
-export interface Province {
-  id: number
-  province: string
-}
-
-export const useCity = () => {
-  const { data, isFetched } = useQuery<City[]>({
-    queryKey: ["cities"],
-    queryFn: async () => {
-      const res = await service.get(`/cities`, {
-        withCredentials: true,
-      });
-      return res.data.data;
-    },
-  });
-
-  return { data, isFetched };
-};
-
-export const useCityByProvinceId = (provinceId: number) => {
-  const { data, isFetched } = useQuery<City[]>({
-    queryKey: ["cities", provinceId],
-    queryFn: async () => {
-      const res = await service.get(`/cities/province/${provinceId}`, {
-        withCredentials: true,
-      });
-      return res.data.data;
-    },
-    enabled: !!provinceId
-  });
-
-  return { data, isFetched };
-};
-
-export const useProvince = () => {
-  const { data, isFetched } = useQuery<Province[]>({
-    queryKey: ["provinces"],
-    queryFn: async () => {
-      const res = await service.get(`/provinces`, {
-        withCredentials: true,
-      });
-      return res.data.data;
-    },
-  });
-
-  return { data, isFetched };
 };

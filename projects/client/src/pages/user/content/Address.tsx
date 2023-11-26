@@ -13,6 +13,7 @@ import AddressCard from "../components/AddressCard"
 import NewAddressDialog from "../components/NewAddressDialog"
 import UserContext from "@/context/UserContext"
 import { useAddressByUserId } from "@/hooks/useAddress"
+import AddressModalSkeleton from "@/components/skeleton/AddressModalSkeleton"
 
 const maps = [
   {
@@ -47,11 +48,7 @@ const Address = () => {
     throw new Error("useUser must be used within a UserProvider")
   }
   const { user } = userContext
-  const {
-    data: addresses,
-    isFetched,
-    isLoading,
-  } = useAddressByUserId(Number(user?.id))
+  const { data: addresses, isLoading } = useAddressByUserId(Number(user?.id))
 
   return (
     <>
@@ -65,15 +62,33 @@ const Address = () => {
           >
             <Plus className="w-4 h-4 mr-2" /> New Address
           </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>New Address</DialogTitle>
-            </DialogHeader>
-            <NewAddressDialog name={user?.firstname || ""} userId={user?.id!} />
-          </DialogContent>
+          <NewAddressDialog name={user?.firstname || ""} userId={user?.id!} />
         </Dialog>
-        {isFetched &&
-          addresses?.map((address) => <AddressCard address={address} />)}
+        {!isLoading ? (
+          <>
+            {addresses && addresses?.length > 0 ? (
+              <>
+                {addresses?.map((address) => (
+                  <AddressCard key={address.id} address={address} />
+                ))}
+              </>
+            ) : (
+              <div className="text-center">
+                <img
+                  className="w-[150px] mx-auto"
+                  src="/ilus/directions.svg"
+                  alt="directions ilustration"
+                />
+                <p>Oops, you don't have an address? </p>
+                <p className="text-sm text-muted-foreground">
+                  Don't worry, though—you can create one!
+                </p>
+              </div>
+            )}
+          </>
+        ) : (
+          <AddressModalSkeleton />
+        )}
       </div>
     </>
   )
