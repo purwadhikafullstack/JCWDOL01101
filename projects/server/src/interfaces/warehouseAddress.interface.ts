@@ -3,4 +3,7 @@ export interface WarehouseAddress{
     cityId?:number;
     provinceId?:number;
     addressDetail:string;
+    longitude:number;
+    latitude:number;
+    isActive:boolean;
 }

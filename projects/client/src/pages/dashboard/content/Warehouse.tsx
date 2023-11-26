@@ -102,7 +102,7 @@ const Warehouse = () => {
       .catch(error => {
         console.error("There was an error!", error);
       });
-  }, []);
+  }, [warehouses]);
 
   const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const city = cities.find(city => city.id === Number(event.target.value));
@@ -192,13 +192,25 @@ const Warehouse = () => {
     if (confirmDelete) {
       service.delete(`/warehouses/${id}`)
         .then(() => {
-          setWarehouses(warehouses.filter(warehouse => warehouse.id !== id));
+          // Ambil ulang data warehouse dari server
+          service.get("/warehouses")
+            .then(response => {
+              if (Array.isArray(response.data.data)) {
+                setWarehouses(response.data.data);
+              } else {
+                console.error("Data is not an array:", response.data.data);
+              }
+            })
+            .catch(error => {
+              console.error("There was an error!", error);
+            });
         })
         .catch(error => {
           console.error("There was an error!", error);
         });
     }
   };
+  
   
   return (
     <div className="flex flex-col p-2 w-full">

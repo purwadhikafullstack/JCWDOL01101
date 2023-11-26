@@ -5,7 +5,7 @@ import { ProductModel } from './product.model';
 export class CategoryModel extends Model<Category> implements Category {
     public id: number;
     public name:string;
-    public imageUrl:string;
+    public color:string;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -23,7 +23,7 @@ export default function (sequelize: Sequelize): typeof CategoryModel {
                 allowNull: false,
                 type: DataTypes.STRING(45),
             },
-            imageUrl: {
+            color: {
                 allowNull: false,
                 type: DataTypes.STRING(255),
             },
