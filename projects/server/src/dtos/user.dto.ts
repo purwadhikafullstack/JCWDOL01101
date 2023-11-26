@@ -8,7 +8,7 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
-  public role: string;
+  public externalId: string;
 
   @IsNotEmpty()
   @IsString()

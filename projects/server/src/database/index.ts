@@ -11,6 +11,8 @@ import CategoryModel from '@/models/category.model';
 import InventoryModel  from '@/models/inventory.model';
 import CartModel from '@/models/cart.model';
 import CartProductModel from '@/models/cartProduct.model';
+import AddressModel from '@/models/address.model';
+import associations from './associations';
 
 const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
   dialect: 'mysql',
@@ -35,16 +37,19 @@ const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
 });
 
 sequelize.authenticate();
-// sequelize.sync({ force: true });
+
 export const DB = {
   User: UserModel(sequelize),
+  Cart: CartModel(sequelize),
+  CartProduct: CartProductModel(sequelize),
   Warehouses:WarehouseModel(sequelize),
   WarehouseAddresses:WarehouseAddressModel(sequelize),
   Provinces:ProvinceModel(sequelize),
   Cities:CityModel(sequelize),
-  Cart: CartModel(sequelize),
-  CartProduct: CartProductModel(sequelize),
   Product: ProductModel(sequelize),
+  Address: AddressModel(sequelize),
+  Provice: ProvinceModel(sequelize),
+  City: CityModel(sequelize),
   Categories:CategoryModel(sequelize),
   Inventories: InventoryModel(sequelize),
   sequelize,
@@ -53,15 +58,7 @@ export const DB = {
 
 
 
-DB.User.hasOne(DB.Cart, { foreignKey: 'user_id', as: 'userCart' });
-DB.Cart.belongsTo(DB.User, { foreignKey: 'user_id', as: 'userCart' });
-
-DB.Cart.belongsToMany(DB.Product, { through: DB.CartProduct, as: 'products', foreignKey: 'productId', otherKey: 'cartId' });
-DB.Product.belongsToMany(DB.Cart, { through: DB.CartProduct, as: 'carts', foreignKey: 'cartId', otherKey: 'productId' });
-DB.Cart.hasMany(DB.CartProduct, { foreignKey: 'cart_id', as: 'cartProducts' });
-DB.CartProduct.belongsTo(DB.Cart, { foreignKey: 'cart_id', as: 'cart' });
-DB.Product.hasMany(DB.CartProduct, { foreignKey: 'product_id', as: 'cartProducts' });
-DB.CartProduct.belongsTo(DB.Product, { foreignKey: 'product_id', as: 'product' });
+associations();
 
 
 DB.Cities.hasOne(DB.WarehouseAddresses,{foreignKey: "cityId", as: 'cityData' })
