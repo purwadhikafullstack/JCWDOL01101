@@ -13,7 +13,6 @@ export class CityRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`${this.path}`, this.City.getCity);
-    this.router.get(`${this.path}/province/:id(\\d+)`, this.City.getCityByProvinceId);
     this.router.get(`${this.path}/:id(\\d+)`, this.City.getCityById);
   }
 }

@@ -10,7 +10,7 @@ export class ProvinceService {
     return allProvince;
   }
 
-  public async findProvinceById(provinceId: string): Promise<Province> {
+  public async findProvinceById(provinceId: number): Promise<Province> {
     const findProvince: Province = await DB.Province.findByPk(provinceId);
     if (!findProvince) throw new HttpException(409, "Province doesn't exist");
     return findProvince;
