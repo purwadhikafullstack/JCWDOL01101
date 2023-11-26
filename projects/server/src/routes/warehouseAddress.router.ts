@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Routes } from '@interfaces/routes.interface';
-import { WarehouseAddressController } from '@/controllers/warehouseAddressModel.controller';
+import { WarehouseAddressController } from '@/controllers/warehouseAddress.controller';
 
 export class WarehouseAddressRoute implements Routes {
   public path = '/api/warehouseAddresses';

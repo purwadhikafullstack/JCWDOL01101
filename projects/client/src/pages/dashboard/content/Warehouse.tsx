@@ -25,7 +25,7 @@ import { response } from "express";
 type WarehouseAddressType = {
   id: number;
   addressDetail: string;
-  cityId: number;
+  cityId: string;
   provinceId: number;
   cityData?: CityType; 
 };
@@ -42,16 +42,16 @@ type WarehouseType = {
 
 
 type CityType = {
-  id: number;
-  city: string;
-  provinceId: number;
+  cityId: string;
+  cityName: string;
+  provinceId: string;
   postal_code: number;
   provinceData?: ProvinceType; 
 };
 
 
 type ProvinceType = {
-  id: number;
+  provinceId: string;
   province: string;
 };
 
@@ -65,6 +65,11 @@ const Warehouse = () => {
   const [provinces, setProvinces] = useState<ProvinceType[]>([]);
   const [selectedCity, setSelectedCity] = useState<CityType | null>(null);
   const [selectedProvince, setSelectedProvince] = useState<ProvinceType | null>(null);
+
+  const [editAddress, setEditAddress] = useState({
+    addressDetail: '',
+  });
+  
 
   useEffect(() => {
     service.get("/warehouses")
@@ -105,10 +110,10 @@ const Warehouse = () => {
   }, [warehouses]);
 
   const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const city = cities.find(city => city.id === Number(event.target.value));
+    const city = cities.find(city => city.cityId === String(event.target.value));
     if (city) {
       setSelectedCity(city);
-      const province = provinces.find(province => province.id === city.provinceId);
+      const province = provinces.find(province => province.provinceId === city.provinceId);
       if (province) {
         setSelectedProvince(province);
       } else {
@@ -126,10 +131,12 @@ const Warehouse = () => {
 
   const handleAddWarehouse = () => {
     const addressData = {
-      cityId: selectedCity?.id,
-      provinceId: selectedProvince?.id,
+      cityId: selectedCity?.cityId,
+      provinceId: selectedProvince?.provinceId,
       addressDetail: newWarehouse.addressDetail, 
     };
+
+    console.log("Selected City ID:", addressData.cityId);
   
     service.post("/warehouseAddresses", addressData)
       .then(response => {
@@ -156,17 +163,25 @@ const Warehouse = () => {
   
   const handleEditWarehouse = (warehouse: WarehouseType) => {
     setEditWarehouse(warehouse);
+    setEditAddress({
+      addressDetail: warehouse.warehouseAddress?.addressDetail || '',
+    });
+    setSelectedCity(warehouse.warehouseAddress?.cityData || null);
+    setSelectedProvince(warehouse.warehouseAddress?.cityData?.provinceData || null);
     setIsEditing(true);
   };
+  
+  
 
   const handleUpdateWarehouse = () => {
     const addressData = {
-      cityId: selectedCity?.id,
-      provinceId: selectedProvince?.id,
-      addressDetail: newWarehouse.addressDetail, 
+      cityId: selectedCity?.cityId,
+      provinceId: selectedProvince?.provinceId,
+      addressDetail: editAddress.addressDetail, 
     };
+    console.log(addressData)
   
-    service.put(`/warehouseAddresses/${editWarehouse.addressId}`, addressData)
+    service.put(`/warehouseAddresses/${editWarehouse.id}`, addressData)
       .then(response => {
         const warehouseData = {
           ...editWarehouse,
@@ -239,10 +254,10 @@ const Warehouse = () => {
 
               <label className="block mb-2 flex justify-between">
                 City:
-                <select name="city" value={selectedCity?.id || ''} onChange={handleCityChange} required className="mt-1 p-2 border rounded">
-                  <option value="" >Select a city</option>
+                <select name="cityName" value={selectedCity?.cityId || ''} onChange={handleCityChange} required className="mt-1 p-2 border rounded">
+                  <option value="">Select a city</option>
                   {cities.map(city => (
-                    <option key={city.id} value={city.id}>{city.city}</option>
+                    <option key={city.cityId} value={city.cityId}>{city.cityName}</option>
                   ))}
                 </select>
               </label>
@@ -283,14 +298,14 @@ const Warehouse = () => {
           </label>
           <label className="block flex justify-between">
             Address Detail:
-            <input type="text" name="addressDetail" value={newWarehouse.addressDetail} onChange={handleInputChange} className="mt-1 p-2 border rounded"/>
+            <input type="text" name="addressDetail" value={editAddress.addressDetail} onChange={(e) => setEditAddress({ ...editAddress, addressDetail: e.target.value })} className="mt-1 p-2 border rounded"/>
           </label>
           <label className="block flex justify-between">
             City:
-            <select name="city" value={selectedCity?.id || ''} onChange={handleCityChange} className="p-2 border rounded">
-              <option value="">Select a city</option>
+            <select name="cityName" value={selectedCity?.cityId || ''} onChange={handleCityChange} className="p-2 border rounded">
+              <option value="">{selectedCity?.cityName}</option>
               {cities.map(city => (
-                <option key={city.id} value={city.id}>{city.city}</option>
+                <option key={city.cityId} value={city.cityId}>{city.cityName}</option>
               ))}
             </select>
           </label>
@@ -325,7 +340,7 @@ const Warehouse = () => {
                 <TableCell>{warehouse.capacity}</TableCell>
                 <TableCell>{warehouse.warehouseAddress?.addressDetail}</TableCell> 
                 <TableCell>{warehouse.warehouseAddress?.cityData?.provinceData?.province}</TableCell> 
-                <TableCell>{warehouse.warehouseAddress?.cityData?.city}</TableCell> 
+                <TableCell>{warehouse.warehouseAddress?.cityData?.cityName}</TableCell> 
                 <TableCell>{warehouse.userId}</TableCell>
                 <Button onClick={() => handleEditWarehouse(warehouse)} className="self-end mt-1.5 mr-1">
                   Edit

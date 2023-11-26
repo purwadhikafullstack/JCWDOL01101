@@ -14,7 +14,7 @@ export class WarehouseService {
           include: [{
             model: DB.Cities,
             as: 'cityData',
-            attributes: ['city'],
+            attributes: ['cityName'],
             include: [{
               model: DB.Provinces,
               as: 'provinceData',

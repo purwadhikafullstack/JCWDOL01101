@@ -6,8 +6,8 @@ import { ProvinceModel } from './province.model';
 export class WarehouseAddressModel extends Model<WarehouseAddress> implements WarehouseAddress {
   public id: number;
   public addressDetail: string;
-  public cityId: number;
-  public provinceId: number;
+  public cityId: string;
+  public provinceId: string;
   public longitude: number;
   public latitude: number;
   public isActive:boolean;
@@ -31,11 +31,11 @@ export default function (sequelize: Sequelize): typeof WarehouseAddressModel {
       },
       provinceId: {
         allowNull: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING(256),
       },
       cityId: {
         allowNull: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING(256),
       },
       longitude: {
         allowNull: true,
