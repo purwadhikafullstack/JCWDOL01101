@@ -135,13 +135,10 @@ const Warehouse = () => {
       provinceId: selectedProvince?.provinceId,
       addressDetail: newWarehouse.addressDetail, 
     };
-
-    console.log("Selected City ID:", addressData.cityId);
   
     service.post("/warehouseAddresses", addressData)
       .then(response => {
         const newAddressId = response.data.data.id;
-        console.log(newAddressId);
         const warehouseData = {
           ...newWarehouse,
           warehouseAddressId: newAddressId,
@@ -179,7 +176,6 @@ const Warehouse = () => {
       provinceId: selectedProvince?.provinceId,
       addressDetail: editAddress.addressDetail, 
     };
-    console.log(addressData)
   
     service.put(`/warehouseAddresses/${editWarehouse.id}`, addressData)
       .then(response => {
