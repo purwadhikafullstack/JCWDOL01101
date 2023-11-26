@@ -192,7 +192,6 @@ const Warehouse = () => {
     if (confirmDelete) {
       service.delete(`/warehouses/${id}`)
         .then(() => {
-          // Ambil ulang data warehouse dari server
           service.get("/warehouses")
             .then(response => {
               if (Array.isArray(response.data.data)) {
