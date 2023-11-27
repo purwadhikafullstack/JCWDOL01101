@@ -42,6 +42,7 @@ const PaymentModal = ({
   cartProducts: cartProducts[];
 }) => {
   const shippingFee = useBoundStore((state) => state.totalShipping);
+  const isLoading = useBoundStore((state) => state.isLoading);
   const shipping = useBoundStore((state) => state.fee);
   const [paymentMethod, setPaymentMethods] = useState("0");
   const [show, setShow] = useState(false);
@@ -60,6 +61,7 @@ const PaymentModal = ({
   return (
     <>
       <Button
+        disabled={isLoading}
         onClick={() => setShow(true)}
         className="font-bold w-full py-6 text-lg rounded-lg"
       >

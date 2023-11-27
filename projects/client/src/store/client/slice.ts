@@ -26,10 +26,12 @@ interface Fee {
 
 export interface ShippingFeeSlice {
   fee: Fee;
+  isLoading: boolean;
   totalShipping: number;
   addShippingFee: (productId: number, fee: Service) => void;
   getTotalShippingFee: () => void;
   clear: () => void;
+  setLoading: (state: boolean) => void;
 }
 
 export const createTotalPrice: StateCreator<
@@ -59,6 +61,7 @@ export const createShippingSlice: StateCreator<
   ShippingFeeSlice
 > = (set) => ({
   fee: {},
+  isLoading: false,
   totalShipping: 0,
   getTotalShippingFee: () =>
     set((state) => ({
@@ -69,5 +72,6 @@ export const createShippingSlice: StateCreator<
     })),
   addShippingFee: (productId: number, fee: Service) =>
     set((state) => ({ fee: { ...state.fee, [productId]: fee } })),
-  clear: () => set((state) => ({ fee: {}, totalShipping: 0 })),
+  setLoading: (load: boolean) => set(() => ({ isLoading: load })),
+  clear: () => set(() => ({ fee: {}, totalShipping: 0 })),
 });

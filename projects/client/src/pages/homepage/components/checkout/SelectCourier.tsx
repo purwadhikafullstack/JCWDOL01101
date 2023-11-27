@@ -34,6 +34,7 @@ const SelectCourier = ({
   address: Address | undefined;
 }) => {
   const addShippingFee = useBoundStore((state) => state.addShippingFee);
+  const setLoading = useBoundStore((state) => state.setLoading);
   const getTotalShippingFee = useBoundStore(
     (state) => state.getTotalShippingFee
   );
@@ -48,6 +49,10 @@ const SelectCourier = ({
   const selectedService: Service = data
     ? data?.costs[Number(service)]
     : { service: "", description: "", cost: [] };
+
+  useEffect(() => {
+    setLoading(isLoading);
+  }, [isLoading]);
 
   useEffect(() => {
     if (selectedService.cost.length > 0) {
