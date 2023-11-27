@@ -1,7 +1,7 @@
-import { Warehouse } from "@/interfaces/warehouse.interface";
-import { WarehouseService } from "@/services/warehouse.service";
-import { NextFunction, Request, Response } from "express";
-import Container from "typedi";
+import { Warehouse } from '@/interfaces/warehouse.interface';
+import { WarehouseService } from '@/services/warehouse.service';
+import { NextFunction, Request, Response } from 'express';
+import Container from 'typedi';
 
 export class WarehouseController {
   public warehouse = Container.get(WarehouseService);
@@ -60,7 +60,4 @@ export class WarehouseController {
       next(error);
     }
   };
-
-
-
 }

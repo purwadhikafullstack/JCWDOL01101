@@ -56,28 +56,10 @@ export const DB = {
   Address: AddressModel(sequelize),
   Provice: ProvinceModel(sequelize),
   City: CityModel(sequelize),
-  Address: AddressModel(sequelize),
-  Provice: ProvinceModel(sequelize),
-  City: CityModel(sequelize),
   Categories: CategoryModel(sequelize),
   Inventories: InventoryModel(sequelize),
   sequelize,
   Sequelize,
 };
 
-associations();
-
-DB.Cities.hasOne(DB.WarehouseAddresses, { foreignKey: 'cityId', as: 'cityData' });
-DB.WarehouseAddresses.belongsTo(DB.Cities, { foreignKey: 'cityId', as: 'cityData' });
-DB.Provinces.hasMany(DB.Cities, { foreignKey: 'provinceId', as: 'provinceData' });
-DB.Cities.belongsTo(DB.Provinces, { foreignKey: 'provinceId', as: 'provinceData' });
-
-DB.User.hasOne(DB.Warehouses, { foreignKey: 'userId', as: 'userData' });
-DB.Warehouses.belongsTo(DB.User, { foreignKey: 'userId', as: 'userData' });
-
-DB.Categories.hasOne(DB.Product, { foreignKey: 'categoryId' });
-DB.Product.belongsTo(DB.Categories, { foreignKey: 'categoryId' });
-
-DB.WarehouseAddresses.hasOne(DB.Warehouses, { foreignKey: 'warehouseAddressId', as: 'warehouseAddress' });
-DB.Warehouses.belongsTo(DB.WarehouseAddresses, { foreignKey: 'warehouseAddressId', as: 'warehouseAddress' });
 associations();
