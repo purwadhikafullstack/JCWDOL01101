@@ -7,35 +7,24 @@ import {
   DialogClose,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { useDeleteAdmin } from "@/hooks/useUser"
 import { Loader2 } from "lucide-react"
-import { useToast } from "@/components/ui/use-toast"
+import { useDeleteAddress } from "@/hooks/useAddressMutation"
+import toast from "react-hot-toast"
 
-const DeleteAdmin = ({ userId }: { userId: Number }) => {
-  const deleteProduct = useDeleteAdmin(userId as number)
-  const { toast } = useToast()
-  const onDeleteAdmin = () => {
-    deleteProduct.mutate()
+function DeleteAddressDialog({ addressId }: { addressId: number }) {
+  const deleteAddress = useDeleteAddress(addressId)
+  const onSetMain = () => {
+    deleteAddress.mutate()
   }
-
-  useEffect(() => {
-    if (deleteProduct.isSuccess) {
-      toast({
-        title: "Admin Deleted",
-        description: "Successfully delete admin warehouse",
-        duration: 3000,
-      })
-    }
-  }, [deleteProduct.isSuccess, toast])
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Delete This Admin</DialogTitle>
+        <DialogTitle>Delete Address</DialogTitle>
         <DialogDescription>
-          You're about to delete this admin warehouse
+          You're about to delete this address
         </DialogDescription>
       </DialogHeader>
-      <form onSubmit={onDeleteAdmin}>
+      <form onSubmit={onSetMain}>
         <span className="flex justify-center gap-4 w-full">
           <Button
             type="submit"
@@ -44,10 +33,10 @@ const DeleteAdmin = ({ userId }: { userId: Number }) => {
           >
             <Loader2
               className={
-                deleteProduct.isPending ? "animate-spin w-4 h-4 mr-2" : "hidden"
+                deleteAddress.isPending ? "animate-spin w-4 h-4 mr-2" : "hidden"
               }
             />
-            Yes, delete admin
+            Yes, delete address
           </Button>
           <DialogClose asChild>
             <Button type="button" variant="secondary">
@@ -60,4 +49,4 @@ const DeleteAdmin = ({ userId }: { userId: Number }) => {
   )
 }
 
-export default DeleteAdmin
+export default DeleteAddressDialog

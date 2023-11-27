@@ -16,4 +16,3 @@ export class ProvinceRoute implements Routes {
     this.router.get(`${this.path}/:id(\\d+)`, this.Province.getProvinceById);
   }
 }
-

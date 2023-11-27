@@ -48,6 +48,21 @@ export class AdressController {
       next(err);
     }
   };
+
+  public getAllAdressByUserId = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = Number(req.params.userId);
+      const findAllAddress = await this.address.getAllAddressByUserId(userId);
+
+      res.status(200).json({
+        message: 'get.address',
+        data: findAllAddress,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   public checkActiveParam = async (req: Request, res: Response, next: NextFunction) => {
     const addressId = req.params.addressId;
     if (addressId === 'active' || addressId === 'city') {
@@ -113,11 +128,39 @@ export class AdressController {
     }
   };
 
+  public deleteAddress = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const addressId = Number(req.params.addressId);
+      const deleteAddress = await this.address.deleteAddress(addressId);
+
+      res.status(200).json({
+        message: 'delete.address',
+        data: deleteAddress,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   public toggleAddress = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const addressId = Number(req.params.addressId);
       const field = String(req.params.field);
       const updatedAddress: Address = await this.address.toggleAddress(addressId, field);
+
+      res.status(200).json({
+        message: 'patch.address',
+        data: updatedAddress,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public setMainAddress = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const addressId = Number(req.params.addressId);
+      const updatedAddress: Address = await this.address.setMainAddress(addressId);
 
       res.status(200).json({
         message: 'patch.address',

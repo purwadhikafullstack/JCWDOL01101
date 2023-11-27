@@ -1,21 +1,21 @@
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import React from "react";
-import CityField from "./input/CityField";
-import { Coordinates } from "./AddAddressForm";
-import LabelField from "./input/LabelField";
-import AddressField from "./input/AddressField";
-import MainCheckboxField from "./input/MainCheckboxField";
-import NotesField from "./input/NotesField";
-import PhoneField from "./input/PhoneField";
-import RecepientField from "./input/RecepientField";
-import EditCityField from "./input/EditCityField";
+import { Button } from "@/components/ui/button"
+import { Loader2 } from "lucide-react"
+import React from "react"
+import CityField from "@/components/input/CityField"
+import { Coordinates } from "./AddAddressForm"
+import LabelField from "@/components/input/LabelField"
+import AddressField from "@/components/input/AddressField"
+import MainCheckboxField from "@/components/input/MainCheckboxField"
+import NotesField from "@/components/input/NotesField"
+import PhoneField from "@/components/input/PhoneField"
+import RecepientField from "@/components/input/RecepientField"
+import EditCityField from "@/components/input/EditCityField"
 
 type AddAddressForm = {
-  isPending: boolean;
-  location: Coordinates | null;
-  handleGetGeolocation: () => void;
-};
+  isPending: boolean
+  location: Coordinates | null
+  handleGetGeolocation: () => void
+}
 const EditForm = ({
   isPending,
   location,
@@ -40,7 +40,7 @@ const EditForm = ({
         </Button>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default EditForm;
+export default EditForm

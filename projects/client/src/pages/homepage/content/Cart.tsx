@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
-import UserContext from "@/context/UserContext";
-import { useCart } from "@/hooks/useCart";
-import CartItem from "../components/CartItem";
-import { useDeleteAllCartProduct } from "@/hooks/useCartMutation";
-import toast from "react-hot-toast";
+import React, { useContext, useEffect, useMemo, useState } from "react"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Separator } from "@/components/ui/separator"
+import UserContext from "@/context/UserContext"
+import { useCart } from "@/hooks/useCart"
+import CartItem from "../components/CartItem"
+import { useDeleteAllCartProduct } from "@/hooks/useCartMutation"
+import toast from "react-hot-toast"
 import {
   Dialog,
   DialogClose,
@@ -16,25 +16,25 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { formatToIDR } from "@/lib/utils";
-import { Loader } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useBoundStore } from "@/store/client/useStore";
+} from "@/components/ui/dialog"
+import { formatToIDR } from "@/lib/utils"
+import { Loader } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+import { useBoundStore } from "@/store/client/useStore"
 const Cart = () => {
-  const clearCheckout = useBoundStore((state) => state.clear);
-  clearCheckout();
-  const navigate = useNavigate();
-  const userContext = useContext(UserContext);
+  const clearCheckout = useBoundStore((state) => state.clear)
+  clearCheckout()
+  const navigate = useNavigate()
+  const userContext = useContext(UserContext)
   if (!userContext) {
-    throw new Error("useUser must be used within a UserProvider");
+    throw new Error("useUser must be used within a UserProvider")
   }
-  const { user } = userContext;
-  const { data: cart } = useCart(user?.id!, !!user?.userCart);
-  const cartProducts = useMemo(() => cart?.cart.cartProducts || [], [cart]);
-  const deleteAllCart = useDeleteAllCartProduct(cart?.cart.id!);
-  const totalQuantity = cart?.totalQuantity || 0;
-  const totalPrice = cart?.totalPrice || 0;
+  const { user } = userContext
+  const { data: cart } = useCart(user?.id!, !!user?.userCart)
+  const cartProducts = useMemo(() => cart?.cart.cartProducts || [], [cart])
+  const deleteAllCart = useDeleteAllCartProduct(cart?.cart.id!)
+  const totalQuantity = cart?.totalQuantity || 0
+  const totalPrice = cart?.totalPrice || 0
 
   useEffect(() => {
     if (deleteAllCart.isSuccess) {
@@ -49,35 +49,35 @@ const Cart = () => {
             background: "#000",
           },
         }
-      );
+      )
     }
-  }, [deleteAllCart.isSuccess]);
+  }, [deleteAllCart.isSuccess])
   const defaultSelectedItem = useMemo(() => {
     return cartProducts.reduce(
       (acc: { [key: string]: boolean }, { productId }) => {
-        acc[productId] = true;
-        return acc;
+        acc[productId] = true
+        return acc
       },
       {}
-    );
-  }, [cartProducts]);
+    )
+  }, [cartProducts])
 
   const [selectedItem, setSelectedItem] = useState<{ [key: string]: boolean }>(
     defaultSelectedItem
-  );
+  )
   const allTrue = useMemo(
     () =>
       Object.keys(selectedItem).length > 0 &&
       Object.values(selectedItem).every((value) => value),
     [selectedItem]
-  );
+  )
   const someTrue = useMemo(
     () => Object.values(selectedItem).some((value) => value),
     [selectedItem]
-  );
+  )
   const handleSelectedItem = (key: string, value: boolean) => {
-    setSelectedItem({ ...selectedItem, [key]: value });
-  };
+    setSelectedItem({ ...selectedItem, [key]: value })
+  }
 
   return (
     <div className="flex w-full gap-8">
@@ -87,11 +87,11 @@ const Cart = () => {
           <div className="flex items-center justify-between border-b-4 px-0">
             <div
               onClick={() => {
-                const newSelectedItem: { [key: string]: boolean } = {};
+                const newSelectedItem: { [key: string]: boolean } = {}
                 cartProducts.forEach((v) => {
-                  newSelectedItem[v.productId] = !selectedItem[v.productId];
-                });
-                setSelectedItem(newSelectedItem);
+                  newSelectedItem[v.productId] = !selectedItem[v.productId]
+                })
+                setSelectedItem(newSelectedItem)
               }}
               className={buttonVariants({
                 variant: "ghost",
@@ -129,8 +129,8 @@ const Cart = () => {
                   onClick={() => {
                     const deletedKeys = Object.keys(selectedItem).filter(
                       (key) => selectedItem[key] === true
-                    );
-                    deleteAllCart.mutate(deletedKeys);
+                    )
+                    deleteAllCart.mutate(deletedKeys)
                   }}
                 >
                   {deleteAllCart.isPending ? (
@@ -190,7 +190,7 @@ const Cart = () => {
             <Button
               disabled={!someTrue}
               onClick={() => {
-                navigate("/checkout");
+                navigate("/checkout")
               }}
               className="w-full"
             >
@@ -200,7 +200,7 @@ const Cart = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Cart;
+export default Cart
