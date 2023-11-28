@@ -30,7 +30,7 @@ const role = [
     category: "Admin",
   },
   {
-    value: "WAREHOUSE",
+    value: "WAREHOUSE ADMIN",
     category: "Warehouse admin",
   },
 ]

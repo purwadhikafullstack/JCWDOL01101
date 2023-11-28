@@ -13,13 +13,13 @@ module.exports = {
       });
       const data = res.data.rajaongkir.results;
 
-      await queryInterface.bulkInsert('province', data, {});
+      await queryInterface.bulkInsert('provinces', data, {});
     } catch (err) {
       throw err;
     }
   },
 
   async down(queryInterface) {
-    await queryInterface.bulkDelete('province', null, {});
+    await queryInterface.bulkDelete('provinces', null, {});
   },
 };

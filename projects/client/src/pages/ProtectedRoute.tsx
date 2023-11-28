@@ -1,10 +1,10 @@
-import { useUser } from "@clerk/clerk-react";
+import { useUser, useClerk } from "@clerk/clerk-react";
 import React from "react";
 import Homepage from "./homepage/content/Homepage";
 import UserContext from "@/context/UserContext";
 import { useCurrentUser } from "@/hooks/useUser";
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, isSignedIn, isLoaded } = useUser();
   const { data: userBackend } = useCurrentUser({
     externalId: user?.id!,
@@ -23,4 +23,14 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default ProtectedRoute;
+export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, isLoaded } = useUser();
+  const { redirectToHome } = useClerk();
+  return (
+    <>
+      {isLoaded && user?.publicMetadata.role !== "CUSTOMER"
+        ? children
+        : redirectToHome()}
+    </>
+  );
+};

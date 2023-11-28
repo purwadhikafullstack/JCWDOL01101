@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { Loader2 } from "lucide-react"
-import { useEditAdmin, useUser } from "@/hooks/useUser"
+import { useEditAdmin, useUserById } from "@/hooks/useUser"
 import UserSelectFormField from "./UserSelectFormField"
 import ProductFormField from "./ProductFormField"
 import { adminEditSchema } from "./AdminAction"
@@ -32,7 +32,7 @@ const EditAdminForm = () => {
       navigate("/dashboard/manage-admin")
     }
   }, [userId, navigate])
-  const { data: user } = useUser(Number(userId))
+  const { data: user } = useUserById(Number(userId))
 
   const userMutation = useEditAdmin(Number(userId))
 

@@ -17,7 +17,7 @@ export class UserRoute implements Routes {
   private initializeRoutes() {
     this.router.post('/v1/webhook', bodyParser.raw({ type: 'application/json' }), this.user.webhook);
     this.router.get(`${this.path}/:externalId`, this.user.getUserByExternalId);
-    this.router.get('/v1/user/user-id/:userId', this.user.getUser);
+    this.router.get('/v1/dashboard/user/:userId', this.user.getUser);
     this.router.get(`${this.path}`, this.user.getUsers);
     this.router.post('/v1/admin', this.user.createAdmin);
     this.router.put('/v1/manage-admin/:userId', this.user.manageAdmin);

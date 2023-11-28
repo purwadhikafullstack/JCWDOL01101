@@ -1,7 +1,7 @@
 import { App } from '@/app';
 import { ValidateEnv } from '@utils/validateEnv';
 import { UserRoute } from './routes/user.route';
-import { WarehouseRoute } from './routes/warehouse.routes';
+import { WarehouseRoute } from './routes/warehouse.route';
 import { ProductRoute } from './routes/product.route';
 import { CategoryRoute } from './routes/category.route';
 import { CityRoute } from './routes/city.route';
