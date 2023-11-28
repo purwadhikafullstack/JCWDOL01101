@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
-import DeleteProduct from "./DeleteProduct";
+import DeleteProduct from "./product/DeleteProduct";
 import { useUser } from "@clerk/clerk-react";
 import { AlertTriangle } from "lucide-react";
 

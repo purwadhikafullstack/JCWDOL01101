@@ -1,6 +1,7 @@
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
 import { WarehouseAddress } from '@/interfaces/warehouseAddress.interface';
+import opencage from 'opencage-api-client';
 import { Service } from 'typedi';
 
 @Service()
@@ -18,7 +19,12 @@ export class WarehouseAddressService {
   }
 
   public async createWarehouseAddress(addressData: WarehouseAddress): Promise<WarehouseAddress> {
-    const createAddressData: WarehouseAddress = await DB.WarehouseAddresses.create({ ...addressData });
+    const city = await DB.City.findOne({ where: { cityId: addressData.cityId } });
+    if (!city) throw new HttpException(409, "City doens't exist");
+    const data = await opencage.geocode({ q: city.cityName, language: 'id' });
+    const place = data.results[0];
+    const { lat, lng } = place.geometry;
+    const createAddressData = await DB.WarehouseAddresses.create({ ...addressData, latitude: lat, longitude: lng });
     return createAddressData;
   }
 

@@ -4,6 +4,7 @@ import { Inventory } from '@/interfaces/inventory.interface';
 export class InventoryModel extends Model<Inventory> implements Inventory {
   public id: number;
   public warehouseId: number;
+  public productId?: number;
   public stock: number;
   public sold: number;
 
@@ -23,13 +24,19 @@ export default function (sequelize: Sequelize): typeof InventoryModel {
         allowNull: true,
         type: DataTypes.INTEGER,
       },
+      productId: {
+        allowNull: true,
+        type: DataTypes.INTEGER,
+      },
       stock: {
         allowNull: false,
         type: DataTypes.INTEGER,
+        defaultValue: 0,
       },
       sold: {
         allowNull: false,
         type: DataTypes.INTEGER,
+        defaultValue: 0,
       },
     },
     {
