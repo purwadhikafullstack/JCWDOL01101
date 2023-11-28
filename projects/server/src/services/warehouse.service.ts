@@ -15,12 +15,12 @@ export class WarehouseService {
           include: [
             {
               model: DB.City,
-              as: 'cityData',
+              as: 'cities',
               attributes: ['cityName'],
               include: [
                 {
-                  model: DB.Provice,
-                  as: 'provinceData',
+                  model: DB.Province,
+                  as: 'cityProvince',
                   attributes: ['province'],
                 },
               ],

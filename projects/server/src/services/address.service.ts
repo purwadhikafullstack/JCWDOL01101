@@ -39,8 +39,8 @@ export class AddressService {
     const options: FindOptions<City> = {
       where: search
         ? {
-          [Op.or]: [{ cityName: { [Op.like]: `%${search}%` } }],
-        }
+            [Op.or]: [{ cityName: { [Op.like]: `%${search}%` } }],
+          }
         : {},
     };
     const findCity: City[] = await DB.City.findAll(options);
@@ -62,12 +62,12 @@ export class AddressService {
       order: [['isActive', 'DESC']],
       where: search
         ? {
-          [Op.or]: [
-            { recepient: { [Op.like]: `%${search}%` } },
-            { '$city.city_name$': { [Op.like]: `%${search}%` } },
-            { label: { [Op.like]: `%${search}%` } },
-          ],
-        }
+            [Op.or]: [
+              { recepient: { [Op.like]: `%${search}%` } },
+              { '$city.city_name$': { [Op.like]: `%${search}%` } },
+              { label: { [Op.like]: `%${search}%` } },
+            ],
+          }
         : {},
       raw: true,
     };

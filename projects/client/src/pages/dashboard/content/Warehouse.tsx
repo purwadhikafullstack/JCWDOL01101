@@ -18,14 +18,13 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import service from "@/service";
-import { useGetWarehouse, useWarehouseMutation } from "@/hooks/useWarehouse";
 
 type WarehouseAddressType = {
   id: number;
   addressDetail: string;
   cityId: string;
   provinceId: number;
-  cityData?: CityType;
+  cities?: CityType;
 };
 
 type WarehouseType = {
@@ -42,7 +41,7 @@ type CityType = {
   cityName: string;
   provinceId: string;
   postal_code: number;
-  provinceData?: ProvinceType;
+  cityProvince?: ProvinceType;
 };
 
 type ProvinceType = {
@@ -178,9 +177,9 @@ const Warehouse = () => {
     setEditAddress({
       addressDetail: warehouse.warehouseAddress?.addressDetail || "",
     });
-    setSelectedCity(warehouse.warehouseAddress?.cityData || null);
+    setSelectedCity(warehouse.warehouseAddress?.cities || null);
     setSelectedProvince(
-      warehouse.warehouseAddress?.cityData?.provinceData || null
+      warehouse.warehouseAddress?.cities?.cityProvince || null
     );
     setIsEditing(true);
   };
@@ -443,10 +442,10 @@ const Warehouse = () => {
                   {warehouse.warehouseAddress?.addressDetail}
                 </TableCell>
                 <TableCell>
-                  {warehouse.warehouseAddress?.cityData?.provinceData?.province}
+                  {warehouse.warehouseAddress?.cities?.cityProvince?.province}
                 </TableCell>
                 <TableCell>
-                  {warehouse.warehouseAddress?.cityData?.cityName}
+                  {warehouse.warehouseAddress?.cities?.cityName}
                 </TableCell>
                 <TableCell>{warehouse.userId}</TableCell>
                 <Button

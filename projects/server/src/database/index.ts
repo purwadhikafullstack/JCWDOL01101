@@ -58,7 +58,6 @@ export const DB = {
   Province: ProvinceModel(sequelize),
   City: CityModel(sequelize),
   Categories: CategoryModel(sequelize),
-  Categories: CategoryModel(sequelize),
   Inventories: InventoryModel(sequelize),
   Warehouses: WarehouseModel(sequelize),
   WarehouseAddresses: WarehouseAddressModel(sequelize),

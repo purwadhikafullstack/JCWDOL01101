@@ -15,8 +15,6 @@ import Dashboard from "./dashboard/content/Dashboard";
 import User from "./dashboard/content/User";
 import ManageAdmin from "./dashboard/content/Admin";
 import Product from "./dashboard/content/Product";
-import NewProductForm from "./dashboard/components/NewProductForm";
-import EditProductForm from "./dashboard/components/EditProductForm";
 import Warehouse from "./dashboard/content/Warehouse";
 import EditAdminForm from "./dashboard/components/EditAdminForm";
 import ProductDetail from "./homepage/content/ProductDetail";
@@ -26,6 +24,8 @@ import UserLayout from "./user/UserLayout";
 import Profile from "./user/content/Profile";
 import Address from "./user/content/Address";
 import Checkout from "./homepage/content/Checkout";
+import CreateProductForm from "./dashboard/components/product/CreateProductForm";
+import EditProductForm from "./dashboard/components/product/EditProductForm";
 
 const router = createBrowserRouter([
   {
