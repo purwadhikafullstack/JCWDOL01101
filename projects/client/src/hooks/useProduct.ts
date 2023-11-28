@@ -13,6 +13,12 @@ export interface Product {
   description: string;
   status: string;
   slug: string;
+  productImage: Image[];
+}
+export interface Image {
+  id?: number;
+  productId?: number;
+  image: string;
 }
 
 type ProductOptions = {
@@ -20,8 +26,15 @@ type ProductOptions = {
   s: string;
   filter: string;
   order: string;
+  limit: number;
 };
-export const useProducts = ({ page, s, filter, order }: ProductOptions) => {
+export const useProducts = ({
+  page,
+  s,
+  filter,
+  order,
+  limit,
+}: ProductOptions) => {
   const { data, isLoading, isFetched } = useQuery<{
     products: Product[];
     totalPages: number;

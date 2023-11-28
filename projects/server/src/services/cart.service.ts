@@ -5,6 +5,7 @@ import { Cart } from '@/interfaces/cart.interface';
 import { CartProduct } from '@/interfaces/cartProduct.interface';
 import { User } from '@/interfaces/user.interface';
 import { CartProductModel } from '@/models/cartProduct.model';
+import { ImageModel } from '@/models/image.model';
 import { ProductModel } from '@/models/product.model';
 import { Service } from 'typedi';
 
@@ -26,6 +27,12 @@ export class CartService {
             {
               model: ProductModel,
               as: 'product',
+              include: [
+                {
+                  model: ImageModel,
+                  as: 'productImage',
+                },
+              ],
               where: {
                 status: 'ACTIVE',
               },
@@ -63,6 +70,12 @@ export class CartService {
       include: {
         model: ProductModel,
         as: 'product',
+        include: [
+          {
+            model: ImageModel,
+            as: 'productImage',
+          },
+        ],
         where: {
           status: 'ACTIVE',
         },

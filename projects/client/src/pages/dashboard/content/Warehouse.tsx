@@ -18,6 +18,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import service from "@/service";
+import { useGetWarehouse, useWarehouseMutation } from "@/hooks/useWarehouse";
 
 type WarehouseAddressType = {
   id: number;
@@ -70,7 +71,6 @@ const Warehouse = () => {
   const [selectedProvince, setSelectedProvince] = useState<ProvinceType | null>(
     null
   );
-
   const [editAddress, setEditAddress] = useState({
     addressDetail: "",
   });
@@ -114,7 +114,7 @@ const Warehouse = () => {
       .catch((error) => {
         console.error("There was an error!", error);
       });
-  }, [warehouses]);
+  }, []);
 
   const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const city = cities.find(
@@ -269,7 +269,7 @@ const Warehouse = () => {
                   className="mt-1 p-2 border rounded"
                 />
               </label>
-              <label className=" mb-2 flex justify-between">
+              <label className="mb-2 flex justify-between">
                 Capacity:
                 <input
                   type="number"

@@ -1,4 +1,5 @@
 import { ProductDto } from '@/dtos/product.dto';
+import { Image } from '@/interfaces/image.interface';
 import { GetFilterProduct, Product } from '@/interfaces/product.interface';
 import { ProductService } from '@/services/product.service';
 import { NextFunction, Request, Response } from 'express';
@@ -9,10 +10,11 @@ export class ProductController {
 
   public getProducts = async (req: Request<{}, {}, {}, GetFilterProduct>, res: Response, next: NextFunction) => {
     try {
-      const { page, s, order, filter } = req.query;
+      const { page, s, order, filter, limit } = req.query;
       const { products, totalPages } = await this.product.getAllProduct({
         s,
         order,
+        limit,
         filter,
         page: Number(page),
       });
@@ -84,14 +86,12 @@ export class ProductController {
     try {
       const { product } = req.body;
       const parseProduct: ProductDto = JSON.parse(product);
-      const { path } = req.file as Express.Multer.File;
-      const productData: Product = await this.product.createProduct({
+      const files = req.files as Express.Multer.File[];
+      const productData: Product = await this.product.createProduct(files, {
         ...parseProduct,
         categoryId: Number(parseProduct.categoryId),
         price: Number(parseProduct.price),
-        stock: Number(parseProduct.stock),
         weight: Number(parseProduct.weight),
-        image: path,
       });
 
       res.status(200).json({
@@ -106,25 +106,20 @@ export class ProductController {
   public updateProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const slug = String(req.params.slug);
-      const { product } = req.body;
+      const product = req.body.product;
       const parseProduct: ProductDto = JSON.parse(product);
-      let image = parseProduct.image;
-      if (!Boolean(image)) {
-        const { path } = req.file as Express.Multer.File;
-        image = path;
-      }
-      const updatedProduct = await this.product.updateProduct(slug, {
+      const currentImage = JSON.parse(req.body.currentImage);
+      const files = req.files as Express.Multer.File[];
+      const updatedProduct = await this.product.updateProduct(slug, currentImage, files, {
         ...parseProduct,
-        image,
         categoryId: Number(parseProduct.categoryId),
         price: Number(parseProduct.price),
-        stock: Number(parseProduct.stock),
         weight: Number(parseProduct.weight),
       });
 
       res.status(200).json({
         data: updatedProduct,
-        message: 'product.created',
+        message: 'product.updated',
       });
     } catch (err) {
       next(err);
@@ -139,6 +134,20 @@ export class ProductController {
       res.status(200).json({
         data: deletedProduct,
         message: 'product.deleted',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public deleteProductImage = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const imageId = Number(req.params.imageId);
+      const deletedImage: Image = await this.product.deleteProductImage(imageId);
+
+      res.status(200).json({
+        data: deletedImage,
+        message: 'product.image.deleted',
       });
     } catch (err) {
       next(err);

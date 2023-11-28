@@ -5,7 +5,7 @@ import { Router } from 'express';
 export class CheckoutRoute implements Routes {
   public router = Router();
   public checkout = new CheckoutController();
-  public path = '/api/checkout';
+  public path = '/v1/checkout';
 
   constructor() {
     this.initializeRoutes();

@@ -41,7 +41,7 @@ const NavCart = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
                 <div key={product.id} className="py-1">
                   <div className="w-full flex justify-between items-center">
                     <img
-                      src={`${baseURL}/${product.image}`}
+                      src={`${baseURL}/images/${product.productImage[0].image}`}
                       className="w-10 h-10"
                       alt={product.name}
                     />

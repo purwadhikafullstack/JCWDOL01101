@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { Plus, SearchIcon } from "lucide-react";
 import {
@@ -19,6 +19,7 @@ import ProductTableRow from "../components/ProductTableRow";
 import TablePagination from "../components/TablePagination";
 import ChangeOrderButton from "../components/ChangeOrderButton";
 import { useUser } from "@clerk/clerk-react";
+import { useBoundStore } from "@/store/client/useStore";
 
 const Product = () => {
   const { user } = useUser();
@@ -35,7 +36,13 @@ const Product = () => {
     s: debounceSearch,
     filter: searchParams.get("filter") || "",
     order: searchParams.get("order") || "",
+    limit: 10,
   });
+
+  const clearImage = useBoundStore((state) => state.clearImage);
+  useEffect(() => {
+    clearImage();
+  }, []);
   return (
     <div className="flex flex-col p-2 w-full">
       {ROLE === "ADMIN" && (

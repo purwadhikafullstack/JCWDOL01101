@@ -18,7 +18,7 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
           <div className="rounded-md shadow-sm border overflow-hidden">
             <LazyLoadImage
               className="w-full h-[200px] object-cover"
-              src={`${baseURL}/${product.image}`}
+              src={`${baseURL}/images/${product.productImage[0].image}`}
               effect="opacity"
               alt={product.name}
             />

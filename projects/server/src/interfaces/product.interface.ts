@@ -6,9 +6,6 @@ export interface Product {
   cartId?: number;
   name: string;
   price: number;
-  stock: number;
-  sold: number;
-  image: string;
   weight: number;
   description: string;
   status: Status;
@@ -20,4 +17,5 @@ export interface GetFilterProduct {
   s: string;
   filter: string;
   order: string;
+  limit: number;
 }

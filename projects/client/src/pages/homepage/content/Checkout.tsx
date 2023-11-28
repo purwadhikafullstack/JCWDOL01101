@@ -1,3 +1,4 @@
+import React, { useContext, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
@@ -6,7 +7,6 @@ import { useActiveAddress } from "@/hooks/useAddress";
 import { useCart } from "@/hooks/useCart";
 import { formatToIDR } from "@/lib/utils";
 import { useBoundStore } from "@/store/client/useStore";
-import React, { useContext, useMemo, useState } from "react";
 import ActiveAddress from "../components/checkout/ActiveAddress";
 import AddNewAddressDialog from "../components/checkout/AddNewAddressDialog";
 import AddressModal from "../components/checkout/AddressModal";

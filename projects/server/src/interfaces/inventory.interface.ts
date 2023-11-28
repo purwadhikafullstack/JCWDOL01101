@@ -1,5 +1,6 @@
-export interface Inventory{
-    id? : number;
-    warehouseId?:number;
-    stock:number;
+export interface Inventory {
+  id?: number;
+  warehouseId?: number;
+  stock: number;
+  sold: number;
 }

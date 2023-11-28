@@ -88,7 +88,7 @@ const CartItem = ({
         <div className="flex items-start pl-6 gap-4">
           <img
             className="w-14 h-14 rounded-md object-contain"
-            src={`${baseURL}/${product.image}`}
+            src={`${baseURL}/images/${product.productImage[0].image}`}
             alt={product.name}
           />
           <div>

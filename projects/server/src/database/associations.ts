@@ -10,6 +10,9 @@ export default function () {
   DB.User.hasOne(DB.Cart, { foreignKey: 'user_id', as: 'userCart' });
   DB.Cart.belongsTo(DB.User, { foreignKey: 'user_id', as: 'userCart' });
 
+  DB.Product.hasMany(DB.Image, { foreignKey: 'product_id', as: 'productImage' });
+  DB.Image.belongsTo(DB.Product, { foreignKey: 'product_id', as: 'productImage' });
+
   DB.Cart.belongsToMany(DB.Product, { through: DB.CartProduct, as: 'products', foreignKey: 'productId', otherKey: 'cartId' });
   DB.Product.belongsToMany(DB.Cart, { through: DB.CartProduct, as: 'carts', foreignKey: 'cartId', otherKey: 'productId' });
   DB.Cart.hasMany(DB.CartProduct, { foreignKey: 'cart_id', as: 'cartProducts' });
@@ -30,10 +33,10 @@ export default function () {
   DB.User.hasOne(DB.Order, { foreignKey: 'user_id', as: 'userOrder' });
   DB.Order.belongsTo(DB.User, { foreignKey: 'user_id', as: 'userOrder' });
 
-  DB.Cities.hasOne(DB.WarehouseAddresses, { foreignKey: 'cityId', as: 'cityData' });
-  DB.WarehouseAddresses.belongsTo(DB.Cities, { foreignKey: 'cityId', as: 'cityData' });
-  DB.Provinces.hasMany(DB.Cities, { foreignKey: 'provinceId', as: 'provinceData' });
-  DB.Cities.belongsTo(DB.Provinces, { foreignKey: 'provinceId', as: 'provinceData' });
+  DB.City.hasOne(DB.WarehouseAddresses, { foreignKey: 'cityId', as: 'cityData' });
+  DB.WarehouseAddresses.belongsTo(DB.City, { foreignKey: 'cityId', as: 'cityData' });
+  DB.Provice.hasMany(DB.City, { foreignKey: 'provinceId', as: 'provinceData' });
+  DB.City.belongsTo(DB.Provice, { foreignKey: 'provinceId', as: 'provinceData' });
 
   DB.User.hasOne(DB.Warehouses, { foreignKey: 'userId', as: 'userData' });
   DB.Warehouses.belongsTo(DB.User, { foreignKey: 'userId', as: 'userData' });
@@ -43,4 +46,7 @@ export default function () {
 
   DB.WarehouseAddresses.hasOne(DB.Warehouses, { foreignKey: 'warehouseAddressId', as: 'warehouseAddress' });
   DB.Warehouses.belongsTo(DB.WarehouseAddresses, { foreignKey: 'warehouseAddressId', as: 'warehouseAddress' });
+
+  DB.Inventories.hasOne(DB.JurnalModel, { foreignKey: 'inventoryId', as: 'jurnalInventory' });
+  DB.JurnalModel.belongsTo(DB.Inventories, { foreignKey: 'inventoryId', as: 'jurnalInventory' });
 }

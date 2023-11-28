@@ -15,14 +15,14 @@ import Dashboard from "./dashboard/content/Dashboard";
 import User from "./dashboard/content/User";
 import ManageAdmin from "./dashboard/content/Admin";
 import Product from "./dashboard/content/Product";
-import NewProductForm from "./dashboard/components/NewProductForm";
-import EditProductForm from "./dashboard/components/EditProductForm";
 import Warehouse from "./dashboard/content/Warehouse";
 import EditAdminForm from "./dashboard/components/EditAdminForm";
 import ProductDetail from "./homepage/content/ProductDetail";
 import Cart from "./homepage/content/Cart";
 import ProtectedRoute from "./ProtectedRoute";
 import Checkout from "./homepage/content/Checkout";
+import CreateProductForm from "./dashboard/components/product/CreateProductForm";
+import EditProductForm from "./dashboard/components/product/EditProductForm";
 
 const router = createBrowserRouter([
   {
@@ -114,12 +114,12 @@ const router = createBrowserRouter([
         element: <Product />,
       },
       {
-        path: "product/:slug",
-        element: <EditProductForm />,
+        path: "product/create",
+        element: <CreateProductForm />,
       },
       {
-        path: "product/create",
-        element: <NewProductForm />,
+        path: "product/edit/:slug",
+        element: <EditProductForm />,
       },
     ],
   },

@@ -1,7 +1,5 @@
-import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
+import { Sequelize, DataTypes, Model } from 'sequelize';
 import { WarehouseAddress } from '@/interfaces/warehouseAddress.interface';
-import { WarehouseModel } from './warehouse.model';
-import { ProvinceModel } from './province.model';
 
 export class WarehouseAddressModel extends Model<WarehouseAddress> implements WarehouseAddress {
   public id: number;
@@ -10,8 +8,7 @@ export class WarehouseAddressModel extends Model<WarehouseAddress> implements Wa
   public provinceId: string;
   public longitude: number;
   public latitude: number;
-  public isActive:boolean;
-
+  public isActive: boolean;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -48,7 +45,7 @@ export default function (sequelize: Sequelize): typeof WarehouseAddressModel {
       isActive: {
         allowNull: true,
         type: DataTypes.BOOLEAN,
-        defaultValue:false,
+        defaultValue: false,
       },
     },
     {
@@ -56,7 +53,6 @@ export default function (sequelize: Sequelize): typeof WarehouseAddressModel {
       sequelize,
     },
   );
-
 
   return WarehouseAddressModel;
 }

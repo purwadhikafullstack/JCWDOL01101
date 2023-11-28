@@ -10,7 +10,7 @@ export class ShipmentModel extends Model<Shipment> implements Shipment {
   public etd: string;
 }
 
-export default function(sequelize: Sequelize): typeof ShipmentModel {
+export default function (sequelize: Sequelize): typeof ShipmentModel {
   ShipmentModel.init(
     {
       id: {

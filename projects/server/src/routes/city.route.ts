@@ -3,7 +3,7 @@ import { Routes } from '@interfaces/routes.interface';
 import { CityController } from '@/controllers/city.controller';
 
 export class CityRoute implements Routes {
-  public path = '/api/cities';
+  public path = '/v1/cities';
   public router = Router();
   public City = new CityController();
 
@@ -16,4 +16,3 @@ export class CityRoute implements Routes {
     this.router.get(`${this.path}/:id(\\d+)`, this.City.getCityById);
   }
 }
-

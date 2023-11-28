@@ -5,7 +5,7 @@ import { Router } from 'express';
 export class DokuRoute implements Routes {
   public router = Router();
   public doku = new DokuController();
-  public path = '/api/doku';
+  public path = '/v1/doku';
 
   constructor() {
     this.initializeRoutes();

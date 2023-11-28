@@ -10,6 +10,7 @@ import { Op } from 'sequelize';
 import clerkClient from '@clerk/clerk-sdk-node';
 import { CLERK_SECRET_KEY } from '@/config';
 import axios from 'axios';
+import { ImageModel } from '@/models/image.model';
 
 type UserOptions = {
   offset: number;
@@ -61,6 +62,12 @@ export class UserService {
                 {
                   model: ProductModel,
                   as: 'product',
+                  include: [
+                    {
+                      model: ImageModel,
+                      as: 'productImage',
+                    },
+                  ],
                 },
               ],
             },

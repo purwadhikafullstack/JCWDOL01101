@@ -6,19 +6,21 @@ import { Router } from 'express';
 export class ProductRoute implements Routes {
   router = Router();
   product = new ProductController();
+  path = '/v1/products';
 
   constructor() {
     this.initializeMiddleware();
   }
 
   private initializeMiddleware() {
-    this.router.get('/api/products', this.product.getProducts);
-    this.router.get('/api/products/home', this.product.getProductsHomepage);
-    this.router.get('/api/products/new', this.product.getNewestProducts);
-    this.router.get('/api/products/highest-sell', this.product.getHigestSellProducts);
-    this.router.get('/api/products/:slug', this.product.getProduct);
-    this.router.post('/api/products', upload.single('image'), this.product.createProduct);
-    this.router.put('/api/products/:slug', upload.single('image'), this.product.updateProduct);
-    this.router.patch('/api/products/delete/:productId', this.product.deleteProduct);
+    this.router.get(`${this.path}`, this.product.getProducts);
+    this.router.get(`${this.path}/home`, this.product.getProductsHomepage);
+    this.router.get(`${this.path}/new`, this.product.getNewestProducts);
+    this.router.get(`${this.path}/highest-sell`, this.product.getHigestSellProducts);
+    this.router.get(`${this.path}/:slug`, this.product.getProduct);
+    this.router.delete(`${this.path}/images/:imageId`, this.product.deleteProductImage);
+    this.router.post(`${this.path}`, upload.array('images', 5), this.product.createProduct);
+    this.router.put(`${this.path}/:slug`, upload.array('images', 5), this.product.updateProduct);
+    this.router.patch(`${this.path}/delete/:productId`, this.product.deleteProduct);
   }
 }

@@ -1,6 +1,7 @@
 import Sequelize from 'sequelize';
 import { NODE_ENV, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE } from '@config';
 import { logger } from '@utils/logger';
+
 import WarehouseModel from '@/models/warehouse.model';
 import UserModel from '@/models/user.model';
 import WarehouseAddressModel from '@/models/warehouseAddress.model';
@@ -15,6 +16,9 @@ import CityModel from '@/models/city.model';
 import OrderModel from '@/models/order.model';
 import OrderProdcutModel from '@/models/orderProduct.model';
 import ShipmentModel from '@/models/shipment.model';
+import ImageModel from '@/models/image.model';
+import JurnalModel from '@/models/jurnal.model';
+
 import associations from './associations';
 
 const sequelize = new Sequelize.Sequelize(DB_DATABASE, DB_USER, DB_PASSWORD, {
@@ -45,19 +49,19 @@ export const DB = {
   User: UserModel(sequelize),
   Cart: CartModel(sequelize),
   CartProduct: CartProductModel(sequelize),
-  Warehouses: WarehouseModel(sequelize),
-  WarehouseAddresses: WarehouseAddressModel(sequelize),
-  Provinces: ProvinceModel(sequelize),
-  Cities: CityModel(sequelize),
   Product: ProductModel(sequelize),
   Order: OrderModel(sequelize),
   OrderProduct: OrderProdcutModel(sequelize),
+  Image: ImageModel(sequelize),
   Shipment: ShipmentModel(sequelize),
   Address: AddressModel(sequelize),
   Provice: ProvinceModel(sequelize),
   City: CityModel(sequelize),
   Categories: CategoryModel(sequelize),
   Inventories: InventoryModel(sequelize),
+  Warehouses: WarehouseModel(sequelize),
+  WarehouseAddresses: WarehouseAddressModel(sequelize),
+  JurnalModel: JurnalModel(sequelize),
   sequelize,
   Sequelize,
 };

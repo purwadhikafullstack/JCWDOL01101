@@ -15,18 +15,6 @@ export class ProductDto {
 
   @IsNotEmpty()
   @IsNumber()
-  public stock: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  public sold: number;
-
-  @IsNotEmpty()
-  @IsString()
-  public image: string;
-
-  @IsNotEmpty()
-  @IsNumber()
   public weight: number;
 
   @IsString()
