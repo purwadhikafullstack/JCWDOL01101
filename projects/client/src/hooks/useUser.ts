@@ -57,11 +57,26 @@ export const useUsers = ({ page, s, r, filter, order }: UserOptions) => {
   return { data, isLoading, isFetched };
 };
 
-export const useUser = (userId: number) => {
+export const useUser = (userId: string) => {
   const { data, isLoading } = useQuery<User>({
     queryKey: ["user", userId],
     queryFn: async () => {
       const res = await service.get(`/user/${userId}`, {
+        withCredentials: true,
+      });
+      return res.data.data;
+    },
+    enabled: !!userId,
+  });
+
+  return { data, isLoading };
+};
+
+export const useUserById = (userId: number) => {
+  const { data, isLoading } = useQuery<User>({
+    queryKey: ["user", userId],
+    queryFn: async () => {
+      const res = await service.get(`/dashboard/user/${userId}`, {
         withCredentials: true,
       });
       return res.data.data;
@@ -100,7 +115,7 @@ export const useAdminMutation = () => {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admins"] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
 
@@ -124,7 +139,7 @@ export const useEditAdmin = (userId: number) => {
     mutationFn: async (admin: EditAdmin) =>
       service.put(`/manage-admin/${userId}`, admin),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin"] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
 
     onError: (error) => {

@@ -1,47 +1,47 @@
-import React, { useContext, useMemo, useState } from "react";
-import UserContext from "@/context/UserContext";
-import { useCart } from "@/hooks/useCart";
-import { formatToIDR } from "@/lib/utils";
-import { Dialog } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { useActiveAddress } from "@/hooks/useAddress";
-import { Separator } from "@/components/ui/separator";
-import AddressModal from "../components/checkout/AddressModal";
-import CheckoutItem from "../components/checkout/CheckoutItem";
-import ActiveAddress from "../components/checkout/ActiveAddress";
-import BackToCartDialog from "../components/checkout/BackToCartDialog";
-import AddNewAddressDialog from "../components/checkout/AddNewAddressDialog";
-import { useBoundStore } from "@/store/client/useStore";
-import EditAddressDialog from "../components/checkout/EditAddressDialog";
+import React, { useContext, useMemo, useState } from "react"
+import UserContext from "@/context/UserContext"
+import { useCart } from "@/hooks/useCart"
+import { formatToIDR } from "@/lib/utils"
+import { Dialog } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { useActiveAddress } from "@/hooks/useAddress"
+import { Separator } from "@/components/ui/separator"
+import AddressModal from "../components/checkout/AddressModal"
+import CheckoutItem from "../components/checkout/CheckoutItem"
+import ActiveAddress from "../components/checkout/ActiveAddress"
+import BackToCartDialog from "../components/checkout/BackToCartDialog"
+import AddNewAddressDialog from "../components/checkout/AddNewAddressDialog"
+import { useBoundStore } from "@/store/client/useStore"
+import EditAddressDialog from "../components/checkout/EditAddressDialog"
 
 export type Dialog = {
-  main: boolean;
-  add: boolean;
-  edit: boolean;
-};
+  main: boolean
+  add: boolean
+  edit: boolean
+}
 
 const Checkout = () => {
-  const userContext = useContext(UserContext);
+  const userContext = useContext(UserContext)
   if (!userContext) {
-    throw new Error("useUser must be used within a UserProvider");
+    throw new Error("useUser must be used within a UserProvider")
   }
-  const { user } = userContext;
-  const { data: cart } = useCart(user?.id!, !!user?.userCart);
-  const { data: activeAddress } = useActiveAddress();
+  const { user } = userContext
+  const { data: cart } = useCart(user?.id!, !!user?.userCart)
+  const { data: activeAddress } = useActiveAddress()
 
-  const cartProducts = useMemo(() => cart?.cart.cartProducts || [], [cart]);
-  const totalPrice = cart?.totalPrice || 0;
-  const shippingFee = useBoundStore((state) => state.totalShipping);
-  const shippingTotal = shippingFee + Number(totalPrice);
-  const [mainDialog, setMainDialog] = useState(false);
-  const [addDialog, setAddDialog] = useState(false);
-  const [editDialog, setEditDialog] = useState(false);
-  const [modifyAddressId, setModifyAddressId] = useState<number | null>(null);
+  const cartProducts = useMemo(() => cart?.cart.cartProducts || [], [cart])
+  const totalPrice = cart?.totalPrice || 0
+  const shippingFee = useBoundStore((state) => state.totalShipping)
+  const shippingTotal = shippingFee + Number(totalPrice)
+  const [mainDialog, setMainDialog] = useState(false)
+  const [addDialog, setAddDialog] = useState(false)
+  const [editDialog, setEditDialog] = useState(false)
+  const [modifyAddressId, setModifyAddressId] = useState<number | null>(null)
   const toggleDialog = (main = false, add = false, edit = false) => {
-    setMainDialog(main);
-    setAddDialog(add);
-    setEditDialog(edit);
-  };
+    setMainDialog(main)
+    setAddDialog(add)
+    setEditDialog(edit)
+  }
 
   return (
     <>
@@ -140,7 +140,7 @@ const Checkout = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Checkout;
+export default Checkout

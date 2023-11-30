@@ -39,8 +39,8 @@ export class AddressService {
     const options: FindOptions<City> = {
       where: search
         ? {
-            [Op.or]: [{ cityName: { [Op.like]: `%${search}%` } }],
-          }
+          [Op.or]: [{ cityName: { [Op.like]: `%${search}%` } }],
+        }
         : {},
     };
     const findCity: City[] = await DB.City.findAll(options);
@@ -62,16 +62,31 @@ export class AddressService {
       order: [['isActive', 'DESC']],
       where: search
         ? {
-            [Op.or]: [
-              { recepient: { [Op.like]: `%${search}%` } },
-              { '$city.city_name$': { [Op.like]: `%${search}%` } },
-              { label: { [Op.like]: `%${search}%` } },
-            ],
-          }
+          [Op.or]: [
+            { recepient: { [Op.like]: `%${search}%` } },
+            { '$city.city_name$': { [Op.like]: `%${search}%` } },
+            { label: { [Op.like]: `%${search}%` } },
+          ],
+        }
         : {},
       raw: true,
     };
     const findAddress: Address[] = await DB.Address.findAll(options);
+
+    return findAddress;
+  }
+
+  public async getAllAddressByUserId(userId: number): Promise<Address[]> {
+    const findAddress = await DB.Address.findAll({
+      where: { deletedAt: null, userId },
+      include: [
+        {
+          model: CityModel,
+          as: 'city',
+        },
+      ],
+      order: [['isMain', 'DESC']],
+    });
 
     return findAddress;
   }
@@ -134,6 +149,16 @@ export class AddressService {
     }
   }
 
+  public async deleteAddress(addressId: number): Promise<Address> {
+    const findAddress: Address = await DB.Address.findOne({ where: { id: addressId } });
+    if (!findAddress) throw new HttpException(409, "Address doesn't exists");
+
+    const date = new Date();
+    await DB.Address.update({ deletedAt: date }, { where: { id: addressId } });
+    const updatedAddress = await DB.Address.findOne({ where: { id: addressId } });
+    return updatedAddress;
+  }
+
   public async toggleAddress(addressId: number, field: string): Promise<Address> {
     const transaction = await DB.sequelize.transaction();
     try {
@@ -161,5 +186,12 @@ export class AddressService {
       await transaction.rollback();
       throw new HttpException(500, 'Something went wrong');
     }
+  }
+
+  public async setMainAddress(addressId: number): Promise<Address> {
+    await DB.Address.update({ isMain: false }, { where: { isMain: true } });
+    await DB.Address.update({ isMain: true }, { where: { id: addressId } });
+    const updatedAddress = await DB.Address.findByPk(addressId);
+    return updatedAddress;
   }
 }

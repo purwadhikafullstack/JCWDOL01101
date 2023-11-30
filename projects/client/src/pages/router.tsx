@@ -1,28 +1,31 @@
-import React from "react";
-import { createBrowserRouter } from "react-router-dom";
+import React from "react"
+import { createBrowserRouter } from "react-router-dom"
 
-import Homepage from "./homepage/content/Homepage";
-import MainLayout from "./MainLayout";
-import Register from "./auth/Register";
-import Login from "./auth/Login";
-import CategoryPage from "./homepage/content/Category";
-import SSOCallback from "./auth/SSOCallback";
-import Verification from "./auth/Verification";
+import Homepage from "./homepage/content/Homepage"
+import MainLayout from "./MainLayout"
+import Register from "./auth/Register"
+import Login from "./auth/Login"
+import CategoryPage from "./homepage/content/Category"
+import SSOCallback from "./auth/SSOCallback"
+import Verification from "./auth/Verification"
 
-import DashboardLayout from "./dashboard/DashboardLayout";
-import NotFound from "./dashboard/NotFound";
-import Dashboard from "./dashboard/content/Dashboard";
-import User from "./dashboard/content/User";
-import ManageAdmin from "./dashboard/content/Admin";
-import Product from "./dashboard/content/Product";
-import NewProductForm from "./dashboard/components/NewProductForm";
-import EditProductForm from "./dashboard/components/EditProductForm";
-import Warehouse from "./dashboard/content/Warehouse";
-import EditAdminForm from "./dashboard/components/EditAdminForm";
-import ProductDetail from "./homepage/content/ProductDetail";
-import Cart from "./homepage/content/Cart";
-import ProtectedRoute from "./ProtectedRoute";
-import Checkout from "./homepage/content/Checkout";
+import DashboardLayout from "./dashboard/DashboardLayout"
+import NotFound from "./dashboard/NotFound"
+import Dashboard from "./dashboard/content/Dashboard"
+import User from "./dashboard/content/User"
+import ManageAdmin from "./dashboard/content/Admin"
+import Product from "./dashboard/content/Product"
+import NewProductForm from "./dashboard/components/NewProductForm"
+import EditProductForm from "./dashboard/components/EditProductForm"
+import Warehouse from "./dashboard/content/Warehouse"
+import EditAdminForm from "./dashboard/components/EditAdminForm"
+import ProductDetail from "./homepage/content/ProductDetail"
+import Cart from "./homepage/content/Cart"
+import { ProtectedRoute, AdminRoute } from "./ProtectedRoute"
+import UserLayout from "./user/UserLayout"
+import Profile from "./user/content/Profile"
+import Address from "./user/content/Address"
+import Checkout from "./homepage/content/Checkout"
 import ManageCategory from "./dashboard/content/Category";
 
 const router = createBrowserRouter([
@@ -68,6 +71,25 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/user",
+        element: (
+          <ProtectedRoute>
+            <UserLayout />
+          </ProtectedRoute>
+        ),
+        errorElement: <NotFound />,
+        children: [
+          {
+            path: "",
+            element: <Profile />,
+          },
+          {
+            path: "address",
+            element: <Address />,
+          },
+        ],
+      },
+      {
         path: "cart",
         element: (
           <ProtectedRoute>
@@ -87,7 +109,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <AdminRoute>
+        <DashboardLayout />
+      </AdminRoute>
+    ),
     errorElement: <NotFound />,
     children: [
       {
@@ -128,6 +154,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-]);
+])
 
-export default router;
+export default router

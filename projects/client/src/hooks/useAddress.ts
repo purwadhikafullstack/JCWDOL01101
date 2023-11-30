@@ -135,3 +135,16 @@ export const useActiveAddress = () => {
 
   return query;
 };
+
+export const useAddressByUserId = (userId: number) => {
+  const { data, isFetched, isLoading } = useQuery<Address[]>({
+    queryKey: ["address", userId],
+    queryFn: async () => {
+      const res = await service.get(`/address/user/${userId}`);
+      return res.data.data;
+    },
+    enabled: !!userId
+  });
+
+  return { data, isFetched, isLoading };
+};
