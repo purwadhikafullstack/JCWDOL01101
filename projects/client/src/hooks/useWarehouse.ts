@@ -19,7 +19,7 @@ export const useGetWarehouse = ()=>{
     const {data,isLoading} = useQuery<Warehouse[]>({
         queryKey:["warehouse"],
         queryFn:async () => {
-            const response = await service.get("/warehouses/get")
+            const response = await service.get("/warehouses")
             return response.data.data
         }
     })

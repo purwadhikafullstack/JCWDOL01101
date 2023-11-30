@@ -23,6 +23,7 @@ import ProductDetail from "./homepage/content/ProductDetail";
 import Cart from "./homepage/content/Cart";
 import ProtectedRoute from "./ProtectedRoute";
 import Checkout from "./homepage/content/Checkout";
+import ManageCategory from "./dashboard/content/Category";
 
 const router = createBrowserRouter([
   {
@@ -112,6 +113,10 @@ const router = createBrowserRouter([
       {
         path: "product",
         element: <Product />,
+      },
+      {
+        path: "product/category",
+        element: <ManageCategory />,
       },
       {
         path: "product/:slug",

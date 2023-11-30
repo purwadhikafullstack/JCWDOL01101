@@ -2,6 +2,7 @@ import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
 import { WarehouseAddress } from '@/interfaces/warehouseAddress.interface';
 import { Service } from 'typedi';
+const opencage = require('opencage-api-client');
 
 @Service()
 export class WarehouseAddressService {
@@ -18,6 +19,11 @@ export class WarehouseAddressService {
     }
 
     public async createWarehouseAddress(addressData:WarehouseAddress):Promise<WarehouseAddress>{
+        // const city = await DB.City.findOne({where:{cityId:addressData.cityId}})
+        // const data = await opencage.geocode({q:city.cityName, language:'id'})
+        // const place: OpenCageResults = data.results[0];
+        // const {lat,lng} = place.geometry
+
         const createAddressData:WarehouseAddress= await DB.WarehouseAddresses.create({...addressData});
         return createAddressData;
     }
