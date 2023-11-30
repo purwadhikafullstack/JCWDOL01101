@@ -234,21 +234,21 @@ const Warehouse = () => {
           <div className="p-4">
             <h2 className="text-lg font-bold mb-2">Add New Warehouse</h2>
             <form>
-              <label className="block mb-2 flex justify-between">
+              <label className="mb-2 flex justify-between">
                 Name:
                 <input type="text" name="name" value={newWarehouse.name} onChange={handleInputChange} required className="mt-1 p-2 border rounded" />
               </label>
-              <label className="block mb-2 flex justify-between">
+              <label className="mb-2 flex justify-between">
                 Capacity:
                 <input type="number" name="capacity" value={newWarehouse.capacity} onChange={(e) => setNewWarehouse({ ...newWarehouse, capacity: Number(e.target.value) })} required className="mt-1 p-2 border rounded" />
               </label>
 
-              <label className="block mb-2 flex justify-between">
+              <label className="mb-2 flex justify-between">
                 Address Detail:
                 <input type="text" name="addressDetail" value={newWarehouse.addressDetail} onChange={handleInputChange} required className="mt-1 p-2 border rounded" />
               </label>
 
-              <label className="block mb-2 flex justify-between">
+              <label className="mb-2 flex justify-between">
                 City:
                 <select name="cityName" value={selectedCity?.cityId || ''} onChange={handleCityChange} required className="mt-1 p-2 border rounded">
                   <option value="">Select a city</option>
@@ -258,7 +258,7 @@ const Warehouse = () => {
                 </select>
               </label>
 
-              <label className="block mb-2 flex justify-between">
+              <label className="mb-2 flex justify-between">
                 Province:
                 <input type="text" value={selectedProvince?.province || ''} readOnly className="mt-1 p-2 border rounded" />
               </label>
@@ -284,19 +284,19 @@ const Warehouse = () => {
           <DialogTitle>Edit Warehouse</DialogTitle>
           <DialogContent>
             <h2 className="text-lg font-bold mb-2">Edit Warehouse</h2>
-            <label className="block flex justify-between">
+            <label className="flex justify-between">
               Name:
               <input type="text" name="name" value={editWarehouse.name} onChange={(e) => setEditWarehouse({ ...editWarehouse, name: e.target.value })} className=" p-2 border rounded" />
             </label>
-            <label className="block flex justify-between">
+            <label className="flex justify-between">
               Capacity:
               <input type="number" name="capacity" value={editWarehouse.capacity} onChange={(e) => setEditWarehouse({ ...editWarehouse, capacity: Number(e.target.value) })} className="p-2 border rounded" />
             </label>
-            <label className="block flex justify-between">
+            <label className="flex justify-between">
               Address Detail:
               <input type="text" name="addressDetail" value={editAddress.addressDetail} onChange={(e) => setEditAddress({ ...editAddress, addressDetail: e.target.value })} className="mt-1 p-2 border rounded" />
             </label>
-            <label className="block flex justify-between">
+            <label className="flex justify-between">
               City:
               <select name="cityName" value={selectedCity?.cityId || ''} onChange={handleCityChange} className="p-2 border rounded">
                 <option value="">{selectedCity?.cityName}</option>
@@ -305,7 +305,7 @@ const Warehouse = () => {
                 ))}
               </select>
             </label>
-            <label className="block flex justify-between">
+            <label className="flex justify-between">
               Province:
               <input type="text" value={selectedProvince?.province || ''} readOnly className="p-2 border rounded" />
             </label>
