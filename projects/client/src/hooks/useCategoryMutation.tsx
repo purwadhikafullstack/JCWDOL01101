@@ -14,7 +14,7 @@ export const useCategoryMutation = () => {
             return service.post('/categories', data)
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ //update
+            queryClient.invalidateQueries({ 
                 queryKey: ["categories"]
             })
         }
