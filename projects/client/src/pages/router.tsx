@@ -26,6 +26,7 @@ import UserLayout from "./user/UserLayout"
 import Profile from "./user/content/Profile"
 import Address from "./user/content/Address"
 import Checkout from "./homepage/content/Checkout"
+import ManageCategory from "./dashboard/content/Category";
 
 const router = createBrowserRouter([
   {
@@ -150,6 +151,10 @@ const router = createBrowserRouter([
       {
         path: "product",
         element: <Product />,
+      },
+      {
+        path: "product/category",
+        element: <ManageCategory />,
       },
       {
         path: "product/:slug",

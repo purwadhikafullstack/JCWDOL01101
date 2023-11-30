@@ -27,7 +27,7 @@ type WarehouseAddressType = {
   addressDetail: string;
   cityId: string;
   provinceId: number;
-  cityData?: CityType; 
+  cityData?: CityType;
 };
 
 
@@ -35,9 +35,9 @@ type WarehouseType = {
   id: number;
   name: string;
   capacity: number;
-  addressId: number; 
+  addressId: number;
   userId: number;
-  warehouseAddress?: WarehouseAddressType; 
+  warehouseAddress?: WarehouseAddressType;
 };
 
 
@@ -46,7 +46,7 @@ type CityType = {
   cityName: string;
   provinceId: string;
   postal_code: number;
-  provinceData?: ProvinceType; 
+  provinceData?: ProvinceType;
 };
 
 
@@ -57,8 +57,8 @@ type ProvinceType = {
 
 const Warehouse = () => {
   const [warehouses, setWarehouses] = useState<WarehouseType[]>([]);
-  const [newWarehouse, setNewWarehouse] = useState({ name: '', capacity: 0, addressDetail: '' }); 
-  const [editWarehouse, setEditWarehouse] = useState({ id: 0, name: '', capacity: 0, addressId:0 });
+  const [newWarehouse, setNewWarehouse] = useState({ name: '', capacity: 0, addressDetail: '' });
+  const [editWarehouse, setEditWarehouse] = useState({ id: 0, name: '', capacity: 0, addressId: 0 });
   const [isEditing, setIsEditing] = useState(false);
 
   const [cities, setCities] = useState<CityType[]>([]);
@@ -69,7 +69,7 @@ const Warehouse = () => {
   const [editAddress, setEditAddress] = useState({
     addressDetail: '',
   });
-  
+
 
   useEffect(() => {
     service.get("/warehouses")
@@ -83,7 +83,7 @@ const Warehouse = () => {
       .catch(error => {
         console.error("There was an error!", error);
       });
-      
+
     service.get("/cities")
       .then(response => {
         if (Array.isArray(response.data.data)) {
@@ -123,9 +123,9 @@ const Warehouse = () => {
       setSelectedCity(null);
       setSelectedProvince(null);
     }
-   };
+  };
 
-   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewWarehouse({ ...newWarehouse, [event.target.name]: event.target.value });
   };
 
@@ -133,9 +133,9 @@ const Warehouse = () => {
     const addressData = {
       cityId: selectedCity?.cityId,
       provinceId: selectedProvince?.provinceId,
-      addressDetail: newWarehouse.addressDetail, 
+      addressDetail: newWarehouse.addressDetail,
     };
-  
+
     service.post("/warehouseAddresses", addressData)
       .then(response => {
         const newAddressId = response.data.data.id;
@@ -157,7 +157,7 @@ const Warehouse = () => {
         console.error("There was an error!", error);
       });
   };
-  
+
   const handleEditWarehouse = (warehouse: WarehouseType) => {
     setEditWarehouse(warehouse);
     setEditAddress({
@@ -167,23 +167,23 @@ const Warehouse = () => {
     setSelectedProvince(warehouse.warehouseAddress?.cityData?.provinceData || null);
     setIsEditing(true);
   };
-  
-  
+
+
 
   const handleUpdateWarehouse = () => {
     const addressData = {
       cityId: selectedCity?.cityId,
       provinceId: selectedProvince?.provinceId,
-      addressDetail: editAddress.addressDetail, 
+      addressDetail: editAddress.addressDetail,
     };
-  
+
     service.put(`/warehouseAddresses/${editWarehouse.id}`, addressData)
       .then(response => {
         const warehouseData = {
           ...editWarehouse,
           addressId: response.data.id,
         };
-  
+
         service.put(`/warehouses/${editWarehouse.id}`, warehouseData)
           .then(response => {
             setWarehouses(warehouses.map(warehouse => warehouse.id === response.data.id ? response.data : warehouse));
@@ -220,8 +220,8 @@ const Warehouse = () => {
         });
     }
   };
-  
-  
+
+
   return (
     <div className="flex flex-col p-2 w-full">
       <Dialog>
@@ -234,21 +234,21 @@ const Warehouse = () => {
           <div className="p-4">
             <h2 className="text-lg font-bold mb-2">Add New Warehouse</h2>
             <form>
-              <label className="block mb-2 flex justify-between">
+              <label className="mb-2 flex justify-between">
                 Name:
                 <input type="text" name="name" value={newWarehouse.name} onChange={handleInputChange} required className="mt-1 p-2 border rounded" />
               </label>
-              <label className="block mb-2 flex justify-between">
+              <label className="mb-2 flex justify-between">
                 Capacity:
                 <input type="number" name="capacity" value={newWarehouse.capacity} onChange={(e) => setNewWarehouse({ ...newWarehouse, capacity: Number(e.target.value) })} required className="mt-1 p-2 border rounded" />
               </label>
 
-              <label className="block mb-2 flex justify-between">
+              <label className="mb-2 flex justify-between">
                 Address Detail:
                 <input type="text" name="addressDetail" value={newWarehouse.addressDetail} onChange={handleInputChange} required className="mt-1 p-2 border rounded" />
               </label>
 
-              <label className="block mb-2 flex justify-between">
+              <label className="mb-2 flex justify-between">
                 City:
                 <select name="cityName" value={selectedCity?.cityId || ''} onChange={handleCityChange} required className="mt-1 p-2 border rounded">
                   <option value="">Select a city</option>
@@ -258,7 +258,7 @@ const Warehouse = () => {
                 </select>
               </label>
 
-              <label className="block mb-2 flex justify-between">
+              <label className="mb-2 flex justify-between">
                 Province:
                 <input type="text" value={selectedProvince?.province || ''} readOnly className="mt-1 p-2 border rounded" />
               </label>
@@ -281,40 +281,40 @@ const Warehouse = () => {
       </Dialog>
       {isEditing && (
         <Dialog open={isEditing}>
-        <DialogTitle>Edit Warehouse</DialogTitle>
-        <DialogContent>
-          <h2 className="text-lg font-bold mb-2">Edit Warehouse</h2>
-          <label className="block flex justify-between">
-            Name:
-            <input type="text" name="name" value={editWarehouse.name} onChange={(e) => setEditWarehouse({ ...editWarehouse, name: e.target.value })}  className=" p-2 border rounded"/>
-          </label>
-          <label className="block flex justify-between">
-            Capacity:
-            <input type="number" name="capacity" value={editWarehouse.capacity} onChange={(e) => setEditWarehouse({ ...editWarehouse, capacity: Number(e.target.value) })} className="p-2 border rounded" />
-          </label>
-          <label className="block flex justify-between">
-            Address Detail:
-            <input type="text" name="addressDetail" value={editAddress.addressDetail} onChange={(e) => setEditAddress({ ...editAddress, addressDetail: e.target.value })} className="mt-1 p-2 border rounded"/>
-          </label>
-          <label className="block flex justify-between">
-            City:
-            <select name="cityName" value={selectedCity?.cityId || ''} onChange={handleCityChange} className="p-2 border rounded">
-              <option value="">{selectedCity?.cityName}</option>
-              {cities.map(city => (
-                <option key={city.cityId} value={city.cityId}>{city.cityName}</option>
-              ))}
-            </select>
-          </label>
-          <label className="block flex justify-between">
-            Province:
-            <input type="text" value={selectedProvince?.province || ''} readOnly  className="p-2 border rounded"/>
-          </label>
-          <DialogFooter>
-            <Button onClick={handleUpdateWarehouse}>Update</Button>
-            <Button onClick={() => setIsEditing(false)}>Cancel</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          <DialogTitle>Edit Warehouse</DialogTitle>
+          <DialogContent>
+            <h2 className="text-lg font-bold mb-2">Edit Warehouse</h2>
+            <label className="flex justify-between">
+              Name:
+              <input type="text" name="name" value={editWarehouse.name} onChange={(e) => setEditWarehouse({ ...editWarehouse, name: e.target.value })} className=" p-2 border rounded" />
+            </label>
+            <label className="flex justify-between">
+              Capacity:
+              <input type="number" name="capacity" value={editWarehouse.capacity} onChange={(e) => setEditWarehouse({ ...editWarehouse, capacity: Number(e.target.value) })} className="p-2 border rounded" />
+            </label>
+            <label className="flex justify-between">
+              Address Detail:
+              <input type="text" name="addressDetail" value={editAddress.addressDetail} onChange={(e) => setEditAddress({ ...editAddress, addressDetail: e.target.value })} className="mt-1 p-2 border rounded" />
+            </label>
+            <label className="flex justify-between">
+              City:
+              <select name="cityName" value={selectedCity?.cityId || ''} onChange={handleCityChange} className="p-2 border rounded">
+                <option value="">{selectedCity?.cityName}</option>
+                {cities.map(city => (
+                  <option key={city.cityId} value={city.cityId}>{city.cityName}</option>
+                ))}
+              </select>
+            </label>
+            <label className="flex justify-between">
+              Province:
+              <input type="text" value={selectedProvince?.province || ''} readOnly className="p-2 border rounded" />
+            </label>
+            <DialogFooter>
+              <Button onClick={handleUpdateWarehouse}>Update</Button>
+              <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       )}
       <div className="border rounded-md mt-8">
         <Table>
@@ -334,9 +334,9 @@ const Warehouse = () => {
               <TableRow key={warehouse.id}>
                 <TableCell className="font-medium">{warehouse.name}</TableCell>
                 <TableCell>{warehouse.capacity}</TableCell>
-                <TableCell>{warehouse.warehouseAddress?.addressDetail}</TableCell> 
-                <TableCell>{warehouse.warehouseAddress?.cityData?.provinceData?.province}</TableCell> 
-                <TableCell>{warehouse.warehouseAddress?.cityData?.cityName}</TableCell> 
+                <TableCell>{warehouse.warehouseAddress?.addressDetail}</TableCell>
+                <TableCell>{warehouse.warehouseAddress?.cityData?.provinceData?.province}</TableCell>
+                <TableCell>{warehouse.warehouseAddress?.cityData?.cityName}</TableCell>
                 <TableCell>{warehouse.userId}</TableCell>
                 <Button onClick={() => handleEditWarehouse(warehouse)} className="self-end mt-1.5 mr-1">
                   Edit
