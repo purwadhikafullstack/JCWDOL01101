@@ -5,6 +5,8 @@ import { useDropzone, DropzoneOptions, FileRejection } from "react-dropzone"
 import { Button } from "@/components/ui/button"
 import toast from "react-hot-toast"
 
+const MaxFileSize = 5 * 1024 * 1024
+
 const ProfileUpload = () => {
   const { user } = useUser()
   if (!user) return null
@@ -16,11 +18,23 @@ const ProfileUpload = () => {
     (acceptedFiles: File[], fileRejections: FileRejection[]) => {
       if (fileRejections.length > 0) {
         toast.error("Image error")
-      }
+      } else {
+        const validFiles = acceptedFiles.filter(
+          (file) => file.size <= MaxFileSize
+        )
 
-      setFiles(acceptedFiles)
-      const previews = acceptedFiles.map((file) => URL.createObjectURL(file))
-      setPreviewImages(previews)
+        if (validFiles.length < acceptedFiles.length) {
+          toast.error(
+            `files exceed the maximum allowed size of ${
+              MaxFileSize / (1024 * 1024)
+            } MB.`
+          )
+        }
+
+        setFiles(validFiles)
+        const previews = validFiles.map((file) => URL.createObjectURL(file))
+        setPreviewImages(previews)
+      }
     },
     [setFiles, setPreviewImages]
   )

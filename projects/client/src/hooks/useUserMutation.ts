@@ -86,7 +86,7 @@ export const useEditUser = (userId: number) => {
     mutationFn: async (user: EditUser) =>
       service.put(`/manage-user/${userId}`, user),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
     },
 
     onError: (error) => {

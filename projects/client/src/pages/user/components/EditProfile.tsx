@@ -45,7 +45,7 @@ function EditProfile() {
 
   useEffect(() => {
     if (userMutation.isSuccess) {
-      toast.success("Successfully update admin data")
+      toast.success("Successfully update profile")
     }
   }, [userMutation.isSuccess, toast])
 
