@@ -40,6 +40,7 @@
     "lucide-react": "^0.292.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.1",
+    "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.48.2",
@@ -79,6 +80,7 @@
   "devDependencies": {
     "@babel/plugin-transform-private-property-in-object": "^7.23.3",
     "@craco/craco": "^7.1.0",
+    "@types/react-color": "^3.0.10",
     "@types/react-lazy-load-image-component": "^1.6.3"
   }
 }
