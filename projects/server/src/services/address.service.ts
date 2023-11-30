@@ -121,7 +121,8 @@ export class AddressService {
   public async createAddress(addressData: AddressDto): Promise<Address> {
     const transaction = await DB.sequelize.transaction();
     try {
-      const address = await DB.Address.create({ ...addressData });
+      await DB.Address.update({ isActive: false }, { where: { isActive: true } });
+      const address = await DB.Address.create({ ...addressData, isActive: true });
       await transaction.commit();
       return address;
     } catch (err) {

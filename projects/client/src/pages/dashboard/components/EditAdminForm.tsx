@@ -7,7 +7,8 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { Loader2 } from "lucide-react"
-import { useEditAdmin, useUserById } from "@/hooks/useUser"
+import { useUserById } from "@/hooks/useUser"
+import { useEditAdmin } from "@/hooks/useUserMutation"
 import UserSelectFormField from "./UserSelectFormField"
 import ProductFormField from "./ProductFormField"
 import { adminEditSchema } from "./AdminAction"
@@ -19,7 +20,7 @@ let emptyValues = {
   firstname: "",
   lastname: "",
   email: "",
-  status: "ACTIVE",
+  status: "",
   password: undefined,
 }
 const EditAdminForm = () => {
@@ -66,7 +67,6 @@ const EditAdminForm = () => {
   }, [user, form])
 
   const [changePassword, setChangePassword] = useState(true)
-
   return (
     <div className="w-full">
       <span className="flex text-sm ">

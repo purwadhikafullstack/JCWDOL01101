@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { FormEvent, useEffect } from "react"
 import {
   DialogContent,
   DialogDescription,
@@ -13,9 +13,16 @@ import toast from "react-hot-toast"
 
 function DeleteAddressDialog({ addressId }: { addressId: number }) {
   const deleteAddress = useDeleteAddress(addressId)
-  const onSetMain = () => {
+  const onSetMain = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     deleteAddress.mutate()
   }
+
+  useEffect(() => {
+    if (deleteAddress.isSuccess) {
+      toast.success("Successfully delete address")
+    }
+  }, [deleteAddress.isSuccess])
   return (
     <DialogContent>
       <DialogHeader>

@@ -20,6 +20,7 @@ export class UserRoute implements Routes {
     this.router.get('/api/users', this.user.getUsers);
     this.router.post('/api/admin', this.user.createAdmin);
     this.router.put('/api/manage-admin/:userId', this.user.manageAdmin);
+    this.router.put('/api/manage-user/:userId', this.user.manageProfile);
     this.router.delete('/api/manage-admin/:userId', this.user.deleteAdmin);
   }
 }

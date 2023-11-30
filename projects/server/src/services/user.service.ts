@@ -26,6 +26,12 @@ type UserOptions = {
   order?: Array<[string, string]>;
 };
 
+type EditUser = {
+  username: string;
+  firstname: string;
+  lastname: string;
+};
+
 @Service()
 export class UserService {
   public async createUser(userData: CreateUserDto): Promise<User> {
@@ -155,5 +161,16 @@ export class UserService {
       emailId: updateEmail.data.id,
       email: updateEmail.data.email_address,
     };
+  }
+
+  public async updateProfile(userId: number, data: EditUser) {
+    const findUser: User = await DB.User.findByPk(userId);
+    if (!findUser) throw new HttpException(409, "User doesn't exist");
+    const updatedUser = await clerkClient.users.updateUser(findUser.externalId, {
+      username: data.username,
+      firstName: data.firstname,
+      lastName: data.lastname,
+    });
+    return updatedUser;
   }
 }
