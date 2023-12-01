@@ -3,10 +3,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const CategoryCard = ({ category }: { category: Category }) => {
-  const color = `bg-pink-500`;
   return (
     <div className="w-full  rounded-lg overflow-hidden group">
-      <Link to={`/category/${category.name}`} className="relative">
+      <Link to={`/products?category=${category.id}`} className="relative">
         <div
           style={{
             backgroundImage: `linear-gradient(to bottom right , ${category.color}, ${category.color}40)`,

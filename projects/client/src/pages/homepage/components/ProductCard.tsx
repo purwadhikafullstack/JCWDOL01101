@@ -1,17 +1,50 @@
-import React, { HTMLAttributes, Ref, forwardRef } from "react";
+import React, {
+  HTMLAttributes,
+  Ref,
+  forwardRef,
+  useEffect,
+  useState,
+} from "react";
 import { Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import { baseURL } from "@/service";
-import { CheckSquare } from "lucide-react";
+import { CheckSquare, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import { useGetClosestWarehouse } from "@/hooks/useWarehouse";
+import { Coordinates } from "./checkout/AddAddressForm";
 
 interface ProductCardProps extends HTMLAttributes<HTMLDivElement> {
   product: Product;
 }
 const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
   ({ product, ...props }, ref: Ref<HTMLDivElement>) => {
+    const { stock, sold } = product
+      ? product.inventory.reduce(
+          (prev, curr) => ({
+            stock: prev.stock + curr.stock,
+            sold: prev.sold + curr.sold,
+          }),
+          { stock: 0, sold: 0 }
+        )
+      : { stock: 0, sold: 0 };
+    const [location, setLocation] = useState<Coordinates | null>(null);
+
+    useEffect(() => {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        setLocation({
+          latitude: pos.coords.latitude,
+          langitude: pos.coords.longitude,
+        });
+      });
+    }, []);
+
+    const { data: closestWarehouse } = useGetClosestWarehouse({
+      lat: location?.latitude,
+      lng: location?.langitude,
+    });
+
     const productContent = (
       <>
         <Link to={`/product/${product.slug}`}>
@@ -31,13 +64,26 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
                   {formatToIDR(product.price.toString())}
                 </p>
               </span>
-              <span className="text-muted-foreground flex items-center gap-2">
-                <CheckSquare className="w-4 h-4 text-primary" />
-                <p>Warehouse name</p>
-              </span>
+              {closestWarehouse && (
+                <div>
+                  <span className="text-muted-foreground flex items-center gap-2">
+                    <CheckSquare className="w-4 h-4 text-primary" />
+                    <p>{closestWarehouse.name}</p>
+                  </span>
+                  <span className="text-muted-foreground text-xs flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    <p>
+                      {
+                        closestWarehouse.warehouseAddress?.cityWarehouse
+                          ?.cityName
+                      }
+                    </p>
+                  </span>
+                </div>
+              )}
               <span className="text-muted-foreground lg:flex items-center gap-2 hidden">
                 <p className="text-xs">
-                  {product.stock} items left | {product.sold} sold
+                  {stock} items left | {sold} sold
                 </p>
               </span>
             </div>

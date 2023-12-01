@@ -5,7 +5,6 @@ import Homepage from "./homepage/content/Homepage";
 import MainLayout from "./MainLayout";
 import Register from "./auth/Register";
 import Login from "./auth/Login";
-import CategoryPage from "./homepage/content/Category";
 import SSOCallback from "./auth/SSOCallback";
 import Verification from "./auth/Verification";
 
@@ -28,6 +27,7 @@ import CreateProductForm from "./dashboard/components/product/CreateProductForm"
 import EditProductForm from "./dashboard/components/product/EditProductForm";
 import Order from "./homepage/content/Order";
 import ManageCategory from "./dashboard/content/Category";
+import ProductsPage from "./homepage/content/Products";
 
 const router = createBrowserRouter([
   {
@@ -56,8 +56,8 @@ const router = createBrowserRouter([
         element: <Homepage />,
       },
       {
-        path: "/category",
-        element: <CategoryPage />,
+        path: "/products",
+        element: <ProductsPage />,
       },
       {
         path: "/product/:slug",

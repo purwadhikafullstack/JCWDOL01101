@@ -1,12 +1,43 @@
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
 import { Category } from '@/interfaces/category.interface';
+import { InventoryModel } from '@/models/inventory.model';
+import { ProductModel } from '@/models/product.model';
+import { FindOptions } from 'sequelize';
 import { Service } from 'typedi';
 
 @Service()
 export class CategoryService {
-  public async findAllCategory(): Promise<Category[]> {
-    const allCategory: Category[] = await DB.Categories.findAll();
+  public async findAllCategory(limit?: number): Promise<Category[]> {
+    const opts: FindOptions<Category> = {};
+    if (limit) {
+      opts.limit = limit;
+      opts.include = [
+        {
+          model: ProductModel,
+          as: 'productCategory',
+          include: [
+            {
+              model: InventoryModel,
+              as: 'inventory',
+              attributes: ['sold'],
+            },
+          ],
+        },
+      ];
+      opts.order = [
+        [
+          DB.Sequelize.literal(`(
+       SELECT SUM(inventory.sold)
+      FROM products AS product
+      INNER JOIN inventories AS inventory ON product.id = inventory.product_id
+      WHERE product.category_id = CategoryModel.id
+      )`),
+          'DESC',
+        ],
+      ];
+    }
+    const allCategory: Category[] = await DB.Categories.findAll(opts);
     return allCategory;
   }
 

@@ -11,6 +11,9 @@ export class ProductModel extends Model<Product> implements Product {
   public description: string;
   public status: Status;
   public slug: string;
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
 
 export default function (sequelize: Sequelize): typeof ProductModel {

@@ -10,6 +10,8 @@ export interface Product {
   description: string;
   status: Status;
   slug: string;
+  createdAt?: Date;
+  updateAt?: Date;
 }
 
 export interface GetFilterProduct {

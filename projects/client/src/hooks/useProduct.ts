@@ -109,20 +109,29 @@ export const useHomeProducts = ({ s, f }: { s: string; f: string }) => {
   return { data, isLoading, isFetched };
 };
 
-export const useProductInfinite = ({ s, f }: { s: string; f: string }) => {
+export const useProductInfinite = ({
+  f,
+  category,
+  limit = 12,
+}: {
+  category: string;
+  f: string;
+  limit?: number;
+}) => {
   const fetchProjects = async (page: number) => {
     const res = await service.get("/products/home", {
       params: {
-        page,
-        s,
         f,
+        page,
+        limit,
+        category,
       },
     });
     return res.data.data;
   };
 
   const query = useInfiniteQuery({
-    queryKey: ["home/products", s, f],
+    queryKey: ["home/products", category, f],
     queryFn: ({ pageParam }) => fetchProjects(pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage, page) =>

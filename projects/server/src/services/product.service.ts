@@ -81,7 +81,7 @@ export class ProductService {
     return { totalPages: totalPages, products: warehouseProducts };
   }
 
-  public async getAllProductOnHomepage({ page, s, f }: { page: number; s: string; f: string }): Promise<Product[]> {
+  public async getAllProductOnHomepage({ page, f, category }: { page: number; f: string; category: number }): Promise<Product[]> {
     const options: FindOptions = {
       offset: (Number(page) - 1) * 12,
       limit: 12,
@@ -98,7 +98,7 @@ export class ProductService {
       ],
       where: {
         status: 'ACTIVE',
-        ...(s && s !== 'all' && { category: s }),
+        ...(category && { categoryId: category }),
       },
     };
 
@@ -122,11 +122,17 @@ export class ProductService {
   }
 
   public async getHighestSell(): Promise<Product[]> {
-    const currentMonth = new Date().getMonth() + 1;
+    const date = new Date();
+    const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
     const highestSellForThisMonth: Product[] = await DB.Product.findAll({
       limit: 3,
       where: {
         status: 'ACTIVE',
+        createdAt: {
+          [Op.gte]: firstDayOfMonth,
+          [Op.lte]: lastDayOfMonth,
+        },
       },
       include: [
         {
@@ -139,7 +145,7 @@ export class ProductService {
           attributes: ['stock', 'sold'],
         },
       ],
-      order: [[literal(`MONTH(createdAt) = ${currentMonth}`), 'DESC']],
+      order: [[{ model: InventoryModel, as: 'inventory' }, 'sold', 'DESC']],
     });
 
     return highestSellForThisMonth;

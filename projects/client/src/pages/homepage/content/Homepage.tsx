@@ -14,7 +14,7 @@ const Homepage = () => {
     key: ["new-products"],
     url: "/products/new",
   });
-  const { data: categories } = useCategories();
+  const { data: categories } = useCategories(6);
   const { data: highestSell, isLoading: highestSellLoading } = useProductUrl({
     key: ["highest-sell"],
     url: "/products/highest-sell",
@@ -26,7 +26,7 @@ const Homepage = () => {
         <span className="flex items-center justify-between mt-8 my-2">
           <h3 className="font-bold text-base lg:text-xl">Popular Category</h3>
           <Link
-            to="/category"
+            to="/products"
             className="text-primary text-xs md:text-sm font-bold"
           >
             See All Category
