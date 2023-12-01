@@ -20,7 +20,7 @@ export const useDokuPaymentIntent = () => {
       return res.data.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.removeQueries({ queryKey: ["cart"] });
     },
   });
 
