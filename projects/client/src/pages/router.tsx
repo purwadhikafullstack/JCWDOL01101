@@ -27,6 +27,7 @@ import Checkout from "./homepage/content/Checkout";
 import CreateProductForm from "./dashboard/components/product/CreateProductForm";
 import EditProductForm from "./dashboard/components/product/EditProductForm";
 import Order from "./homepage/content/Order";
+import ManageCategory from "./dashboard/content/Category";
 
 const router = createBrowserRouter([
   {

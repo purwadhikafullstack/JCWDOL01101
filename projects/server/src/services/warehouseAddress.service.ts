@@ -3,6 +3,7 @@ import { HttpException } from '@/exceptions/HttpException';
 import { WarehouseAddress } from '@/interfaces/warehouseAddress.interface';
 import opencage from 'opencage-api-client';
 import { Service } from 'typedi';
+const opencage = require('opencage-api-client');
 
 @Service()
 export class WarehouseAddressService {

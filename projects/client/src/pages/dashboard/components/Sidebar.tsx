@@ -62,6 +62,13 @@ const links = [
     title: "Product",
     icon: <Shirt className="w-4 h-4" />,
     path: "/dashboard/product",
+    children:[
+      {
+        title: "Product Category",
+        icon: <UserCog className="w-4 h-4" />,
+        path: "/dashboard/product/category",
+      },
+    ]
   },
   {
     title: "Order",

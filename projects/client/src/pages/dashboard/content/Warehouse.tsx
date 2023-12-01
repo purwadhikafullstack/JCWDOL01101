@@ -189,6 +189,7 @@ const Warehouse = () => {
       cityId: selectedCity?.cityId,
       provinceId: selectedProvince?.provinceId,
       addressDetail: editAddress.addressDetail,
+      addressDetail: editAddress.addressDetail,
     };
 
     service
