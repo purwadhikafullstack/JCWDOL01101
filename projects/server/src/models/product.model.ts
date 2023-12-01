@@ -51,7 +51,16 @@ export default function (sequelize: Sequelize): typeof ProductModel {
         type: DataTypes.STRING(255),
       },
     },
-    { tableName: 'products', sequelize },
+    {
+      sequelize,
+      indexes: [
+        {
+          unique: true,
+          fields: ['name'],
+        },
+      ],
+      tableName: 'products',
+    },
   );
 
   return ProductModel;

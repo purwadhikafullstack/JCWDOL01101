@@ -36,11 +36,11 @@ export default function (sequelize: Sequelize): typeof WarehouseAddressModel {
       },
       longitude: {
         allowNull: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT(10, 6),
       },
       latitude: {
         allowNull: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT(10, 6),
       },
       isActive: {
         allowNull: true,

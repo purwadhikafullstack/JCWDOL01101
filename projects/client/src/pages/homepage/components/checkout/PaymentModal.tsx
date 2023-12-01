@@ -1,13 +1,17 @@
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { cartProducts } from "@/context/UserContext";
 import { Address } from "@/hooks/useAddress";
+import { useDokuPaymentIntent } from "@/hooks/useDoku";
+import { useClosestWarehouse } from "@/hooks/useOrderMutation";
 import { formatToIDR } from "@/lib/utils";
 import { useBoundStore } from "@/store/client/useStore";
 import { ShieldCheck, X } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 const paymentMethods = [
   {
@@ -16,37 +20,51 @@ const paymentMethods = [
     id: "bri",
   },
   {
-    img: "/ilus/bni.png",
-    method: "Bank BNI",
-    id: "bni",
+    img: "/ilus/bca.png",
+    method: "Bank BCA",
+    id: "bca",
   },
   {
     img: "/ilus/doku_va.png",
     method: "ALTO, ATM Bersama, Prima (DOKU VA)",
-    id: "doku-va",
-  },
-  {
-    img: "/ilus/OVO.png",
-    method: "OVO",
-    id: "ovo",
+    id: "doku",
   },
 ];
 
 const PaymentModal = ({
+  userId,
   address,
   totalPrice,
   cartProducts,
 }: {
-  totalPrice: number;
+  userId: number;
   address: Address | undefined;
+  totalPrice: number;
   cartProducts: cartProducts[];
 }) => {
+  const navigate = useNavigate();
   const shippingFee = useBoundStore((state) => state.totalShipping);
   const isLoading = useBoundStore((state) => state.isLoading);
   const shipping = useBoundStore((state) => state.fee);
   const [paymentMethod, setPaymentMethods] = useState("0");
   const [show, setShow] = useState(false);
   const [exit, setExit] = useState(false);
+  const checkClosestWarehouse = useClosestWarehouse();
+  const createPayment = useDokuPaymentIntent();
+
+  const handleCreatePayment = () => {
+    createPayment.mutate({
+      totalPrice: Number(totalPrice) + Number(shippingFee),
+      payment: paymentMethods[Number(paymentMethod)].id,
+    });
+  };
+
+  const onSubmit = () => {
+    if (address) {
+      checkClosestWarehouse.mutate({ lat: address.lat, lng: address.lng });
+    }
+  };
+
   useEffect(() => {
     if (show) {
       document.body.style.overflow = "hidden";
@@ -58,14 +76,32 @@ const PaymentModal = ({
       document.body.style.overflow = "unset";
     };
   }, [show]);
+
+  useEffect(() => {
+    if (checkClosestWarehouse.isSuccess) {
+      setShow(true);
+    }
+  }, [checkClosestWarehouse.isSuccess]);
+
+  useEffect(() => {
+    if (createPayment.isSuccess) {
+      const data = createPayment.data;
+      window.open(data.virtual_account_info.how_to_pay_page, "_blank");
+      return navigate("/order");
+    }
+  }, [createPayment.isSuccess]);
   return (
     <>
       <Button
         disabled={isLoading}
-        onClick={() => setShow(true)}
+        onClick={onSubmit}
         className="font-bold w-full py-6 text-lg rounded-lg"
       >
-        Choose Payment
+        {checkClosestWarehouse.isPending ? (
+          <span className="animate-pulse">preparing your stock</span>
+        ) : (
+          "Choose Payment"
+        )}
       </Button>
       <>
         {show && (
@@ -207,12 +243,23 @@ const PaymentModal = ({
                       <div>
                         <p>Total</p>
                         <b className="text-sm">
-                          {formatToIDR(totalPrice.toString())}
+                          {formatToIDR((+totalPrice + shippingFee).toString())}
                         </b>
                       </div>
-                      <Button className="lg:px-10 lg:py-6 font-bold">
-                        <ShieldCheck className="mr-2" />
-                        Pay
+                      <Button
+                        onClick={handleCreatePayment}
+                        className="lg:px-10 lg:py-6 font-bold"
+                      >
+                        {createPayment.isPending ? (
+                          <span className="animate-pulse">
+                            setting up your url
+                          </span>
+                        ) : (
+                          <>
+                            <ShieldCheck className="mr-2" />
+                            Pay
+                          </>
+                        )}
                       </Button>
                     </div>
                   </div>

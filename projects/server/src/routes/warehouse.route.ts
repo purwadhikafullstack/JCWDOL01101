@@ -13,6 +13,7 @@ export class WarehouseRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`${this.path}`, this.warehouse.getWarehouse);
+    this.router.get(`${this.path}/closest/:lat/:lng`, this.warehouse.getClosestWarehouse);
     this.router.get(`${this.path}/:id(\\d+)`, this.warehouse.getWarehouseById);
     this.router.post(`${this.path}`, this.warehouse.createWarehouse);
     this.router.put(`${this.path}/:id(\\d+)`, this.warehouse.updateWarehouse);

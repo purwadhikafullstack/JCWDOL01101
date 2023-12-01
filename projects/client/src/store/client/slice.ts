@@ -66,7 +66,7 @@ export const createShippingSlice: StateCreator<
   getTotalShippingFee: () =>
     set((state) => ({
       totalShipping: Object.values(state.fee).reduce(
-        (prev, fee) => prev + fee.cost[0].value,
+        (prev, fee) => prev + Number(fee.cost[0].value),
         0
       ),
     })),

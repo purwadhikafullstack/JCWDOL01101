@@ -24,7 +24,7 @@ type WarehouseAddressType = {
   addressDetail: string;
   cityId: string;
   provinceId: number;
-  cities?: CityType;
+  cityWarehouse?: CityType;
 };
 
 type WarehouseType = {
@@ -177,9 +177,9 @@ const Warehouse = () => {
     setEditAddress({
       addressDetail: warehouse.warehouseAddress?.addressDetail || "",
     });
-    setSelectedCity(warehouse.warehouseAddress?.cities || null);
+    setSelectedCity(warehouse.warehouseAddress?.cityWarehouse || null);
     setSelectedProvince(
-      warehouse.warehouseAddress?.cities?.cityProvince || null
+      warehouse.warehouseAddress?.cityWarehouse?.cityProvince || null
     );
     setIsEditing(true);
   };
@@ -442,10 +442,13 @@ const Warehouse = () => {
                   {warehouse.warehouseAddress?.addressDetail}
                 </TableCell>
                 <TableCell>
-                  {warehouse.warehouseAddress?.cities?.cityProvince?.province}
+                  {
+                    warehouse.warehouseAddress?.cityWarehouse?.cityProvince
+                      ?.province
+                  }
                 </TableCell>
                 <TableCell>
-                  {warehouse.warehouseAddress?.cities?.cityName}
+                  {warehouse.warehouseAddress?.cityWarehouse?.cityName}
                 </TableCell>
                 <TableCell>{warehouse.userId}</TableCell>
                 <Button

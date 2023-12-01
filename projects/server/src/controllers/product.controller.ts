@@ -1,29 +1,33 @@
 import { ProductDto } from '@/dtos/product.dto';
 import { Image } from '@/interfaces/image.interface';
-import { GetFilterProduct, Product } from '@/interfaces/product.interface';
+import { Product } from '@/interfaces/product.interface';
 import { ProductService } from '@/services/product.service';
+import { RequireAuthProp } from '@clerk/clerk-sdk-node';
 import { NextFunction, Request, Response } from 'express';
 import Container from 'typedi';
 
 export class ProductController {
   product = Container.get(ProductService);
 
-  public getProducts = async (req: Request<{}, {}, {}, GetFilterProduct>, res: Response, next: NextFunction) => {
+  public getProducts = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
-      const { page, s, order, filter, limit } = req.query;
+      const { page, s, order, filter, limit, warehouse } = req.query;
+
       const { products, totalPages } = await this.product.getAllProduct({
-        s,
-        order,
-        limit,
-        filter,
+        s: String(s),
+        order: String(order),
+        limit: Number(limit),
+        filter: String(filter),
         page: Number(page),
+        warehouse: String(warehouse),
+        externalId: req.auth.userId,
       });
       res.status(200).json({
         data: {
           products,
           totalPages,
         },
-        message: 'get.products',
+        message: 'get.warehouseProducts',
       });
     } catch (err) {
       next(err);

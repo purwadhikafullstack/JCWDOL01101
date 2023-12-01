@@ -1,7 +1,7 @@
-import { OrderProduct } from '@/interfaces/orderProduct.interface';
+import { OrderDetails } from '@/interfaces/orderDetails.interface';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
-export class OrderProdcutModel extends Model<OrderProduct> implements OrderProduct {
+export class OrderDetailsModel extends Model<OrderDetails> implements OrderDetails {
   public id?: number;
   public orderId?: number;
   public productId?: number;
@@ -9,8 +9,8 @@ export class OrderProdcutModel extends Model<OrderProduct> implements OrderProdu
   public price: number;
 }
 
-export default function (sequelize: Sequelize): typeof OrderProdcutModel {
-  OrderProdcutModel.init(
+export default function (sequelize: Sequelize): typeof OrderDetailsModel {
+  OrderDetailsModel.init(
     {
       id: {
         primaryKey: true,
@@ -34,7 +34,7 @@ export default function (sequelize: Sequelize): typeof OrderProdcutModel {
         type: DataTypes.INTEGER,
       },
     },
-    { sequelize, tableName: 'order_products' },
+    { sequelize, tableName: 'order_details' },
   );
-  return OrderProdcutModel;
+  return OrderDetailsModel;
 }

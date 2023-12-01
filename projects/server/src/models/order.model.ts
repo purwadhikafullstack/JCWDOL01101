@@ -4,7 +4,8 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 export class OrderModel extends Model<Order> implements Order {
   public id?: number;
   public userId: number;
-  public payment: string;
+  public warehouseId?: number;
+  public invoice: string;
   public deletedAt: Date;
 }
 
@@ -20,7 +21,11 @@ export default function (sequelize: Sequelize): typeof OrderModel {
         allowNull: false,
         type: DataTypes.INTEGER,
       },
-      payment: {
+      warehouseId: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
+      invoice: {
         allowNull: false,
         type: DataTypes.STRING(256),
       },

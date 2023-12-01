@@ -1,5 +1,4 @@
 import React, { useContext, useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import UserContext from "@/context/UserContext";
@@ -14,6 +13,7 @@ import BackToCartDialog from "../components/checkout/BackToCartDialog";
 import CheckoutItem from "../components/checkout/CheckoutItem";
 import EditAddressDialog from "../components/checkout/EditAddressDialog";
 import PaymentModal from "../components/checkout/PaymentModal";
+import { useGetClosestWarehouse } from "@/hooks/useWarehouse";
 
 export type Dialog = {
   main: boolean;
@@ -29,11 +29,15 @@ const Checkout = () => {
   const { user } = userContext;
   const { data: cart } = useCart(user?.id!, !!user?.userCart);
   const { data: activeAddress } = useActiveAddress();
+  const { data: closestWarehouse } = useGetClosestWarehouse({
+    lat: activeAddress?.lat,
+    lng: activeAddress?.lng,
+  });
 
   const cartProducts = useMemo(() => cart?.cart.cartProducts || [], [cart]);
   const totalPrice = cart?.totalPrice || 0;
   const shippingFee = useBoundStore((state) => state.totalShipping);
-  const shippingTotal = shippingFee + Number(totalPrice);
+  const shippingTotal = Number(shippingFee) + Number(totalPrice);
   const [mainDialog, setMainDialog] = useState(false);
   const [addDialog, setAddDialog] = useState(false);
   const [editDialog, setEditDialog] = useState(false);
@@ -95,6 +99,7 @@ const Checkout = () => {
                   length={cartProducts.length || 0}
                   product={product}
                   quantity={quantity}
+                  warehouse={closestWarehouse}
                   activeAddress={activeAddress}
                 />
               ))}
@@ -134,11 +139,14 @@ const Checkout = () => {
                     </span>
                   </div>
                 </div>
-                <PaymentModal
-                  address={activeAddress}
-                  totalPrice={totalPrice}
-                  cartProducts={cartProducts}
-                />
+                {user && (
+                  <PaymentModal
+                    userId={user.id}
+                    address={activeAddress}
+                    totalPrice={totalPrice}
+                    cartProducts={cartProducts}
+                  />
+                )}
               </div>
             </div>
           </div>

@@ -1,14 +1,22 @@
 import service from "@/service";
-import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@clerk/clerk-react";
+import { useMutation } from "@tanstack/react-query";
+
+type PaymentData = {
+  totalPrice: number;
+  payment: string;
+};
 
 export const useDokuPaymentIntent = () => {
-  const stripe = useQuery({
-    queryKey: ["doku/secret"],
-    queryFn: async () => {
-      const res = await service.get("/doku/payment-url");
+  const { getToken } = useAuth();
+  const doku = useMutation({
+    mutationFn: async (data: PaymentData) => {
+      const res = await service.post("/doku/payment-url", data, {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
       return res.data.data;
     },
   });
 
-  return stripe;
+  return doku;
 };

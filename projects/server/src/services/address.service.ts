@@ -121,7 +121,12 @@ export class AddressService {
   public async createAddress(addressData: AddressDto): Promise<Address> {
     const transaction = await DB.sequelize.transaction();
     try {
-      const address = await DB.Address.create({ ...addressData });
+      const city = await DB.City.findOne({ where: { cityId: addressData.cityId } });
+      if (!city) throw new HttpException(409, "City doens't exist");
+      const data = await opencage.geocode({ q: city.cityName, language: 'id' });
+      const place = data.results[0];
+      const { lat, lng } = place.geometry;
+      const address = await DB.Address.create({ ...addressData, lat, lng });
       await transaction.commit();
       return address;
     } catch (err) {

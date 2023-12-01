@@ -23,7 +23,7 @@ export const useCurrentUser = ({
   const user = useQuery<User>({
     queryKey: ["user"],
     queryFn: async () => {
-      const res = await service.get(`/user/${externalId}`);
+      const res = await service.get(`/users/${externalId}`);
       return res.data.data;
     },
     enabled,

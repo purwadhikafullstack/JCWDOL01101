@@ -1,4 +1,5 @@
 import service from "@/service";
+import { useAuth } from "@clerk/clerk-react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 export interface Product {
@@ -14,7 +15,21 @@ export interface Product {
   status: string;
   slug: string;
   productImage: Image[];
+  productCategory: Category;
+  inventory: Inventory[];
 }
+
+export interface Warehouse {
+  capacity: number;
+  name: string;
+}
+
+export interface Category {
+  id?: number;
+  name: string;
+  color: string;
+}
+
 export interface Image {
   id?: number;
   productId?: number;
@@ -27,28 +42,47 @@ type ProductOptions = {
   filter: string;
   order: string;
   limit: number;
+  warehouse: string;
 };
+
+export interface ProductWarehouse {
+  name: string;
+  capacity: number;
+  products: Product[];
+}
+
+export interface Inventory {
+  stock: number;
+  sold: number;
+  warehouse: Warehouse;
+}
+
 export const useProducts = ({
   page,
   s,
   filter,
   order,
   limit,
+  warehouse,
 }: ProductOptions) => {
+  const { getToken } = useAuth();
   const { data, isLoading, isFetched } = useQuery<{
     products: Product[];
     totalPages: number;
   }>({
-    queryKey: ["products", page, s, filter, order],
+    queryKey: ["products", page, s, filter, order, warehouse],
     queryFn: async () => {
       const res = await service.get("/products", {
         params: {
           s,
-          filter,
-          order,
           page,
+          order,
+          limit,
+          filter,
+          warehouse,
         },
         withCredentials: true,
+        headers: { Authorization: `Bearer ${await getToken()}` },
       });
       return res.data.data;
     },

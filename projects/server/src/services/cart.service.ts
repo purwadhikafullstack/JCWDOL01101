@@ -6,6 +6,7 @@ import { CartProduct } from '@/interfaces/cartProduct.interface';
 import { User } from '@/interfaces/user.interface';
 import { CartProductModel } from '@/models/cartProduct.model';
 import { ImageModel } from '@/models/image.model';
+import { InventoryModel } from '@/models/inventory.model';
 import { ProductModel } from '@/models/product.model';
 import { Service } from 'typedi';
 
@@ -74,6 +75,11 @@ export class CartService {
           {
             model: ImageModel,
             as: 'productImage',
+          },
+          {
+            model: InventoryModel,
+            as: 'inventory',
+            attributes: ['stock', 'sold'],
           },
         ],
         where: {
@@ -166,5 +172,13 @@ export class CartService {
 
     await DB.CartProduct.update({ status: 'ACTIVE' }, { where: { id: cartProductId } });
     return findCartProduct;
+  }
+
+  public async deleteCartByUserId(cartId: number): Promise<Cart> {
+    const findUserCart = await DB.Cart.findByPk(cartId);
+    if (!findUserCart) throw new HttpException(409, "Cart doesn't exist");
+    await DB.Cart.update({ status: 'DELETED' }, { where: { id: cartId } });
+
+    return findUserCart;
   }
 }

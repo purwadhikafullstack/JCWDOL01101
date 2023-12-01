@@ -1,6 +1,7 @@
 export interface Order {
   id?: number;
-  userId: number;
-  payment: string;
+  warehouseId?: number;
+  userId?: number;
+  invoice: string;
   deletedAt: Date;
 }

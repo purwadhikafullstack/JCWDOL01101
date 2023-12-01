@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import SelectCourier from "./SelectCourier";
 import { Address } from "@/hooks/useAddress";
 import { useBoundStore } from "@/store/client/useStore";
+import { Warehouse } from "@/hooks/useWarehouse";
 
 const CheckoutItem = ({
   index,
@@ -14,11 +15,13 @@ const CheckoutItem = ({
   product,
   quantity,
   activeAddress,
+  warehouse,
 }: {
   index: number;
   length: number;
   product: Product;
   quantity: number;
+  warehouse: Warehouse | undefined;
   activeAddress: Address | undefined;
 }) => {
   const fee = useBoundStore((state) => state.fee);
@@ -37,7 +40,7 @@ const CheckoutItem = ({
               <b className="">Toten Official</b>
             </span>
             <span className="text-xs text-muted-foreground ml-6">
-              Kab. Tokyo
+              send from {warehouse?.warehouseAddress?.cityWarehouse?.cityName}
             </span>
             <div className="flex gap-2 items-start text-sm mt-2">
               <img
@@ -55,11 +58,14 @@ const CheckoutItem = ({
           <Separator className="my-2" />
         </div>
         <div className="flex flex-col gap-2 px-4">
-          <SelectCourier
-            quantity={quantity}
-            product={product}
-            address={activeAddress}
-          />
+          {warehouse?.warehouseAddress && (
+            <SelectCourier
+              quantity={quantity}
+              product={product}
+              address={activeAddress}
+              origin={warehouse.warehouseAddress.cityId}
+            />
+          )}
         </div>
       </div>
       <Separator className="mt-6 mb-2" />

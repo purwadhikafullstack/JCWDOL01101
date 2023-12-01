@@ -13,6 +13,14 @@ module.exports = {
       });
       const data = res.data.rajaongkir.results;
 
+      const provinceResponse = await axios.get('https://api.rajaongkir.com/starter/province', {
+        headers: {
+          key: process.env.RAJAONGKIR_API_KEY,
+        },
+      });
+      const province = provinceResponse.data.rajaongkir.results;
+
+      await queryInterface.bulkInsert('province', province, {});
       await queryInterface.bulkInsert('cities', data, {});
     } catch (err) {
       throw err;

@@ -25,9 +25,9 @@ const process = [
 const NavDelivery = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
   return (
     <NavDropdown
-      path="/delivery"
+      path="/order"
       icon={<Package />}
-      title="Delivery"
+      title="Orders"
       setIsDim={setIsDim}
     >
       <div className="min-w-[300px] px-2 space-y-2">

@@ -1,5 +1,6 @@
 import { DokuController } from '@/controllers/doku.controller';
 import { Routes } from '@/interfaces/routes.interface';
+import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node';
 import { Router } from 'express';
 
 export class DokuRoute implements Routes {
@@ -12,6 +13,7 @@ export class DokuRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}/payment-url`, this.doku.createPaymentIntent);
+    this.router.post(`${this.path}/payment-url`, ClerkExpressRequireAuth(), this.doku.createPaymentIntent);
+    this.router.post(`${this.path}/payment/notify`, this.doku.postNotify);
   }
 }

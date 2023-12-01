@@ -1,11 +1,13 @@
 import { ProductController } from '@/controllers/product.controller';
 import { Routes } from '@/interfaces/routes.interface';
+import { AuthMiddleware } from '@/middlewares/auth.middleware';
 import { upload } from '@/services/multer.service';
 import { Router } from 'express';
 
 export class ProductRoute implements Routes {
   router = Router();
   product = new ProductController();
+  auth = new AuthMiddleware();
   path = '/v1/products';
 
   constructor() {
@@ -13,7 +15,7 @@ export class ProductRoute implements Routes {
   }
 
   private initializeMiddleware() {
-    this.router.get(`${this.path}`, this.product.getProducts);
+    this.router.get(`${this.path}`, this.auth.ClerkAuth, this.product.getProducts);
     this.router.get(`${this.path}/home`, this.product.getProductsHomepage);
     this.router.get(`${this.path}/new`, this.product.getNewestProducts);
     this.router.get(`${this.path}/highest-sell`, this.product.getHigestSellProducts);

@@ -3,6 +3,7 @@ import React from "react";
 import Homepage from "./homepage/content/Homepage";
 import UserContext from "@/context/UserContext";
 import { useCurrentUser } from "@/hooks/useUser";
+import { useNavigate } from "react-router-dom";
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, isSignedIn, isLoaded } = useUser();
@@ -11,26 +12,28 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     enabled: isLoaded && !!isSignedIn,
   });
   return (
-    <>
-      {isLoaded && isSignedIn ? (
-        <UserContext.Provider value={{ user: userBackend }}>
-          {children}
-        </UserContext.Provider>
-      ) : (
-        <Homepage />
-      )}
-    </>
+    isLoaded && (
+      <>
+        {isSignedIn ? (
+          <UserContext.Provider value={{ user: userBackend }}>
+            {children}
+          </UserContext.Provider>
+        ) : (
+          <Homepage />
+        )}
+      </>
+    )
   );
 };
 
 export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, isLoaded } = useUser();
-  const { redirectToHome } = useClerk();
+  const navigate = useNavigate();
   return (
     <>
       {isLoaded && user?.publicMetadata.role !== "CUSTOMER"
         ? children
-        : redirectToHome()}
+        : navigate("/")}
     </>
   );
 };

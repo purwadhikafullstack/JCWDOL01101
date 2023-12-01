@@ -5,35 +5,80 @@ import { GetFilterProduct, Product } from '@/interfaces/product.interface';
 import { Service } from 'typedi';
 import { unlinkAsync } from './multer.service';
 import { FindOptions, Op, literal } from 'sequelize';
-import fs from 'fs';
 import { ImageModel } from '@/models/image.model';
 import { Image } from '@/interfaces/image.interface';
+import { User } from '@/interfaces/user.interface';
+import { CategoryModel } from '@/models/category.model';
+import { WarehouseModel } from '@/models/warehouse.model';
+import { InventoryModel } from '@/models/inventory.model';
+import fs from 'fs';
 
 @Service()
 export class ProductService {
-  public async getAllProduct({ page, s, order, limit, filter }: GetFilterProduct): Promise<{ products: Product[]; totalPages: number }> {
+  public async getAllProduct({
+    page,
+    s,
+    order,
+    limit,
+    filter,
+    externalId,
+    warehouse,
+  }: GetFilterProduct): Promise<{ products: Product[]; totalPages: number }> {
+    const findUser: User = await DB.User.findOne({ where: { externalId } });
+    if (!findUser) throw new HttpException(409, "user doesn't exist");
+    const role = findUser.role;
+    const where =
+      role === 'ADMIN'
+        ? {
+            ...(warehouse && { name: { [Op.like]: `%${warehouse}%` } }),
+          }
+        : role === 'WAREHOUSE ADMIN'
+        ? {
+            id: findUser.warehouseId,
+          }
+        : {};
+
     const LIMIT = Number(limit) || 10;
     const offset = (page - 1) * LIMIT;
     const options: FindOptions<Product> = {
       offset,
       limit: LIMIT,
+      where: {
+        status: 'ACTIVE',
+        ...(s && { name: { [Op.like]: `%${s}%` } }),
+      },
+      ...(order && {
+        order: filter === 'stock' || filter === 'sold' ? [[{ model: InventoryModel, as: 'inventory' }, filter, order]] : [[filter, order]],
+      }),
       include: [
         {
           model: ImageModel,
           as: 'productImage',
         },
+        {
+          model: CategoryModel,
+          as: 'productCategory',
+        },
+        {
+          model: InventoryModel,
+          as: 'inventory',
+          attributes: ['stock', 'sold'],
+          include: [
+            {
+              where,
+              model: WarehouseModel,
+              as: 'warehouse',
+            },
+          ],
+        },
       ],
-      where: {
-        status: 'ACTIVE',
-        ...(s && { name: { [Op.like]: `%${s}%` } }),
-      },
-      ...(!!order && { order: [[filter, order]] }),
     };
 
-    const [findAllProduct, totalCount] = await Promise.all([DB.Product.findAll(options), DB.Product.count(options)]);
+    const warehouseProducts = await DB.Product.findAll(options);
+    const totalCount = await DB.Product.count(options);
     const totalPages = Math.ceil(totalCount / LIMIT);
 
-    return { totalPages, products: findAllProduct };
+    return { totalPages: totalPages, products: warehouseProducts };
   }
 
   public async getAllProductOnHomepage({ page, s, f }: { page: number; s: string; f: string }): Promise<Product[]> {
@@ -44,6 +89,11 @@ export class ProductService {
         {
           model: ImageModel,
           as: 'productImage',
+        },
+        {
+          model: InventoryModel,
+          as: 'inventory',
+          attributes: ['stock', 'sold'],
         },
       ],
       where: {
@@ -83,6 +133,11 @@ export class ProductService {
           model: ImageModel,
           as: 'productImage',
         },
+        {
+          model: InventoryModel,
+          as: 'inventory',
+          attributes: ['stock', 'sold'],
+        },
       ],
       order: [[literal(`MONTH(createdAt) = ${currentMonth}`), 'DESC']],
     });
@@ -97,6 +152,11 @@ export class ProductService {
         {
           model: ImageModel,
           as: 'productImage',
+        },
+        {
+          model: InventoryModel,
+          as: 'inventory',
+          attributes: ['stock', 'sold'],
         },
       ],
       where: {
@@ -115,6 +175,11 @@ export class ProductService {
         {
           model: ImageModel,
           as: 'productImage',
+        },
+        {
+          model: InventoryModel,
+          as: 'inventory',
+          attributes: ['stock', 'sold'],
         },
       ],
     });
@@ -141,6 +206,12 @@ export class ProductService {
 
     const imageData = files.map(file => ({ image: file.filename, productId: product.id }));
     await DB.Image.bulkCreate(imageData);
+
+    const findAllWarehouse = await DB.Warehouses.findAll();
+    if (!findAllWarehouse && findAllWarehouse.length === 0) throw new HttpException(409, 'No Warehouse');
+
+    const warehouses = findAllWarehouse.map(warehouse => ({ warehouseId: warehouse.id, productId: product.id }));
+    await DB.Inventories.bulkCreate(warehouses);
 
     return product;
   }

@@ -29,8 +29,9 @@ const ProductCartOptions = ({
     (user?.userCart && user?.userCart.cartProducts.length > 0) || false;
   const isProductInCart =
     isUserCartProducts &&
-    user?.userCart.cartProducts.find((product) => product.id === productId) !==
-      undefined;
+    user?.userCart.cartProducts.find(
+      ({ productId }) => productId === productId
+    ) !== undefined;
   const { data: cartProduct } = useCartProduct(isProductInCart, productId);
   const cartMutation = useAddCart(cartProduct?.productId);
 
@@ -130,9 +131,6 @@ const ProductCartOptions = ({
           >
             <Plus className="w-4 h-4 mr-2" />
             Cart
-          </Button>
-          <Button className="w-full" variant="outline">
-            Buy
           </Button>
         </div>
         <div className="mt-4">

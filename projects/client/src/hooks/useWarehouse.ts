@@ -9,7 +9,30 @@ export interface Warehouse {
   province: string;
   city: string;
   userId: number;
+  inventoryId: number;
+  warehouseAddress?: WarehouseAddressType;
 }
+
+type WarehouseAddressType = {
+  id: number;
+  addressDetail: string;
+  cityId: string;
+  provinceId: number;
+  cityWarehouse?: CityType;
+};
+
+type CityType = {
+  cityId: string;
+  cityName: string;
+  provinceId: string;
+  postal_code: number;
+  cityProvince?: ProvinceType;
+};
+
+type ProvinceType = {
+  provinceId: string;
+  province: string;
+};
 
 type mutationForm = { name: string; capacity: number };
 
@@ -20,6 +43,24 @@ export const useGetWarehouse = () => {
       const response = await service.get("/warehouses");
       return response.data.data;
     },
+  });
+  return warehouse;
+};
+
+export const useGetClosestWarehouse = ({
+  lat,
+  lng,
+}: {
+  lat: number | undefined;
+  lng: number | undefined;
+}) => {
+  const warehouse = useQuery<Warehouse>({
+    queryKey: ["warehouse", lat, lng],
+    queryFn: async () => {
+      const response = await service.get(`/warehouses/closest/${lat}/${lng}`);
+      return response.data.data;
+    },
+    enabled: !!lat && !!lng,
   });
   return warehouse;
 };

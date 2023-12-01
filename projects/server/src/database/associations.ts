@@ -20,12 +20,12 @@ export default function () {
   DB.Product.hasMany(DB.CartProduct, { foreignKey: 'product_id', as: 'cartProducts' });
   DB.CartProduct.belongsTo(DB.Product, { foreignKey: 'product_id', as: 'product' });
 
-  DB.Order.belongsToMany(DB.Product, { through: DB.OrderProduct, as: 'products', foreignKey: 'productId', otherKey: 'orderId' });
-  DB.Product.belongsToMany(DB.Order, { through: DB.OrderProduct, as: 'orders', foreignKey: 'orderId', otherKey: 'productId' });
-  DB.Order.hasMany(DB.OrderProduct, { foreignKey: 'order_id', as: 'orderProducts' });
-  DB.OrderProduct.belongsTo(DB.Order, { foreignKey: 'order_id', as: 'order' });
-  DB.Product.hasMany(DB.OrderProduct, { foreignKey: 'product_id', as: 'orderProducts' });
-  DB.OrderProduct.belongsTo(DB.Product, { foreignKey: 'product_id', as: 'product' });
+  DB.Order.belongsToMany(DB.Product, { through: DB.OrderDetails, as: 'products', foreignKey: 'productId', otherKey: 'orderId' });
+  DB.Product.belongsToMany(DB.Order, { through: DB.OrderDetails, as: 'orders', foreignKey: 'orderId', otherKey: 'productId' });
+  DB.Order.hasMany(DB.OrderDetails, { foreignKey: 'order_id', as: 'orderDetails' });
+  DB.OrderDetails.belongsTo(DB.Order, { foreignKey: 'order_id', as: 'order' });
+  DB.Product.hasMany(DB.OrderDetails, { foreignKey: 'product_id', as: 'orderDetails' });
+  DB.OrderDetails.belongsTo(DB.Product, { foreignKey: 'product_id', as: 'product' });
 
   DB.Order.hasOne(DB.Shipment, { foreignKey: 'order_id', as: 'orderShipment' });
   DB.Shipment.belongsTo(DB.Order, { foreignKey: 'order_id', as: 'orderShipment' });
@@ -42,8 +42,8 @@ export default function () {
   DB.User.hasOne(DB.Warehouses, { foreignKey: 'userId', as: 'userData' });
   DB.Warehouses.belongsTo(DB.User, { foreignKey: 'userId', as: 'userData' });
 
-  DB.Categories.hasOne(DB.Product, { foreignKey: 'categoryId' });
-  DB.Product.belongsTo(DB.Categories, { foreignKey: 'categoryId' });
+  DB.Categories.hasOne(DB.Product, { foreignKey: 'categoryId', as: 'productCategory' });
+  DB.Product.belongsTo(DB.Categories, { foreignKey: 'categoryId', as: 'productCategory' });
 
   DB.WarehouseAddresses.hasOne(DB.Warehouses, { foreignKey: 'warehouseAddressId', as: 'warehouseAddress' });
   DB.Warehouses.belongsTo(DB.WarehouseAddresses, { foreignKey: 'warehouseAddressId', as: 'warehouseAddress' });
@@ -51,8 +51,10 @@ export default function () {
   DB.Inventories.hasOne(DB.JurnalModel, { foreignKey: 'inventoryId', as: 'jurnalInventory' });
   DB.JurnalModel.belongsTo(DB.Inventories, { foreignKey: 'inventoryId', as: 'jurnalInventory' });
 
-  DB.Product.hasMany(DB.Inventories, { foreignKey: 'productId', as: 'productInventories' });
-  DB.Inventories.belongsTo(DB.Product, { foreignKey: 'productId', as: 'product' });
-  DB.Warehouses.hasMany(DB.Inventories, { foreignKey: 'warehouseId', as: 'warehouseInventories' });
-  DB.Inventories.belongsTo(DB.Warehouses, { foreignKey: 'warehouseId', as: 'warehouse' });
+  DB.Product.belongsToMany(DB.Warehouses, { through: DB.Inventories, as: 'warehouse', foreignKey: 'productId', otherKey: 'warehouseId' });
+  DB.Warehouses.belongsToMany(DB.Product, { through: DB.Inventories, as: 'products', foreignKey: 'warehouseId', otherKey: 'productId' });
+  DB.Product.hasMany(DB.Inventories, { foreignKey: 'product_id', as: 'inventory' });
+  DB.Inventories.belongsTo(DB.Product, { foreignKey: 'product_id', as: 'product' });
+  DB.Warehouses.hasMany(DB.Inventories, { foreignKey: 'warehouse_id', as: 'inventories' });
+  DB.Inventories.belongsTo(DB.Warehouses, { foreignKey: 'warehouse_id', as: 'warehouse' });
 }

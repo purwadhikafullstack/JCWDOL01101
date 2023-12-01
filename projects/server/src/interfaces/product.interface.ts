@@ -18,4 +18,6 @@ export interface GetFilterProduct {
   filter: string;
   order: string;
   limit: number;
+  externalId: string;
+  warehouse: string;
 }

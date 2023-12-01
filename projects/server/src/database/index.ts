@@ -11,11 +11,11 @@ import InventoryModel from '@/models/inventory.model';
 import CartModel from '@/models/cart.model';
 import CartProductModel from '@/models/cartProduct.model';
 import AddressModel from '@/models/address.model';
+import OrderModel from '@/models/order.model';
+import OrderDetailsModel from '@/models/orderDetails.model';
+import ShipmentModel from '@/models/shipment.model';
 import ProvinceModel from '@/models/province.model';
 import CityModel from '@/models/city.model';
-import OrderModel from '@/models/order.model';
-import OrderProdcutModel from '@/models/orderProduct.model';
-import ShipmentModel from '@/models/shipment.model';
 import ImageModel from '@/models/image.model';
 import JurnalModel from '@/models/jurnal.model';
 
@@ -51,7 +51,7 @@ export const DB = {
   CartProduct: CartProductModel(sequelize),
   Product: ProductModel(sequelize),
   Order: OrderModel(sequelize),
-  OrderProduct: OrderProdcutModel(sequelize),
+  OrderDetails: OrderDetailsModel(sequelize),
   Image: ImageModel(sequelize),
   Shipment: ShipmentModel(sequelize),
   Address: AddressModel(sequelize),

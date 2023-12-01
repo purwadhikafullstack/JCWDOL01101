@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { buttonVariants } from "@/components/ui/button";
-import { Plus, SearchIcon } from "lucide-react";
+import { MapPin, Plus, SearchIcon } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -20,6 +20,14 @@ import TablePagination from "../components/TablePagination";
 import ChangeOrderButton from "../components/ChangeOrderButton";
 import { useUser } from "@clerk/clerk-react";
 import { useBoundStore } from "@/store/client/useStore";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useGetWarehouse } from "@/hooks/useWarehouse";
 
 const Product = () => {
   const { user } = useUser();
@@ -31,18 +39,21 @@ const Product = () => {
   const searchTerm = searchParams.get("s") || "";
   const [debounceSearch] = useDebounce(searchTerm, 1000);
 
-  const { data, isLoading, isFetched } = useProducts({
+  const { data: warehouses } = useGetWarehouse();
+  const { data, isLoading } = useProducts({
     page: currentPage,
     s: debounceSearch,
     filter: searchParams.get("filter") || "",
     order: searchParams.get("order") || "",
     limit: 10,
+    warehouse: searchParams.get("warehouse") || "",
   });
 
   const clearImage = useBoundStore((state) => state.clearImage);
   useEffect(() => {
     clearImage();
   }, []);
+
   return (
     <div className="flex flex-col p-2 w-full">
       {ROLE === "ADMIN" && (
@@ -71,6 +82,38 @@ const Product = () => {
             placeholder="search product ..."
           />
         </div>
+        {ROLE === "ADMIN" && (
+          <div className="flex gap-2 items-center">
+            {warehouses && warehouses.length > 0 && (
+              <Select
+                defaultValue={warehouses ? warehouses[0].name : ""}
+                onValueChange={(value) => {
+                  setSearchParams((params) => {
+                    params.set("warehouse", value);
+                    return params;
+                  });
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Warehouse" />
+                </SelectTrigger>
+                <SelectContent>
+                  {warehouses.map((warehouse) => (
+                    <SelectItem key={warehouse.id} value={warehouse.name}>
+                      <div className="flex items-center w-[200px] justify-between">
+                        <span className=" font-bold">{warehouse.name}</span>
+                        <span className="flex gap-2 text-center justify-end text-muted-foreground w-full">
+                          {warehouse.warehouseAddress?.cityWarehouse?.cityName}
+                          <MapPin className="w-4 h-4 mr-2" />
+                        </span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
+        )}
       </div>
       <div className="border rounded-md mt-2">
         {isLoading ? (
@@ -89,10 +132,10 @@ const Product = () => {
                 <TableHead className="w-[150px] text-center">
                   <ChangeOrderButton paramKey="weight" name="Weight (grams)" />
                 </TableHead>
-                <TableHead className="w-[100px] text-center">
+                <TableHead className="w-[150px] text-center">
                   <ChangeOrderButton paramKey="stock" name="Stock" />
                 </TableHead>
-                <TableHead className="w-[100px] text-center">
+                <TableHead className="w-[150px] text-center">
                   <ChangeOrderButton paramKey="sold" name="Sold" />
                 </TableHead>
                 <TableHead>Category</TableHead>
@@ -104,8 +147,8 @@ const Product = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isFetched && data?.products.length! > 0 ? (
-                <ProductTableRow products={data?.products!} />
+              {data && data.products && data.products.length > 0 ? (
+                <ProductTableRow products={data.products} />
               ) : (
                 <TableRow>
                   <TableCell colSpan={10} className="text-center h-24">

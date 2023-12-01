@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Product } from "@/hooks/useProduct";
+import { Inventory, Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import { baseURL } from "@/service";
 import {
@@ -33,7 +33,7 @@ const ProductTableRow = ({ products }: { products: Product[] }) => {
   return (
     <>
       {products.map((product, i) => (
-        <TableRow key={product.id}>
+        <TableRow key={i}>
           <TableCell className="w-[80px]">{i + 1}</TableCell>
           <TableCell className="font-medium">{product.name}</TableCell>
           <TableCell>{formatToIDR(String(product.price))}</TableCell>
@@ -41,9 +41,13 @@ const ProductTableRow = ({ products }: { products: Product[] }) => {
             {product.weight}
             <i className="text-xs"> grams</i>
           </TableCell>
-          <TableCell className="text-center">{product.stock}</TableCell>
-          <TableCell className="text-center">{product.sold}</TableCell>
-          <TableCell>{product.categoryId}</TableCell>
+          <TableCell className="text-center">
+            {product.inventory[0].stock}
+          </TableCell>
+          <TableCell className="text-center">
+            {product.inventory[0].sold}
+          </TableCell>
+          <TableCell>{product.productCategory.name}</TableCell>
           <TableCell>{product.description}</TableCell>
           <TableCell className="text-center">
             {product.productImage.length > 0 ? (

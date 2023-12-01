@@ -50,6 +50,8 @@ export class UserService {
         {
           model: CartModel,
           as: 'userCart',
+          where: { status: 'ACTIVE' },
+          required: false,
           include: [
             {
               model: CartProductModel,
