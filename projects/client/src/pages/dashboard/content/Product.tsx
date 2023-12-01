@@ -100,8 +100,10 @@ const Product = () => {
                 <SelectContent>
                   {warehouses.map((warehouse) => (
                     <SelectItem key={warehouse.id} value={warehouse.name}>
-                      <div className="flex items-center w-[200px] justify-between">
-                        <span className=" font-bold">{warehouse.name}</span>
+                      <div className="flex items-center w-[300px] justify-between">
+                        <span className="font-bold w-full self-start">
+                          {warehouse.name}
+                        </span>
                         <span className="flex gap-2 text-center justify-end text-muted-foreground w-full">
                           {warehouse.warehouseAddress?.cityWarehouse?.cityName}
                           <MapPin className="w-4 h-4 mr-2" />
@@ -138,7 +140,7 @@ const Product = () => {
                 <TableHead className="w-[150px] text-center">
                   <ChangeOrderButton paramKey="sold" name="Sold" />
                 </TableHead>
-                <TableHead>Category</TableHead>
+                <TableHead className="w-[100px]">Category</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead className="text-center">Image</TableHead>
                 {ROLE === "ADMIN" && (

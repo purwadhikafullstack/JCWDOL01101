@@ -15,22 +15,10 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-const categories = [
-  {
-    id: 1,
-    category: "Men's Clothing",
-  },
-  {
-    id: 2,
-    category: "Women Appearell",
-  },
-  {
-    id: 3,
-    category: "Jacket",
-  },
-];
+import { useCategories } from "@/hooks/useCategory";
 const SelectFormField = () => {
   const form = useFormContext();
+  const { data: categories } = useCategories();
   return (
     <FormField
       control={form.control}
@@ -48,20 +36,28 @@ const SelectFormField = () => {
               </Badge>
             </FormLabel>
             <div className="col-span-2">
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Product Category" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {categories.map(({ category, id }) => (
-                    <SelectItem key={id} value={id.toString()}>
-                      {category}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {categories && categories.length > 0 && (
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Product Category" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem
+                        key={category.id}
+                        value={category.id.toString()}
+                      >
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
               <FormMessage />
             </div>
           </div>

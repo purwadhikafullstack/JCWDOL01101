@@ -150,6 +150,10 @@ const router = createBrowserRouter([
         element: <Product />,
       },
       {
+        path: "product/category",
+        element: <ManageCategory />,
+      },
+      {
         path: "product/create",
         element: <CreateProductForm />,
       },

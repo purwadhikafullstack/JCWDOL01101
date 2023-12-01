@@ -47,8 +47,12 @@ const ProductTableRow = ({ products }: { products: Product[] }) => {
           <TableCell className="text-center">
             {product.inventory[0].sold}
           </TableCell>
-          <TableCell>{product.productCategory.name}</TableCell>
-          <TableCell>{product.description}</TableCell>
+          <TableCell className="overflow-hidden whitespace-nowrap text-ellipsis w-[100px]">
+            {product.productCategory.name}
+          </TableCell>
+          <TableCell className="overflow-hidden whitespace-nowrap text-ellipsis w-[200px]">
+            {product.description}
+          </TableCell>
           <TableCell className="text-center">
             {product.productImage.length > 0 ? (
               <img

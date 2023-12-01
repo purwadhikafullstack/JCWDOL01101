@@ -61,7 +61,7 @@ export const DB = {
   Inventories: InventoryModel(sequelize),
   Warehouses: WarehouseModel(sequelize),
   WarehouseAddresses: WarehouseAddressModel(sequelize),
-  JurnalModel: JurnalModel(sequelize),
+  Jurnal: JurnalModel(sequelize),
   sequelize,
   Sequelize,
 };

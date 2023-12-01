@@ -6,6 +6,7 @@ export class OrderModel extends Model<Order> implements Order {
   public userId: number;
   public warehouseId?: number;
   public invoice: string;
+  public status: string;
   public deletedAt: Date;
 }
 
@@ -24,6 +25,11 @@ export default function (sequelize: Sequelize): typeof OrderModel {
       warehouseId: {
         allowNull: false,
         type: DataTypes.INTEGER,
+      },
+      status: {
+        allowNull: false,
+        type: DataTypes.ENUM,
+        values: ['PENDING', 'SUCCESS', 'FAILED', 'PROCESS'],
       },
       invoice: {
         allowNull: false,

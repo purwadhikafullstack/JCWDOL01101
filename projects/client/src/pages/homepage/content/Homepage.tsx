@@ -7,12 +7,14 @@ import TopProductCard from "@/components/TopProductCard";
 import { useProductUrl } from "@/hooks/useProduct";
 import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton";
 import HighestSellSkeleton from "@/components/skeleton/HighestSellSkeleton";
+import { useCategories } from "@/hooks/useCategory";
 
 const Homepage = () => {
   const { data: newestProducts, isLoading } = useProductUrl({
     key: ["new-products"],
     url: "/products/new",
   });
+  const { data: categories } = useCategories();
   const { data: highestSell, isLoading: highestSellLoading } = useProductUrl({
     key: ["highest-sell"],
     url: "/products/highest-sell",
@@ -31,14 +33,9 @@ const Homepage = () => {
           </Link>
         </span>
         <section className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-          {Array(6)
-            .fill(0)
-            .map((v, i) => (
-              <CategoryCard
-                key={i}
-                imageUrl="/placeholder/man.jpg"
-                category="Men's Fashion"
-              />
+          {categories &&
+            categories.map((category) => (
+              <CategoryCard key={category.id} category={category} />
             ))}
         </section>
         <span className="flex items-center justify-between mt-8 my-2">

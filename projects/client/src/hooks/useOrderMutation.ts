@@ -11,9 +11,6 @@ export const useClosestWarehouse = () => {
     mutationFn: async (location: Location) => {
       return service.post("/order/find-closest-warehouse", location);
     },
-    onSuccess: ({ data }) => {
-      console.log(data);
-    },
   });
 
   return mutation;

@@ -69,7 +69,7 @@ const NavCart = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
           </>
         ) : (
           <>
-            <div className="p-2 w-[280px]">
+            <div className="p-2 w-[280px] mx-auto">
               <img
                 className="w-[120px] mx-auto"
                 src="/ilus/empty.svg"

@@ -10,12 +10,16 @@ export class DokuController {
 
   public createPaymentIntent = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
-      const externalId = req.auth.userId;
+      const cartId = Number(req.body.cartId);
       const totalPrice = Number(req.body.totalPrice);
+      const externalId = req.auth.userId;
+      const warehouseId = Number(req.body.warehouseId);
       const paymentMethod = String(req.body.payment);
       const paymentIntent = await this.doku.createPaymentIntent({
+        cartId,
         externalId,
         totalPrice,
+        warehouseId,
         paymentMethod,
       });
 
@@ -30,12 +34,12 @@ export class DokuController {
 
   public postNotify = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const payment = await this.doku.verifyNotification(req.headers, req.body);
-      console.log(payment);
+      const invoice = String(req.body.order.invoice_number);
+      const transactionStatus = String(req.body.transaction.status);
+      await this.doku.verifyNotification(invoice, transactionStatus);
 
       res.status(200).json({
         message: 'payment success',
-        // data: payment,
       });
     } catch (err) {
       next(err);

@@ -27,6 +27,7 @@ export const useCurrentUser = ({
       return res.data.data;
     },
     enabled,
+    refetchOnWindowFocus: true,
   });
 
   return user;

@@ -6,11 +6,26 @@ import { User } from '@/interfaces/user.interface';
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
 import { DOKU_CLIENT_ID, DOKU_SECRET_KEY, DOKU_URL } from '@/config';
-import { IncomingHttpHeaders } from 'http';
+import { CartProduct } from '@/interfaces/cartProduct.interface';
+import { Inventory } from '@/interfaces/inventory.interface';
+import { OrderDetails } from '@/interfaces/orderDetails.interface';
+import { Op } from 'sequelize';
 
 @Service()
 export class DokuService {
-  public async createPaymentIntent({ totalPrice, externalId, paymentMethod }: { totalPrice: number; externalId: string; paymentMethod: string }) {
+  public async createPaymentIntent({
+    cartId,
+    totalPrice,
+    externalId,
+    warehouseId,
+    paymentMethod,
+  }: {
+    cartId: number;
+    totalPrice: number;
+    externalId: string;
+    warehouseId: number;
+    paymentMethod: string;
+  }) {
     const findUser: User = await DB.User.findOne({
       where: { externalId },
     });
@@ -54,7 +69,20 @@ export class DokuService {
       });
       const data = await res.data;
       if (data) {
-        // await DB.Order.create({})
+        const findUserCart = await DB.Cart.findOne({ where: { id: cartId, status: 'ACTIVE' } });
+        if (!findUserCart) throw new HttpException(409, "Cart doesn't exist");
+        const cartProducts: CartProduct[] = await DB.CartProduct.findAll({ where: { cartId: findUserCart.id, status: 'ACTIVE' } });
+        if (cartProducts.length > 0) {
+          const createOrder = await DB.Order.create({ warehouseId, invoice: InvoiceNumber, userId: findUser.id, status: 'PENDING' });
+          const orderDetailsData = cartProducts.map(product => ({
+            orderId: createOrder.id,
+            productId: product.productId,
+            quantity: product.quantity,
+            price: product.price,
+          }));
+          await DB.OrderDetails.bulkCreate(orderDetailsData);
+          await DB.Cart.update({ status: 'DELETED' }, { where: { id: findUserCart.id } });
+        }
       }
       return data;
     } catch (err) {
@@ -62,34 +90,20 @@ export class DokuService {
     }
   }
 
-  public async verifyNotification(headers: IncomingHttpHeaders, body: any) {
-    // const notificationPath = '/v1/doku/payment/notify';
-    // const digest = this.generateDigest(JSON.stringify(body));
-    // const signature = this.generateSignature(
-    //   headers['client-id'].toString(),
-    //   headers['request-id'].toString(),
-    //   headers['request-timestamp'].toString(),
-    //   notificationPath,
-    //   digest,
-    //   DOKU_SECRET_KEY,
-    // );
-    const notificationHeader = headers;
-    const notificationBody = JSON.stringify(body);
-    const notificationPath = '/v1/doku/payment/notify';
+  public async verifyNotification(invoice: string, transactionStatus: string) {
+    if (transactionStatus !== 'SUCCESS') throw new HttpException(500, 'Something went wrong');
+    const findOrder = await DB.Order.findOne({ where: { invoice } });
+    if (!findOrder) throw new HttpException(409, "Order doesn't found");
+    await DB.Order.update({ status: 'PROCESS' }, { where: { invoice } });
 
-    const digest = crypto.createHash('sha256').update(notificationBody).digest('base64');
-    const rawSignature =
-      `Client-Id:${notificationHeader['client-id']}\n` +
-      `Request-Id:${notificationHeader['request-id']}\n` +
-      `Request-Timestamp:${notificationHeader['request-timestamp']}\n` +
-      `Request-Target:${notificationPath}\n` +
-      `Digest:${digest}`;
-
-    const signature = crypto.createHmac('sha256', DOKU_SECRET_KEY).update(rawSignature).digest('base64');
-    const finalSignature = 'HMACSHA256=' + signature;
-    if (finalSignature !== headers['signature']) throw new HttpException(400, 'Invalid Signature');
-
-    return 'OK';
+    const findOrderDetails: OrderDetails[] = await DB.OrderDetails.findAll({ where: { orderId: findOrder.id }, include: [] });
+    for (const order of findOrderDetails) {
+      const inventory = await DB.Inventories.findOne({ where: { productId: order.productId } });
+      await inventory.decrement('stock', { by: order.quantity });
+      await inventory.increment('sold', { by: order.quantity });
+      await inventory.reload();
+      await DB.Jurnal.create({ inventoryId: inventory.id, quantity: order.quantity, type: 'REMOVE', date: new Date() });
+    }
   }
 
   private generateDigest(jsonBody: string) {

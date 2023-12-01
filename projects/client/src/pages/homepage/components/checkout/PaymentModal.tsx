@@ -32,12 +32,12 @@ const paymentMethods = [
 ];
 
 const PaymentModal = ({
-  userId,
+  cartId,
   address,
   totalPrice,
   cartProducts,
 }: {
-  userId: number;
+  cartId: number;
   address: Address | undefined;
   totalPrice: number;
   cartProducts: cartProducts[];
@@ -53,10 +53,15 @@ const PaymentModal = ({
   const createPayment = useDokuPaymentIntent();
 
   const handleCreatePayment = () => {
-    createPayment.mutate({
-      totalPrice: Number(totalPrice) + Number(shippingFee),
-      payment: paymentMethods[Number(paymentMethod)].id,
-    });
+    const closestWarehouse = checkClosestWarehouse.data;
+    if (closestWarehouse) {
+      createPayment.mutate({
+        cartId,
+        payment: paymentMethods[Number(paymentMethod)].id,
+        totalPrice: Number(totalPrice) + Number(shippingFee),
+        warehouseId: closestWarehouse.data.data.id,
+      });
+    }
   };
 
   const onSubmit = () => {

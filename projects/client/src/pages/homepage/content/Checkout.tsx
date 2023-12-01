@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import UserContext from "@/context/UserContext";
@@ -14,6 +14,7 @@ import CheckoutItem from "../components/checkout/CheckoutItem";
 import EditAddressDialog from "../components/checkout/EditAddressDialog";
 import PaymentModal from "../components/checkout/PaymentModal";
 import { useGetClosestWarehouse } from "@/hooks/useWarehouse";
+import { useNavigate } from "react-router-dom";
 
 export type Dialog = {
   main: boolean;
@@ -28,6 +29,14 @@ const Checkout = () => {
   }
   const { user } = userContext;
   const { data: cart } = useCart(user?.id!, !!user?.userCart);
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!cart) {
+      return navigate("/");
+    }
+  }, [cart]);
+
   const { data: activeAddress } = useActiveAddress();
   const { data: closestWarehouse } = useGetClosestWarehouse({
     lat: activeAddress?.lat,
@@ -141,7 +150,7 @@ const Checkout = () => {
                 </div>
                 {user && (
                   <PaymentModal
-                    userId={user.id}
+                    cartId={user.userCart.id}
                     address={activeAddress}
                     totalPrice={totalPrice}
                     cartProducts={cartProducts}

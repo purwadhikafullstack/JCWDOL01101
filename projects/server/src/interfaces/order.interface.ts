@@ -3,5 +3,6 @@ export interface Order {
   warehouseId?: number;
   userId?: number;
   invoice: string;
+  status: string;
   deletedAt: Date;
 }
