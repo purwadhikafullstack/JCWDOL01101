@@ -103,9 +103,6 @@ const Cart = () => {
                 </React.Fragment>
               ))}
           </div>
-          <div>
-            {/* <h3 className="font-bold text-xl mt-10">Rekomendasi Untukmu</h3> */}
-          </div>
         </section>
       ) : (
         <div className="container flex flex-col justify-center items-center">
