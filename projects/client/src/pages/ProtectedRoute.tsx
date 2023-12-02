@@ -3,7 +3,6 @@ import React from "react";
 import Homepage from "./homepage/content/Homepage";
 import UserContext from "@/context/UserContext";
 import { useCurrentUser } from "@/hooks/useUser";
-import { useNavigate } from "react-router-dom";
 import { Link, useNavigate } from "react-router-dom";
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -26,8 +25,7 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     )
   );
 };
-
-export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+export const DashboardRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, isLoaded } = useUser();
   const navigate = useNavigate();
   return (
@@ -38,7 +36,6 @@ export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
     </>
   );
 };
-
 export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, isLoaded } = useUser();
   return (
