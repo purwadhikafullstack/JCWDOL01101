@@ -29,6 +29,8 @@ export interface Address {
   phone: string;
   label: string;
   cityId: string;
+  lat: number;
+  lng: number;
   address: string;
   notes?: string;
   isMain: boolean;
@@ -143,7 +145,7 @@ export const useAddressByUserId = (userId: number) => {
       const res = await service.get(`/address/user/${userId}`);
       return res.data.data;
     },
-    enabled: !!userId
+    enabled: !!userId,
   });
 
   return { data, isFetched, isLoading };

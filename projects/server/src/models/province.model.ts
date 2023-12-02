@@ -15,7 +15,7 @@ export default function (sequelize: Sequelize): typeof ProvinceModel {
       },
       province: DataTypes.STRING(256),
     },
-    { sequelize, tableName: 'provinces', timestamps: false },
+    { sequelize, tableName: 'province', timestamps: false },
   );
 
   return ProvinceModel;

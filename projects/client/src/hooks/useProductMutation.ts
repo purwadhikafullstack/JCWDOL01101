@@ -70,3 +70,16 @@ export const useDeleteProduct = (productId: number) => {
 
   return productMutation;
 };
+
+export const useDeleteProductImage = (imageId: number, slug?: string) => {
+  const queryClient = useQueryClient();
+  const productMutation = useMutation({
+    mutationFn: async () => service.delete(`/products/images/${imageId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["product", slug] });
+    },
+  });
+
+  return productMutation;
+};

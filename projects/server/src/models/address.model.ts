@@ -6,6 +6,8 @@ export class AddressModel extends Model<Address> implements Address {
   public recepient: string;
   public phone: string;
   public label: string;
+  public lat: number;
+  public lng: number;
   public cityId: string;
   public address: string;
   public isMain: boolean;
@@ -50,6 +52,14 @@ export default function (sequelize: Sequelize): typeof AddressModel {
         allowNull: false,
         type: DataTypes.BOOLEAN,
         defaultValue: false,
+      },
+      lat: {
+        allowNull: false,
+        type: DataTypes.FLOAT(10, 6),
+      },
+      lng: {
+        allowNull: false,
+        type: DataTypes.FLOAT(10, 6),
       },
       isActive: {
         allowNull: false,

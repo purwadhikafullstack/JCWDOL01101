@@ -6,13 +6,12 @@ export interface Product {
   cartId?: number;
   name: string;
   price: number;
-  stock: number;
-  sold: number;
-  image: string;
   weight: number;
   description: string;
   status: Status;
   slug: string;
+  createdAt?: Date;
+  updateAt?: Date;
 }
 
 export interface GetFilterProduct {
@@ -20,4 +19,7 @@ export interface GetFilterProduct {
   s: string;
   filter: string;
   order: string;
+  limit: number;
+  externalId: string;
+  warehouse: string;
 }

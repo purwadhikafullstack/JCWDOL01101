@@ -7,13 +7,13 @@ export class ProductModel extends Model<Product> implements Product {
   public categoryId?: number;
   public name: string;
   public price: number;
-  public stock: number;
-  public sold: number;
-  public image: string;
   public weight: number;
   public description: string;
   public status: Status;
   public slug: string;
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
 
 export default function (sequelize: Sequelize): typeof ProductModel {
@@ -36,14 +36,6 @@ export default function (sequelize: Sequelize): typeof ProductModel {
         allowNull: false,
         type: DataTypes.INTEGER,
       },
-      stock: {
-        allowNull: false,
-        type: DataTypes.INTEGER,
-      },
-      sold: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-      },
       status: {
         type: DataTypes.ENUM,
         values: ['ACTIVE', 'DEACTIVATED', 'DELETED'],
@@ -52,10 +44,6 @@ export default function (sequelize: Sequelize): typeof ProductModel {
       description: {
         allowNull: false,
         type: DataTypes.TEXT,
-      },
-      image: {
-        allowNull: false,
-        type: DataTypes.STRING(256),
       },
       weight: {
         allowNull: false,
@@ -66,7 +54,16 @@ export default function (sequelize: Sequelize): typeof ProductModel {
         type: DataTypes.STRING(255),
       },
     },
-    { tableName: 'products', sequelize },
+    {
+      sequelize,
+      indexes: [
+        {
+          unique: true,
+          fields: ['name'],
+        },
+      ],
+      tableName: 'products',
+    },
   );
 
   return ProductModel;

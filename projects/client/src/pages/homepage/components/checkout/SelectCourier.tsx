@@ -25,33 +25,41 @@ type Service = {
 };
 
 const SelectCourier = ({
+  origin,
   product,
   address,
   quantity,
 }: {
+  origin: string;
   product: Product;
   quantity: number;
   address: Address | undefined;
 }) => {
   const addShippingFee = useBoundStore((state) => state.addShippingFee);
+  const setLoading = useBoundStore((state) => state.setLoading);
   const getTotalShippingFee = useBoundStore(
     (state) => state.getTotalShippingFee
   );
   const [courier, setCourier] = useState("jne");
   const [service, setService] = useState("0");
   const { data, isLoading } = useCourier({
+    origin,
     courier,
-    origin: "501",
     destination: address?.cityId!,
     weight: product.weight * quantity,
   });
-  const selectedService: Service = data
-    ? data?.costs[Number(service)]
-    : { service: "", description: "", cost: [] };
+  const selectedService: Service | null =
+    data && data.costs && data.costs.length > 0
+      ? data?.costs[Number(service)]
+      : null;
 
   useEffect(() => {
-    if (selectedService.cost.length > 0) {
-      addShippingFee(product.id!, selectedService.cost[0].value);
+    setLoading(isLoading);
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (selectedService && selectedService.cost.length > 0) {
+      addShippingFee(product.id!, selectedService);
       getTotalShippingFee();
     }
   }, [selectedService]);
@@ -79,7 +87,7 @@ const SelectCourier = ({
           </SelectGroup>
         </SelectContent>
       </Select>
-      {data && (
+      {data && data.costs.length > 0 && (
         <>
           <div className="mt-2 text-muted-foreground grid grid-cols-2 gap-2">
             <span>{data?.name}</span>
@@ -106,7 +114,7 @@ const SelectCourier = ({
               <Loader2 className="col-span-2 animate-spin w-4 h-4" />
             ) : (
               <div className="text-muted-foreground col-start-2 text-sm">
-                {selectedService && (
+                {selectedService ? (
                   <>
                     <span>{`${selectedService?.service} (${formatToIDR(
                       selectedService?.cost[0].value.toString()
@@ -119,6 +127,8 @@ const SelectCourier = ({
                       }`}
                     </p>
                   </>
+                ) : (
+                  <p>Please select other service</p>
                 )}
               </div>
             )}

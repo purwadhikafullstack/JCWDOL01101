@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
+import { Sequelize, DataTypes, Model } from 'sequelize';
 import { Warehouse } from '@/interfaces/warehouse.interface';
 
 export class WarehouseModel extends Model<Warehouse> implements Warehouse {

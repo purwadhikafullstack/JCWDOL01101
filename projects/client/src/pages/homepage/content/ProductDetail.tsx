@@ -1,28 +1,31 @@
+import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useProduct } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import { Car, MapPin, Star, Verified } from "lucide-react";
-import React from "react";
 import { Link, useParams } from "react-router-dom";
 import ProductCarousel from "../components/ProductCarousel";
-import ProductCartOptions from "../components/ProductCartOptions";
 import Review from "../components/Review";
+import ProductCartOptions from "../components/ProductCartOptions";
 
 const ProductDetail = () => {
   const { slug } = useParams();
   const { data: product } = useProduct(slug || "");
+  const stock = product?.inventory
+    ? product.inventory.reduce((prev, curr) => prev + curr.stock, 0)
+    : 0;
 
   return (
     <div className="product-detail">
       <div className="w-full  product-media">
         <div className="sticky top-[100px]">
-          <ProductCarousel image={product?.image || ""} />
+          <ProductCarousel images={product?.productImage || []} />
         </div>
       </div>
       <ProductCartOptions
         price={product?.price || 0}
         productId={product?.id!}
-        totalStock={product?.stock || 0}
+        totalStock={stock}
       />
       <div className="w-full product-content">
         <p className="font-bold">{product?.name}</p>

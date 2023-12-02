@@ -1,7 +1,7 @@
-import { Warehouse } from "@/interfaces/warehouse.interface";
-import { WarehouseService } from "@/services/warehouse.service";
-import { NextFunction, Request, Response } from "express";
-import Container from "typedi";
+import { Warehouse } from '@/interfaces/warehouse.interface';
+import { WarehouseService } from '@/services/warehouse.service';
+import { NextFunction, Request, Response } from 'express';
+import Container from 'typedi';
 
 export class WarehouseController {
   public warehouse = Container.get(WarehouseService);
@@ -11,6 +11,18 @@ export class WarehouseController {
       const findAllWarehouseData: Warehouse[] = await this.warehouse.findAllWarehouse();
 
       res.status(200).json({ data: findAllWarehouseData, message: 'find all Warehouse' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getClosestWarehouse = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const lat = Number(req.params.lat);
+      const lng = Number(req.params.lng);
+      const findClosestWarehouse: Warehouse = await this.warehouse.findClosestWarehouse({ lat, lng });
+
+      res.status(200).json({ data: findClosestWarehouse, message: 'find closest warehouse' });
     } catch (error) {
       next(error);
     }
@@ -60,7 +72,4 @@ export class WarehouseController {
       next(error);
     }
   };
-
-
-
 }

@@ -1,17 +1,18 @@
+import React, { useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCartProduct } from "@/hooks/useCart";
+import { Product } from "@/hooks/useProduct";
+import { formatToIDR } from "@/lib/utils";
+import { baseURL } from "@/service";
+import { MinusCircle, PlusCircle, Trash2 } from "lucide-react";
+import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 import {
   useCancelCartProductDeletion,
   useChageQty,
   useDeleteCartProduct,
 } from "@/hooks/useCartMutation";
-import { Product } from "@/hooks/useProduct";
-import { formatToIDR } from "@/lib/utils";
-import { baseURL } from "@/service";
-import { MinusCircle, PlusCircle, Trash2 } from "lucide-react";
-import React, { useEffect } from "react";
-import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 type CartItemProps = {
   cartProductId: number;
@@ -34,7 +35,12 @@ const CartItem = ({
 }: CartItemProps) => {
   const qtyMutation = useChageQty();
   const { data: cartProduct } = useCartProduct(hasCart, product.id!);
-  const stock = cartProduct ? cartProduct?.product?.stock : 0;
+  const stock = cartProduct
+    ? cartProduct?.product?.inventory.reduce(
+        (prev, curr) => prev + curr.stock,
+        0
+      )
+    : 0;
 
   const deleteMutation = useDeleteCartProduct(cartProductId);
   const cancelDeleteMutation = useCancelCartProductDeletion(cartProductId);
@@ -88,7 +94,7 @@ const CartItem = ({
         <div className="flex items-start pl-6 gap-4">
           <img
             className="w-14 h-14 rounded-md object-contain"
-            src={`${baseURL}/${product.image}`}
+            src={`${baseURL}/images/${product.productImage[0].image}`}
             alt={product.name}
           />
           <div>
@@ -97,40 +103,46 @@ const CartItem = ({
           </div>
         </div>
         <div className="flex justify-end items-center">
-          <Trash2
-            onClick={deleteCart}
-            className="text-muted-foreground mr-10 cursor-pointer hover:text-primary/80"
-          />
+          <Button variant="ghost">
+            <Trash2
+              onClick={deleteCart}
+              className="text-muted-foreground cursor-pointer hover:text-primary/80"
+            />
+          </Button>
           <div className="flex  items-center">
-            <MinusCircle
-              onClick={() => {
-                if (quantity > 1) {
-                  qtyMutation.mutate({
-                    cartId,
-                    productId: product.id!,
-                    qty: -1,
-                  });
-                }
-              }}
-              className={`${
-                quantity > 1 ? "text-primary" : "text-muted-foreground"
-              }  cursor-pointer`}
-            />
+            <Button variant="ghost">
+              <MinusCircle
+                onClick={() => {
+                  if (quantity > 1) {
+                    qtyMutation.mutate({
+                      cartId,
+                      productId: product.id!,
+                      qty: -1,
+                    });
+                  }
+                }}
+                className={`${
+                  quantity > 1 ? "text-primary" : "text-muted-foreground"
+                }  cursor-pointer`}
+              />
+            </Button>
             <p className="mx-2 p-2 select-none">{quantity}</p>
-            <PlusCircle
-              onClick={() => {
-                if (quantity < stock) {
-                  qtyMutation.mutate({
-                    cartId,
-                    productId: product.id!,
-                    qty: 1,
-                  });
-                }
-              }}
-              className={`${
-                quantity < stock ? "text-primary" : "text-muted-foreground"
-              }  cursor-pointer`}
-            />
+            <Button variant="ghost">
+              <PlusCircle
+                onClick={() => {
+                  if (quantity < stock) {
+                    qtyMutation.mutate({
+                      cartId,
+                      productId: product.id!,
+                      qty: 1,
+                    });
+                  }
+                }}
+                className={`${
+                  quantity < stock ? "text-primary" : "text-muted-foreground"
+                }  cursor-pointer`}
+              />
+            </Button>
           </div>
         </div>
       </div>

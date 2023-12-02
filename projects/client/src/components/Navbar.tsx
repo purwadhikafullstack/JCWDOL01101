@@ -24,7 +24,7 @@ const Navbar = () => {
             </span>
           </Link>
           <Link
-            to="/category"
+            to="/products"
             className={buttonVariants({
               variant: "ghost",
               className: "hidden md:block",

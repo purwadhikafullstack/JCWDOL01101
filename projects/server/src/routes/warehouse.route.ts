@@ -3,7 +3,7 @@ import { Routes } from '@interfaces/routes.interface';
 import { WarehouseController } from '@/controllers/warehouse.controller';
 
 export class WarehouseRoute implements Routes {
-  public path = '/api/warehouses';
+  public path = '/v1/warehouses';
   public router = Router();
   public warehouse = new WarehouseController();
 
@@ -13,10 +13,10 @@ export class WarehouseRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`${this.path}`, this.warehouse.getWarehouse);
+    this.router.get(`${this.path}/closest/:lat/:lng`, this.warehouse.getClosestWarehouse);
     this.router.get(`${this.path}/:id(\\d+)`, this.warehouse.getWarehouseById);
     this.router.post(`${this.path}`, this.warehouse.createWarehouse);
     this.router.put(`${this.path}/:id(\\d+)`, this.warehouse.updateWarehouse);
     this.router.delete(`${this.path}/:id(\\d+)`, this.warehouse.deleteWarehouse);
   }
 }
-

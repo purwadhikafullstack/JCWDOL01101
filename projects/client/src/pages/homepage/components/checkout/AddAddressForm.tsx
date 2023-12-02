@@ -1,30 +1,30 @@
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Loader2 } from "lucide-react"
-import React, { useState } from "react"
-import LabelField from "@/components/input/LabelField"
-import CityField from "@/components/input/CityField"
-import RecepientField from "@/components/input/RecepientField"
-import AddressField from "@/components/input/AddressField"
-import NotesField from "@/components/input/NotesField"
-import MainCheckboxField from "@/components/input/MainCheckboxField"
-import PhoneField from "@/components/input/PhoneField"
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Loader2 } from "lucide-react";
+import React, { useState } from "react";
+import LabelField from "@/components/input/LabelField";
+import CityField from "@/components/input/CityField";
+import RecepientField from "@/components/input/RecepientField";
+import AddressField from "@/components/input/AddressField";
+import NotesField from "@/components/input/NotesField";
+import MainCheckboxField from "@/components/input/MainCheckboxField";
+import PhoneField from "@/components/input/PhoneField";
 export type Coordinates = {
-  latitude: number
-  langitude: number
-}
+  latitude: number;
+  langitude: number;
+};
 
 type AddAddressForm = {
-  isPending: boolean
-  location: Coordinates | null
-  handleGetGeolocation: () => void
-}
+  isPending: boolean;
+  location: Coordinates | null;
+  handleGetGeolocation: () => void;
+};
 const AddAddressForm = ({
   isPending,
   location,
   handleGetGeolocation,
 }: AddAddressForm) => {
-  const [tos, setTos] = useState(false)
+  const [tos, setTos] = useState(false);
 
   return (
     <>
@@ -56,7 +56,7 @@ const AddAddressForm = ({
         </Button>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default AddAddressForm
+export default AddAddressForm;

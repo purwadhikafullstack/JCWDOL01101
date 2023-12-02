@@ -1,12 +1,15 @@
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
+import { Product } from '@/interfaces/product.interface';
 import { Warehouse } from '@/interfaces/warehouse.interface';
+import { Location, findClosestWarehouse } from '@/utils/closestWarehouse';
 import { Service } from 'typedi';
 
 @Service()
 export class WarehouseService {
   public async findAllWarehouse(): Promise<Warehouse[]> {
     const allWarehouse: Warehouse[] = await DB.Warehouses.findAll({
+      order: [['name', 'ASC']],
       include: [
         {
           model: DB.WarehouseAddresses,
@@ -15,12 +18,12 @@ export class WarehouseService {
           include: [
             {
               model: DB.City,
-              as: 'cityData',
+              as: 'cityWarehouse',
               attributes: ['cityName'],
               include: [
                 {
                   model: DB.Province,
-                  as: 'provinceData',
+                  as: 'cityProvince',
                   attributes: ['province'],
                 },
               ],
@@ -38,6 +41,13 @@ export class WarehouseService {
     return allWarehouse;
   }
 
+  public async findClosestWarehouse(targetLocation: Location): Promise<Warehouse | null> {
+    const closestWarehouse = findClosestWarehouse(targetLocation);
+    if (!closestWarehouse) throw new HttpException(409, 'No Warehouse found');
+
+    return closestWarehouse;
+  }
+
   public async findWarehouseById(warehouseId: number): Promise<Warehouse> {
     const findWarehouse: Warehouse = await DB.Warehouses.findByPk(warehouseId);
     if (!findWarehouse) throw new HttpException(409, "Warehouse doesn't exist");
@@ -50,9 +60,15 @@ export class WarehouseService {
     if (findWarehouse) throw new HttpException(409, 'Warehouse already exist');
 
     const createWarehouseData: Warehouse = await DB.Warehouses.create({ ...warehouseData });
-    await DB.Inventories.create({
-      stock: 0,
+    const products: Product[] = await DB.Product.findAll({
+      where: {
+        status: 'ACTIVE',
+      },
     });
+    if (products.length > 0) {
+      const product = products.map(product => ({ warehouseId: createWarehouseData.id, productId: product.id }));
+      await DB.Inventories.bulkCreate(product);
+    }
     return createWarehouseData;
   }
 

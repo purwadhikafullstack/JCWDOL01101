@@ -1,47 +1,61 @@
-import React, { useContext, useMemo, useState } from "react"
-import UserContext from "@/context/UserContext"
-import { useCart } from "@/hooks/useCart"
-import { formatToIDR } from "@/lib/utils"
-import { Dialog } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { useActiveAddress } from "@/hooks/useAddress"
-import { Separator } from "@/components/ui/separator"
-import AddressModal from "../components/checkout/AddressModal"
-import CheckoutItem from "../components/checkout/CheckoutItem"
-import ActiveAddress from "../components/checkout/ActiveAddress"
-import BackToCartDialog from "../components/checkout/BackToCartDialog"
-import AddNewAddressDialog from "../components/checkout/AddNewAddressDialog"
-import { useBoundStore } from "@/store/client/useStore"
-import EditAddressDialog from "../components/checkout/EditAddressDialog"
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { Dialog } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import UserContext from "@/context/UserContext";
+import { useActiveAddress } from "@/hooks/useAddress";
+import { useCart } from "@/hooks/useCart";
+import { formatToIDR } from "@/lib/utils";
+import { useBoundStore } from "@/store/client/useStore";
+import ActiveAddress from "../components/checkout/ActiveAddress";
+import AddNewAddressDialog from "../components/checkout/AddNewAddressDialog";
+import AddressModal from "../components/checkout/AddressModal";
+import BackToCartDialog from "../components/checkout/BackToCartDialog";
+import CheckoutItem from "../components/checkout/CheckoutItem";
+import EditAddressDialog from "../components/checkout/EditAddressDialog";
+import PaymentModal from "../components/checkout/PaymentModal";
+import { useGetClosestWarehouse } from "@/hooks/useWarehouse";
+import { useNavigate } from "react-router-dom";
 
 export type Dialog = {
-  main: boolean
-  add: boolean
-  edit: boolean
-}
+  main: boolean;
+  add: boolean;
+  edit: boolean;
+};
 
 const Checkout = () => {
-  const userContext = useContext(UserContext)
+  const userContext = useContext(UserContext);
   if (!userContext) {
-    throw new Error("useUser must be used within a UserProvider")
+    throw new Error("useUser must be used within a UserProvider");
   }
-  const { user } = userContext
-  const { data: cart } = useCart(user?.id!, !!user?.userCart)
-  const { data: activeAddress } = useActiveAddress()
+  const { user } = userContext;
+  const { data: cart } = useCart(user?.id!, !!user?.userCart);
 
-  const cartProducts = useMemo(() => cart?.cart.cartProducts || [], [cart])
-  const totalPrice = cart?.totalPrice || 0
-  const shippingFee = useBoundStore((state) => state.totalShipping)
-  const shippingTotal = shippingFee + Number(totalPrice)
-  const [mainDialog, setMainDialog] = useState(false)
-  const [addDialog, setAddDialog] = useState(false)
-  const [editDialog, setEditDialog] = useState(false)
-  const [modifyAddressId, setModifyAddressId] = useState<number | null>(null)
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!cart) {
+      return navigate("/");
+    }
+  }, [cart]);
+
+  const { data: activeAddress } = useActiveAddress();
+  const { data: closestWarehouse } = useGetClosestWarehouse({
+    lat: activeAddress?.lat,
+    lng: activeAddress?.lng,
+  });
+
+  const cartProducts = useMemo(() => cart?.cart.cartProducts || [], [cart]);
+  const totalPrice = cart?.totalPrice || 0;
+  const shippingFee = useBoundStore((state) => state.totalShipping);
+  const shippingTotal = Number(shippingFee) + Number(totalPrice);
+  const [mainDialog, setMainDialog] = useState(false);
+  const [addDialog, setAddDialog] = useState(false);
+  const [editDialog, setEditDialog] = useState(false);
+  const [modifyAddressId, setModifyAddressId] = useState<number | null>(null);
   const toggleDialog = (main = false, add = false, edit = false) => {
-    setMainDialog(main)
-    setAddDialog(add)
-    setEditDialog(edit)
-  }
+    setMainDialog(main);
+    setAddDialog(add);
+    setEditDialog(edit);
+  };
 
   return (
     <>
@@ -94,6 +108,7 @@ const Checkout = () => {
                   length={cartProducts.length || 0}
                   product={product}
                   quantity={quantity}
+                  warehouse={closestWarehouse}
                   activeAddress={activeAddress}
                 />
               ))}
@@ -101,46 +116,53 @@ const Checkout = () => {
           </section>
           <div className="w-[420px] relative ">
             <div className="w-ful sticky top-[100px]">
-              <div className="w-full h-full px-4 py-6 mt-[100px] border rounded-lg space-y-3">
-                <b className="font-bold">Shipping Summary</b>
-                <div>
-                  <div className="flex gap-2 justify-between items-center">
-                    <span className="flex gap-2 items-center">
-                      Total Price{" "}
-                      <p>
-                        (
-                        {`${cartProducts.length} ${
-                          cartProducts.length > 1 ? "products" : "product"
-                        }`}
-                        )
-                      </p>
-                    </span>
-                    <p>{formatToIDR(totalPrice.toString())}</p>
+              <div className="w-full h-full px-4 py-6 mt-[100px] border rounded-lg">
+                <div className="space-y-3 mb-5">
+                  <b className="font-bold">Shipping Summary</b>
+                  <div className="text-sm">
+                    <div className="flex gap-2 justify-between items-center">
+                      <span className="flex gap-2 items-center">
+                        Total Price{" "}
+                        <p>
+                          (
+                          {`${cartProducts.length} ${
+                            cartProducts.length > 1 ? "products" : "product"
+                          }`}
+                          )
+                        </p>
+                      </span>
+                      <p>{formatToIDR(totalPrice.toString())}</p>
+                    </div>
+                    <div className="flex gap-2 justify-between items-center">
+                      <span className="flex gap-2 items-center">
+                        Total Shipping Fee
+                      </span>
+                      <p>{formatToIDR(shippingFee.toString())}</p>
+                    </div>
                   </div>
+                  <Separator />
                   <div className="flex gap-2 justify-between items-center">
-                    <span className="flex gap-2 items-center">
-                      Total Shipping Fee
+                    <b>Shipping total</b>
+                    <span className="font-bold text-lg">
+                      {formatToIDR(shippingTotal.toString())}
                     </span>
-                    <p>{formatToIDR(shippingFee.toString())}</p>
                   </div>
                 </div>
-                <Separator />
-                <div className="flex gap-2 justify-between items-center">
-                  <b>Shipping total</b>
-                  <span className="font-bold text-lg">
-                    {formatToIDR(shippingTotal.toString())}
-                  </span>
-                </div>
-                <Button className="font-bold w-full py-6 text-lg rounded-lg">
-                  Choose Payment
-                </Button>
+                {user && (
+                  <PaymentModal
+                    cartId={user.userCart.id}
+                    address={activeAddress}
+                    totalPrice={totalPrice}
+                    cartProducts={cartProducts}
+                  />
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Checkout
+export default Checkout;
