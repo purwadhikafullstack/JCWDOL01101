@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, FormEvent } from "react"
 import {
   DialogContent,
   DialogDescription,
@@ -9,12 +9,20 @@ import {
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import { useSetMainAddress } from "@/hooks/useAddressMutation"
+import toast from "react-hot-toast"
 
 function SetMainDialog({ addressId }: { addressId: number }) {
   const setMainAddress = useSetMainAddress(addressId)
-  const onSetMain = () => {
+  const onSetMain = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     setMainAddress.mutate()
   }
+
+  useEffect(() => {
+    if (setMainAddress.isSuccess) {
+      toast.success("Successfully update address data")
+    }
+  }, [setMainAddress.isSuccess])
   return (
     <DialogContent>
       <DialogHeader>

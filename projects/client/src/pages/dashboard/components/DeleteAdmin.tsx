@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, FormEvent } from "react"
 import {
   DialogContent,
   DialogDescription,
@@ -7,14 +7,15 @@ import {
   DialogClose,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { useDeleteAdmin } from "@/hooks/useUser"
+import { useDeleteAdmin } from "@/hooks/useUserMutation"
 import { Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 
 const DeleteAdmin = ({ userId }: { userId: Number }) => {
   const deleteProduct = useDeleteAdmin(userId as number)
   const { toast } = useToast()
-  const onDeleteAdmin = () => {
+  const onDeleteAdmin = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     deleteProduct.mutate()
   }
 

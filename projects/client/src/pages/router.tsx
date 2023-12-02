@@ -21,7 +21,7 @@ import Warehouse from "./dashboard/content/Warehouse"
 import EditAdminForm from "./dashboard/components/EditAdminForm"
 import ProductDetail from "./homepage/content/ProductDetail"
 import Cart from "./homepage/content/Cart"
-import { ProtectedRoute, AdminRoute } from "./ProtectedRoute"
+import { ProtectedRoute, AdminRoute, DashboardRoute } from "./ProtectedRoute"
 import UserLayout from "./user/UserLayout"
 import Profile from "./user/content/Profile"
 import Address from "./user/content/Address"
@@ -110,9 +110,9 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-      <AdminRoute>
+      <DashboardRoute>
         <DashboardLayout />
-      </AdminRoute>
+      </DashboardRoute>
     ),
     errorElement: <NotFound />,
     children: [
@@ -126,15 +126,27 @@ const router = createBrowserRouter([
       },
       {
         path: "user",
-        element: <User />,
+        element: (
+          <AdminRoute>
+            <User />
+          </AdminRoute>
+        ),
       },
       {
         path: "manage-admin",
-        element: <ManageAdmin />,
+        element: (
+          <AdminRoute>
+            <ManageAdmin />
+          </AdminRoute>
+        ),
       },
       {
         path: "manage-admin/:userId",
-        element: <EditAdminForm />,
+        element: (
+          <AdminRoute>
+            <EditAdminForm />
+          </AdminRoute>
+        ),
       },
       {
         path: "product",

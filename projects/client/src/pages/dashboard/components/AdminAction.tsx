@@ -1,20 +1,20 @@
-import React from "react";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { buttonVariants } from "@/components/ui/button";
-import { TableCell } from "@/components/ui/table";
+import React from "react"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
+import { buttonVariants } from "@/components/ui/button"
+import { TableCell } from "@/components/ui/table"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { Link } from "react-router-dom";
+} from "@/components/ui/dropdown-menu"
+import { DotsHorizontalIcon } from "@radix-ui/react-icons"
+import { Link } from "react-router-dom"
 
-import z from "zod";
-import DeleteAdmin from "./DeleteAdmin";
-import { User } from "@/context/UserContext";
+import z from "zod"
+import DeleteAdmin from "./DeleteAdmin"
+import { User } from "@/context/UserContext"
 
 export const adminEditSchema = z.object({
   role: z.string().min(1, "Role cannot be empty"),
@@ -24,7 +24,7 @@ export const adminEditSchema = z.object({
   email: z.string().min(1, "Role cannot be empty").email(),
   status: z.string().min(1, "Status cannot be empty"),
   password: z.string().optional(),
-});
+})
 
 const AdminAction = ({ user }: { user: User }) => {
   return (
@@ -55,7 +55,7 @@ const AdminAction = ({ user }: { user: User }) => {
         </Dialog>
       </TableCell>
     </>
-  );
-};
+  )
+}
 
-export default AdminAction;
+export default AdminAction
