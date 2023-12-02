@@ -125,6 +125,20 @@ export class UserController {
     }
   };
 
+  public manageProfile = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = Number(req.params.userId);
+      const data = req.body;
+      const updatedUser = await this.user.updateProfile(userId, data);
+      res.status(200).json({
+        data: updatedUser,
+        message: 'user edited',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   public deleteAdmin = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = Number(req.params.userId);

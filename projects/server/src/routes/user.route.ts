@@ -22,5 +22,6 @@ export class UserRoute implements Routes {
     this.router.post('/v1/admin', this.user.createAdmin);
     this.router.put('/v1/manage-admin/:userId', this.user.manageAdmin);
     this.router.delete('/v1/manage-admin/:userId', this.user.deleteAdmin);
+    this.router.put('/v1/manage-user/:userId', this.user.manageProfile);
   }
 }
