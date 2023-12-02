@@ -4,8 +4,10 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 export class JurnalModel extends Model<Jurnal> implements Jurnal {
   public id?: number;
   public inventoryId?: number;
-  public quantity: number;
-  public type: 'ADD' | 'REMOVE';
+  public oldQty: number;
+  public qtyChange: number;
+  public newQty: number;
+  public type: 'STOCK IN' | 'STOCK OUT';
   public date: Date;
   public notes?: string;
 }
@@ -22,14 +24,22 @@ export default function (sequelize: Sequelize): typeof JurnalModel {
         allowNull: false,
         type: DataTypes.INTEGER,
       },
-      quantity: {
+      oldQty: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
+      qtyChange: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
+      newQty: {
         allowNull: false,
         type: DataTypes.INTEGER,
       },
       type: {
         allowNull: false,
         type: DataTypes.ENUM,
-        values: ['ADD', 'REMOVE'],
+        values: ['STOCK IN', 'STOCK OUT'],
       },
       date: {
         allowNull: false,

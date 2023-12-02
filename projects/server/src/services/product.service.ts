@@ -112,6 +112,9 @@ export class ProductService {
       case 'htl':
         options.order = [['price', 'DESC']];
         break;
+      case 'hs':
+        options.order = [[{ model: InventoryModel, as: 'inventory' }, 'sold', 'DESC']];
+        break;
       default:
         options.order = [['createdAt', 'DESC']];
         break;
@@ -193,10 +196,6 @@ export class ProductService {
 
     return findProduct;
   }
-
-  public getStockAndCapacity = () => {
-    //
-  };
 
   public async createProduct(files: Express.Multer.File[], productData: ProductDto): Promise<Product> {
     const { name } = productData;

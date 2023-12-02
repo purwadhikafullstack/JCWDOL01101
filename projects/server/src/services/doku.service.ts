@@ -7,9 +7,7 @@ import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
 import { DOKU_CLIENT_ID, DOKU_SECRET_KEY, DOKU_URL } from '@/config';
 import { CartProduct } from '@/interfaces/cartProduct.interface';
-import { Inventory } from '@/interfaces/inventory.interface';
 import { OrderDetails } from '@/interfaces/orderDetails.interface';
-import { Op } from 'sequelize';
 
 @Service()
 export class DokuService {
@@ -96,13 +94,20 @@ export class DokuService {
     if (!findOrder) throw new HttpException(409, "Order doesn't found");
     await DB.Order.update({ status: 'PROCESS' }, { where: { invoice } });
 
-    const findOrderDetails: OrderDetails[] = await DB.OrderDetails.findAll({ where: { orderId: findOrder.id }, include: [] });
+    const findOrderDetails: OrderDetails[] = await DB.OrderDetails.findAll({ where: { orderId: findOrder.id } });
     for (const order of findOrderDetails) {
       const inventory = await DB.Inventories.findOne({ where: { productId: order.productId } });
       await inventory.decrement('stock', { by: order.quantity });
       await inventory.increment('sold', { by: order.quantity });
       await inventory.reload();
-      await DB.Jurnal.create({ inventoryId: inventory.id, quantity: order.quantity, type: 'REMOVE', date: new Date() });
+      await DB.Jurnal.create({
+        inventoryId: inventory.id,
+        oldQty: inventory.stock,
+        qtyChange: order.quantity,
+        newQty: inventory.stock - order.quantity,
+        type: 'STOCK OUT',
+        date: new Date(),
+      });
     }
   }
 

@@ -1,8 +1,10 @@
 export interface Jurnal {
   id?: number;
   inventoryId?: number;
-  quantity: number;
-  type: 'ADD' | 'REMOVE';
+  oldQty: number;
+  qtyChange: number;
+  newQty: number;
+  type: 'STOCK IN' | 'STOCK OUT';
   date: Date;
   notes?: string;
 }
