@@ -107,7 +107,7 @@ const Warehouse = () => {
       .catch(error => {
         console.error("There was an error!", error);
       });
-  }, [warehouses]);
+  }, []);
 
   const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const city = cities.find(city => city.cityId === String(event.target.value));

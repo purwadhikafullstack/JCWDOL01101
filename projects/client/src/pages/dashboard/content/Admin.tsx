@@ -20,6 +20,7 @@ import TablePagination from "../components/TablePagination";
 import NewAdminFrom from "../components/NewAdminForm";
 import AdminAction from "../components/AdminAction";
 import ChangeOrderButton from "../components/ChangeOrderButton";
+import { useFetchWarehouse, useGetWarehouse, useWarehouseMutation } from "@/hooks/useWarehouse";
 
 const Admin = () => {
   const [searchParams, setSearchParams] = useSearchParams({ page: "1" });
@@ -34,6 +35,14 @@ const Admin = () => {
     filter: searchParams.get("filter") || "",
     order: searchParams.get("order") || "",
   });
+
+  // const warehouseMutation = useWarehouseMutation();
+  const [currentWarehouseId, setCurrentWarehouseId] = useState<number | null>(null);
+
+  const { data: warehouse } = useFetchWarehouse(currentWarehouseId);
+  const { data: warehouses } = useGetWarehouse();
+
+
   return (
     <div className="flex flex-col p-2 w-full">
       <Dialog>
@@ -83,6 +92,9 @@ const Admin = () => {
                   <ChangeOrderButton paramKey="role" name="Role" />
                 </TableHead>
                 <TableHead className="text-center">
+                  <ChangeOrderButton paramKey="role" name="Warehouse" />
+                </TableHead>
+                <TableHead className="text-center">
                   <ChangeOrderButton paramKey="createdAt" name="Created At" />
                 </TableHead>
                 <TableHead className="text-center">
@@ -110,6 +122,9 @@ const Admin = () => {
                         <Button>{user.role}</Button>
                       </TableCell>
                       <TableCell className="text-center">
+                        <Button>{user.role}</Button> {/**nama warehouse  */}
+                      </TableCell>
+                      <TableCell className="text-center">
                         {getDate(user.createdAt.toLocaleString())}
                       </TableCell>
                       <TableCell className="text-center">
@@ -118,6 +133,11 @@ const Admin = () => {
                       <AdminAction user={user} />
                     </TableRow>
                   ))}
+                  {(warehouses) && warehouses.map((warehouse) => (
+                    <div className="flex justify-evenly" >{warehouse.name}</div>
+                  ))
+
+                  }
                 </>
               ) : (
                 <TableRow>

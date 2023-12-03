@@ -16,14 +16,27 @@ export interface Warehouse {
 type mutationForm = {name:string, capacity:number}
 
 export const useGetWarehouse = ()=>{
-    const {data,isLoading} = useQuery<Warehouse[]>({
+    const warehouses = useQuery<Warehouse[]>({
         queryKey:["warehouse"],
         queryFn:async () => {
             const response = await service.get("/warehouses")
             return response.data.data
         }
     })
-    return {data,isLoading}
+    return warehouses;
+}
+
+export const useFetchWarehouse = (id:number | null)=>{
+  const warehouses = useQuery<Warehouse>({
+    queryKey: ["warehouses",id],
+    queryFn: async () => {
+      const res = await service.get(`/warehouses/${id}`);
+      return res.data.data;
+    },
+    enabled:!!id
+  });
+
+  return warehouses;
 }
 
 export const useWarehouseMutation = () =>{

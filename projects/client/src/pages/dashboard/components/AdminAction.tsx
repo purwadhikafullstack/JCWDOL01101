@@ -49,8 +49,16 @@ const AdminAction = ({ user }: { user: User }) => {
                   Delete
                 </DropdownMenuItem>
               </DialogTrigger>
+              
+              <Link to={`/dashboard/assign-admin/${user.id}`}>
+                <DropdownMenuItem className="w-full cursor-pointer">
+                  Assign
+                </DropdownMenuItem>
+              </Link>
+
             </DropdownMenuContent>
           </DropdownMenu>
+
           <DeleteAdmin userId={user.id as number} />
         </Dialog>
       </TableCell>

@@ -61,6 +61,28 @@ export class WarehouseController {
     }
   };
 
+  public warehouseService = new WarehouseService();
 
+  public assignAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const warehouseId = Number(req.params.id);
+      const userId = Number(req.params.userId);
+      const updatedWarehouse = await this.warehouseService.assignAdmin(warehouseId, userId);
+      res.status(200).json({ data: updatedWarehouse, message: 'Admin assigned' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public unassignAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = Number(req.params.userId);
+      await this.warehouseService.unassignAdmin(userId);
+      res.status(200).json({ message: 'Admin unassigned' });
+    } catch (error) {
+      next(error);
+    }
+  };
+  
 
 }
