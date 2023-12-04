@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import z from "zod";
 import DeleteAdmin from "./DeleteAdmin";
 import { User } from "@/context/UserContext";
+import AssignAdminForm from "./AssignAdminForm";
 
 export const adminEditSchema = z.object({
   role: z.string().min(1, "Role cannot be empty"),
@@ -49,21 +50,22 @@ const AdminAction = ({ user }: { user: User }) => {
                   Delete
                 </DropdownMenuItem>
               </DialogTrigger>
-              
-              <Link to={`/dashboard/assign-admin/${user.id}`}>
-                <DropdownMenuItem className="w-full cursor-pointer">
-                  Assign
-                </DropdownMenuItem>
-              </Link>
-
             </DropdownMenuContent>
           </DropdownMenu>
-
           <DeleteAdmin userId={user.id as number} />
+        </Dialog>
+        <Dialog>
+          <DropdownMenu>
+              <DialogTrigger className="w-full text-white bg-rose-600 p-1 border-2 border-rose-600 rounded hover:bg-rose-500 capitalize font-medium">
+                  Assign
+              </DialogTrigger>
+          </DropdownMenu>
+          <AssignAdminForm userId={user.id as number} />
         </Dialog>
       </TableCell>
     </>
   );
 };
+
 
 export default AdminAction;

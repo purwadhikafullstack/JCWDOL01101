@@ -33,44 +33,6 @@ export interface cartProducts {
   quantity: number
   product: Product
 }
-
-export interface WarehouseAddress  {
-  id: number;
-  addressDetail: string;
-  cityId: string;
-  provinceId: number;
-  cityData?: City[];
-};
-
-
-export interface Warehouse  {
-  id: number;
-  name: string;
-  capacity: number;
-  addressId: number;
-  userId: number;
-  warehouseAddress?: WarehouseAddress[];
-};
-
-
-export interface City  {
-  cityId: string;
-  cityName: string;
-  provinceId: string;
-  postal_code: number;
-  provinceData?: Province[];
-};
-
-
-export interface Province  {
-  provinceId: string;
-  province: string;
-};
-
-export interface UserWithWarehouse extends User {
-  warehouse?: Warehouse;
-}
-
 interface UserContextProps {
   user: User | undefined;
 }

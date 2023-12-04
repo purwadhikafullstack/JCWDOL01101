@@ -140,10 +140,10 @@ const router = createBrowserRouter([
         path: "manage-admin/:userId",
         element: <EditAdminForm />,
       },
-      {
-        path: "assign-admin/:userId",
-        element: <AssignAdminForm />,
-      },
+      // {
+      //   path: "assign-admin/:userId",
+      //   element: <AssignAdminForm />,
+      // },
       
       {
         path: "product",

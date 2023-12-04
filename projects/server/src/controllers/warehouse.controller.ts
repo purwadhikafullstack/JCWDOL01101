@@ -27,6 +27,17 @@ export class WarehouseController {
     }
   };
 
+  public getWarehouseByUserId = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = Number(req.params.userId);
+      const findOneWarehouseData: Warehouse = await this.warehouse.findWarehouseByUserId(userId);
+
+      res.status(200).json({ data: findOneWarehouseData, message: 'find Warehouse By Id' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   public createWarehouse = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const warehouseData: Warehouse = req.body;

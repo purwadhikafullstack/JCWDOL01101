@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { SearchIcon, Plus } from "lucide-react";
 import {
@@ -15,12 +15,11 @@ import { useSearchParams } from "react-router-dom";
 import { useUsers } from "@/hooks/useUser";
 import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton";
 import { useDebounce } from "use-debounce";
-import { getDate } from "@/lib/utils";
+import { getDate, getWarehouse } from "@/lib/utils";
 import TablePagination from "../components/TablePagination";
 import NewAdminFrom from "../components/NewAdminForm";
 import AdminAction from "../components/AdminAction";
 import ChangeOrderButton from "../components/ChangeOrderButton";
-import { useFetchWarehouse, useGetWarehouse, useWarehouseMutation } from "@/hooks/useWarehouse";
 
 const Admin = () => {
   const [searchParams, setSearchParams] = useSearchParams({ page: "1" });
@@ -36,11 +35,13 @@ const Admin = () => {
     order: searchParams.get("order") || "",
   });
 
-  // const warehouseMutation = useWarehouseMutation();
-  const [currentWarehouseId, setCurrentWarehouseId] = useState<number | null>(null);
+  const [warehouses, setWarehouses] = useState<{ [key: number]: string }>({});
 
-  const { data: warehouse } = useFetchWarehouse(currentWarehouseId);
-  const { data: warehouses } = useGetWarehouse();
+  useEffect(() => {
+    data?.users!.forEach((user) => {
+      getWarehouse(Number(user.id), setWarehouses);
+    });
+  }, [data]);
 
 
   return (
@@ -121,8 +122,8 @@ const Admin = () => {
                       <TableCell className="text-center">
                         <Button>{user.role}</Button>
                       </TableCell>
-                      <TableCell className="text-center">
-                        <Button>{user.role}</Button> {/**nama warehouse  */}
+                      <TableCell className="capitalize font-medium text-center">
+                        {warehouses[user.id] || "unAssigned"}
                       </TableCell>
                       <TableCell className="text-center">
                         {getDate(user.createdAt.toLocaleString())}
@@ -133,11 +134,6 @@ const Admin = () => {
                       <AdminAction user={user} />
                     </TableRow>
                   ))}
-                  {(warehouses) && warehouses.map((warehouse) => (
-                    <div className="flex justify-evenly" >{warehouse.name}</div>
-                  ))
-
-                  }
                 </>
               ) : (
                 <TableRow>
