@@ -56,7 +56,7 @@ const AdminAction = ({ user }: { user: User }) => {
         </Dialog>
         <Dialog>
           <DropdownMenu>
-              <DialogTrigger className="w-full text-white bg-rose-600 p-1 border-2 border-rose-600 rounded hover:bg-rose-500 capitalize font-medium">
+              <DialogTrigger className="w-full text-white bg-rose-600 p-1 border-1 border-rose-600 rounded hover:bg-rose-500 capitalize font-medium">
                   Assign
               </DialogTrigger>
           </DropdownMenu>
