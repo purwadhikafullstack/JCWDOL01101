@@ -44,6 +44,9 @@ const Checkout = () => {
   });
 
   const cartProducts = useMemo(() => cart?.cart.cartProducts || [], [cart]);
+  const carts = useBoundStore((state) =>
+    state.carts.filter((cart) => cart.selected)
+  );
   const totalPrice = cart?.totalPrice || 0;
   const shippingFee = useBoundStore((state) => state.totalShipping);
   const shippingTotal = Number(shippingFee) + Number(totalPrice);
@@ -101,11 +104,11 @@ const Checkout = () => {
               handleToggleDialog={toggleDialog}
             />
             <>
-              {cartProducts.map(({ product, id, quantity }, i) => (
+              {carts.map(({ product, id, quantity }, i) => (
                 <CheckoutItem
                   key={id}
                   index={i}
-                  length={cartProducts.length || 0}
+                  length={carts.length || 0}
                   product={product}
                   quantity={quantity}
                   warehouse={closestWarehouse}

@@ -102,7 +102,7 @@ const Cart = () => {
       )}
       {carts.length > 0 && (
         <ShoppingSummary
-          someTrue={true}
+          someTrue={someTrue}
           totalPrice={totalPrice}
           totalQuantity={totalQuantity}
         />
