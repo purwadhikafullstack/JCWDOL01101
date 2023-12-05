@@ -51,8 +51,8 @@ export class CartContoller {
   public deleteAllCartProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const cartId = Number(req.params.cartId);
-      const keys = req.body.key;
-      const deletedCartProduct: CartProduct[] = await this.cart.deleteAllCartProduct(cartId, keys);
+      const productIds = req.body.productIds;
+      const deletedCartProduct: CartProduct[] = await this.cart.deleteAllCartProduct(cartId, productIds);
 
       res.status(200).json({
         data: deletedCartProduct,

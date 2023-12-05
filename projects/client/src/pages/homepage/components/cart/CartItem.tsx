@@ -13,26 +13,28 @@ import {
   useDeleteCartProduct,
 } from "@/hooks/useCartMutation";
 import { Button } from "@/components/ui/button";
+import { useBoundStore } from "@/store/client/useStore";
 
 type CartItemProps = {
-  cartProductId: number;
-  hasCart: boolean;
+  index: number;
   cartId: number;
-  quantity: number;
   product: Product;
-  onChage: (key: string, value: boolean) => void;
-  selectItem: boolean;
+  hasCart: boolean;
+  quantity: number;
+  cartProductId: number;
+  selected: boolean;
 };
 
 const CartItem = ({
+  index,
   cartId,
   hasCart,
   product,
   quantity,
-  onChage,
-  selectItem,
+  selected,
   cartProductId,
 }: CartItemProps) => {
+  const setSelectedCartItem = useBoundStore((state) => state.setSelectedCart);
   const qtyMutation = useChageQty();
   const { data: cartProduct } = useCartProduct(hasCart, product.id!);
   const stock = cartProduct
@@ -81,9 +83,11 @@ const CartItem = ({
       <div key={product.id} className="w-full space-y-2">
         <div className="flex gap-2 items-center">
           <Checkbox
-            checked={selectItem}
+            checked={selected}
             onCheckedChange={(value) => {
-              onChage(product.id!.toString(), !!value);
+              if (product.id) {
+                setSelectedCartItem(product.id, !!value);
+              }
             }}
           />
           <div>

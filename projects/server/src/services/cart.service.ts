@@ -148,13 +148,11 @@ export class CartService {
 
     return findCart;
   }
-  public async deleteAllCartProduct(cartId: number, keys: string[]) {
+  public async deleteAllCartProduct(cartId: number, productIds: number[]) {
     const findCartProduct = await DB.CartProduct.findAll({ where: { cartId, status: 'ACTIVE' } });
     if (!findCartProduct) throw new HttpException(409, `Items doesn't exist`);
 
-    const productsIds = keys.map(Number);
-
-    await DB.CartProduct.update({ status: 'DELETED' }, { where: { cartId, productId: productsIds } });
+    await DB.CartProduct.update({ status: 'DELETED' }, { where: { cartId, productId: productIds } });
     return findCartProduct;
   }
 

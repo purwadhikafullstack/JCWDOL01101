@@ -42,8 +42,8 @@ export const useChageQty = () => {
 export const useDeleteAllCartProduct = (cartId: number) => {
   const queryClient = useQueryClient();
   const cartMutation = useMutation({
-    mutationFn: async (data: string[]) => {
-      await service.patch(`/cart/products/${cartId}`, { key: data });
+    mutationFn: async (data: number[]) => {
+      await service.patch(`/cart/products/${cartId}`, { productIds: data });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });

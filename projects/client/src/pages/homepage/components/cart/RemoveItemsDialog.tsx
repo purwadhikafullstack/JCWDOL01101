@@ -9,17 +9,15 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { useDeleteAllCartProduct } from "@/hooks/useCartMutation";
+import { useBoundStore } from "@/store/client/useStore";
 import { Loader } from "lucide-react";
 import React, { useEffect } from "react";
 import toast from "react-hot-toast";
 
-const RemoveItemsDialog = ({
-  cartId,
-  selectedItem,
-}: {
-  cartId: number;
-  selectedItem: { [key: string]: boolean };
-}) => {
+const RemoveItemsDialog = ({ cartId }: { cartId: number }) => {
+  const selectedProductIds = useBoundStore((state) =>
+    state.carts.filter((cart) => cart.selected).map((cart) => cart.productId)
+  );
   const deleteAllCart = useDeleteAllCartProduct(cartId);
   useEffect(() => {
     if (deleteAllCart.isSuccess) {
@@ -52,17 +50,20 @@ const RemoveItemsDialog = ({
         <DialogHeader>
           <DialogTitle className="text-center">Remove item?</DialogTitle>
           <DialogDescription className="text-center">
-            The selected item will be remove from your cart
+            The selected{" "}
+            {`${
+              selectedProductIds.length > 1
+                ? `(${selectedProductIds.length}) items`
+                : "item"
+            }`}{" "}
+            will be remove from your cart
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex sm:flex-col gap-2">
           <DialogClose asChild>
             <Button
               onClick={() => {
-                const deletedKeys = Object.keys(selectedItem).filter(
-                  (key) => selectedItem[key] === true
-                );
-                deleteAllCart.mutate(deletedKeys);
+                deleteAllCart.mutate(selectedProductIds);
               }}
             >
               {deleteAllCart.isPending ? (
