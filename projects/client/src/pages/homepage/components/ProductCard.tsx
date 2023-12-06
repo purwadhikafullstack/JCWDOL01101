@@ -14,6 +14,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useGetClosestWarehouse } from "@/hooks/useWarehouse";
 import { Coordinates } from "./checkout/AddAddressForm";
+import { useBoundStore } from "@/store/client/useStore";
 
 interface ProductCardProps extends HTMLAttributes<HTMLDivElement> {
   product: Product;
@@ -29,20 +30,10 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
           { stock: 0, sold: 0 }
         )
       : { stock: 0, sold: 0 };
-    const [location, setLocation] = useState<Coordinates | null>(null);
-
-    useEffect(() => {
-      navigator.geolocation.getCurrentPosition((pos) => {
-        setLocation({
-          latitude: pos.coords.latitude,
-          langitude: pos.coords.longitude,
-        });
-      });
-    }, []);
-
+    const location = useBoundStore((state) => state.location);
     const { data: closestWarehouse } = useGetClosestWarehouse({
-      lat: location?.latitude,
-      lng: location?.langitude,
+      lat: location?.lat,
+      lng: location?.lng,
     });
 
     const productContent = (

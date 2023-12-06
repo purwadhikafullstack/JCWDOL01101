@@ -7,6 +7,8 @@ import { Link, useParams } from "react-router-dom";
 import ProductCarousel from "../components/ProductCarousel";
 import Review from "../components/Review";
 import ProductCartOptions from "../components/ProductCartOptions";
+import { useBoundStore } from "@/store/client/useStore";
+import { useGetClosestWarehouse } from "@/hooks/useWarehouse";
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -15,6 +17,11 @@ const ProductDetail = () => {
     ? product.inventory.reduce((prev, curr) => prev + curr.stock, 0)
     : 0;
 
+  const location = useBoundStore((state) => state.location);
+  const { data: closestWarehouse } = useGetClosestWarehouse({
+    lat: location?.lat,
+    lng: location?.lng,
+  });
   return (
     <div className="product-detail">
       <div className="w-full  product-media">
@@ -79,7 +86,10 @@ const ProductDetail = () => {
           <span className="flex gap-2 items-center">
             <MapPin className="w-4 h-4 text-muted-foreground" />
             <p className="text-sm">
-              Send from <strong>Tokyo</strong>
+              Send from{" "}
+              <strong>
+                {closestWarehouse?.warehouseAddress?.cityWarehouse?.cityName}
+              </strong>
             </p>
           </span>
           <span className="flex gap-2 items-center">

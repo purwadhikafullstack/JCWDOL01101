@@ -3,8 +3,9 @@ import Navbar from "@/components/Navbar";
 import ScrollToTop from "@/components/ScrollToTop";
 import UserContext from "@/context/UserContext";
 import { useCurrentUser } from "@/hooks/useUser";
+import { useBoundStore } from "@/store/client/useStore";
 import { useUser } from "@clerk/clerk-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router-dom";
 
@@ -14,6 +15,17 @@ const MainLayout = () => {
     externalId: user?.id!,
     enabled: isLoaded && !!isSignedIn,
   });
+
+  const setLocation = useBoundStore((state) => state.setLocation);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((pos) => {
+      setLocation({
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+      });
+    });
+  }, []);
   return (
     <UserContext.Provider value={{ user: userBackend }}>
       <ScrollToTop />

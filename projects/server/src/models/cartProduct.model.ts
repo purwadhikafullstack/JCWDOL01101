@@ -11,6 +11,7 @@ export class CartProductModel extends Model<CartProduct> implements CartProduct 
   public quantity: number;
   public status: Status;
   public price: number;
+  public selected: boolean;
 }
 
 export default function (sequelize: Sequelize): typeof CartProductModel {
@@ -44,6 +45,11 @@ export default function (sequelize: Sequelize): typeof CartProductModel {
       price: {
         allowNull: false,
         type: DataTypes.INTEGER,
+      },
+      selected: {
+        allowNull: false,
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
       },
       status: {
         type: DataTypes.ENUM,

@@ -9,7 +9,7 @@ import {
   DialogClose,
   DialogHeader,
 } from "@/components/ui/custom-dialog";
-import React, { useState } from "react";
+import React, { Children, useState } from "react";
 import ChekoutAddress from "./ChekoutAddress";
 import { Search, X } from "lucide-react";
 import { useAddress } from "@/hooks/useAddress";
@@ -18,7 +18,6 @@ import { useDebounce } from "use-debounce";
 type AddressModalProps = {
   userId: number;
   mainDialog: boolean;
-  activeAddress: boolean;
   setMainDialog: (x: boolean) => void;
   toggleDialog: (main?: boolean, add?: boolean, edit?: boolean) => void;
   setModifyAddressId: (address: number) => void;
@@ -27,14 +26,15 @@ type AddressModalProps = {
 
 const AddressModal = ({
   addressProps,
+  children,
 }: {
   addressProps: AddressModalProps;
+  children: React.ReactNode;
 }) => {
   const {
     userId,
     mainDialog,
     setMainDialog,
-    activeAddress,
     toggleDialog,
     setModifyAddressId,
     handleToggleDialog,
@@ -44,11 +44,7 @@ const AddressModal = ({
   const { data: address, isLoading } = useAddress(debounceSearch);
   return (
     <Dialog open={mainDialog} onOpenChange={(value) => setMainDialog(value)}>
-      <DialogTrigger asChild>
-        <Button variant="secondary">
-          {activeAddress ? "Choose Other Address" : "Create New Address"}
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[712px] pb-10">
         <DialogClose
           onClick={() => {

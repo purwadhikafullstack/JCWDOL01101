@@ -30,7 +30,7 @@ const ProductCartOptions = ({
   const isProductInCart =
     isUserCartProducts &&
     user?.userCart.cartProducts.find(
-      ({ productId }) => productId === productId
+      (cartProduct) => cartProduct.productId === productId
     ) !== undefined;
   const { data: cartProduct } = useCartProduct(isProductInCart, productId);
   const cartMutation = useAddCart(cartProduct?.productId);
@@ -50,12 +50,15 @@ const ProductCartOptions = ({
   };
 
   useEffect(() => {
+    const totalQuantity = (cartProduct?.quantity || 0) + quantity;
+
     if (quantity <= 0) {
-      setError("This product(s) minimun quantity is 1 item(s)");
-    } else if (totalStock && quantity > totalStock) {
-      setError(`This product(s) minimun quantity is ${totalStock} item(s)`);
-    } else if (cartProduct?.quantity! + quantity > totalStock) {
-      setError(`This product(s) minimun quantity is ${totalStock} item(s)`);
+      setError("This product(s) minimum quantity is 1 item(s)");
+    } else if (
+      totalStock &&
+      (quantity > totalStock || totalQuantity > totalStock)
+    ) {
+      setError(`This product(s) maximum quantity is ${totalStock} item(s)`);
     }
   }, [cartProduct?.quantity, quantity, totalStock]);
 
@@ -125,7 +128,11 @@ const ProductCartOptions = ({
             </p>
           </div>
           <Button
-            disabled={totalStock <= 0 || cartMutation.isPending}
+            disabled={
+              totalStock <= 0 ||
+              cartMutation.isPending ||
+              (cartProduct?.quantity || 0) + quantity > totalStock
+            }
             onClick={addToCart}
             className="w-full select-none"
           >

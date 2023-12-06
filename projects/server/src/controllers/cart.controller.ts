@@ -51,8 +51,7 @@ export class CartContoller {
   public deleteAllCartProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const cartId = Number(req.params.cartId);
-      const keys = req.body.key;
-      const deletedCartProduct: CartProduct[] = await this.cart.deleteAllCartProduct(cartId, keys);
+      const deletedCartProduct: CartProduct[] = await this.cart.deleteAllCartProduct(cartId);
 
       res.status(200).json({
         data: deletedCartProduct,
@@ -85,6 +84,35 @@ export class CartContoller {
       res.status(200).json({
         data: cancelDeletedCartProduct,
         message: 'delete.cancel',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public toggleSelectedCart = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const cartProductId = Number(req.params.cartProductId);
+      const value = Boolean(req.body.value);
+      const toggleSelectedCart: CartProduct = await this.cart.toggleSelectedProduct(cartProductId, value);
+
+      res.status(200).json({
+        data: toggleSelectedCart,
+        message: 'toggle selected cart',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public toggleAllSelectedCart = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const cartId = Number(req.params.cartId);
+      const toggleSelectedCart: CartProduct[] = await this.cart.toggleAllSelectedProduct(cartId);
+
+      res.status(200).json({
+        data: toggleSelectedCart,
+        message: 'toggle all selected cart',
       });
     } catch (err) {
       next(err);
