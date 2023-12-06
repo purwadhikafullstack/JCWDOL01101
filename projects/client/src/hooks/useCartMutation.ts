@@ -42,8 +42,8 @@ export const useChageQty = () => {
 export const useDeleteAllCartProduct = (cartId: number) => {
   const queryClient = useQueryClient();
   const cartMutation = useMutation({
-    mutationFn: async (data: number[]) => {
-      await service.patch(`/cart/products/${cartId}`, { productIds: data });
+    mutationFn: async () => {
+      await service.patch(`/cart/products/${cartId}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
@@ -62,6 +62,38 @@ export const useDeleteCartProduct = (cartProductId: number) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+  });
+  return cartMutation;
+};
+
+export const useToggleSelectedProduct = (
+  cartProductId: number,
+  productId: number
+) => {
+  const queryClient = useQueryClient();
+  const cartMutation = useMutation({
+    mutationFn: async ({ value }: { value: boolean }) => {
+      await service.patch(`/cart/product/${cartProductId}/selected`, { value });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-product", productId] });
+    },
+  });
+  return cartMutation;
+};
+
+export const useToggleAllSelectProduct = () => {
+  const queryClient = useQueryClient();
+  const cartMutation = useMutation({
+    mutationFn: async (cartId: number) => {
+      await service.patch(`/cart/${cartId}/toggle/selected`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-product"] });
     },
   });
   return cartMutation;

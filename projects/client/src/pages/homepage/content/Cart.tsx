@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import UserContext from "@/context/UserContext";
@@ -8,37 +8,43 @@ import { useNavigate } from "react-router-dom";
 import { useBoundStore } from "@/store/client/useStore";
 import RemoveItemsDialog from "../components/cart/RemoveItemsDialog";
 import ShoppingSummary from "../components/cart/ShoppingSummary";
+import { useToggleAllSelectProduct } from "@/hooks/useCartMutation";
+import { useGetClosestWarehouse } from "@/hooks/useWarehouse";
 const Cart = () => {
   const navigate = useNavigate();
   const userContext = useContext(UserContext);
   if (!userContext) {
     throw new Error("useUser must be used within a UserProvider");
   }
+  const { user } = userContext;
 
   const clearCheckout = useBoundStore((state) => state.clear);
   useEffect(() => {
     clearCheckout();
   }, []);
 
-  const initializeCart = useBoundStore((state) => state.initializeCarts);
-  const toggleAllSelectedCart = useBoundStore(
-    (state) => state.toggleSelectedCarts
-  );
-  const { user } = userContext;
   const { data: cart } = useCart(user?.id!, !!user?.userCart);
-
-  const carts = useBoundStore((state) => state.carts);
-  useEffect(() => {
-    const currentCart = cart?.cart.cartProducts || [];
-    initializeCart(currentCart.map((cart) => ({ ...cart, selected: true })));
-  }, [cart]);
+  const carts = cart?.cart.cartProducts || [];
 
   const totalQuantity = cart?.totalQuantity || 0;
   const totalPrice = cart?.totalPrice || 0;
 
-  const allTrue = carts.every((value) => value.selected);
-  const someTrue = carts.some((value) => value.selected);
+  const toggleAllSelectedCart = useToggleAllSelectProduct();
+  const [selected, setSelected] = useState({ allTrue: false, someTrue: false });
 
+  useEffect(() => {
+    if (carts.length > 0) {
+      const { allTrue, someTrue } = carts.reduce(
+        (acc, value) => ({
+          allTrue: acc.allTrue && value.selected,
+          someTrue: acc.someTrue || value.selected,
+        }),
+        { allTrue: true, someTrue: false }
+      );
+
+      setSelected({ allTrue, someTrue });
+    }
+  }, [carts]);
   return (
     <div className="flex w-full gap-8">
       {carts.length > 0 ? (
@@ -47,7 +53,9 @@ const Cart = () => {
           <div className="flex items-center justify-between border-b-4 px-0">
             <div
               onClick={() => {
-                toggleAllSelectedCart();
+                if (cart) {
+                  toggleAllSelectedCart.mutate(cart.cart.id);
+                }
               }}
               className={buttonVariants({
                 variant: "ghost",
@@ -55,12 +63,12 @@ const Cart = () => {
                   "flex items-center gap-4 cursor-pointer px-0 lg:px-0 hover:bg-transparent",
               })}
             >
-              <Checkbox id="select" checked={allTrue} />
+              <Checkbox id="select" checked={selected.allTrue} />
               <label htmlFor="select" className="text-muted-foreground">
                 Select all
               </label>
             </div>
-            {someTrue && <RemoveItemsDialog cartId={cart?.cart.id!} />}
+            {selected.someTrue && <RemoveItemsDialog cartId={cart?.cart.id!} />}
           </div>
 
           <div className="py-4 space-y-4">
@@ -68,13 +76,11 @@ const Cart = () => {
               carts.map(({ product, quantity, selected, id }, i) => (
                 <React.Fragment key={product.id}>
                   <CartItem
-                    index={i}
                     cartProductId={id}
                     hasCart={!!user?.userCart}
                     cartId={cart?.cart.id!}
                     product={product}
                     quantity={quantity}
-                    selected={selected}
                   />
                   <div
                     className={
@@ -102,7 +108,7 @@ const Cart = () => {
       )}
       {carts.length > 0 && (
         <ShoppingSummary
-          someTrue={someTrue}
+          someTrue={selected.someTrue}
           totalPrice={totalPrice}
           totalQuantity={totalQuantity}
         />

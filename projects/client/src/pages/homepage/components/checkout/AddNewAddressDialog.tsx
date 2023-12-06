@@ -104,9 +104,13 @@ const AddNewAddressDialog = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={(value) => setAddDialog(value)}>
+    <Dialog
+      open={addressMutation.isPending || open}
+      onOpenChange={(value) => setAddDialog(value)}
+    >
       <DialogContent className="sm:max-w-[712px]">
         <DialogClose
+          disabled={addressMutation.isPending}
           onClick={() => {
             handleToggleDialog(true);
           }}
@@ -117,6 +121,7 @@ const AddNewAddressDialog = ({
         </DialogClose>
 
         <DialogClose
+          disabled={addressMutation.isPending}
           onClick={() => {
             handleToggleDialog(true);
           }}

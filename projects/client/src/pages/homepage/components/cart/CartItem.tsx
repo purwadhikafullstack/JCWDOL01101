@@ -4,37 +4,40 @@ import { useCartProduct } from "@/hooks/useCart";
 import { Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import { baseURL } from "@/service";
-import { MinusCircle, PlusCircle, Trash2 } from "lucide-react";
+import {
+  CheckSquare,
+  MapPin,
+  MinusCircle,
+  PlusCircle,
+  Trash2,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import {
   useCancelCartProductDeletion,
   useChageQty,
   useDeleteCartProduct,
+  useToggleSelectedProduct,
 } from "@/hooks/useCartMutation";
 import { Button } from "@/components/ui/button";
 import { useBoundStore } from "@/store/client/useStore";
+import { useGetClosestWarehouse } from "@/hooks/useWarehouse";
 
 type CartItemProps = {
-  index: number;
   cartId: number;
   product: Product;
   hasCart: boolean;
   quantity: number;
   cartProductId: number;
-  selected: boolean;
 };
 
 const CartItem = ({
-  index,
   cartId,
   hasCart,
   product,
   quantity,
-  selected,
   cartProductId,
 }: CartItemProps) => {
-  const setSelectedCartItem = useBoundStore((state) => state.setSelectedCart);
   const qtyMutation = useChageQty();
   const { data: cartProduct } = useCartProduct(hasCart, product.id!);
   const stock = cartProduct
@@ -46,6 +49,16 @@ const CartItem = ({
 
   const deleteMutation = useDeleteCartProduct(cartProductId);
   const cancelDeleteMutation = useCancelCartProductDeletion(cartProductId);
+  const toggleSelectedCart = useToggleSelectedProduct(
+    cartProductId,
+    product.id!
+  );
+
+  const location = useBoundStore((state) => state.location);
+  const { data: closestWarehouse } = useGetClosestWarehouse({
+    lat: location?.lat,
+    lng: location?.lng,
+  });
 
   const deleteCart = () => {
     deleteMutation.mutate();
@@ -83,16 +96,21 @@ const CartItem = ({
       <div key={product.id} className="w-full space-y-2">
         <div className="flex gap-2 items-center">
           <Checkbox
-            checked={selected}
+            checked={cartProduct?.selected}
             onCheckedChange={(value) => {
-              if (product.id) {
-                setSelectedCartItem(product.id, !!value);
-              }
+              toggleSelectedCart.mutate({ value: !!value });
             }}
           />
           <div>
             <h3 className="font-bold">Toten Offical</h3>
-            <p className="text-sm text-muted-foreground">Kota Makassar</p>
+            {closestWarehouse && (
+              <span className="text-muted-foreground text-xs flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                <p>
+                  {closestWarehouse.warehouseAddress?.cityWarehouse?.cityName}
+                </p>
+              </span>
+            )}
           </div>
         </div>
         <div className="flex items-start pl-6 gap-4">

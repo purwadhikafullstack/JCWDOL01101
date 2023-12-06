@@ -86,6 +86,19 @@ export class ProductController {
     }
   };
 
+  public getProductByName = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const search = String(req.query.search);
+      const proudct: Product[] = await this.product.getProductByName(search);
+      res.status(200).json({
+        data: proudct,
+        message: 'get.products',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   public createProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { product } = req.body;
