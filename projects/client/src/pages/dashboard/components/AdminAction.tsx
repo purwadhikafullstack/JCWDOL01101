@@ -54,14 +54,6 @@ const AdminAction = ({ user }: { user: User }) => {
           </DropdownMenu>
           <DeleteAdmin userId={user.id as number} />
         </Dialog>
-        <Dialog>
-          <DropdownMenu>
-              <DialogTrigger className="w-full text-white bg-rose-600 p-1 border-1 border-rose-600 rounded hover:bg-rose-500 capitalize font-medium">
-                  Assign
-              </DialogTrigger>
-          </DropdownMenu>
-          <AssignAdminForm userId={user.id as number} />
-        </Dialog>
       </TableCell>
     </>
   )

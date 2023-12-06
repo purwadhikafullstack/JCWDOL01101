@@ -20,6 +20,8 @@ import TablePagination from "../components/TablePagination";
 import NewAdminFrom from "../components/NewAdminForm";
 import AdminAction from "../components/AdminAction";
 import ChangeOrderButton from "../components/ChangeOrderButton";
+import AssignAdminForm from "../components/AssignAdminForm";
+import UnassignAdminForm from "../components/UnassignAdminForm";
 
 const Admin = () => {
   const [searchParams, setSearchParams] = useSearchParams({ page: "1" });
@@ -123,7 +125,17 @@ const Admin = () => {
                         <Button>{user.role}</Button>
                       </TableCell>
                       <TableCell className="capitalize font-medium text-center">
-                        {warehouses[user.id] || "unAssigned"}
+                        <Button className="w-[140px]">
+                          <Dialog>
+                            <DialogTrigger>
+                              {warehouses[user.id] || "unAssigned"}
+                            </DialogTrigger>
+                            {warehouses[user.id]
+                              ? <UnassignAdminForm userId={user.id as number} />
+                              : <AssignAdminForm userId={user.id as number} />
+                            }
+                          </Dialog>
+                        </Button>
                       </TableCell>
                       <TableCell className="text-center">
                         {getDate(user.createdAt.toLocaleString())}
