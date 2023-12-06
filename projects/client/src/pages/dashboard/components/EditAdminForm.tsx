@@ -69,11 +69,11 @@ const EditAdminForm = () => {
   const [changePassword, setChangePassword] = useState(true)
   return (
     <div className="w-full">
-      <span className="flex text-sm ">
+      <span className="flex text-sm">
         <Link to="/dashboard/manage-admin" className="text-muted-foreground">
           manage-admin /
-        </Link>{" "}
-        <p className="text-primary">{userId}</p>
+        </Link>
+        <p className="text-primary ml-1">{userId}</p>
       </span>
       <div className="w-[768px] mx-auto">
         <h2 className="text-xl mb-10">Edit Admin</h2>

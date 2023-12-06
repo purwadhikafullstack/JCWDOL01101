@@ -174,3 +174,20 @@ export const useProduct = (slug: string) => {
 
   return { data, isLoading };
 };
+
+export const getProduct = (search: string) => {
+  const query = useQuery<Product[]>({
+    queryKey: ["mutation/product", search],
+    queryFn: async () => {
+      const res = await service.get(`/mutation/product`, {
+        params: {
+          search,
+        },
+      });
+      return res.data.data;
+    },
+    enabled: !!search,
+  });
+
+  return query;
+};

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   LayoutDashboard,
   LogOut,
@@ -13,10 +13,10 @@ import {
   PackageSearch,
   Settings,
   ArrowLeftFromLine,
-} from "lucide-react";
-import React from "react";
-import { useLocation, Link } from "react-router-dom";
-import { DashboardLink, DropdownLink } from "./SidebarLink";
+} from "lucide-react"
+import React from "react"
+import { useLocation, Link } from "react-router-dom"
+import { DashboardLink, DropdownLink } from "./SidebarLink"
 
 const links = [
   {
@@ -35,9 +35,9 @@ const links = [
         path: "/dashboard/mutation-form",
       },
       {
-        title: "Incoming Mutation",
+        title: "Manage Mutation",
         icon: <PackageSearch className="w-4 h-4" />,
-        path: "/dashboard/incoming-mutation",
+        path: "/dashboard/manage-mutation",
       },
     ],
   },
@@ -62,13 +62,13 @@ const links = [
     title: "Product",
     icon: <Shirt className="w-4 h-4" />,
     path: "/dashboard/product",
-    children:[
+    children: [
       {
         title: "Product Category",
         icon: <UserCog className="w-4 h-4" />,
         path: "/dashboard/product/category",
       },
-    ]
+    ],
   },
   {
     title: "Order",
@@ -80,10 +80,10 @@ const links = [
     icon: <ClipboardList className="w-4 h-4" />,
     path: "/dashboard/report",
   },
-];
+]
 
 const DashboardSidebar = () => {
-  const location = useLocation();
+  const location = useLocation()
   return (
     <div className="p-4 flex h-full flex-col justify-between items-start">
       <div className="w-full">
@@ -147,7 +147,7 @@ const DashboardSidebar = () => {
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DashboardSidebar;
+export default DashboardSidebar
