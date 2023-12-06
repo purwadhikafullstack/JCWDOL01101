@@ -1,38 +1,26 @@
+import { Image } from "@/hooks/useProduct";
 import { baseURL } from "@/service";
 import React from "react";
 import { Carousel } from "react-responsive-carousel";
 
-const ProductCarousel = ({ image }: { image: string | string[] }) => {
+const ProductCarousel = ({ images }: { images: Image[] }) => {
   return (
-    image && (
+    images.length > 0 && (
       <Carousel
         interval={4000}
-        transitionTime={800}
         showIndicators={false}
         showArrows={false}
         showStatus={false}
       >
-        <div className="overflow-hidden group">
-          <img
-            src={`${baseURL}/${image}`}
-            alt="carousel 1"
-            className="rounded-lg"
-          />
-        </div>
-        <div>
-          <img
-            src={`${baseURL}/${image}`}
-            alt="carousel 1"
-            className="rounded-lg"
-          />
-        </div>
-        <div>
-          <img
-            src={`${baseURL}/${image}`}
-            alt="carousel 1"
-            className="rounded-lg"
-          />
-        </div>
+        {images.map(({ image, id }) => (
+          <div key={id} className="max-h-[300px]">
+            <img
+              src={`${baseURL}/images/${image}`}
+              alt={image}
+              className="rounded-lg object-contain w-full h-full"
+            />
+          </div>
+        ))}
       </Carousel>
     )
   );

@@ -1,5 +1,5 @@
-import React from "react"
-import { createBrowserRouter } from "react-router-dom"
+import React from "react";
+import { createBrowserRouter } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 
@@ -30,6 +30,7 @@ import Profile from "./user/content/Profile"
 import Address from "./user/content/Address"
 import Checkout from "./homepage/content/Checkout"
 import ManageCategory from "./dashboard/content/Category";
+import ProductsPage from "./homepage/content/Products";
 import AssignAdminForm from "./dashboard/components/AssignAdminForm"
 
 const router = createBrowserRouter([
@@ -140,11 +141,6 @@ const router = createBrowserRouter([
         path: "manage-admin/:userId",
         element: <EditAdminForm />,
       },
-      // {
-      //   path: "assign-admin/:userId",
-      //   element: <AssignAdminForm />,
-      // },
-      
       {
         path: "product",
         element: <Product />,

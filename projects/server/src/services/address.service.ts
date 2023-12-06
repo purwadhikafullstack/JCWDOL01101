@@ -39,8 +39,8 @@ export class AddressService {
     const options: FindOptions<City> = {
       where: search
         ? {
-          [Op.or]: [{ cityName: { [Op.like]: `%${search}%` } }],
-        }
+            [Op.or]: [{ cityName: { [Op.like]: `%${search}%` } }],
+          }
         : {},
     };
     const findCity: City[] = await DB.City.findAll(options);
@@ -62,12 +62,12 @@ export class AddressService {
       order: [['isActive', 'DESC']],
       where: search
         ? {
-          [Op.or]: [
-            { recepient: { [Op.like]: `%${search}%` } },
-            { '$city.city_name$': { [Op.like]: `%${search}%` } },
-            { label: { [Op.like]: `%${search}%` } },
-          ],
-        }
+            [Op.or]: [
+              { recepient: { [Op.like]: `%${search}%` } },
+              { '$city.city_name$': { [Op.like]: `%${search}%` } },
+              { label: { [Op.like]: `%${search}%` } },
+            ],
+          }
         : {},
       raw: true,
     };
@@ -121,7 +121,12 @@ export class AddressService {
   public async createAddress(addressData: AddressDto): Promise<Address> {
     const transaction = await DB.sequelize.transaction();
     try {
-      const address = await DB.Address.create({ ...addressData });
+      const city = await DB.City.findOne({ where: { cityId: addressData.cityId } });
+      if (!city) throw new HttpException(409, "City doens't exist");
+      const data = await opencage.geocode({ q: city.cityName, language: 'id' });
+      const place = data.results[0];
+      const { lat, lng } = place.geometry;
+      const address = await DB.Address.create({ ...addressData, lat, lng });
       await transaction.commit();
       return address;
     } catch (err) {

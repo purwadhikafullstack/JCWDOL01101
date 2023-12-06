@@ -10,6 +10,7 @@ import { Op } from 'sequelize';
 import clerkClient from '@clerk/clerk-sdk-node';
 import { CLERK_SECRET_KEY } from '@/config';
 import axios from 'axios';
+import { ImageModel } from '@/models/image.model';
 
 type UserOptions = {
   offset: number;
@@ -24,6 +25,12 @@ type UserOptions = {
     role: string;
   };
   order?: Array<[string, string]>;
+};
+
+type EditUser = {
+  username: string;
+  firstname: string;
+  lastname: string;
 };
 
 @Service()
@@ -49,6 +56,8 @@ export class UserService {
         {
           model: CartModel,
           as: 'userCart',
+          where: { status: 'ACTIVE' },
+          required: false,
           include: [
             {
               model: CartProductModel,
@@ -61,6 +70,12 @@ export class UserService {
                 {
                   model: ProductModel,
                   as: 'product',
+                  include: [
+                    {
+                      model: ImageModel,
+                      as: 'productImage',
+                    },
+                  ],
                 },
               ],
             },
@@ -155,5 +170,16 @@ export class UserService {
       emailId: updateEmail.data.id,
       email: updateEmail.data.email_address,
     };
+  }
+
+  public async updateProfile(userId: number, data: EditUser) {
+    const findUser: User = await DB.User.findByPk(userId);
+    if (!findUser) throw new HttpException(409, "User doesn't exist");
+    const updatedUser = await clerkClient.users.updateUser(findUser.externalId, {
+      username: data.username,
+      firstName: data.firstname,
+      lastName: data.lastname,
+    });
+    return updatedUser;
   }
 }

@@ -11,7 +11,8 @@ const ChangeOrderButton = ({
   name: string;
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const param = searchParams.get(paramKey);
+  const param = searchParams.get("filter");
+  const order = searchParams.get("order");
   return (
     <Button
       onClick={() => {
@@ -26,8 +27,8 @@ const ChangeOrderButton = ({
       variant="ghost"
     >
       {name}
-      {param ? (
-        param === "ASC" ? (
+      {param === paramKey && order ? (
+        param === paramKey && order === "ASC" ? (
           <ArrowUp className="w-4 h-4 ml-2" />
         ) : (
           <ArrowDown className="w-4 h-4 ml-2" />

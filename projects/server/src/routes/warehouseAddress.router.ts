@@ -3,7 +3,7 @@ import { Routes } from '@interfaces/routes.interface';
 import { WarehouseAddressController } from '@/controllers/warehouseAddress.controller';
 
 export class WarehouseAddressRoute implements Routes {
-  public path = '/api/warehouseAddresses';
+  public path = '/v1/warehouseAddresses';
   public router = Router();
   public warehouseAddress = new WarehouseAddressController();
 
@@ -19,4 +19,3 @@ export class WarehouseAddressRoute implements Routes {
     this.router.delete(`${this.path}/:id(\\d+)`, this.warehouseAddress.deleteWarehouseAddress);
   }
 }
-

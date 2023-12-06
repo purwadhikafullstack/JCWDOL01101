@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
+import { Sequelize, DataTypes, Model } from 'sequelize';
 import { WarehouseAddress } from '@/interfaces/warehouseAddress.interface';
 
 export class WarehouseAddressModel extends Model<WarehouseAddress> implements WarehouseAddress {
@@ -36,11 +36,11 @@ export default function (sequelize: Sequelize): typeof WarehouseAddressModel {
       },
       longitude: {
         allowNull: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT(10, 6),
       },
       latitude: {
         allowNull: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT(10, 6),
       },
       isActive: {
         allowNull: true,

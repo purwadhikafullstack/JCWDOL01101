@@ -55,7 +55,7 @@ export class App {
     this.app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
     this.app.use(compression());
     this.app.use(express.json());
-    this.app.use('/api/uploads', express.static('uploads'));
+    this.app.use('/v1/images', express.static('uploads'));
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
   }
@@ -65,7 +65,6 @@ export class App {
       this.app.use('/', route.router);
     });
   }
-  
 
   private initializeSwagger() {
     const options = {

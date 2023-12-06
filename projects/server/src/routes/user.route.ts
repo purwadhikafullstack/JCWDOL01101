@@ -8,18 +8,20 @@ export class UserRoute implements Routes {
   public router = Router();
   public user = new UserController();
   public admin = new AuthMiddleware();
+  public path = '/v1/users';
 
   constructor() {
     this.initializeRoutes();
   }
 
   private initializeRoutes() {
-    this.router.get('/api/user/:externalId', this.user.getUserByExternalId);
-    this.router.post('/api/webhook', bodyParser.raw({ type: 'application/json' }), this.user.webhook);
-    this.router.get('/api/dashboard/user/:userId', this.user.getUser);
-    this.router.get('/api/users', this.user.getUsers);
-    this.router.post('/api/admin', this.user.createAdmin);
-    this.router.put('/api/manage-admin/:userId', this.user.manageAdmin);
-    this.router.delete('/api/manage-admin/:userId', this.user.deleteAdmin);
+    this.router.post('/v1/webhook', bodyParser.raw({ type: 'application/json' }), this.user.webhook);
+    this.router.get(`${this.path}/:externalId`, this.user.getUserByExternalId);
+    this.router.get('/v1/dashboard/user/:userId', this.user.getUser);
+    this.router.get(`${this.path}`, this.user.getUsers);
+    this.router.post('/v1/admin', this.user.createAdmin);
+    this.router.put('/v1/manage-admin/:userId', this.user.manageAdmin);
+    this.router.delete('/v1/manage-admin/:userId', this.user.deleteAdmin);
+    this.router.put('/v1/manage-user/:userId', this.user.manageProfile);
   }
 }

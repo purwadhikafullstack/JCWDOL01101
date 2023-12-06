@@ -3,7 +3,7 @@ import { Routes } from '@interfaces/routes.interface';
 import { CategoryController } from '@/controllers/category.controller';
 
 export class CategoryRoute implements Routes {
-  public path = '/api/categories';
+  public path = '/v1/categories';
   public router = Router();
   public category = new CategoryController();
 
@@ -19,4 +19,3 @@ export class CategoryRoute implements Routes {
     this.router.delete(`${this.path}/:id(\\d+)`, this.category.deleteCategory);
   }
 }
-

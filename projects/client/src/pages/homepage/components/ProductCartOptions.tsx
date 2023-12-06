@@ -1,62 +1,63 @@
-import { Minus, Plus } from "lucide-react"
-import React, { useContext, useEffect, useRef, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { useAddCart } from "@/hooks/useCartMutation"
-import UserContext from "@/context/UserContext"
-import { formatToIDR } from "@/lib/utils"
-import { useCartProduct } from "@/hooks/useCart"
-import { useNavigate } from "react-router-dom"
+import { Minus, Plus } from "lucide-react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useAddCart } from "@/hooks/useCartMutation";
+import UserContext from "@/context/UserContext";
+import { formatToIDR } from "@/lib/utils";
+import { useCartProduct } from "@/hooks/useCart";
+import { useNavigate } from "react-router-dom";
 
 const ProductCartOptions = ({
   price,
   productId,
   totalStock,
 }: {
-  price: number
-  productId: number
-  totalStock: number
+  price: number;
+  productId: number;
+  totalStock: number;
 }) => {
-  const navigate = useNavigate()
-  const userContext = useContext(UserContext)
+  const navigate = useNavigate();
+  const userContext = useContext(UserContext);
   if (!userContext) {
-    throw new Error("useUser must be used within a UserProvider")
+    throw new Error("useUser must be used within a UserProvider");
   }
-  const { user } = userContext
-  const inputRef = useRef<HTMLInputElement | null>(null)
-  const [quantity, setQuantity] = useState(1)
-  const [error, setError] = useState("")
+  const { user } = userContext;
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const [error, setError] = useState("");
   const isUserCartProducts =
-    (user?.userCart && user?.userCart.cartProducts.length > 0) || false
+    (user?.userCart && user?.userCart.cartProducts.length > 0) || false;
   const isProductInCart =
     isUserCartProducts &&
-    user?.userCart.cartProducts.find((product) => product.id === productId) !==
-      undefined
-  const { data: cartProduct } = useCartProduct(isProductInCart, productId)
-  const cartMutation = useAddCart(cartProduct?.productId)
+    user?.userCart.cartProducts.find(
+      ({ productId }) => productId === productId
+    ) !== undefined;
+  const { data: cartProduct } = useCartProduct(isProductInCart, productId);
+  const cartMutation = useAddCart(cartProduct?.productId);
 
   const addToCart = () => {
     if (!user) {
-      return navigate("/register")
+      return navigate("/register");
     }
     if (totalStock > 0) {
       cartMutation.mutate({
         quantity,
         productId,
         externalId: user?.externalId as string,
-      })
-      setQuantity(1)
+      });
+      setQuantity(1);
     }
-  }
+  };
 
   useEffect(() => {
     if (quantity <= 0) {
-      setError("This product(s) minimun quantity is 1 item(s)")
+      setError("This product(s) minimun quantity is 1 item(s)");
     } else if (totalStock && quantity > totalStock) {
-      setError(`This product(s) minimun quantity is ${totalStock} item(s)`)
+      setError(`This product(s) minimun quantity is ${totalStock} item(s)`);
     } else if (cartProduct?.quantity! + quantity > totalStock) {
-      setError(`This product(s) minimun quantity is ${totalStock} item(s)`)
+      setError(`This product(s) minimun quantity is ${totalStock} item(s)`);
     }
-  }, [cartProduct?.quantity, quantity, totalStock])
+  }, [cartProduct?.quantity, quantity, totalStock]);
 
   useEffect(() => {
     function handleClickOuside(event: MouseEvent) {
@@ -65,15 +66,15 @@ const ProductCartOptions = ({
         inputRef.current &&
         !inputRef.current.contains(event.target as Node)
       ) {
-        setError("")
-        setQuantity(1)
+        setError("");
+        setQuantity(1);
       }
     }
-    document.addEventListener("mousedown", handleClickOuside)
+    document.addEventListener("mousedown", handleClickOuside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOuside)
-    }
-  }, [inputRef, error])
+      document.removeEventListener("mousedown", handleClickOuside);
+    };
+  }, [inputRef, error]);
   return (
     <div className="w-full  variant-options">
       <div className="sticky top-[100px]">
@@ -95,7 +96,7 @@ const ProductCartOptions = ({
                 value={quantity}
                 onChange={(e) => {
                   if (quantity >= 0) {
-                    setQuantity(Number(e.target.value))
+                    setQuantity(Number(e.target.value));
                   }
                 }}
               />
@@ -103,7 +104,7 @@ const ProductCartOptions = ({
                 disabled={quantity === totalStock}
                 onClick={() => {
                   if (quantity < totalStock) {
-                    setQuantity(quantity + 1)
+                    setQuantity(quantity + 1);
                   }
                 }}
                 variant="ghost"
@@ -131,16 +132,13 @@ const ProductCartOptions = ({
             <Plus className="w-4 h-4 mr-2" />
             Cart
           </Button>
-          <Button className="w-full" variant="outline">
-            Buy
-          </Button>
         </div>
         <div className="mt-4">
           <img className="rounded-md" src="/carousel/1.jpg" alt="advertise" />
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProductCartOptions
+export default ProductCartOptions;

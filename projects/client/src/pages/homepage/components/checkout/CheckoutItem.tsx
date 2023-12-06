@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import SelectCourier from "./SelectCourier";
 import { Address } from "@/hooks/useAddress";
 import { useBoundStore } from "@/store/client/useStore";
+import { Warehouse } from "@/hooks/useWarehouse";
 
 const CheckoutItem = ({
   index,
@@ -14,16 +15,19 @@ const CheckoutItem = ({
   product,
   quantity,
   activeAddress,
+  warehouse,
 }: {
   index: number;
   length: number;
   product: Product;
   quantity: number;
+  warehouse: Warehouse | undefined;
   activeAddress: Address | undefined;
 }) => {
   const fee = useBoundStore((state) => state.fee);
   const [show, setShow] = useState(false);
-  const total = product.price * quantity + fee[product.id!];
+  const shippingCost = fee[product.id!] ? fee[product.id!].cost[0].value : 0;
+  const total = product.price * quantity + shippingCost;
 
   return (
     <div className="my-4">
@@ -36,11 +40,11 @@ const CheckoutItem = ({
               <b className="">Toten Official</b>
             </span>
             <span className="text-xs text-muted-foreground ml-6">
-              Kab. Tokyo
+              send from {warehouse?.warehouseAddress?.cityWarehouse?.cityName}
             </span>
             <div className="flex gap-2 items-start text-sm mt-2">
               <img
-                src={`${baseURL}/${product.image}`}
+                src={`${baseURL}/images/${product.productImage[0].image}`}
                 className="w-[80px] h-[80px] object-contain"
               />
               <div className="flex flex-col gap-2">
@@ -54,11 +58,14 @@ const CheckoutItem = ({
           <Separator className="my-2" />
         </div>
         <div className="flex flex-col gap-2 px-4">
-          <SelectCourier
-            quantity={quantity}
-            product={product}
-            address={activeAddress}
-          />
+          {warehouse?.warehouseAddress && (
+            <SelectCourier
+              quantity={quantity}
+              product={product}
+              address={activeAddress}
+              origin={warehouse.warehouseAddress.cityId}
+            />
+          )}
         </div>
       </div>
       <Separator className="mt-6 mb-2" />
@@ -84,7 +91,7 @@ const CheckoutItem = ({
           </div>
           <div className="w-full flex justify-between items-center text-sm">
             <p className="text-muted-foreground">Shipping Fee</p>
-            <b>{formatToIDR(fee[product.id!].toString())}</b>
+            <b>{formatToIDR(shippingCost.toString())}</b>
           </div>
         </>
       )}

@@ -7,6 +7,8 @@ export interface Address {
   cityId: string;
   address: string;
   notes?: string;
+  lat: number;
+  lng: number;
   isMain: boolean;
   isActive: boolean;
   deletedAt: Date | null;

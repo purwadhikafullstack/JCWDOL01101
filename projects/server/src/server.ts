@@ -10,6 +10,8 @@ import { WarehouseAddressRoute } from './routes/warehouseAddress.router';
 import { CartRoute } from './routes/cart.route';
 import { AddressRoute } from './routes/address.route';
 import { CheckoutRoute } from './routes/checkout.route';
+import { DokuRoute } from './routes/doku.route';
+import { OrderRoute } from './routes/order.route';
 
 ValidateEnv();
 
@@ -24,6 +26,10 @@ const app = new App([
   new CartRoute(),
   new AddressRoute(),
   new CheckoutRoute(),
+  new DokuRoute(),
+  new AddressRoute(),
+  new CheckoutRoute(),
+  new OrderRoute(),
 ]);
 
 app.listen();

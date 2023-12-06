@@ -5,7 +5,7 @@ import { Router } from 'express';
 export class AddressRoute implements Routes {
   public router = Router();
   public address = new AdressController();
-  public path = '/api/address';
+  public path = '/v1/address';
 
   constructor() {
     this.initializeRoutes();

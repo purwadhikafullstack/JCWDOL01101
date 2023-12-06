@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
+import { Sequelize, DataTypes, Model } from 'sequelize';
 import { Category } from '@/interfaces/category.interface';
 
 export class CategoryModel extends Model<Category> implements Category {

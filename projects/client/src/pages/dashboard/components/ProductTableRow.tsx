@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Product } from "@/hooks/useProduct";
+import { Inventory, Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import { baseURL } from "@/service";
 import {
@@ -24,15 +24,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
-import DeleteProduct from "./DeleteProduct";
+import DeleteProduct from "./product/DeleteProduct";
 import { useUser } from "@clerk/clerk-react";
+import { AlertTriangle } from "lucide-react";
 
 const ProductTableRow = ({ products }: { products: Product[] }) => {
   const { user } = useUser();
   return (
     <>
       {products.map((product, i) => (
-        <TableRow key={product.id}>
+        <TableRow key={i}>
           <TableCell className="w-[80px]">{i + 1}</TableCell>
           <TableCell className="font-medium">{product.name}</TableCell>
           <TableCell>{formatToIDR(String(product.price))}</TableCell>
@@ -40,16 +41,31 @@ const ProductTableRow = ({ products }: { products: Product[] }) => {
             {product.weight}
             <i className="text-xs"> grams</i>
           </TableCell>
-          <TableCell className="text-center">{product.stock}</TableCell>
-          <TableCell className="text-center">{product.sold}</TableCell>
-          <TableCell>{product.categoryId}</TableCell>
-          <TableCell>{product.description}</TableCell>
           <TableCell className="text-center">
-            <img
-              className="w-[40px] mx-auto"
-              src={`${baseURL}/${product.image}`}
-              alt={product.name}
-            />
+            {product.inventory[0].stock}
+          </TableCell>
+          <TableCell className="text-center">
+            {product.inventory[0].sold}
+          </TableCell>
+          <TableCell className="overflow-hidden whitespace-nowrap text-ellipsis w-[100px]">
+            {product.productCategory.name}
+          </TableCell>
+          <TableCell className="overflow-hidden whitespace-nowrap text-ellipsis w-[200px]">
+            {product.description}
+          </TableCell>
+          <TableCell className="text-center">
+            {product.productImage.length > 0 ? (
+              <img
+                className="w-[40px] mx-auto"
+                src={`${baseURL}/images/${product.productImage[0].image}`}
+                alt={product.name}
+              />
+            ) : (
+              <span className="flex flex-col w-full items-center justify-center text-center text-primary/70">
+                <AlertTriangle className="w-4 h-4  " />
+                <p className="text-xs w-20  break-words">no image</p>
+              </span>
+            )}
           </TableCell>
           {user?.publicMetadata.role === "ADMIN" && (
             <TableCell className="text-center">
@@ -61,7 +77,7 @@ const ProductTableRow = ({ products }: { products: Product[] }) => {
                     <DotsHorizontalIcon />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <Link to={`/dashboard/product/${product.slug}`}>
+                    <Link to={`/dashboard/product/edit/${product.slug}`}>
                       <DropdownMenuItem className="cursor-pointer">
                         Edit
                       </DropdownMenuItem>
