@@ -100,7 +100,9 @@ export class DokuService {
       await inventory.decrement('stock', { by: order.quantity });
       await inventory.increment('sold', { by: order.quantity });
       await inventory.reload();
+
       await DB.Jurnal.create({
+        warehouseId: findOrder.warehouseId,
         inventoryId: inventory.id,
         oldQty: inventory.stock,
         qtyChange: order.quantity,

@@ -13,7 +13,9 @@ export interface Product {
   weight: number;
   description: string;
   status: string;
+  size: string;
   slug: string;
+  primaryImage: string;
   productImage: Image[];
   productCategory: Category;
   inventory: Inventory[];

@@ -8,13 +8,14 @@ import React, {
 import { Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import { baseURL } from "@/service";
-import { CheckSquare, MapPin } from "lucide-react";
+import { CheckSquare, Heart, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useGetClosestWarehouse } from "@/hooks/useWarehouse";
 import { Coordinates } from "./checkout/AddAddressForm";
 import { useBoundStore } from "@/store/client/useStore";
+import Review from "./Review";
 
 interface ProductCardProps extends HTMLAttributes<HTMLDivElement> {
   product: Product;
@@ -39,42 +40,33 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
     const productContent = (
       <>
         <Link to={`/product/${product.slug}`}>
-          <div className="rounded-md shadow-sm border overflow-hidden">
+          <div className=" shadow-sm overflow-hidden relative">
+            <span
+              className="absolute top-0 right-0 p-2 "
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
+              <Heart />
+            </span>
             <LazyLoadImage
-              className="w-full h-[200px] object-cover"
-              src={`${baseURL}/images/${product.productImage[0].image}`}
+              className="object-cover"
+              src={`${baseURL}/images/${product.primaryImage}`}
               effect="opacity"
               alt={product.name}
             />
             <div className="flex flex-col gap-2 text-sm p-2">
-              <p className="whitespace-nowrap overflow-hidden m-0 text-ellipsis p-0">
-                {product.name}
-              </p>
+              <div className="flex justify-between text-xs items-center font-bold text-muted-foreground">
+                <span className="uppercase text-sm">
+                  {product.productCategory?.name}
+                </span>
+                <span>{product.size}</span>
+              </div>
+              <p className="font-bold">{product.name}</p>
               <span>
-                <p className="font-bold">
+                <p className="font-bold text-xl">
                   {formatToIDR(product.price.toString())}
-                </p>
-              </span>
-              {closestWarehouse && (
-                <div>
-                  <span className="text-muted-foreground flex items-center gap-2">
-                    <CheckSquare className="w-4 h-4 text-primary" />
-                    <p>{closestWarehouse.name}</p>
-                  </span>
-                  <span className="text-muted-foreground text-xs flex items-center gap-2">
-                    <MapPin className="w-4 h-4" />
-                    <p>
-                      {
-                        closestWarehouse.warehouseAddress?.cityWarehouse
-                          ?.cityName
-                      }
-                    </p>
-                  </span>
-                </div>
-              )}
-              <span className="text-muted-foreground lg:flex items-center gap-2 hidden">
-                <p className="text-xs">
-                  {stock} items left | {sold} sold
                 </p>
               </span>
             </div>

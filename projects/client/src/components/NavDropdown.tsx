@@ -47,7 +47,7 @@ const NavDropdown = ({
           })}
         >
           <span>{icon}</span>
-          <span className="lg:ml-2">{title}</span>
+          {/* <span className="lg:ml-2">{title}</span> */}
         </div>
       </Link>
       <div

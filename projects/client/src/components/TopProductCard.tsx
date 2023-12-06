@@ -20,7 +20,7 @@ const TopProductCard = ({ product, size }: TopProductCardProps) => {
       <div className="group flex h-full w-full items-center justify-center overflow-hidden rounded-lg border bg-background hover:border-primary relative border-muted ">
         <LazyLoadImage
           className="relative h-full w-full object-contain transition duration-300 ease-in-out group-hover:scale-105"
-          src={`${baseURL}/images/${product.productImage[0].image}`}
+          src={`${baseURL}/images/${product.primaryImage}`}
           alt="black shirt"
         />
         <div className="absolute top-0 left-0 p-4">

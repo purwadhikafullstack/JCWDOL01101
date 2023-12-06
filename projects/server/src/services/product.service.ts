@@ -163,6 +163,10 @@ export class ProductService {
           as: 'productImage',
         },
         {
+          model: CategoryModel,
+          as: 'productCategory',
+        },
+        {
           model: InventoryModel,
           as: 'inventory',
           attributes: ['stock', 'sold'],
@@ -217,9 +221,10 @@ export class ProductService {
 
   public async createProduct(files: Express.Multer.File[], productData: ProductDto): Promise<Product> {
     const { name } = productData;
+
     const slug = name
       .toLocaleLowerCase()
-      .replace(/^a-z0-9\s/g, '')
+      .replace(/[^a-z\s]/g, '')
       .replace(/\s+/g, '-');
     const [product, created] = await DB.Product.findOrCreate({
       where: { name },
@@ -228,7 +233,12 @@ export class ProductService {
     if (!created) throw new HttpException(409, 'Product already exist');
 
     const imageData = files.map(file => ({ image: file.filename, productId: product.id }));
-    await DB.Image.bulkCreate(imageData);
+    const images: Image[] = await DB.Image.bulkCreate(imageData);
+
+    const primaryImage = images[0]?.image;
+    if (primaryImage) {
+      await DB.Product.update({ primaryImage }, { where: { id: product.id } });
+    }
 
     const findAllWarehouse = await DB.Warehouses.findAll();
     if (!findAllWarehouse && findAllWarehouse.length === 0) throw new HttpException(409, 'No Warehouse');
@@ -267,9 +277,11 @@ export class ProductService {
 
     const newSlug = productData.name
       .toLocaleLowerCase()
-      .replace(/^a-z0-9\s/g, '')
+      .replace(/[^a-z\s]/g, '')
       .replace(/\s+/g, '-');
-    await DB.Product.update({ ...productData, slug: newSlug }, { where: { slug } });
+    const images: Image[] = await DB.Image.findAll({ where: { productId: findProduct.id } });
+    if (!images || images.length === 0) throw new HttpException(409, 'No image');
+    await DB.Product.update({ ...productData, slug: newSlug, primaryImage: images[0].image }, { where: { slug } });
     const updatedProduct: Product = await DB.Product.findOne({ where: { slug: newSlug } });
     return updatedProduct;
   }
@@ -284,6 +296,9 @@ export class ProductService {
         unlinkAsync(`uploads/${findProductImage.image}`);
       }
     });
+    const images: Image[] = await DB.Image.findAll({ where: { productId: findProductImage.productId } });
+    if (!images || images.length === 0) throw new HttpException(409, 'No image');
+    await DB.Product.update({ primaryImage: images[0].image }, { where: { id: findProductImage.productId } });
     return findProductImage;
   }
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import SelectFormField from "./SelectFormField";
 import { Button } from "@/components/ui/button";
 import ProductFormTextarea from "./ProductFormTextarea";
@@ -18,11 +18,13 @@ import { useProduct } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import EditImageForm from "./EditImageForm";
 import { baseURL } from "@/service";
+import ProductSizeField from "./ProductSizeField";
 
 export const productSchema = z.object({
   name: z.string().min(2, "Product name is empty").max(70),
   categoryId: z.string().min(1, "Category is empty"),
   formattedPrice: z.string().min(1, "Price is empty"),
+  size: z.string().min(1, "Size is empty"),
   price: z.coerce.number().min(1),
   stock: z.string().min(1, "Stock is empty"),
   weight: z.coerce.number().min(1, "Weight is empty"),
@@ -34,6 +36,7 @@ const emptyValues = {
   categoryId: "",
   formattedPrice: "",
   price: 0,
+  size: "",
   stock: "",
   weight: 0,
   description: "",
@@ -93,6 +96,7 @@ const EditProductForm = () => {
       form.setValue("price", product.price);
       form.setValue("formattedPrice", formatToIDR(String(product.price)));
       form.setValue("stock", String(product.stock));
+      form.setValue("size", product.size);
       form.setValue("weight", product.weight);
       form.setValue("description", product.description);
       product.productImage.forEach(({ image, id }, i) => {
@@ -150,6 +154,10 @@ const EditProductForm = () => {
             <ProductNameField name="name" label="Product Name" description="" />
             <SelectFormField />
             <EditImageForm error={error} />
+            <ProductSizeField
+              edit={true}
+              mutationStatus={editMutation.isSuccess}
+            />
             <ProductFormTextarea />
             <PriceFormField />
             <WeightFormField />

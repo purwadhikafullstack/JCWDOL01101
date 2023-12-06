@@ -141,7 +141,7 @@ const Product = () => {
                   <ChangeOrderButton paramKey="sold" name="Sold" />
                 </TableHead>
                 <TableHead className="w-[100px]">Category</TableHead>
-                <TableHead>Description</TableHead>
+                <TableHead className="w-[200px]">Description</TableHead>
                 <TableHead className="text-center">Image</TableHead>
                 {ROLE === "ADMIN" && (
                   <TableHead className="text-center">Action</TableHead>

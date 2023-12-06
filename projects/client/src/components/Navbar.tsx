@@ -7,9 +7,10 @@ import NavCart from "./NavCart";
 import { useUser } from "@clerk/clerk-react";
 import { buttonVariants } from "./ui/button";
 import NavDropdown from "./NavDropdown";
-import { ChevronDown, MapPin, User2 } from "lucide-react";
+import { ChevronDown, Heart, MapPin, User2 } from "lucide-react";
 import { useActiveAddress } from "@/hooks/useAddress";
 import SelectAddressDialog from "./SelectAddressDialog";
+import NavWishlist from "./NavWishlist";
 
 const Navbar = () => {
   const location = useLocation();
@@ -43,6 +44,7 @@ const Navbar = () => {
                   <div className="items-center hidden lg:flex">
                     <NavCart setIsDim={setIsDim} />
                     <NavDelivery setIsDim={setIsDim} />
+                    <NavWishlist setIsDim={setIsDim} />
                   </div>
                   <NavProfile setIsDim={setIsDim} />
                 </>
@@ -88,19 +90,26 @@ const Navbar = () => {
           <div className="flex flex-col items-end cursor-pointer">
             <SelectAddressDialog>
               <div className="flex gap-2 text-xs items-center text-muted-foreground">
-                <MapPin className="w-3 h-3" /> Dikirim ke
-                <span className="flex  items-center text-foreground">
-                  <b
-                    className={`${
-                      activeAddress && activeAddress.recepient.length > 8
-                        ? "text-ellipsis overflow-hidden whitespace-nowrap w-[150px]"
-                        : "w-max"
-                    }`}
-                  >
-                    {activeAddress?.label}, {activeAddress?.recepient}
-                  </b>
-                  <ChevronDown className="w-4 h-4" />
-                </span>
+                <MapPin className="w-3 h-3" />
+                {activeAddress ? (
+                  <>
+                    Dikirim ke
+                    <span className="flex  items-center text-foreground">
+                      <b
+                        className={`${
+                          activeAddress && activeAddress.recepient.length > 8
+                            ? "text-ellipsis overflow-hidden whitespace-nowrap w-[150px]"
+                            : "w-max"
+                        }`}
+                      >
+                        {activeAddress?.label}, {activeAddress?.recepient}
+                      </b>
+                      <ChevronDown className="w-4 h-4" />
+                    </span>
+                  </>
+                ) : (
+                  <p>setup address</p>
+                )}
               </div>
             </SelectAddressDialog>
           </div>
