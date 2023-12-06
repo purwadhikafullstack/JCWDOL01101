@@ -6,6 +6,7 @@ export class CartRoute implements Routes {
   public router = Router();
   public cart = new CartContoller();
   public path = '/v1/cart';
+  public path = '/v1/cart';
 
   constructor() {
     this.initializeRoutes();
