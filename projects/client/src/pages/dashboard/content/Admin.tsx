@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { SearchIcon, Plus } from "lucide-react";
 import {
@@ -15,11 +15,13 @@ import { useSearchParams } from "react-router-dom";
 import { useUsers } from "@/hooks/useUser";
 import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton";
 import { useDebounce } from "use-debounce";
-import { getDate } from "@/lib/utils";
+import { getDate, getWarehouse } from "@/lib/utils";
 import TablePagination from "../components/TablePagination";
 import NewAdminFrom from "../components/NewAdminForm";
 import AdminAction from "../components/AdminAction";
 import ChangeOrderButton from "../components/ChangeOrderButton";
+import AssignAdminForm from "../components/AssignAdminForm";
+import UnassignAdminForm from "../components/UnassignAdminForm";
 
 const Admin = () => {
   const [searchParams, setSearchParams] = useSearchParams({ page: "1" });
@@ -34,6 +36,16 @@ const Admin = () => {
     filter: searchParams.get("filter") || "",
     order: searchParams.get("order") || "",
   });
+
+  const [warehouses, setWarehouses] = useState<{ [key: number]: string }>({});
+
+  useEffect(() => {
+    data?.users!.forEach((user) => {
+      getWarehouse(Number(user.id), setWarehouses);
+    });
+  }, [data]);
+
+
   return (
     <div className="flex flex-col p-2 w-full">
       <Dialog>
@@ -83,6 +95,9 @@ const Admin = () => {
                   <ChangeOrderButton paramKey="role" name="Role" />
                 </TableHead>
                 <TableHead className="text-center">
+                  <ChangeOrderButton paramKey="role" name="Warehouse" />
+                </TableHead>
+                <TableHead className="text-center">
                   <ChangeOrderButton paramKey="createdAt" name="Created At" />
                 </TableHead>
                 <TableHead className="text-center">
@@ -108,6 +123,19 @@ const Admin = () => {
                       </TableCell>
                       <TableCell className="text-center">
                         <Button>{user.role}</Button>
+                      </TableCell>
+                      <TableCell className="capitalize font-medium text-center">
+                        <Button className="w-[140px]">
+                          <Dialog>
+                            <DialogTrigger>
+                              {warehouses[user.id] || "unAssigned"}
+                            </DialogTrigger>
+                            {warehouses[user.id]
+                              ? <UnassignAdminForm userId={user.id as number} />
+                              : <AssignAdminForm userId={user.id as number} />
+                            }
+                          </Dialog>
+                        </Button>
                       </TableCell>
                       <TableCell className="text-center">
                         {getDate(user.createdAt.toLocaleString())}
