@@ -12,6 +12,7 @@ import { RouterProvider } from "react-router-dom";
 import router from "@/pages/router";
 import { ClerkProvider } from "@clerk/clerk-react";
 import toast from "react-hot-toast";
+import "./i18n";
 
 const clerkPubKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 

@@ -1,15 +1,15 @@
-import React from "react"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
-import NavDropdown from "./NavDropdown"
-import { Link, useNavigate } from "react-router-dom"
-import { Button, buttonVariants } from "./ui/button"
+import React from "react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import NavDropdown from "./NavDropdown";
+import { Link, useNavigate } from "react-router-dom";
+import { Button, buttonVariants } from "./ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 
 import {
   Car,
@@ -18,13 +18,15 @@ import {
   ShoppingCartIcon,
   Verified,
   Wrench,
-} from "lucide-react"
-import { useClerk, useUser } from "@clerk/clerk-react"
+} from "lucide-react";
+import { useClerk, useUser } from "@clerk/clerk-react";
+import { useTranslation } from "react-i18next";
 
 const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
-  const navigate = useNavigate()
-  const { signOut } = useClerk()
-  const { user, isLoaded } = useUser()
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { signOut } = useClerk();
+  const { user, isLoaded } = useUser();
   return (
     isLoaded && (
       <NavDropdown
@@ -88,7 +90,8 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
               className: "w-full lg:justify-start",
             })}
           >
-            <Settings className="w-4 h-4 mr-2" /> <span>Setting</span>
+            <Settings className="w-4 h-4 mr-2" />{" "}
+            <span>{t("navbar.profile.setting")}</span>
           </Link>
           <div
             className={`${
@@ -102,7 +105,8 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
                 className: "w-full lg:justify-start",
               })}
             >
-              <Wrench className="w-4 h-4 mr-2" /> <span>Admin Dashboard</span>
+              <Wrench className="w-4 h-4 mr-2" />{" "}
+              <span>{t("navbar.profile.dashboard")}</span>
             </Link>
           </div>
           <Button
@@ -110,13 +114,13 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
             className="w-full justify-start"
             onClick={() => signOut(() => navigate("/register"))}
           >
-            <LogOut className="w-4 h-4 mr-2" /> Logout
+            <LogOut className="w-4 h-4 mr-2" /> {t("navbar.profile.logout")}
           </Button>
         </div>
       </NavDropdown>
     )
-  )
-}
+  );
+};
 
 const NavAvatar = ({ imageUrl }: { imageUrl: string }) => {
   return (
@@ -126,7 +130,7 @@ const NavAvatar = ({ imageUrl }: { imageUrl: string }) => {
         <AvatarFallback>CN</AvatarFallback>
       </Avatar>
     </>
-  )
-}
+  );
+};
 
-export default NavProfile
+export default NavProfile;

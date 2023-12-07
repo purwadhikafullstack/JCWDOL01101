@@ -133,12 +133,13 @@ export class ProductService {
     return products;
   }
 
-  public async getHighestSell(): Promise<Product[]> {
+  public async getHighestSell(limit: number): Promise<Product[]> {
+    limit = limit || 3;
     const date = new Date();
     const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
     const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
     const highestSellForThisMonth: Product[] = await DB.Product.findAll({
-      limit: 3,
+      limit,
       where: {
         status: 'ACTIVE',
         createdAt: {
@@ -208,10 +209,36 @@ export class ProductService {
     return findProducts || [];
   }
 
+  public async getProductsByCategory(categoryId: number, limit: number): Promise<Product[]> {
+    limit = limit || 12;
+    const findProducts: Product[] = await DB.Product.findAll({
+      limit,
+      where: { categoryId, status: 'ACTIVE' },
+      include: [
+        {
+          model: ImageModel,
+          as: 'productImage',
+        },
+        {
+          model: InventoryModel,
+          as: 'inventory',
+          attributes: ['stock', 'sold'],
+        },
+      ],
+    });
+    if (!findProducts || findProducts.length === 0) throw new HttpException(409, "Products doesn't exist");
+
+    return findProducts;
+  }
+
   public async getProduct(slug: string): Promise<Product> {
     const findProduct: Product = await DB.Product.findOne({
       where: { slug, status: 'ACTIVE' },
       include: [
+        {
+          model: CategoryModel,
+          as: 'productCategory',
+        },
         {
           model: ImageModel,
           as: 'productImage',
@@ -228,9 +255,17 @@ export class ProductService {
     return findProduct;
   }
 
-  public async getProductByCategory(categoryId: number): Promise<Product[]> {
+  public async getProductByCategory(productId: number, categoryId: number, limit: number): Promise<Product[]> {
+    limit = limit || 12;
     const findProducts: Product[] = await DB.Product.findAll({
-      where: { categoryId, status: 'ACTIVE' },
+      limit,
+      where: {
+        categoryId,
+        id: {
+          [Op.ne]: productId,
+        },
+        status: 'ACTIVE',
+      },
       include: [
         {
           model: ImageModel,
@@ -243,9 +278,8 @@ export class ProductService {
         },
       ],
     });
-    if (!findProducts || findProducts.length === 0) throw new HttpException(409, `No Product(s) with categoryId: ${categoryId}`);
 
-    return findProducts;
+    return findProducts || [];
   }
 
   public async createProduct(files: Express.Multer.File[], productData: ProductDto): Promise<Product> {

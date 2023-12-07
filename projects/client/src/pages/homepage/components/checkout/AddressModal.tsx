@@ -14,6 +14,7 @@ import ChekoutAddress from "./ChekoutAddress";
 import { Search, X } from "lucide-react";
 import { useAddress } from "@/hooks/useAddress";
 import { useDebounce } from "use-debounce";
+import { useTranslation } from "react-i18next";
 
 type AddressModalProps = {
   userId: number;
@@ -39,6 +40,7 @@ const AddressModal = ({
     setModifyAddressId,
     handleToggleDialog,
   } = addressProps;
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [debounceSearch] = useDebounce(search, 1000);
   const { data: address, isLoading } = useAddress(debounceSearch);
@@ -57,7 +59,7 @@ const AddressModal = ({
         </DialogClose>
         <DialogHeader>
           <DialogTitle className="text-center text-xl">
-            Select Shipment Address
+            {t("checkoutPage.addressModal.main.header")}
           </DialogTitle>
         </DialogHeader>
         <div>
@@ -67,7 +69,9 @@ const AddressModal = ({
               className="pl-10"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search recepient / city / label"
+              placeholder={t(
+                "checkoutPage.addressModal.main.searchPlaceholder"
+              )}
             />
           </div>
           <Button
@@ -77,7 +81,7 @@ const AddressModal = ({
             variant="outline"
             className="w-full my-4 mb-6 text-primary border-primary hover:text-primary/80 font-bold"
           >
-            Add New Address
+            {t("checkoutPage.addressModal.main.addAddressBtn")}
           </Button>
           <div className="space-y-4 overflow-y-auto max-h-[580px] ">
             {!isLoading ? (
@@ -101,9 +105,9 @@ const AddressModal = ({
                       src="/ilus/directions.svg"
                       alt="directions ilustration"
                     />
-                    <p>Oops, you don't have an address? </p>
+                    <p>{t("checkoutPage.addressError.header")}</p>
                     <p className="text-sm text-muted-foreground">
-                      Don't worry, though—you can create one!
+                      {t("checkoutPage.addressError.sub")}
                     </p>
                   </div>
                 )}

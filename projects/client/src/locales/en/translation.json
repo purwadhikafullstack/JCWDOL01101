@@ -1,0 +1,178 @@
+{
+  "navbar": {
+    "productBtn": "All Products",
+    "address": "Send to",
+    "searchPlaceholder": "Search product...",
+    "cart": {
+      "total": "Total",
+      "link": "Cart",
+      "empty": {
+        "header": "Cart is empty",
+        "desc": "Your cart is currently empty. It's a perfect time to start adding your favorite items. Happy shopping!"
+      }
+    },
+    "profile": {
+      "setting": "Pengaturan",
+      "dashboard": "Dashboard Admin",
+      "logout": "Keluar"
+    }
+  },
+  "homepage": {
+    "title1": "popular category",
+    "sub1": "see all category",
+    "sub2": "see all",
+    "title2": "top seller this month",
+    "title3": "try our newest products"
+  },
+  "productsPage": {
+    "title": "All Products",
+    "category": "Category",
+    "clear": "Clear",
+    "filter": {
+      "header": "Filter",
+      "sub": "Set a Filter"
+    }
+  },
+  "productDetailPage": {
+    "product": {
+      "rating": "rating",
+      "discution": "Discution",
+      "sold": "Sold",
+      "desc": "Description",
+      "average": "Average Rating"
+    },
+    "options": {
+      "header": "Set Amount",
+      "stock": "total stock",
+      "noStock": "out of stock",
+      "subTotal": "subtotal",
+      "btn": "Cart"
+    },
+    "misc": {
+      "title": "Other products from this category",
+      "sub": "See More",
+      "noProduct": "no similar category product",
+      "noProductLink": "check our other product's"
+    }
+  },
+  "cartPage": {
+    "title": "Cart",
+    "selectAll": "Select All",
+    "remove": "Remove",
+    "summary": {
+      "title": "Shopping Summary",
+      "total": "Total Price",
+      "grandTotal": "GrandTotal",
+      "buyBtn": "Buy"
+    },
+    "empty": {
+      "title": "Your Cart is Empty",
+      "desc": "Make your dreams come true now!",
+      "btn": "Continue Shopping"
+    },
+    "removeModal": {
+      "header": "Remove item?",
+      "desc": "The selected item(s) will be remove from your cart",
+      "acceptBtn": "Remove Item",
+      "cancelBtn": "Cancel"
+    },
+    "misc": {
+      "title": "Recommended Product"
+    }
+  },
+  "checkoutPage": {
+    "header": "Chekout",
+    "main": "Main",
+    "shipping": "Shipping Address",
+    "addressBtn": "Choose Other Address",
+    "emptyAddressBtn": "Create New Address",
+    "addressError": {
+      "header": "Oops, you don't have an address?",
+      "sub": "Don't worry, though—you can create one!"
+    },
+    "cartItem": {
+      "title": "Order",
+      "address": "send from",
+      "subtotal": "Subtotal",
+      "courier": "Choose Courier",
+      "price": "Price {{total}} item",
+      "shippingFee": "Shipping Fee"
+    },
+    "summary": {
+      "title": "Shipping Summary",
+      "totalPrice": "Total Price ({{total}}) product",
+      "totalShippingFee": "Total Shipping Fee",
+      "shippingTotal": "Shipping Total",
+      "paymentBtn": "Choose Payment",
+      "loading": "preparing your stock..."
+    },
+    "paymentModal": {
+      "header": "Payment",
+      "sub": "Payment Method",
+      "summary": "Summary",
+      "paymentMethod": "Payment Method",
+      "totalPrice": "Total Price",
+      "shippingFee": "Shipping Fee",
+      "purchased": "Purchased Items",
+      "shippingCost": "Shipping Cost",
+      "estimation": "Estimation",
+      "shippingAddress": "Shipping Address",
+      "total": "Total",
+      "payBtn": "Pay",
+      "loading": "preparing payment link...",
+      "outOfStockError": "Apologies, the item is out of stock. We’re working on restocking soon.",
+      "outOfStockLink": "Choose other product",
+      "exitModal": {
+        "header": "Exit Payment Page ?",
+        "continueBtn": "Continue Pay",
+        "exitBtn": "Exit Page"
+      }
+    },
+    "exitModal": {
+      "header": "Back To Cart?",
+      "desc": "Discard all changes and return to cart?",
+      "stayBtn": "Stay On This Page",
+      "leaveBtn": "Back And Discard Changes"
+    },
+    "addressModal": {
+      "main": {
+        "header": "Select Shipment Address",
+        "searchPlaceholder": "Search recepient/ city /label",
+        "addAddressBtn": "Add New Address",
+        "changeBtn": "Change Address",
+        "makeMainBtn": "Make Main Address",
+        "pickBtn": "Pick Address",
+        "primaryBadge": "Primary"
+      },
+      "add": {
+        "header": "Add Address",
+        "desc": "Complete  the detailed address",
+        "recepient": "Recepient name",
+        "phone": "Phone Number",
+        "label": "Label Address",
+        "city": "city",
+        "noCity": "no city found",
+        "address": "Address",
+        "notes": "Notes for courier (optional)",
+        "notesDesc": "House colors, standards, special message, etc.",
+        "makeMain": "Make it main address",
+        "tos": "I agree to the <1>Terms & Conditions</1> and <1>Privacy Policy</1> address settings in Toten.",
+        "submitBtn": "Submit"
+      },
+      "modify": {
+        "header": "Modify Your Address",
+        "modifyBtn": "Modify"
+      }
+    }
+  },
+  "footer": {
+    "about": "About Toten",
+    "childAbout1": "Information",
+    "childAbout2": "Privacy Policy",
+    "contact": {
+      "head": "Contact us",
+      "child1": "For Toten Customer Complain Service"
+    },
+    "social": "Toten Social Account"
+  }
+}

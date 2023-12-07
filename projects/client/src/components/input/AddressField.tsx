@@ -8,9 +8,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import React from "react";
 import { useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 const LIMIT = 200;
 
 const AddressField = () => {
+  const { t } = useTranslation();
   const form = useFormContext();
   return (
     <FormField
@@ -19,7 +21,7 @@ const AddressField = () => {
       render={({ field }) => (
         <FormItem>
           <FormLabel htmlFor="address" className="font-bold">
-            Address
+            {t("checkoutPage.addressModal.add.address")}
           </FormLabel>
           <FormControl>
             <div className="flex flex-col gap-2 w-full">

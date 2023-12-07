@@ -7,9 +7,11 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 const Filter = () => {
+  const { t } = useTranslation();
   const [_, setSearchParams] = useSearchParams({
     s: "all",
   });
@@ -17,7 +19,9 @@ const Filter = () => {
     <div className="flex flex-col">
       <Separator className="my-2" />
       <div className="flex gap-2 justify-between items-center">
-        <h3 className="uppercase tracking-wide">Filter</h3>
+        <h3 className="uppercase tracking-wide">
+          {t("productsPage.filter.header")}
+        </h3>
         <Select
           onValueChange={(value) => {
             setSearchParams((params) => {
@@ -27,7 +31,10 @@ const Filter = () => {
           }}
         >
           <SelectTrigger className="w-[180px]">
-            <SelectValue defaultValue="featured" placeholder="Set a Filter" />
+            <SelectValue
+              defaultValue="featured"
+              placeholder={t("productsPage.filter.sub")}
+            />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="newest">Newest</SelectItem>

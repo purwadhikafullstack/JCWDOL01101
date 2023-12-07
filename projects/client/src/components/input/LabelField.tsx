@@ -9,11 +9,13 @@ import { Input } from "@/components/ui/input";
 import useOutsideClick from "@/hooks/useClickOutside";
 import React, { useEffect, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 const labels = ["Rumah", "Apartemen", "Kantor", "Kos"];
 const LIMIT = 30;
 
 const LabelField = () => {
+  const { t } = useTranslation();
   const [show, setShow] = useState(false);
   const [label, setLabel] = useState("");
   const ref = useRef<HTMLDivElement | null>(null);
@@ -35,7 +37,7 @@ const LabelField = () => {
       render={({ field }) => (
         <FormItem>
           <FormLabel className="font-bold" htmlFor="label">
-            Label Address
+            {t("checkoutPage.addressModal.add.label")}
           </FormLabel>
           <FormControl>
             <div className="flex flex-col gap-2 w-full">

@@ -7,6 +7,7 @@ import { useToggleAddress } from "@/hooks/useAddressMutation";
 import { Check, Loader } from "lucide-react";
 import React, { useEffect } from "react";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 const ChekoutAddress = ({
   add,
@@ -18,6 +19,7 @@ const ChekoutAddress = ({
   getId: (id: number) => void;
   handleToggleDialog: (main?: boolean, add?: boolean, edit?: boolean) => void;
 }) => {
+  const { t } = useTranslation();
   const toggleActiveAddress = useToggleAddress(add.id!, "isActive");
   const toggleMainAddress = useToggleAddress(add.id!, "isMain");
 
@@ -62,7 +64,7 @@ const ChekoutAddress = ({
               className="rounded-sm font-normal border border-primary text-primary"
               variant="outline"
             >
-              Primary
+              {t("checkoutPage.addressModal.main.primaryBadge")}
             </Badge>
           ) : null}
         </span>
@@ -80,7 +82,7 @@ const ChekoutAddress = ({
             variant="ghost"
             className="font-semibold text-primary/95 hover:bg-transparent hover:text-primary"
           >
-            Change Address
+            {t("checkoutPage.addressModal.main.changeBtn")}
           </Button>
           <Separator orientation="vertical" />
           {!add.isMain && (
@@ -89,7 +91,7 @@ const ChekoutAddress = ({
               variant="ghost"
               className="font-semibold text-primary/95 hover:bg-transparent hover:text-primary"
             >
-              Make Main Address
+              {t("checkoutPage.addressModal.main.makeMainBtn")}
             </Button>
           )}
         </div>
@@ -104,7 +106,7 @@ const ChekoutAddress = ({
             {toggleActiveAddress.isPending ? (
               <Loader className="animate-spin h-4 h4" />
             ) : (
-              "Pick Address"
+              t("checkoutPage.addressModal.main.pickBtn")
             )}
           </Button>
         </div>

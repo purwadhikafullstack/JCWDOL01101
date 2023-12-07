@@ -7,12 +7,14 @@ import NavCart from "./NavCart";
 import { useUser } from "@clerk/clerk-react";
 import { buttonVariants } from "./ui/button";
 import NavDropdown from "./NavDropdown";
-import { ChevronDown, Heart, MapPin, User2 } from "lucide-react";
+import { ChevronDown, MapPin, User2 } from "lucide-react";
 import { useActiveAddress } from "@/hooks/useAddress";
 import SelectAddressDialog from "./SelectAddressDialog";
 import NavWishlist from "./NavWishlist";
+import { useTranslation } from "react-i18next";
 
 const Navbar = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const [isDim, setIsDim] = useState(false);
   const { isSignedIn, isLoaded } = useUser();
@@ -35,7 +37,7 @@ const Navbar = () => {
                 className: "hidden md:block",
               })}
             >
-              All Products
+              {t("navbar.productBtn")}
             </Link>
             <SearchInput />
             <div className="flex items-center">
@@ -93,7 +95,7 @@ const Navbar = () => {
                 <MapPin className="w-3 h-3" />
                 {activeAddress ? (
                   <>
-                    Dikirim ke
+                    {t("navbar.address")}
                     <span className="flex  items-center text-foreground">
                       <b
                         className={`${

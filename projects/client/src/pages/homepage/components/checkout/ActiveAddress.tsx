@@ -2,12 +2,14 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Address } from "@/hooks/useAddress";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const ActiveAddress = ({
   activeAddress,
 }: {
   activeAddress: Address | undefined;
 }) => {
+  const { t } = useTranslation();
   return (
     <>
       {activeAddress ? (
@@ -18,7 +20,7 @@ const ActiveAddress = ({
               <span>({activeAddress?.label})</span>
               {activeAddress?.isMain && (
                 <Badge variant="default" className="rounded-md">
-                  Main
+                  {t("checkoutPage.main")}
                 </Badge>
               )}
             </div>

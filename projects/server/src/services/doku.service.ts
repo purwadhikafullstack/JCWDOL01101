@@ -8,7 +8,6 @@ import { HttpException } from '@/exceptions/HttpException';
 import { DOKU_CLIENT_ID, DOKU_SECRET_KEY, DOKU_URL } from '@/config';
 import { CartProduct } from '@/interfaces/cartProduct.interface';
 import { OrderDetails } from '@/interfaces/orderDetails.interface';
-import { Order } from '@/interfaces/order.interface';
 
 @Service()
 export class DokuService {
@@ -107,8 +106,7 @@ export class DokuService {
     const findOrderDetails: OrderDetails[] = await DB.OrderDetails.findAll({ where: { orderId: findOrder.id } });
 
     const updateInventoryAndCreateJournal = async (order: OrderDetails) => {
-      const inventory = await DB.Inventories.findOne({ where: { productId: order.productId } });
-      const oldQty = inventory.stock;
+      const inventory = await DB.Inventories.findOne({ where: { productId: order.productId, warehouseId: findOrder.warehouseId } });
 
       await inventory.decrement('stock', { by: order.quantity });
       await inventory.increment('sold', { by: order.quantity });
@@ -117,7 +115,7 @@ export class DokuService {
       await DB.Jurnal.create({
         warehouseId: findOrder.warehouseId,
         inventoryId: inventory.id,
-        oldQty: oldQty + order.quantity,
+        oldQty: inventory.stock + order.quantity,
         qtyChange: order.quantity,
         newQty: inventory.stock,
         type: 'STOCK OUT',

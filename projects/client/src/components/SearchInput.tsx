@@ -5,9 +5,10 @@ import { useDebounce } from "use-debounce";
 import { useSearchProducts } from "@/hooks/useProduct";
 import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import { Skeleton } from "./ui/skeleton";
+import { useTranslation } from "react-i18next";
 
 const SearchInput = () => {
+  const { t } = useTranslation();
   const [isClick, setIsClick] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [debounceSearch] = useDebounce(searchTerm.trim(), 200);
@@ -43,7 +44,7 @@ const SearchInput = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
         onClick={() => setIsClick(true)}
         className="w-full peer pl-10 rounded-none  bg-background"
-        placeholder="Search Product"
+        placeholder={t("navbar.searchPlaceholder")}
       />
       <div
         className={`${

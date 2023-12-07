@@ -16,8 +16,10 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 const ProductsPage = () => {
+  const { t } = useTranslation();
   const { ref, inView } = useInView();
   const [searchParams, setSearchParams] = useSearchParams({
     s: "all",
@@ -55,10 +57,12 @@ const ProductsPage = () => {
       <div className="w-full lg:w-[280px] product_side">
         <div className="sticky pt-10 md:pt-0 lg:top-[100px]">
           <Link to="/products" className="uppercase tracking-wide">
-            All Products
+            {t("productsPage.title")}
           </Link>
           <div className="flex gap-2 items-center justify-between my-2">
-            <Label className="uppercase tracking-wide">Category</Label>
+            <Label className="uppercase tracking-wide">
+              {t("productsPage.category")}
+            </Label>
             {!!category && (
               <Button
                 onClick={() => {
@@ -70,7 +74,7 @@ const ProductsPage = () => {
                 variant="ghost"
                 className="font-bold"
               >
-                clear
+                {t("productsPage.clear")}
               </Button>
             )}
           </div>
@@ -83,7 +87,7 @@ const ProductsPage = () => {
             }}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Category" />
+              <SelectValue placeholder={t("productsPage.category")} />
             </SelectTrigger>
             <SelectContent>
               {categories &&

@@ -8,6 +8,7 @@ import SelectCourier from "./SelectCourier";
 import { Address } from "@/hooks/useAddress";
 import { useBoundStore } from "@/store/client/useStore";
 import { Warehouse } from "@/hooks/useWarehouse";
+import { Trans, useTranslation } from "react-i18next";
 
 const CheckoutItem = ({
   index,
@@ -24,6 +25,7 @@ const CheckoutItem = ({
   warehouse: Warehouse | undefined;
   activeAddress: Address | undefined;
 }) => {
+  const { t } = useTranslation();
   const fee = useBoundStore((state) => state.fee);
   const [show, setShow] = useState(false);
   const shippingCost = fee[product.id!] ? fee[product.id!].cost[0].value : 0;
@@ -31,7 +33,11 @@ const CheckoutItem = ({
 
   return (
     <div className="my-4">
-      {length > 1 && <b>Pesanan {index + 1}</b>}
+      {length > 1 && (
+        <b>
+          {t("checkoutPage.cartItem.title")} {index + 1}
+        </b>
+      )}
       <div className="grid grid-cols-2 gap-4">
         <div>
           <div className="flex flex-col">
@@ -40,7 +46,8 @@ const CheckoutItem = ({
               <b className="">Toten Official</b>
             </span>
             <span className="text-xs text-muted-foreground ml-6">
-              send from {warehouse?.warehouseAddress?.cityWarehouse?.cityName}
+              {t("checkoutPage.cartItem.address")}{" "}
+              {warehouse?.warehouseAddress?.cityWarehouse?.cityName}
             </span>
             <div className="flex gap-2 items-start text-sm mt-2">
               <img
@@ -70,7 +77,7 @@ const CheckoutItem = ({
       </div>
       <Separator className="mt-6 mb-2" />
       <div className="w-full flex justify-between items-center">
-        <b>Subtotal</b>
+        <b>{t("checkoutPage.cartItem.subtotal")}</b>
         <div
           className="flex gap-2 items-center cursor-pointer select-none"
           onClick={() => setShow(!show)}
@@ -86,11 +93,20 @@ const CheckoutItem = ({
       {show && (
         <>
           <div className="w-full flex justify-between items-center text-sm">
-            <p className="text-muted-foreground">Price ({quantity} items)</p>
+            <p className="text-muted-foreground">
+              <Trans
+                i18nKey="checkoutPage.cartItem.price"
+                values={{ total: quantity }}
+              >
+                Price ({quantity} item)
+              </Trans>
+            </p>
             <b>{formatToIDR(product.price.toString())}</b>
           </div>
           <div className="w-full flex justify-between items-center text-sm">
-            <p className="text-muted-foreground">Shipping Fee</p>
+            <p className="text-muted-foreground">
+              {t("checkoutPage.cartItem.shippingFee")}
+            </p>
             <b>{formatToIDR(shippingCost.toString())}</b>
           </div>
         </>

@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelectedItem } from "@/hooks/useCheckout";
 import { Button } from "@/components/ui/button";
 import SelectAddressDialog from "@/components/SelectAddressDialog";
+import { Trans, useTranslation } from "react-i18next";
 
 export type Dialog = {
   main: boolean;
@@ -23,6 +24,7 @@ export type Dialog = {
 };
 
 const Checkout = () => {
+  const { t } = useTranslation();
   const userContext = useContext(UserContext);
   if (!userContext) {
     throw new Error("useUser must be used within a UserProvider");
@@ -67,13 +69,19 @@ const Checkout = () => {
       <div className="container mb-24">
         <div className="flex w-full gap-8">
           <section className="flex-1">
-            <h3 className="font-bold text-xl pt-4">Checkout</h3>
-            <h4 className="font-bold my-2 mt-8">Shipping Address</h4>
+            <h3 className="font-bold text-xl pt-4">
+              {t("checkoutPage.header")}
+            </h3>
+            <h4 className="font-bold my-2 mt-8">
+              {t("checkoutPage.shipping")}
+            </h4>
             <Separator />
             <ActiveAddress activeAddress={activeAddress} />
             <SelectAddressDialog>
               <Button variant="secondary">
-                {activeAddress ? "Choose Other Address" : "Create New Address"}
+                {activeAddress
+                  ? t("checkoutPage.addressBtn")
+                  : t("checkoutPage.emptyAddressBtn")}
               </Button>
             </SelectAddressDialog>
 
@@ -96,31 +104,33 @@ const Checkout = () => {
             <div className="w-ful sticky top-[100px]">
               <div className="w-full h-full px-4 py-6 mt-[100px] border rounded-lg">
                 <div className="space-y-3 mb-5">
-                  <b className="font-bold">Shipping Summary</b>
+                  <b className="font-bold">{t("checkoutPage.summary.title")}</b>
                   <div className="text-sm">
                     <div className="flex gap-2 justify-between items-center">
                       <span className="flex gap-2 items-center">
-                        Total Price{" "}
-                        <p>
-                          (
+                        <Trans
+                          i18nKey="checkoutPage.summary.totalPrice"
+                          values={{ total: cartProductsLength }}
+                        >
+                          Total Price (
                           {`${cartProductsLength} ${
                             cartProductsLength > 1 ? "products" : "product"
                           }`}
                           )
-                        </p>
+                        </Trans>
                       </span>
                       <p>{formatToIDR(totalPrice.toString())}</p>
                     </div>
                     <div className="flex gap-2 justify-between items-center">
                       <span className="flex gap-2 items-center">
-                        Total Shipping Fee
+                        {t("checkoutPage.summary.totalShippingFee")}
                       </span>
                       <p>{formatToIDR(shippingFee.toString())}</p>
                     </div>
                   </div>
                   <Separator />
                   <div className="flex gap-2 justify-between items-center">
-                    <b>Shipping total</b>
+                    <b>{t("checkoutPage.summary.shippingTotal")}</b>
                     <span className="font-bold text-lg">
                       {formatToIDR(shippingTotal.toString())}
                     </span>

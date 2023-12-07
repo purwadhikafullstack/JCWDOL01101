@@ -12,6 +12,7 @@ import { ExternalLink, Loader, ShieldCheck, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelectedItem } from "@/hooks/useCheckout";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 const paymentMethods = [
   {
@@ -40,6 +41,7 @@ const PaymentModal = ({
   address: Address | undefined;
   totalPrice: number;
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const shippingFee = useBoundStore((state) => state.totalShipping);
   const isLoading = useBoundStore((state) => state.isLoading);
@@ -103,19 +105,23 @@ const PaymentModal = ({
         className="font-bold w-full py-6 text-lg rounded-lg"
       >
         {checkClosestWarehouse.isPending ? (
-          <span className="animate-pulse">preparing your stock</span>
+          <span className="animate-pulse">
+            {t("checkoutPage.summary.loading")}
+          </span>
         ) : (
-          "Choose Payment"
+          t("checkoutPage.summary.paymentBtn")
         )}
       </Button>
       {checkClosestWarehouse.isError && (
-        <div>
-          <p className="text-primary">
-            Apologies, the item is out of stock. We’re working on restocking
-            soon.
-            <Link to="/products">
+        <div className="text-center text-sm">
+          <p className="text-red-400">
+            {t("checkoutPage.paymentModal.outOfStockError")}
+            <Link
+              to="/products"
+              className="flex gap-2 items-center justify-center underline text-primary"
+            >
               <ExternalLink className="w-4 h-4" />
-              choose other product
+              {t("checkoutPage.paymentModal.outOfStockLink")}
             </Link>
           </p>
         </div>
@@ -133,10 +139,10 @@ const PaymentModal = ({
                   <div className="w-[300px] h-max bg-white p-4 border rounded-lg">
                     <img src="/ilus/payment.svg" className="w-28 mx-auto" />
                     <p className="text-lg font-bold text-center pb-4">
-                      Exit Payment Page ?
+                      {t("checkoutPage.paymentModal.exitModal.header")}
                     </p>
                     <Button onClick={() => setExit(false)} className="w-full">
-                      Continue Pay
+                      {t("checkoutPage.paymentModal.exitModal.continueBtn")}
                     </Button>
                     <Button
                       onClick={() => {
@@ -146,7 +152,7 @@ const PaymentModal = ({
                       variant="outline"
                       className="w-full mt-2"
                     >
-                      Exit Page
+                      {t("checkoutPage.paymentModal.exitModal.exitBtn")}
                     </Button>
                   </div>
                 </div>
@@ -165,10 +171,10 @@ const PaymentModal = ({
                     >
                       <X />
                     </Button>
-                    <b>Payment</b>
+                    <b>{t("checkoutPage.paymentModal.header")}</b>
                   </div>
                   <div className="w-full mt-10 p-4">
-                    <b>Payment Method</b>
+                    <b>{t("checkoutPage.paymentModal.sub")}</b>
                     <RadioGroup
                       value={paymentMethod}
                       onValueChange={setPaymentMethods}
@@ -195,26 +201,35 @@ const PaymentModal = ({
                     </RadioGroup>
                   </div>
                   <div className="mb-8 p-4 space-y-4">
-                    <b className="text-sm">Summary</b>
+                    <b className="text-sm">
+                      {t("checkoutPage.paymentModal.summary")}
+                    </b>
                     <ul className="text-sm text-muted-foreground">
                       <li className="flex gap-2 justify-between items-center">
-                        <span>Payment Method</span>
+                        <span>
+                          {t("checkoutPage.paymentModal.paymentMethod")}
+                        </span>
                         <span>{paymentMethods[+paymentMethod].method}</span>
                       </li>
                       <Separator className="my-2" />
                       <li className="flex gap-2 justify-between items-center">
                         <span>
-                          Total Price ({cartProducts ? cartProducts.length : 0})
+                          {t("checkoutPage.paymentModal.totalPrice")} (
+                          {cartProducts ? cartProducts.length : 0})
                         </span>
                         <b>{formatToIDR(totalPrice.toString())}</b>
                       </li>
                       <li className="flex gap-2 justify-between items-center">
-                        <span>Shipping Fee</span>
+                        <span>
+                          {t("checkoutPage.paymentModal.shippingFee")}
+                        </span>
                         <b>{formatToIDR(shippingFee.toString())}</b>
                       </li>
                     </ul>
                     <div>
-                      <b className="text-sm">Purchased Items</b>
+                      <b className="text-sm">
+                        {t("checkoutPage.paymentModal.purchased")}
+                      </b>
                       <Separator className="my-2" />
                       <div className="space-y-3">
                         {cartProducts &&
@@ -239,7 +254,9 @@ const PaymentModal = ({
                                 </span>
                               </div>
                               <div className="flex justify-between items-center ">
-                                <p>Shipping Cost</p>
+                                <p>
+                                  {t("checkoutPage.paymentModal.shippingCost")}
+                                </p>
                                 <p>
                                   {formatToIDR(
                                     String(
@@ -250,7 +267,8 @@ const PaymentModal = ({
                               </div>
                               <b>{shipping[product.id!]?.service}</b>
                               <p>
-                                Estimation {shipping[product.id!]?.cost[0].etd}
+                                {t("checkoutPage.paymentModal.estimation")}{" "}
+                                {shipping[product.id!]?.cost[0].etd}
                               </p>
                             </div>
                           ))}
@@ -258,14 +276,16 @@ const PaymentModal = ({
                       <Separator className="my-2" />
                     </div>
                     <div>
-                      <b className="text-sm">Shipping Address</b>
+                      <b className="text-sm">
+                        {t("checkoutPage.paymentModal.shippingAddress")}
+                      </b>
                       <p className=" w-[300px] text-sm text-muted-foreground text-ellipsis overflow-hidden whitespace-nowrap">{`${address?.address}, ${address?.city.cityName}, ${address?.city.province}`}</p>
                     </div>
                   </div>
                   <div className="bg-white sticky bottom-0 ">
                     <div className=" w-full grid grid-cols-2 bg-gradient-to-tr from-white to-primary/20 py-4 px-2">
                       <div>
-                        <p>Total</p>
+                        <p>{t("checkoutPage.paymentModal.total")}</p>
                         <b className="text-sm">
                           {formatToIDR((+totalPrice + shippingFee).toString())}
                         </b>
@@ -278,12 +298,12 @@ const PaymentModal = ({
                         {createPayment.isPending ? (
                           <span className="animate-pulse flex items-center">
                             <Loader className="w-4 h-4 mr-2 animate-spin" />
-                            preparing payment link...
+                            {t("checkoutPage.paymentModal.loading")}
                           </span>
                         ) : (
                           <>
                             <ShieldCheck className="w-4 h-4 mr-2" />
-                            Pay
+                            {t("checkoutPage.paymentModal.payBtn")}
                           </>
                         )}
                       </Button>

@@ -63,10 +63,26 @@ export class ProductController {
 
   public getHigestSellProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const products: Product[] = await this.product.getHighestSell();
+      const limit = Number(req.query.limit);
+      const products: Product[] = await this.product.getHighestSell(limit);
       res.status(200).json({
         data: products,
         message: 'get.highest',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+  public getProductsByCategory = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const categoryId = Number(req.params.categoryId);
+      const productId = Number(req.params.productId);
+      const limit = Number(req.query.limit);
+      const proudcts: Product[] = await this.product.getProductByCategory(productId, categoryId, limit);
+
+      res.status(200).json({
+        data: proudcts,
+        message: 'get.products',
       });
     } catch (err) {
       next(err);

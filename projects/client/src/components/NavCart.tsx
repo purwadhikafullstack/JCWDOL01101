@@ -7,8 +7,10 @@ import { Separator } from "./ui/separator";
 import { baseURL } from "@/service";
 import { formatToIDR } from "@/lib/utils";
 import { useCart } from "@/hooks/useCart";
+import { useTranslation } from "react-i18next";
 
 const NavCart = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
+  const { t } = useTranslation();
   const userContext = useContext(UserContext);
   if (!userContext) {
     throw new Error("useUser must be used within a UserProvider");
@@ -30,9 +32,11 @@ const NavCart = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
         {totalProducts > 0 ? (
           <>
             <div className="w-full p-2 text-sm flex items-center justify-between">
-              <p className="text-base ">Total ({totalProducts})</p>
+              <p className="text-base ">
+                {t("navbar.cart.total")} ({totalProducts})
+              </p>
               <Link to="/cart" className="font-semibold text-primary">
-                Cart
+                {t("navbar.cart.link")}
               </Link>
             </div>
             <Separator className="mb-2" />
@@ -75,10 +79,11 @@ const NavCart = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
                 src="/ilus/empty.svg"
                 alt="cart ilustration"
               />
-              <p className="font-bold text-center">Cart is empty.</p>
+              <p className="font-bold text-center">
+                {t("navbar.cart.empty.header")}
+              </p>
               <p className="text-center text-xs text-muted-foreground">
-                Your cart is feeling light as a feather – ready and waiting for
-                your delightful picks to fill it with joy!
+                {t("navbar.cart.empty.desc")}
               </p>
             </div>
           </>

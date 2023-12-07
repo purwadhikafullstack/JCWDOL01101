@@ -16,6 +16,7 @@ import { useAddressById, useGetLocationOnGeo } from "@/hooks/useAddress";
 import { usePutAddress } from "@/hooks/useAddressMutation";
 import EditForm from "./EditForm";
 import z from "zod";
+import { useTranslation } from "react-i18next";
 
 export const editAddressSchema = z.object({
   recepient: z.string().min(4, "required").max(50),
@@ -56,6 +57,7 @@ const EditAddressDialog = ({
   setEditDialog: (value: boolean) => void;
   handleToggleDialog: (main?: boolean, add?: boolean, edit?: boolean) => void;
 }) => {
+  const { t } = useTranslation();
   const [location, setLocation] = useState<Coordinates | null>(null);
   const { data: currentLocation } = useGetLocationOnGeo(location);
   const { data: currentAddress } = useAddressById(addressId!);
@@ -143,7 +145,7 @@ const EditAddressDialog = ({
         </DialogClose>
         <DialogHeader>
           <DialogTitle className="text-center text-3xl">
-            Modify Your Address
+            {t("checkoutPage.addressModal.modify.header")}
           </DialogTitle>
         </DialogHeader>
         <Separator />
