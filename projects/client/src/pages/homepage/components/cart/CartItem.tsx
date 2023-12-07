@@ -4,13 +4,7 @@ import { useCartProduct } from "@/hooks/useCart";
 import { Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import { baseURL } from "@/service";
-import {
-  CheckSquare,
-  MapPin,
-  MinusCircle,
-  PlusCircle,
-  Trash2,
-} from "lucide-react";
+import { MapPin, MinusCircle, PlusCircle, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import {
@@ -95,12 +89,14 @@ const CartItem = ({
     <>
       <div key={product.id} className="w-full space-y-2">
         <div className="flex gap-2 items-center">
-          <Checkbox
-            checked={cartProduct?.selected}
-            onCheckedChange={(value) => {
-              toggleSelectedCart.mutate({ value: !!value });
-            }}
-          />
+          {cartProduct && (
+            <Checkbox
+              checked={cartProduct.selected}
+              onCheckedChange={(value) => {
+                toggleSelectedCart.mutate({ value: !!value });
+              }}
+            />
+          )}
           <div>
             <h3 className="font-bold">Toten Offical</h3>
             {closestWarehouse && (

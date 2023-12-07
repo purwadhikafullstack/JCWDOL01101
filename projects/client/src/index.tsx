@@ -19,11 +19,6 @@ if (!clerkPubKey) {
   throw new Error("Missing Publishable Key");
 }
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
-  },
   queryCache: new QueryCache({
     onError: (error) => toast.error(error.message),
   }),

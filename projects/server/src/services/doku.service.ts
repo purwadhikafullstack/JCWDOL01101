@@ -8,6 +8,7 @@ import { HttpException } from '@/exceptions/HttpException';
 import { DOKU_CLIENT_ID, DOKU_SECRET_KEY, DOKU_URL } from '@/config';
 import { CartProduct } from '@/interfaces/cartProduct.interface';
 import { OrderDetails } from '@/interfaces/orderDetails.interface';
+import { Order } from '@/interfaces/order.interface';
 
 @Service()
 export class DokuService {
@@ -16,12 +17,14 @@ export class DokuService {
     totalPrice,
     externalId,
     warehouseId,
+    shippingFee,
     paymentMethod,
   }: {
     cartId: number;
     totalPrice: number;
     externalId: string;
     warehouseId: number;
+    shippingFee: number;
     paymentMethod: string;
   }) {
     const findUser: User = await DB.User.findOne({
@@ -71,7 +74,14 @@ export class DokuService {
         if (!findUserCart) throw new HttpException(409, "Cart doesn't exist");
         const cartProducts: CartProduct[] = await DB.CartProduct.findAll({ where: { cartId: findUserCart.id, status: 'ACTIVE' } });
         if (cartProducts.length > 0) {
-          const createOrder = await DB.Order.create({ warehouseId, invoice: InvoiceNumber, userId: findUser.id, status: 'PENDING' });
+          const createOrder = await DB.Order.create({
+            warehouseId,
+            totalPrice,
+            shippingFee,
+            invoice: InvoiceNumber,
+            userId: findUser.id,
+            status: 'PENDING',
+          });
           const orderDetailsData = cartProducts.map(product => ({
             orderId: createOrder.id,
             productId: product.productId,
@@ -79,7 +89,7 @@ export class DokuService {
             price: product.price,
           }));
           await DB.OrderDetails.bulkCreate(orderDetailsData);
-          await DB.Cart.update({ status: 'DELETED' }, { where: { id: findUserCart.id } });
+          await DB.CartProduct.update({ status: 'DELETED' }, { where: { cartId: findUserCart.id } });
         }
       }
       return data;
@@ -95,8 +105,11 @@ export class DokuService {
     await DB.Order.update({ status: 'PROCESS' }, { where: { invoice } });
 
     const findOrderDetails: OrderDetails[] = await DB.OrderDetails.findAll({ where: { orderId: findOrder.id } });
-    for (const order of findOrderDetails) {
+
+    const updateInventoryAndCreateJournal = async (order: OrderDetails) => {
       const inventory = await DB.Inventories.findOne({ where: { productId: order.productId } });
+      const oldQty = inventory.stock;
+
       await inventory.decrement('stock', { by: order.quantity });
       await inventory.increment('sold', { by: order.quantity });
       await inventory.reload();
@@ -104,12 +117,16 @@ export class DokuService {
       await DB.Jurnal.create({
         warehouseId: findOrder.warehouseId,
         inventoryId: inventory.id,
-        oldQty: inventory.stock,
+        oldQty: oldQty + order.quantity,
         qtyChange: order.quantity,
-        newQty: inventory.stock - order.quantity,
+        newQty: inventory.stock,
         type: 'STOCK OUT',
         date: new Date(),
       });
+    };
+
+    for (const order of findOrderDetails) {
+      await updateInventoryAndCreateJournal(order);
     }
   }
 

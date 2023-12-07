@@ -108,7 +108,10 @@ const ProductDetail = () => {
             <p className="font-bold text-lg my-2">
               Other products from this category
             </p>
-            <Link className="text-primary font-bold text-sm" to="/category">
+            <Link
+              className="text-primary font-bold text-sm"
+              to={`/products?category=${product?.categoryId}`}
+            >
               See More
             </Link>
           </span>

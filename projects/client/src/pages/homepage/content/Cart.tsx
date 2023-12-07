@@ -9,7 +9,7 @@ import { useBoundStore } from "@/store/client/useStore";
 import RemoveItemsDialog from "../components/cart/RemoveItemsDialog";
 import ShoppingSummary from "../components/cart/ShoppingSummary";
 import { useToggleAllSelectProduct } from "@/hooks/useCartMutation";
-import { useGetClosestWarehouse } from "@/hooks/useWarehouse";
+
 const Cart = () => {
   const navigate = useNavigate();
   const userContext = useContext(UserContext);
@@ -100,9 +100,9 @@ const Cart = () => {
           </p>
           <Button
             onClick={() => navigate("/products")}
-            className="px-8 w-max mt-2"
+            className="px-10 w-max mt-4 rounded-none bg-black hover:bg-black/80 font-bold"
           >
-            Shop Now
+            Continue Shopping
           </Button>
         </div>
       )}

@@ -1,4 +1,5 @@
 import service from "@/service";
+import { useAuth } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
 
 type Coordinates = {
@@ -81,6 +82,7 @@ export const useGetLocationOnGeo = (coordinates: Coordinates | null) => {
 };
 
 export const useAddress = (search: string) => {
+  const { getToken } = useAuth();
   const query = useQuery<ModalAddress[]>({
     queryKey: ["address", search],
     queryFn: async () => {
@@ -88,6 +90,7 @@ export const useAddress = (search: string) => {
         params: {
           search,
         },
+        headers: { Authorization: `Bearer ${await getToken()}` },
       });
       return res.data.data;
     },
@@ -127,10 +130,13 @@ export const useAddressById = (addressId: number) => {
 };
 
 export const useActiveAddress = () => {
+  const { getToken } = useAuth();
   const query = useQuery<Address>({
     queryKey: ["active-address"],
     queryFn: async () => {
-      const res = await service.get("/address/active");
+      const res = await service.get("/address/active", {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
       return res.data.data;
     },
   });

@@ -45,7 +45,10 @@ const Checkout = () => {
   const { data: selectedCartProducts } = useSelectedItem(cart?.cart.id!);
   const cartProductsLength = selectedCartProducts?.length || 0;
   const totalPrice = selectedCartProducts
-    ? selectedCartProducts.reduce((prev, curr) => prev + curr.product.price, 0)
+    ? selectedCartProducts.reduce(
+        (prev, curr) => prev + curr.product.price * curr.quantity,
+        0
+      )
     : 0;
   const shippingFee = useBoundStore((state) => state.totalShipping);
   const shippingTotal = Number(shippingFee) + Number(totalPrice);

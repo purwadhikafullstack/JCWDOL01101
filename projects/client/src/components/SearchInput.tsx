@@ -35,14 +35,14 @@ const SearchInput = () => {
   return (
     <div
       ref={ref}
-      className="flex-1 items-center relative flex-shrink-0 border rounded-full"
+      className="flex-1 items-center relative flex-shrink-0 border"
     >
       <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground peer-focus:text-primary" />
       <Input
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onClick={() => setIsClick(true)}
-        className="w-full peer pl-10 rounded-full  bg-background"
+        className="w-full peer pl-10 rounded-none  bg-background"
         placeholder="Search Product"
       />
       <div

@@ -34,7 +34,7 @@ export class ProductService {
           }
         : role === 'WAREHOUSE ADMIN'
         ? {
-            id: findUser.warehouseId,
+            userId: findUser.id,
           }
         : {};
 
@@ -48,7 +48,16 @@ export class ProductService {
         ...(s && { name: { [Op.like]: `%${s}%` } }),
       },
       ...(order && {
-        order: filter === 'stock' || filter === 'sold' ? [[{ model: InventoryModel, as: 'inventory' }, filter, order]] : [[filter, order]],
+        order:
+          filter === 'stock' || filter === 'sold'
+            ? [
+                ['createdAt', 'DESC'],
+                [{ model: InventoryModel, as: 'inventory' }, filter, order],
+              ]
+            : [
+                ['createdAt', 'DESC'],
+                [filter, order],
+              ],
       }),
       include: [
         {
@@ -75,7 +84,7 @@ export class ProductService {
     };
 
     const warehouseProducts = await DB.Product.findAll(options);
-    const totalCount = await DB.Product.count(options);
+    const totalCount = await DB.Product.count({ where: options.where });
     const totalPages = Math.ceil(totalCount / LIMIT);
 
     return { totalPages: totalPages, products: warehouseProducts };
@@ -201,7 +210,7 @@ export class ProductService {
 
   public async getProduct(slug: string): Promise<Product> {
     const findProduct: Product = await DB.Product.findOne({
-      where: { slug },
+      where: { slug, status: 'ACTIVE' },
       include: [
         {
           model: ImageModel,
@@ -217,6 +226,26 @@ export class ProductService {
     if (!findProduct) throw new HttpException(409, "Product doesn't exist");
 
     return findProduct;
+  }
+
+  public async getProductByCategory(categoryId: number): Promise<Product[]> {
+    const findProducts: Product[] = await DB.Product.findAll({
+      where: { categoryId, status: 'ACTIVE' },
+      include: [
+        {
+          model: ImageModel,
+          as: 'productImage',
+        },
+        {
+          model: InventoryModel,
+          as: 'inventory',
+          attributes: ['stock', 'sold'],
+        },
+      ],
+    });
+    if (!findProducts || findProducts.length === 0) throw new HttpException(409, `No Product(s) with categoryId: ${categoryId}`);
+
+    return findProducts;
   }
 
   public async createProduct(files: Express.Multer.File[], productData: ProductDto): Promise<Product> {

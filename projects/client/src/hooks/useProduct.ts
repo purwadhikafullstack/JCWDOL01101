@@ -160,6 +160,18 @@ export const useProduct = (slug: string) => {
   return { data, isLoading };
 };
 
+export const useProductByCategory = (categoryId: number) => {
+  const { data, isLoading } = useQuery<Product>({
+    queryKey: ["product", categoryId],
+    queryFn: async () => {
+      const res = await service.get(`/products/category/${categoryId}`);
+      return res.data.data;
+    },
+  });
+
+  return { data, isLoading };
+};
+
 export const useSearchProducts = (search: string) => {
   const { data, isLoading } = useQuery<Product[]>({
     queryKey: ["search/products", search],

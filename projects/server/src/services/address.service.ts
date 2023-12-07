@@ -3,6 +3,7 @@ import { AddressDto } from '@/dtos/address.dto';
 import { HttpException } from '@/exceptions/HttpException';
 import { Address } from '@/interfaces/address.interface';
 import { City } from '@/interfaces/city.interface';
+import { User } from '@/interfaces/user.interface';
 import { CityModel } from '@/models/city.model';
 import opencage from 'opencage-api-client';
 import { FindOptions, Op } from 'sequelize';
@@ -48,7 +49,9 @@ export class AddressService {
     return findCity;
   }
 
-  public async getAllAddress(search: string): Promise<Address[]> {
+  public async getAllAddress(externalId: string, search: string): Promise<Address[]> {
+    const findUser: User = await DB.User.findOne({ where: { externalId } });
+    if (!findUser) throw new HttpException(409, "user doesn't exist");
     const options: FindOptions<Address> = {
       paranoid: true,
       include: [
@@ -68,7 +71,7 @@ export class AddressService {
               { label: { [Op.like]: `%${search}%` } },
             ],
           }
-        : {},
+        : { userId: findUser.id },
       raw: true,
     };
     const findAddress: Address[] = await DB.Address.findAll(options);
@@ -104,9 +107,11 @@ export class AddressService {
     return findAddress;
   }
 
-  public async getActiveAddress(): Promise<Address> {
+  public async getActiveAddress(externalId: string): Promise<Address> {
+    const findUser: User = await DB.User.findOne({ where: { externalId } });
+    if (!findUser) throw new HttpException(409, "user doesn't exist");
     const findAddress = await DB.Address.findOne({
-      where: { deletedAt: null, isActive: true },
+      where: { deletedAt: null, isActive: true, userId: findUser.id },
       include: [
         {
           model: CityModel,

@@ -5,12 +5,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Address } from "@/hooks/useAddress";
 import { useDokuPaymentIntent } from "@/hooks/useDoku";
-import { useClosestWarehouse } from "@/hooks/useOrderMutation";
+import { useClosestWarehouse } from "@/hooks/useCheckoutMutation";
 import { formatToIDR } from "@/lib/utils";
 import { useBoundStore } from "@/store/client/useStore";
-import { ShieldCheck, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ExternalLink, Loader, ShieldCheck, X } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelectedItem } from "@/hooks/useCheckout";
+import { useQueryClient } from "@tanstack/react-query";
 
 const paymentMethods = [
   {
@@ -56,6 +57,7 @@ const PaymentModal = ({
       createPayment.mutate({
         cartId,
         payment: paymentMethods[Number(paymentMethod)].id,
+        shippingFee: Number(shippingFee),
         totalPrice: Number(totalPrice) + Number(shippingFee),
         warehouseId: closestWarehouse.data.data.id,
       });
@@ -96,7 +98,7 @@ const PaymentModal = ({
   return (
     <>
       <Button
-        disabled={isLoading}
+        disabled={isLoading || checkClosestWarehouse.isError}
         onClick={onSubmit}
         className="font-bold w-full py-6 text-lg rounded-lg"
       >
@@ -106,6 +108,18 @@ const PaymentModal = ({
           "Choose Payment"
         )}
       </Button>
+      {checkClosestWarehouse.isError && (
+        <div>
+          <p className="text-primary">
+            Apologies, the item is out of stock. We’re working on restocking
+            soon.
+            <Link to="/products">
+              <ExternalLink className="w-4 h-4" />
+              choose other product
+            </Link>
+          </p>
+        </div>
+      )}
       <>
         {show && (
           <div className="top-0  m-0 left-0 z-30 w-full h-screen fixed bg-black/80">
@@ -143,12 +157,14 @@ const PaymentModal = ({
                   className={` w-full max-h-[500px]  bg-white rounded-lg relative overflow-y-auto transition-all duration-300 `}
                 >
                   <div className="absolute top-0 left-0 p-4 flex gap-2 items-center">
-                    <span
+                    <Button
+                      disabled={createPayment.isPending}
+                      variant="ghost"
                       onClick={() => setExit(!exit)}
                       className="cursor-pointer z-50 p-2"
                     >
                       <X />
-                    </span>
+                    </Button>
                     <b>Payment</b>
                   </div>
                   <div className="w-full mt-10 p-4">
@@ -255,16 +271,18 @@ const PaymentModal = ({
                         </b>
                       </div>
                       <Button
+                        disabled={createPayment.isPending}
                         onClick={handleCreatePayment}
                         className="lg:px-10 lg:py-6 font-bold"
                       >
                         {createPayment.isPending ? (
-                          <span className="animate-pulse">
-                            setting up your url
+                          <span className="animate-pulse flex items-center">
+                            <Loader className="w-4 h-4 mr-2 animate-spin" />
+                            preparing payment link...
                           </span>
                         ) : (
                           <>
-                            <ShieldCheck className="mr-2" />
+                            <ShieldCheck className="w-4 h-4 mr-2" />
                             Pay
                           </>
                         )}
