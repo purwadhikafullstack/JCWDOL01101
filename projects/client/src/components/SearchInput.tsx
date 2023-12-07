@@ -1,15 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
-import { SearchIcon } from "lucide-react";
+import { Loader2, SearchIcon } from "lucide-react";
 import { Input } from "./ui/input";
+import { useDebounce } from "use-debounce";
+import { useSearchProducts } from "@/hooks/useProduct";
+import { Link } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import { Skeleton } from "./ui/skeleton";
 
 const SearchInput = () => {
   const [isClick, setIsClick] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debounceSearch] = useDebounce(searchTerm.trim(), 200);
+  const queryClient = useQueryClient();
+  const { data: products, isLoading } = useSearchProducts(debounceSearch);
 
   const ref = useRef<HTMLDivElement | null>(null);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as Node)) {
       setIsClick(false);
+      queryClient.removeQueries({
+        queryKey: ["search/products", searchTerm],
+      });
     }
   };
 
@@ -27,16 +39,41 @@ const SearchInput = () => {
     >
       <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground peer-focus:text-primary" />
       <Input
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
         onClick={() => setIsClick(true)}
         className="w-full peer pl-10 rounded-full  bg-background"
         placeholder="Search Product"
       />
       <div
         className={`${
-          isClick && "scale-y-100"
-        } absolute z-50 scale-y-0 w-full  goup-hover:scale-y-100 origin-top left-1/2 -translate-x-1/2 translate-y-4 transition-all duration-200 bg-white shadow-md rounded-b-md p-2`}
+          searchTerm.length > 0 && isClick && "scale-y-100"
+        } absolute z-50 scale-y-0 w-full  goup-hover:scale-y-100 origin-top left-1/2 -translate-x-1/2 translate-y-4 transition-all duration-100  bg-white shadow-md  p-2`}
       >
-        <p className="text-center text-muted-foreground">no item found</p>
+        {isLoading ? (
+          <Loader2 className="animate-spin w-5 h-5 mx-auto text-muted-foreground" />
+        ) : (
+          <div>
+            {products &&
+              products.map((product) => (
+                <Link
+                  onClick={() => {
+                    setIsClick(false);
+                    setSearchTerm(" ");
+                    queryClient.removeQueries({
+                      queryKey: ["search/products", searchTerm],
+                    });
+                  }}
+                  to={`/product/${product.slug}`}
+                  key={product.id}
+                  className="flex items-center gap-2 w-full p-2 hover:bg-muted cursor-pointer rounded-md"
+                >
+                  <SearchIcon className="w-4 h-4 mr-2 text-muted-foreground" />
+                  <p key={product.id}>{product.name}</p>
+                </Link>
+              ))}
+          </div>
+        )}
       </div>
     </div>
   );

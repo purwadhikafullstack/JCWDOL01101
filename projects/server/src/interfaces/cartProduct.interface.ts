@@ -7,4 +7,5 @@ export interface CartProduct {
   quantity: number;
   status: Status;
   price: number;
+  selected: boolean;
 }

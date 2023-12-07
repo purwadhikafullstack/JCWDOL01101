@@ -20,6 +20,7 @@ export class ProductRoute implements Routes {
     this.router.get(`${this.path}/new`, this.product.getNewestProducts);
     this.router.get(`${this.path}/highest-sell`, this.product.getHigestSellProducts);
     this.router.get(`${this.path}/:slug`, this.product.getProduct);
+    this.router.get(`${this.path}/search/q`, this.product.getProductByName);
     this.router.delete(`${this.path}/images/:imageId`, this.product.deleteProductImage);
     this.router.post(`${this.path}`, upload.array('images', 5), this.product.createProduct);
     this.router.put(`${this.path}/:slug`, upload.array('images', 5), this.product.updateProduct);

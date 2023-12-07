@@ -13,5 +13,6 @@ export class CheckoutRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`${this.path}/courier`, this.checkout.getCourierService);
+    this.router.get(`${this.path}/cart/:cartId/products`, this.checkout.getAllSelectedCartProduct);
   }
 }

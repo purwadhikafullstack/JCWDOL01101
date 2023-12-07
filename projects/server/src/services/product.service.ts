@@ -4,7 +4,7 @@ import { HttpException } from '@/exceptions/HttpException';
 import { GetFilterProduct, Product } from '@/interfaces/product.interface';
 import { Service } from 'typedi';
 import { unlinkAsync } from './multer.service';
-import { FindOptions, Op, literal } from 'sequelize';
+import { FindOptions, Op } from 'sequelize';
 import { ImageModel } from '@/models/image.model';
 import { Image } from '@/interfaces/image.interface';
 import { User } from '@/interfaces/user.interface';
@@ -175,6 +175,24 @@ export class ProductService {
     });
 
     return findAllProduct;
+  }
+  public async getProductByName(s: string): Promise<Product[]> {
+    const findProducts: Product[] = await DB.Product.findAll({
+      where: { ...(s && { name: { [Op.like]: `%${s}%` } }) },
+      include: [
+        {
+          model: ImageModel,
+          as: 'productImage',
+        },
+        {
+          model: InventoryModel,
+          as: 'inventory',
+          attributes: ['stock', 'sold'],
+        },
+      ],
+    });
+
+    return findProducts || [];
   }
 
   public async getProduct(slug: string): Promise<Product> {

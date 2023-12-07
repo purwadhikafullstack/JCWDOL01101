@@ -74,10 +74,10 @@ export const useEditAdmin = (userId: number) => {
 };
 
 type EditUser = {
-  firstname: string,
-  lastname: string,
-  username: string,
-}
+  firstname: string;
+  lastname: string;
+  username: string;
+};
 
 export const useEditUser = (userId: number) => {
   const { toast } = useToast();
@@ -88,7 +88,6 @@ export const useEditUser = (userId: number) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
-
     onError: (error) => {
       if (error instanceof AxiosError) {
         toast({

@@ -1,3 +1,4 @@
+import { cartProducts } from "@/context/UserContext";
 import service from "@/service";
 import { useQuery } from "@tanstack/react-query";
 
@@ -42,4 +43,17 @@ export const useCourier = ({
   });
 
   return query;
+};
+
+export const useSelectedItem = (cartId: number) => {
+  const cartProducts = useQuery<cartProducts[]>({
+    queryKey: ["selected-cart", cartId],
+    queryFn: async () => {
+      const res = await service.get(`/checkout/cart/${cartId}/products`);
+      return res.data.data;
+    },
+    enabled: !!cartId,
+  });
+
+  return cartProducts;
 };
