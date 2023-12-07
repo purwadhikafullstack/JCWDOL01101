@@ -1,22 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogClose,
 } from "@/components/ui/dialog"
 import service from "@/service"
-import { useParams } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 
 type WarehouseType = {
