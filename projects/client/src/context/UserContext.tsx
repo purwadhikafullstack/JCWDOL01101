@@ -40,6 +40,6 @@ interface UserContextProps {
 
 const UserContext = React.createContext<UserContextProps | undefined>(
   undefined
-);;
+);
 
 export default UserContext;
