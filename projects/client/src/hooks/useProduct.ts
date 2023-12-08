@@ -3,7 +3,7 @@ import { useAuth } from "@clerk/clerk-react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 export interface Product {
-  id?: number;
+  id: number;
   categoryId: number;
   name: string;
   price: number;

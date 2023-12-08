@@ -18,7 +18,7 @@ const ShoppingSummary = ({
   const navigate = useNavigate();
   return (
     <div className="w-[320px] relative ">
-      <div className="w-ful sticky top-[100px] ">
+      <div className="sticky top-[100px] ">
         <div className="w-full h-full px-4 py-6 border space-y-2">
           <p className="font-bold">{t("cartPage.summary.title")}</p>
           <span className="w-full flex text-sm items-center justify-between text-muted-foreground">

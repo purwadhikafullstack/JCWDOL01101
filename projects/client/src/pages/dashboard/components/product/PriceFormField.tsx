@@ -7,8 +7,6 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { formatToIDR } from "@/lib/utils";
 import { useFormContext } from "react-hook-form";
 
 const PriceFormField = () => {
