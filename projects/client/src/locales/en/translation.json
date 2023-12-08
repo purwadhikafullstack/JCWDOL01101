@@ -59,6 +59,8 @@
     "title": "Cart",
     "selectAll": "Select All",
     "remove": "Remove",
+    "size": "Size",
+    "subTotal": "Subtotal",
     "summary": {
       "title": "Shopping Summary",
       "total": "Total Price",

@@ -59,6 +59,8 @@
     "title": "Keranjang",
     "selectAll": "Pilih Semua",
     "remove": "Hapus",
+    "size": "Ukuran",
+    "subTotal": "SUBTOTAL",
     "summary": {
       "title": "Ringkasan Belanja",
       "total": "Total Harga",

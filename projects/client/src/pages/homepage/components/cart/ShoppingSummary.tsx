@@ -19,7 +19,7 @@ const ShoppingSummary = ({
   return (
     <div className="w-[320px] relative ">
       <div className="w-ful sticky top-[100px] ">
-        <div className="w-full h-full px-4 py-6 border rounded-lg space-y-2">
+        <div className="w-full h-full px-4 py-6 border space-y-2">
           <p className="font-bold">{t("cartPage.summary.title")}</p>
           <span className="w-full flex text-sm items-center justify-between text-muted-foreground">
             <p>{t("cartPage.summary.total")}</p>
@@ -35,7 +35,7 @@ const ShoppingSummary = ({
             onClick={() => {
               navigate("/checkout");
             }}
-            className="w-full"
+            className="w-full rounded-none"
           >
             {t("cartPage.summary.buyBtn")}({totalQuantity})
           </Button>

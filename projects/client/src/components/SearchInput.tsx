@@ -49,7 +49,7 @@ const SearchInput = () => {
       <div
         className={`${
           searchTerm.trim().length > 0 && isClick && "scale-y-100"
-        } absolute z-50 scale-y-0 w-full  goup-hover:scale-y-100 origin-top left-1/2 -translate-x-1/2 translate-y-4 transition-all duration-100  bg-white shadow-md  p-2`}
+        } absolute overflow-y-auto max-h-[200px] z-50 scale-y-0 w-full  goup-hover:scale-y-100 origin-top left-1/2 -translate-x-1/2 translate-y-4 transition-all duration-100  bg-white shadow-md  p-2`}
       >
         {isLoading ? (
           <Loader2 className="animate-spin w-5 h-5 mx-auto text-muted-foreground" />

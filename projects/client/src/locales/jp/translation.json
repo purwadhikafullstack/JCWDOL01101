@@ -59,6 +59,8 @@
     "title": "カート",
     "selectAll": "すべて選択",
     "remove": "削除",
+    "size": "サイズ",
+    "subTotal": "小計",
     "summary": {
       "title": "ショッピングの概要",
       "total": "合計価格",

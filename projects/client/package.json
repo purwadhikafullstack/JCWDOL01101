@@ -43,6 +43,7 @@
     "clsx": "^2.0.0",
     "i18next": "^23.7.8",
     "i18next-browser-languagedetector": "^7.2.0",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.292.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.1",
