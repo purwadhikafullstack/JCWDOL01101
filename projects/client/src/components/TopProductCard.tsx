@@ -17,7 +17,7 @@ const TopProductCard = ({ product, size }: TopProductCardProps) => {
       to={`/product/${product.slug}`}
       className="relative block aspect-square h-full w-full"
     >
-      <div className="group flex h-full w-full items-center justify-center overflow-hidden rounded-lg border bg-background hover:border-primary relative border-muted ">
+      <div className="group flex h-full w-full items-center justify-center overflow-hidden  border bg-background hover:border-primary relative border-muted ">
         <LazyLoadImage
           className="relative h-full w-full object-contain transition duration-300 ease-in-out group-hover:scale-105"
           src={`${baseURL}/images/${product.primaryImage}`}

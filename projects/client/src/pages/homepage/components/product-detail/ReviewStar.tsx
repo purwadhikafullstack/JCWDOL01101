@@ -11,7 +11,9 @@ const ReviewStar = ({ rating }: ReviewStarProps) => {
 
   const starts = Array.from({ length: 5 }, (_, index) => {
     const fill = index < rating ? fillColor : emptyColor;
-    return <Star fill={fill} className="text-transparent" />;
+    return (
+      <Star key={index} fill={fill} className="text-transparent w-5 h-5" />
+    );
   });
 
   return <div className="flex items-center">{starts}</div>;

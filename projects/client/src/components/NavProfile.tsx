@@ -42,7 +42,7 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
-                    <p>{user?.username || user?.firstName || "no username"}</p>
+                    <p>{user?.username || user?.firstName || "-"}</p>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p className="font-sm font-normal max-w-[200px] text-center">

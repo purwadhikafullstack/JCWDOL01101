@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Category, Product, useProductInfinite } from "@/hooks/useProduct";
+import { Product, useProductInfinite } from "@/hooks/useProduct";
 import { useInView } from "react-intersection-observer";
 import ProductCard from "@/pages/homepage/components/ProductCard";
 import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton";
 import Filter from "../components/Filter";
-import { Categories, useCategories } from "@/hooks/useCategory";
+import { useCategories } from "@/hooks/useCategory";
 
 import {
   Select,
@@ -51,9 +51,6 @@ const ProductsPage = () => {
       <div className="product_banner">
         <img src="/carousel/ads.jpg" alt="ads banner" />
       </div>
-      <div className="w-full flex items-center justify-end my-4   product_filter ">
-        <div className="sticky top-[100px]"></div>
-      </div>
       <div className="w-full lg:w-[280px] product_side">
         <div className="sticky pt-10 md:pt-0 lg:top-[100px]">
           <Link to="/products" className="uppercase tracking-wide">
@@ -89,15 +86,15 @@ const ProductsPage = () => {
             <SelectTrigger className="w-full">
               <SelectValue placeholder={t("productsPage.category")} />
             </SelectTrigger>
-            <SelectContent>
-              {categories &&
-                categories.length > 0 &&
-                categories.map((category) => (
+            {categories && categories.length > 0 && (
+              <SelectContent>
+                {categories.map((category) => (
                   <SelectItem key={category.id} value={category.id.toString()}>
                     {category.name}
                   </SelectItem>
                 ))}
-            </SelectContent>
+              </SelectContent>
+            )}
           </Select>
           <Filter />
         </div>

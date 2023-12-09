@@ -110,7 +110,7 @@ export class AddressService {
   public async getActiveAddress(externalId: string): Promise<Address> {
     const findUser: User = await DB.User.findOne({ where: { externalId } });
     if (!findUser) throw new HttpException(409, "user doesn't exist");
-    const findAddress = await DB.Address.findOne({
+    const findAddress: Address = await DB.Address.findOne({
       where: { deletedAt: null, isActive: true, userId: findUser.id },
       include: [
         {

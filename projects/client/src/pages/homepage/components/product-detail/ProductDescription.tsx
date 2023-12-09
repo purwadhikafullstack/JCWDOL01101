@@ -1,7 +1,7 @@
 import { Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ReviewStar from "./ReviewStar";
 import { Separator } from "@/components/ui/separator";
 import { useTranslation } from "react-i18next";
@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import UserContext from "@/context/UserContext";
 import { useCartProduct } from "@/hooks/useCart";
 import { useAddCart } from "@/hooks/useCartMutation";
+import { useReviewByProduct } from "@/hooks/useReview";
 
 type ProductDescriptionProps = {
   product: Product;
@@ -43,6 +44,7 @@ const ProductDescription = ({ product }: ProductDescriptionProps) => {
     ) !== undefined;
   const { data: cartProduct } = useCartProduct(isProductInCart, product.id);
   const cartMutation = useAddCart(cartProduct?.productId);
+  const { data: reviewData } = useReviewByProduct(product?.id);
 
   const addToCart = () => {
     if (!user) {
@@ -92,10 +94,17 @@ const ProductDescription = ({ product }: ProductDescriptionProps) => {
           <span className="text-2xl font-bold">
             {formatToIDR(product?.price || 0)}
           </span>
-          <div className="flex gap-2 items-center">
-            <ReviewStar rating={4} />
-            <span className="underline cursor-pointer">(184)</span>
-          </div>
+          {reviewData && (
+            <div className="flex gap-2 items-center">
+              <ReviewStar rating={reviewData.averageRating} />
+              <Link
+                to={`/product/${product?.slug}/reviews`}
+                className="underline"
+              >
+                ({reviewData.totalReviews || 0})
+              </Link>
+            </div>
+          )}
         </div>
         <p>{product?.description}</p>
         <Separator className="my-2 mt-6" />

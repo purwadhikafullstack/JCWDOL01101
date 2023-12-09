@@ -129,7 +129,7 @@ export const useAddressById = (addressId: number) => {
   return query;
 };
 
-export const useActiveAddress = () => {
+export const useActiveAddress = (isSignenIn: boolean | undefined) => {
   const { getToken } = useAuth();
   const query = useQuery<Address>({
     queryKey: ["active-address"],
@@ -139,6 +139,7 @@ export const useActiveAddress = () => {
       });
       return res.data.data;
     },
+    enabled: !!isSignenIn,
   });
 
   return query;

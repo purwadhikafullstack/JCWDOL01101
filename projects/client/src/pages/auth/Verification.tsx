@@ -1,34 +1,34 @@
-import { useSignUp } from "@clerk/clerk-react"
-import React, { useEffect, useState } from "react"
-import { useNavigate, useSearchParams } from "react-router-dom"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useSignUp } from "@clerk/clerk-react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import StepperAction from "@/components/StepperAction"
-import EmailVerificationForm from "./EmailVerificationForm"
-import SetPasswordForm from "./SetPasswordForm"
+import StepperAction from "@/components/StepperAction";
+import EmailVerificationForm from "./EmailVerificationForm";
+import SetPasswordForm from "./SetPasswordForm";
 
 const Verification = () => {
-  const navigate = useNavigate()
-  const { signUp } = useSignUp()
-  const [searchParams] = useSearchParams()
-  const [tab, setTab] = useState("verify")
+  const navigate = useNavigate();
+  const { signUp } = useSignUp();
+  const [searchParams] = useSearchParams();
+  const [tab, setTab] = useState("verify");
   const [isStepperDone, setIsStepperDone] = useState({
     verify: false,
     pwd: false,
-  })
+  });
 
-  const uuid = searchParams.get("uid")
-  const id = signUp?.id
+  const uuid = searchParams.get("uid");
+  const id = signUp?.id;
 
   useEffect(() => {
     if (uuid !== id) {
-      navigate(-1)
+      navigate(-1);
     }
-  }, [navigate, id, uuid])
+  }, [navigate, id, uuid]);
 
   const setStepper = (v: boolean, p: boolean) => {
-    setIsStepperDone({ verify: v, pwd: p })
-  }
+    setIsStepperDone({ verify: v, pwd: p });
+  };
   return (
     <div className="w-full mt-10 flex items-center justify-center">
       <div className="w-[380px] lg:min-w-[726px] xl:min-w-[726px] min-h-[600px] flex flex-col justify-center">
@@ -57,7 +57,6 @@ const Verification = () => {
           <TabsContent value="verify">
             <EmailVerificationForm
               setTab={setTab}
-              tab={tab}
               setIsStepperDone={setStepper}
             />
           </TabsContent>
@@ -67,7 +66,7 @@ const Verification = () => {
         </Tabs>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Verification
+export default Verification;

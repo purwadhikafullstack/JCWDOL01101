@@ -57,4 +57,9 @@ export default function () {
   DB.Inventories.belongsTo(DB.Product, { foreignKey: 'product_id', as: 'product' });
   DB.Warehouses.hasMany(DB.Inventories, { foreignKey: 'warehouse_id', as: 'inventories' });
   DB.Inventories.belongsTo(DB.Warehouses, { foreignKey: 'warehouse_id', as: 'warehouse' });
+
+  DB.Product.hasMany(DB.Review, { foreignKey: 'productId', as: 'productReviews' });
+  DB.Review.belongsTo(DB.Product, { foreignKey: 'productId', as: 'productReviews' });
+  DB.User.hasMany(DB.Review, { foreignKey: 'userId', as: 'userReviews' });
+  DB.Review.belongsTo(DB.User, { foreignKey: 'userId', as: 'userReviews' });
 }

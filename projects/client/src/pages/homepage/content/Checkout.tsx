@@ -39,7 +39,7 @@ const Checkout = () => {
     }
   }, [cart]);
 
-  const { data: activeAddress } = useActiveAddress();
+  const { data: activeAddress } = useActiveAddress(!!user?.id);
   const { data: closestWarehouse } = useGetClosestWarehouse({
     lat: activeAddress?.lat,
     lng: activeAddress?.lng,

@@ -47,12 +47,11 @@ const NavDropdown = ({
           })}
         >
           <span>{icon}</span>
-          {/* <span className="lg:ml-2">{title}</span> */}
         </div>
       </Link>
       <div
         className={cn(
-          "absolute z-50 scale-y-0 group-hover:scale-y-100 origin-top left-1/2 -translate-x-[86%] md:-translate-x-1/2 translate-y-0 w-max transition-all duration-200 bg-white shadow-md rounded-b-md p-2",
+          "absolute z-50 scale-y-0 group-hover:scale-y-100 origin-top left-1/2 -translate-x-[86%] md:-translate-x-1/2 translate-y-0 w-max transition-all duration-200 bg-white shadow-md p-2",
           className
         )}
       >

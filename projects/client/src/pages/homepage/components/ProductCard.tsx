@@ -1,46 +1,25 @@
-import React, {
-  HTMLAttributes,
-  Ref,
-  forwardRef,
-  useEffect,
-  useState,
-} from "react";
+import React, { HTMLAttributes, Ref, forwardRef } from "react";
 import { Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import { baseURL } from "@/service";
-import { CheckSquare, Heart, MapPin } from "lucide-react";
+import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
-import { useGetClosestWarehouse } from "@/hooks/useWarehouse";
-import { Coordinates } from "./checkout/AddAddressForm";
-import { useBoundStore } from "@/store/client/useStore";
-import Review from "./Review";
+import { useReviewByProduct } from "@/hooks/useReview";
+import ReviewStar from "./product-detail/ReviewStar";
 
 interface ProductCardProps extends HTMLAttributes<HTMLDivElement> {
   product: Product;
 }
 const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
   ({ product, ...props }, ref: Ref<HTMLDivElement>) => {
-    const { stock, sold } = product
-      ? product.inventory.reduce(
-          (prev, curr) => ({
-            stock: prev.stock + curr.stock,
-            sold: prev.sold + curr.sold,
-          }),
-          { stock: 0, sold: 0 }
-        )
-      : { stock: 0, sold: 0 };
-    const location = useBoundStore((state) => state.location);
-    const { data: closestWarehouse } = useGetClosestWarehouse({
-      lat: location?.lat,
-      lng: location?.lng,
-    });
+    const { data: reviewData } = useReviewByProduct(product?.id);
 
     const productContent = (
       <>
         <Link to={`/product/${product.slug}`}>
-          <div className=" shadow-sm overflow-hidden relative">
+          <div className=" shadow-sm overflow-hidden relative h-full">
             <span
               className="absolute top-0 right-0 p-2 "
               onClick={(e) => {
@@ -69,6 +48,12 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
                   {formatToIDR(product.price.toString())}
                 </p>
               </span>
+              {reviewData && reviewData.reviews.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <ReviewStar rating={reviewData.averageRating} />
+                  <span>({reviewData.totalReviews || 0})</span>
+                </div>
+              )}
             </div>
           </div>
         </Link>

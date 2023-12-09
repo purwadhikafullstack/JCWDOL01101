@@ -7,7 +7,6 @@ import Register from "./auth/Register";
 import Login from "./auth/Login";
 import SSOCallback from "./auth/SSOCallback";
 import Verification from "./auth/Verification";
-
 import DashboardLayout from "./dashboard/DashboardLayout";
 import NotFound from "./dashboard/NotFound";
 import Dashboard from "./dashboard/content/Dashboard";
@@ -16,7 +15,6 @@ import ManageAdmin from "./dashboard/content/Admin";
 import Product from "./dashboard/content/Product";
 import Warehouse from "./dashboard/content/Warehouse";
 import EditAdminForm from "./dashboard/components/EditAdminForm";
-import ProductDetail from "./homepage/content/ProductDetail";
 import Cart from "./homepage/content/Cart";
 import { ProtectedRoute, AdminRoute, DashboardRoute } from "./ProtectedRoute";
 import UserLayout from "./user/UserLayout";
@@ -28,6 +26,9 @@ import EditProductForm from "./dashboard/components/product/EditProductForm";
 import Order from "./homepage/content/Order";
 import ManageCategory from "./dashboard/content/Category";
 import ProductsPage from "./homepage/content/Products";
+import ProductDetail from "./homepage/content/ProductDetail";
+import ReviewForm from "./homepage/content/ReviewForm";
+import Reviews from "./homepage/content/Reviews";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +63,14 @@ const router = createBrowserRouter([
       {
         path: "/product/:slug",
         element: <ProductDetail />,
+      },
+      {
+        path: "/product/:slug/reviews/new",
+        element: <ReviewForm />,
+      },
+      {
+        path: "/product/:slug/reviews",
+        element: <Reviews />,
       },
       {
         path: "cart",

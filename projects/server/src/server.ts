@@ -11,6 +11,7 @@ import { CartRoute } from './routes/cart.route';
 import { AddressRoute } from './routes/address.route';
 import { CheckoutRoute } from './routes/checkout.route';
 import { DokuRoute } from './routes/doku.route';
+import { ReviewRoute } from './routes/review.route';
 
 ValidateEnv();
 
@@ -28,6 +29,7 @@ const app = new App([
   new DokuRoute(),
   new AddressRoute(),
   new CheckoutRoute(),
+  new ReviewRoute(),
 ]);
 
 app.listen();
