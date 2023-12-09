@@ -28,13 +28,17 @@ const MainLayout = () => {
   }, []);
   return (
     <UserContext.Provider value={{ user: userBackend }}>
-      <ScrollToTop />
-      <Navbar />
-      <main className="container mt-4">
-        <Outlet />
-      </main>
-      <Footer />
-      <Toaster />
+      <div className="flex flex-col min-h-screen">
+        <ScrollToTop />
+        <Navbar />
+        <main className="container mt-4  flex-auto">
+          <Outlet />
+        </main>
+        <Footer />
+        <div className="flex-shrink-0">
+          <Toaster />
+        </div>
+      </div>
     </UserContext.Provider>
   );
 };

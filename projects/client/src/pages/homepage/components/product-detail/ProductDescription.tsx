@@ -12,6 +12,7 @@ import UserContext from "@/context/UserContext";
 import { useCartProduct } from "@/hooks/useCart";
 import { useAddCart } from "@/hooks/useCartMutation";
 import { useReviewByProduct } from "@/hooks/useReview";
+import { useToggleWishlist } from "@/hooks/useWishlistMutation";
 
 type ProductDescriptionProps = {
   product: Product;
@@ -43,8 +44,9 @@ const ProductDescription = ({ product }: ProductDescriptionProps) => {
       (cartProduct) => cartProduct.productId === product.id
     ) !== undefined;
   const { data: cartProduct } = useCartProduct(isProductInCart, product.id);
-  const cartMutation = useAddCart(cartProduct?.productId);
   const { data: reviewData } = useReviewByProduct(product?.id);
+  const cartMutation = useAddCart(cartProduct?.productId);
+  const toggleWishlist = useToggleWishlist();
 
   const addToCart = () => {
     if (!user) {
@@ -54,7 +56,7 @@ const ProductDescription = ({ product }: ProductDescriptionProps) => {
       cartMutation.mutate({
         quantity,
         productId: product.id,
-        externalId: user?.externalId as string,
+        externalId: user.externalId,
       });
       setQuantity(1);
     }
@@ -145,7 +147,7 @@ const ProductDescription = ({ product }: ProductDescriptionProps) => {
                   className="rounded-none text-lg focus-visible:ring-black outline-none text-center"
                 />
                 <Button
-                  disabled={quantity === stock || stock <= 0}
+                  disabled={(cartProduct?.quantity || 0) >= stock || stock <= 0}
                   onClick={() => {
                     if (quantity < stock) {
                       setQuantity(quantity + 1);
@@ -176,12 +178,24 @@ const ProductDescription = ({ product }: ProductDescriptionProps) => {
           >
             Add to cart
           </Button>
-          <Button
-            variant="outline"
-            className="rounded-none border-black w-full uppercase font-semibold"
-          >
-            add to wishlist
-          </Button>
+
+          {product.productWishlist.length <= 0 ? (
+            <Button
+              onClick={() => toggleWishlist.mutate({ productId: product.id })}
+              variant="outline"
+              className="rounded-none border-black w-full uppercase font-semibold"
+            >
+              add to wishlist
+            </Button>
+          ) : (
+            <Button
+              onClick={() => toggleWishlist.mutate({ productId: product.id })}
+              variant="outline"
+              className="rounded-none border-black w-full uppercase font-semibold"
+            >
+              remove from wishlist
+            </Button>
+          )}
           <div className="mt-4">
             <img src="/carousel/1.jpg" alt="advertise" />
           </div>

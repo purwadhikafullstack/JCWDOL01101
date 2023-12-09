@@ -62,4 +62,9 @@ export default function () {
   DB.Review.belongsTo(DB.Product, { foreignKey: 'productId', as: 'productReviews' });
   DB.User.hasMany(DB.Review, { foreignKey: 'userId', as: 'userReviews' });
   DB.Review.belongsTo(DB.User, { foreignKey: 'userId', as: 'userReviews' });
+
+  DB.User.hasMany(DB.WishList, { foreignKey: 'userId', as: 'userWishlist' });
+  DB.WishList.belongsTo(DB.User, { foreignKey: 'userId', as: 'userWishlist' });
+  DB.Product.hasMany(DB.WishList, { foreignKey: 'productId', as: 'productWishlist' });
+  DB.WishList.belongsTo(DB.Product, { foreignKey: 'productId', as: 'productWishlist' });
 }

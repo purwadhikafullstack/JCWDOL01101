@@ -12,6 +12,7 @@ import { CategoryModel } from '@/models/category.model';
 import { WarehouseModel } from '@/models/warehouse.model';
 import { InventoryModel } from '@/models/inventory.model';
 import fs from 'fs';
+import { WishlistModel } from '@/models/wishlist.model';
 
 @Service()
 export class ProductService {
@@ -69,6 +70,12 @@ export class ProductService {
           as: 'productCategory',
         },
         {
+          model: WishlistModel,
+          as: 'productWishlist',
+          paranoid: true,
+          limit: 1,
+        },
+        {
           model: InventoryModel,
           as: 'inventory',
           attributes: ['stock', 'sold'],
@@ -103,6 +110,12 @@ export class ProductService {
           model: InventoryModel,
           as: 'inventory',
           attributes: ['stock', 'sold'],
+        },
+        {
+          model: WishlistModel,
+          as: 'productWishlist',
+          paranoid: true,
+          limit: 1,
         },
       ],
       where: {
@@ -157,6 +170,12 @@ export class ProductService {
           as: 'inventory',
           attributes: ['stock', 'sold'],
         },
+        {
+          model: WishlistModel,
+          as: 'productWishlist',
+          paranoid: true,
+          limit: 1,
+        },
       ],
       order: [[{ model: InventoryModel, as: 'inventory' }, 'sold', 'DESC']],
     });
@@ -181,6 +200,12 @@ export class ProductService {
           as: 'inventory',
           attributes: ['stock', 'sold'],
         },
+        {
+          model: WishlistModel,
+          as: 'productWishlist',
+          paranoid: true,
+          limit: 1,
+        },
       ],
       where: {
         status: 'ACTIVE',
@@ -203,6 +228,12 @@ export class ProductService {
           as: 'inventory',
           attributes: ['stock', 'sold'],
         },
+        {
+          model: WishlistModel,
+          as: 'productWishlist',
+          paranoid: true,
+          limit: 1,
+        },
       ],
     });
 
@@ -223,6 +254,12 @@ export class ProductService {
           model: InventoryModel,
           as: 'inventory',
           attributes: ['stock', 'sold'],
+        },
+        {
+          model: WishlistModel,
+          as: 'productWishlist',
+          paranoid: true,
+          limit: 1,
         },
       ],
     });
@@ -247,6 +284,12 @@ export class ProductService {
           model: InventoryModel,
           as: 'inventory',
           attributes: ['stock', 'sold'],
+        },
+        {
+          model: WishlistModel,
+          as: 'productWishlist',
+          paranoid: true,
+          limit: 1,
         },
       ],
     });
@@ -275,6 +318,12 @@ export class ProductService {
           model: InventoryModel,
           as: 'inventory',
           attributes: ['stock', 'sold'],
+        },
+        {
+          model: WishlistModel,
+          as: 'productWishlist',
+          paranoid: true,
+          limit: 1,
         },
       ],
     });

@@ -18,7 +18,14 @@ export interface Product {
   primaryImage: string;
   productImage: Image[];
   productCategory: Category;
+  productWishlist: Wishlist[];
   inventory: Inventory[];
+}
+
+export interface Wishlist {
+  id: number;
+  userId: number;
+  productId: number;
 }
 
 export interface Warehouse {

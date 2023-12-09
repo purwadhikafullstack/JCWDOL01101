@@ -8,6 +8,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useReviewByProduct } from "@/hooks/useReview";
 import ReviewStar from "./product-detail/ReviewStar";
+import { useToggleWishlist } from "@/hooks/useWishlistMutation";
 
 interface ProductCardProps extends HTMLAttributes<HTMLDivElement> {
   product: Product;
@@ -15,6 +16,7 @@ interface ProductCardProps extends HTMLAttributes<HTMLDivElement> {
 const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
   ({ product, ...props }, ref: Ref<HTMLDivElement>) => {
     const { data: reviewData } = useReviewByProduct(product?.id);
+    const wishlistMutation = useToggleWishlist();
 
     const productContent = (
       <>
@@ -25,9 +27,18 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                if (product.id) {
+                  wishlistMutation.mutate({ productId: product.id });
+                }
               }}
             >
-              <Heart />
+              {product &&
+              product.productWishlist.length > 0 &&
+              product.productWishlist[0].productId === product.id ? (
+                <Heart fill="#e11d48" className="text-primary" />
+              ) : (
+                <Heart />
+              )}
             </span>
             <LazyLoadImage
               className="object-cover"

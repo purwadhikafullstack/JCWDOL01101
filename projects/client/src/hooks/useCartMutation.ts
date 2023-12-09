@@ -17,6 +17,7 @@ export const useAddCart = (productId: number | undefined) => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["cart-product", productId] });
+      queryClient.invalidateQueries({ queryKey: ["product"] });
     },
   });
   return cartMutation;
@@ -48,6 +49,7 @@ export const useDeleteAllCartProduct = (cartId: number) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["product"] });
     },
   });
   return cartMutation;
@@ -62,6 +64,7 @@ export const useDeleteCartProduct = (cartProductId: number) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["product"] });
     },
   });
   return cartMutation;

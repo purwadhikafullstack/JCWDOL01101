@@ -23,7 +23,7 @@ const NavCart = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
   return (
     <NavDropdown
       path="/cart"
-      totalProduct={totalProducts}
+      counter={totalProducts}
       icon={<ShoppingCartIcon />}
       title="Cart"
       setIsDim={setIsDim}

@@ -33,6 +33,7 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
         path="/user"
         icon={<NavAvatar imageUrl={user?.imageUrl as string} />}
         setIsDim={setIsDim}
+        profile={true}
         className="p-4"
       >
         <div className="flex gap-2 items-start">

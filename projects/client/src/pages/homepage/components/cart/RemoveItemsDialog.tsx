@@ -39,7 +39,7 @@ const RemoveItemsDialog = ({ cartId }: { cartId: number }) => {
         className={buttonVariants({
           variant: "ghost",
           className:
-            "text-primary font-semibold hover:text-primary/90 hover:bg-transparent",
+            "text-primary font-semibold hover:text-primary/90 hover:bg-transparent uppercase",
         })}
       >
         {t("cartPage.remove")}

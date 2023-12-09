@@ -29,6 +29,7 @@ import ProductsPage from "./homepage/content/Products";
 import ProductDetail from "./homepage/content/ProductDetail";
 import ReviewForm from "./homepage/content/ReviewForm";
 import Reviews from "./homepage/content/Reviews";
+import Wishlist from "./homepage/content/Wishlist";
 
 const router = createBrowserRouter([
   {
@@ -85,6 +86,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Order />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "wishlist",
+        element: (
+          <ProtectedRoute>
+            <Wishlist />
           </ProtectedRoute>
         ),
       },

@@ -1,26 +1,28 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
 import { Link } from "react-router-dom";
 
 type NavDropdownProps = {
-  className?: string;
-  totalProduct?: number;
+  path: string;
   icon: React.ReactElement;
   title?: string;
+  profile?: boolean;
+  counter?: number;
   setIsDim: (isDim: boolean) => void;
-  children: React.ReactNode;
-  path: string;
+  className?: string;
+  children?: React.ReactNode;
 };
 
 const NavDropdown = ({
-  totalProduct,
-  className,
+  path,
   icon,
   title,
+  profile,
+  counter,
   setIsDim,
+  className,
   children,
-  path,
 }: NavDropdownProps) => {
   return (
     <div
@@ -28,18 +30,18 @@ const NavDropdown = ({
       onMouseLeave={() => setIsDim(false)}
       className="relative group cursor-pointer"
     >
-      {totalProduct
-        ? totalProduct >= 1 && (
-            <span
-              className={`${
-                totalProduct < 10 ? "px-[6px]" : null
-              } absolute -top-1 left-2 text-xs  bg-primary rounded-full text-primary-foreground font-semibold p-[2px] border-2 border-background`}
-            >
-              {totalProduct}
-            </span>
-          )
-        : null}
       <Link to={path}>
+        {counter
+          ? counter >= 1 && (
+              <span
+                className={`${
+                  counter < 10 ? "px-[6px]" : null
+                } absolute top-1 left-2  text-[0.6rem] p-[4px] leading-3 grid  place-content-center h-[18px] w-[18px] bg-primary rounded-full text-primary-foreground font-semibold  border-2 border-background`}
+              >
+                {counter}
+              </span>
+            )
+          : null}
         <div
           className={buttonVariants({
             variant: "ghost",
@@ -49,14 +51,20 @@ const NavDropdown = ({
           <span>{icon}</span>
         </div>
       </Link>
-      <div
-        className={cn(
-          "absolute z-50 scale-y-0 group-hover:scale-y-100 origin-top left-1/2 -translate-x-[86%] md:-translate-x-1/2 translate-y-0 w-max transition-all duration-200 bg-white shadow-md p-2",
-          className
-        )}
-      >
-        {children}
-      </div>
+      {children && (
+        <div
+          className={cn(
+            `absolute z-50 scale-y-0 group-hover:scale-y-100 origin-top left-1/2 -translate-x-[86%] ${
+              profile
+                ? "-translate-x-[86%]"
+                : "-translate-x-[86%] lg:-translate-x-1/2"
+            } translate-y-0 w-max transition-all duration-200 bg-white shadow-md p-2`,
+            className
+          )}
+        >
+          {children}
+        </div>
+      )}
     </div>
   );
 };

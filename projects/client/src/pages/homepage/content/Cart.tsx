@@ -58,7 +58,9 @@ const Cart = () => {
         <div className="flex flex-col flex-1">
           {carts.length > 0 ? (
             <section className="w-full">
-              <h3 className="font-bold text-xl pt-4">{t("cartPage.title")}</h3>
+              <h3 className="font-bold text-xl pt-4 uppercase">
+                {t("cartPage.title")}
+              </h3>
               <div className="flex items-center justify-between border-b-4 px-0">
                 <div
                   onClick={() => {
@@ -72,8 +74,15 @@ const Cart = () => {
                       "flex items-center gap-4 cursor-pointer px-0 lg:px-0 hover:bg-transparent",
                   })}
                 >
-                  <Checkbox id="select" checked={selected.allTrue} />
-                  <label htmlFor="select" className="text-muted-foreground">
+                  <Checkbox
+                    id="select"
+                    checked={selected.allTrue}
+                    className="rounded-none"
+                  />
+                  <label
+                    htmlFor="select"
+                    className="text-muted-foreground  uppercase"
+                  >
                     {t("cartPage.selectAll")}
                   </label>
                 </div>

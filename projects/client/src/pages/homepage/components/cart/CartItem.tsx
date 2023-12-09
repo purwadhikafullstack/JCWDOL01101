@@ -24,11 +24,6 @@ type CartItemProps = {
   quantity: number;
   cartProductId: number;
 };
-type Args = {
-  cartId: number;
-  productId: number;
-  qty: number;
-};
 
 const CartItem = ({
   cartId,
@@ -38,7 +33,6 @@ const CartItem = ({
   cartProductId,
 }: CartItemProps) => {
   const { t } = useTranslation();
-
   const { data: cartProduct } = useCartProduct(hasCart, product.id!);
   const stock = cartProduct
     ? cartProduct?.product?.inventory.reduce(
@@ -128,6 +122,7 @@ const CartItem = ({
                 onCheckedChange={(value) => {
                   toggleSelectedCart.mutate({ value: !!value });
                 }}
+                className="rounded-none"
               />
             )}
             <div>
@@ -161,7 +156,7 @@ const CartItem = ({
             </div>
           </div>
           <div className="flex flex-col items-end gap-2 self-end">
-            <div className="flex  items-center">
+            <div className="flex gap-2  items-center">
               <Button
                 disabled={quantity <= 1}
                 onClick={() => changeQuantity(-1)}
@@ -169,9 +164,9 @@ const CartItem = ({
               >
                 <Minus className="text-primary-foreground w-5 h-5" />
               </Button>
-              <p className="mx-2 text-lg leading-3 p-2 select-none">
+              <span className=" border  h-10 grid place-content-center px-8 text-xl leading-3 select-none">
                 {quantity}
-              </p>
+              </span>
               <Button
                 disabled={quantity >= stock}
                 onClick={() => changeQuantity(+1)}
