@@ -18,6 +18,8 @@ import {
   ReviewSuccessModal,
   TosFormField,
 } from "../components/reviews";
+import { useUser } from "@clerk/clerk-react";
+import AllowReviewModal from "../components/reviews/AllowReviewModal";
 
 const reviewSchema = z.object({
   rating: z.number().min(1, " "),
@@ -82,6 +84,7 @@ const ReviewForm = () => {
 
   return (
     <div>
+      {product && <AllowReviewModal slug={product?.slug} />}
       {product && (
         <Breadcrumbs
           slug={product.slug}

@@ -26,7 +26,7 @@ const PhoneField = () => {
       render={({ field }) => (
         <FormItem>
           <FormLabel className="font-bold" htmlFor="phone">
-            {t("checkoutPage.addressModal.add.recepient")}
+            {t("checkoutPage.addressModal.add.phone")}
           </FormLabel>
           <FormControl>
             <div className="w-full flex flex-col gap-2">

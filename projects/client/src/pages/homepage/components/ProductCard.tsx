@@ -9,6 +9,7 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 import { useReviewByProduct } from "@/hooks/useReview";
 import ReviewStar from "./product-detail/ReviewStar";
 import { useToggleWishlist } from "@/hooks/useWishlistMutation";
+import { motion } from "framer-motion";
 
 interface ProductCardProps extends HTMLAttributes<HTMLDivElement> {
   product: Product;
@@ -22,7 +23,10 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
       <>
         <Link to={`/product/${product.slug}`}>
           <div className=" shadow-sm overflow-hidden relative h-full">
-            <span
+            <motion.div
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
               className="absolute top-0 right-0 p-2 "
               onClick={(e) => {
                 e.preventDefault();
@@ -39,7 +43,7 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
               ) : (
                 <Heart />
               )}
-            </span>
+            </motion.div>
             <LazyLoadImage
               className="object-cover"
               src={`${baseURL}/images/${product.primaryImage}`}
