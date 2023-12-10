@@ -278,6 +278,7 @@ export class ProductService {
         {
           model: CategoryModel,
           as: 'productCategory',
+          paranoid: true,
         },
         {
           model: ImageModel,

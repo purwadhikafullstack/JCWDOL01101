@@ -89,7 +89,7 @@ const ReviewForm = () => {
         <Breadcrumbs
           slug={product.slug}
           categoryId={product.categoryId}
-          categoryName={product.productCategory.name}
+          category={product.productCategory}
           productName={product.name}
         />
       )}

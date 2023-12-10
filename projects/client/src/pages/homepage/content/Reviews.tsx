@@ -58,7 +58,7 @@ const Reviews = () => {
             <Breadcrumbs
               productName={product.name}
               categoryId={product.categoryId}
-              categoryName={product.productCategory.name}
+              category={product.productCategory}
               slug={slug}
             />
           )}

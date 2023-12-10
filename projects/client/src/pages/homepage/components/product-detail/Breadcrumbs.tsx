@@ -1,3 +1,4 @@
+import { Category } from "@/hooks/useProduct";
 import { ChevronRight } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -5,7 +6,7 @@ import { Link } from "react-router-dom";
 type BreadcrumbsProps = {
   slug: string;
   categoryId: number;
-  categoryName: string;
+  category: Category;
   productName: string;
 };
 
@@ -13,7 +14,7 @@ const Breadcrumbs = ({
   slug,
   categoryId,
   productName,
-  categoryName,
+  category,
 }: BreadcrumbsProps) => {
   return (
     <div>
@@ -25,10 +26,17 @@ const Breadcrumbs = ({
         <Link to="/products" className="text-primary">
           Product
         </Link>
-        <ChevronRight className="w-4 h-4 text-muted-foreground" />
-        <Link to={`/products?category=${categoryId}`} className="text-primary">
-          {categoryName}
-        </Link>
+        {category && (
+          <>
+            <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            <Link
+              to={`/products?category=${categoryId}`}
+              className="text-primary"
+            >
+              {category.name}
+            </Link>
+          </>
+        )}
         <ChevronRight className="w-4 h-4 text-muted-foreground" />
         <Link
           to={`/product/${slug}`}
