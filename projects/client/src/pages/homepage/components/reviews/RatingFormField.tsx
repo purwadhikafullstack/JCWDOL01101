@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Star } from "lucide-react";
+import { motion } from "framer-motion";
 
 const ratingText = ["Poor", "Fair", "Fair", "Good", "Very Good"];
 type RatingFormFieldProps = {
@@ -43,10 +44,23 @@ const RatingFormField = ({ rating, setRating }: RatingFormFieldProps) => {
                         setRating(index + 1);
                       }}
                     >
-                      <Star
-                        fill={fill}
-                        className="text-transparent w-6 h-6 transition-colors duration-100"
-                      />
+                      <motion.div
+                        transition={{
+                          type: "spring",
+                          ease: "anticipate",
+                          duration: 0.2,
+                        }}
+                        whileTap={{ scale: 1.3 }}
+                        whileHover={{
+                          rotate: [-10, 10],
+                          scale: 0.9,
+                        }}
+                      >
+                        <Star
+                          fill={fill}
+                          className="text-transparent w-6 h-6 transition-colors duration-100"
+                        />
+                      </motion.div>
                     </Button>
                   );
                 })}

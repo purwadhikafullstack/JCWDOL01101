@@ -1,5 +1,6 @@
 import React from "react";
 import { Star } from "lucide-react";
+import { motion } from "framer-motion";
 
 type ReviewStarProps = {
   rating: number;
@@ -11,7 +12,25 @@ const ReviewStar = ({ rating }: ReviewStarProps) => {
 
   const starts = Array.from({ length: 5 }, (_, index) => {
     const fill = index < rating ? fillColor : emptyColor;
-    return (
+    return fill === fillColor ? (
+      <motion.div
+        transition={{
+          type: "spring",
+          ease: "anticipate",
+          duration: 0.2,
+        }}
+        whileTap={{ scale: 1.3 }}
+        whileHover={{
+          rotate: [-10, 10],
+          scale: 0.9,
+        }}
+      >
+        <Star
+          fill={fill}
+          className="text-transparent w-6 h-6 transition-colors duration-100"
+        />
+      </motion.div>
+    ) : (
       <Star key={index} fill={fill} className="text-transparent w-5 h-5" />
     );
   });
