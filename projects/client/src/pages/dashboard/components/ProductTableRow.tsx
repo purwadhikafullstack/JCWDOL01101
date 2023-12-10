@@ -52,8 +52,8 @@ const ProductTableRow = ({ products }: { products: Product[] }) => {
             {product.inventory[0].sold}
           </TableCell>
           <TableCell className="w-[100px]">
-            <p className="overflow-hidden whitespace-nowrap text-ellipsis w-[100px]">
-              {product.productCategory.name}
+            <p className="overflow-hidden whitespace-nowrap text-ellipsis w-[100px text-center">
+              {product.productCategory ? product.productCategory.name : "-"}
             </p>
           </TableCell>
           <TableCell className="w-[150px]">

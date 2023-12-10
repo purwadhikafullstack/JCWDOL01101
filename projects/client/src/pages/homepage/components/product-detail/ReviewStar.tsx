@@ -1,5 +1,5 @@
 import React from "react";
-import { Star } from "lucide-react";
+import { Scale, Star } from "lucide-react";
 import { motion } from "framer-motion";
 
 type ReviewStarProps = {
@@ -23,6 +23,10 @@ const ReviewStar = ({ rating }: ReviewStarProps) => {
         whileHover={{
           rotate: [-10, 10],
           scale: 0.9,
+        }}
+        initial={{
+          scale: 1,
+          rotate: 0,
         }}
       >
         <Star

@@ -36,7 +36,8 @@ export interface Warehouse {
 export interface Category {
   id?: number;
   name: string;
-  color: string;
+  image: string;
+  slug: string;
 }
 
 export interface Image {

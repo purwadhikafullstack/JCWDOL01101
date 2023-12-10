@@ -16,7 +16,7 @@ const Homepage = () => {
     key: ["new-products"],
     url: "/products/new",
   });
-  const { data: categories } = useCategories(6);
+  const { data: categories } = useCategories(4);
   const { data: highestSell, isLoading: highestSellLoading } =
     useHighestSellProducts();
   return (
@@ -24,7 +24,7 @@ const Homepage = () => {
       <MainCarousel />
       <div className="mt-2 flex flex-col">
         <span className="flex items-center justify-between mt-8 my-2 capitalize">
-          <h3 className="font-bold text-base lg:text-xl">
+          <h3 className="font-bold text-base lg:text-xl uppercase">
             {t("homepage.title1")}
           </h3>
           <Link
@@ -34,7 +34,7 @@ const Homepage = () => {
             {t("homepage.sub1")}
           </Link>
         </span>
-        <section className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+        <section className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2">
           {categories &&
             categories.map((category) => (
               <CategoryCard key={category.id} category={category} />

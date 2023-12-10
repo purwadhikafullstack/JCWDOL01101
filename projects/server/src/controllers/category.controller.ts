@@ -1,6 +1,7 @@
 import { Category } from '@/interfaces/category.interface';
 import { CategoryService } from '@/services/category.service';
 import { NextFunction, Request, Response } from 'express';
+import { Multer } from 'multer';
 import Container from 'typedi';
 
 export class CategoryController {
@@ -19,8 +20,8 @@ export class CategoryController {
 
   public getCategoryById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const categoryId = Number(req.params.id);
-      const findOneCategoryData: Category = await this.category.findCategoryById(categoryId);
+      const slug = String(req.params.slug);
+      const findOneCategoryData: Category = await this.category.findCategoryById(slug);
 
       res.status(200).json({ data: findOneCategoryData, message: 'find Category By Id' });
     } catch (error) {
@@ -30,10 +31,15 @@ export class CategoryController {
 
   public createCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const categoryData: Category = req.body;
-      const createCategoryData: Category = await this.category.createCategory(categoryData);
+      const { category } = req.body;
+      const categoryData = JSON.parse(category);
+      const file = req.file as Express.Multer.File;
+      const createCategoryData: Category = await this.category.createCategory(file.filename, categoryData);
 
-      res.status(201).json({ data: createCategoryData, message: 'Category created' });
+      res.status(201).json({
+        data: createCategoryData,
+        message: 'Category created',
+      });
     } catch (error) {
       next(error);
     }
@@ -41,11 +47,18 @@ export class CategoryController {
 
   public updateCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const categoryId = Number(req.params.id);
-      const categoryData: Category = req.body;
-      const updateCategoryData: Category = await this.category.updateCategory(categoryId, categoryData);
+      const { category } = req.body;
+      const categoryData = JSON.parse(category);
+      const file = req.file as Express.Multer.File;
+      const image = file ? file.filename : req.body.images;
 
-      res.status(200).json({ data: updateCategoryData, message: 'updated' });
+      const categoryId = Number(req.params.id);
+      const updateCategoryData: Category = await this.category.updateCategory(categoryId, categoryData, image);
+
+      res.status(200).json({
+        data: updateCategoryData,
+        message: 'updated',
+      });
     } catch (error) {
       next(error);
     }

@@ -1,280 +1,142 @@
-import React, { useState, useEffect } from "react";
-import { ChromePicker } from "react-color";
-import { Button } from "@/components/ui/button";
-import { useCategories, useFetchCategory } from "@/hooks/useCategory";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import React from "react";
+import { useCategories } from "@/hooks/useCategory";
+import { useDeleteCategoryMutation } from "@/hooks/useCategoryMutation";
+import AddCategoryForm from "../components/category/AddCategoryForm";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { baseURL } from "@/service";
 import {
-  useCategoryMutation,
-  useDeleteCategoryMutation,
-  useEditCategoryMutation,
-} from "@/hooks/useCategoryMutation";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { buttonVariants, Button } from "@/components/ui/button";
+import { DialogHeader, DialogFooter } from "@/components/ui/custom-dialog";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { Link, useSearchParams } from "react-router-dom";
+import EditCategoryForm from "../components/category/EditCategoryForm";
 import { Loader2 } from "lucide-react";
 
-const formSchema = z.object({
-  name: z.string().min(2).max(50),
-  color: z.string().min(2).max(50),
-});
-
-const formEditSchema = z.object({
-  name: z.string().min(2).max(50),
-  color: z.string().min(2).max(50),
-});
-
 export default function ManageCategory() {
-  const [showColorPicker, setShowColorPicker] = useState({
-    post: false,
-    edit: false,
-  });
-  const { data: categoriess, isLoading } = useCategories();
-  const categoryMutation = useCategoryMutation();
-  const editCategoryMutation = useEditCategoryMutation();
+  const { data: categoriess } = useCategories();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const slug = searchParams.get("slug") || "";
+  const edit = !!searchParams.get("edit") || false;
   const deleteCategoryMutation = useDeleteCategoryMutation();
-  const [currentCategoryId, setCurrentCategoryId] = useState<number | null>(
-    null
-  );
-  const { data: category } = useFetchCategory(currentCategoryId);
-  const [isEdit, setIsEdit] = useState(false);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      color: "#000000",
-    },
-  });
-
-  const formEdit = useForm<z.infer<typeof formEditSchema>>({
-    resolver: zodResolver(formEditSchema),
-    defaultValues: {
-      name: "",
-      color: "#000000",
-    },
-  });
-
-  useEffect(() => {
-    if (category) {
-      formEdit.setValue("name", category.name);
-      formEdit.setValue("color", category.color);
-    }
-  }, [category]);
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    categoryMutation.mutate(values);
-  }
-
-  function onEdit(values: z.infer<typeof formSchema>) {
-    if (currentCategoryId) {
-      editCategoryMutation.mutate({ ...values, id: currentCategoryId });
-    }
-  }
-
-  function onDelete(id: number) {
-    if (window.confirm("Are you sure you want to delete this category?")) {
-      deleteCategoryMutation.mutate(id);
-    }
-  }
-
-  useEffect(() => {
-    if (categoryMutation.isSuccess) {
-      form.reset({ name: "", color: "#000000" });
-    }
-  }, [categoryMutation.isSuccess]);
 
   return (
-    <div className="container">
-      <div className="flex justify-evenly">
-        <div className="border p-4">
-          <p className="font-bold">Add Category</p>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-1">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="color"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category Color</FormLabel>
-                    <FormControl>
-                      <div
-                        onClick={() =>
-                          setShowColorPicker({
-                            ...showColorPicker,
-                            post: !showColorPicker.post,
-                          })
-                        }
-                        className="flex items-center"
-                      >
-                        <div className="relative p-4">
-                          <div
-                            style={{ backgroundColor: field.value }}
-                            className={` w-[150px] h-[20px] rounded-sm`}
-                          />
-                          {showColorPicker.post && (
-                            <ChromePicker
-                              className="absolute right-0 top-0 transform translate-x-[100%]"
-                              color={field.value}
-                              onChange={(color) => field.onChange(color.hex)}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <Button type="submit">
-                {categoryMutation.isPending && (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                )}
-                Submit
-              </Button>
-            </form>
-          </Form>
+    <div>
+      <div className="flex w-full gap-4">
+        <div className="w-full space-y-2">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[80px]">#</TableHead>
+                <TableHead>Category Name</TableHead>
+                <TableHead>Image</TableHead>
+                <TableHead className="text-center">Action</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {categoriess &&
+                categoriess.map((category, index) => (
+                  <TableRow key={category.id}>
+                    <TableCell className="font-medium">{index + 1}</TableCell>
+                    <TableCell>{category.name}</TableCell>
+                    <TableCell>
+                      <img
+                        src={`${baseURL}/images/${category.image}`}
+                        className="w-[80px]"
+                      />
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Dialog>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger
+                            className={buttonVariants({ variant: "ghost" })}
+                          >
+                            <DotsHorizontalIcon />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <Link
+                              to={`/dashboard/product/category?slug=${category.slug}&edit=true`}
+                            >
+                              <DropdownMenuItem className="cursor-pointer">
+                                Edit
+                              </DropdownMenuItem>
+                            </Link>
+                            <DropdownMenuSeparator />
+                            <DialogTrigger className="w-full">
+                              <DropdownMenuItem className="w-full cursor-pointer">
+                                Delete
+                              </DropdownMenuItem>
+                            </DialogTrigger>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>
+                              Are you sure deleting {category.name} ?
+                            </DialogTitle>
+                            <DialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete your product and remove your
+                              data from our servers.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <DialogFooter className="sm:justify-start">
+                            <DialogClose asChild>
+                              <Button type="button" variant="secondary">
+                                Cancel
+                              </Button>
+                            </DialogClose>
+                            <Button
+                              onClick={() => {
+                                setSearchParams((params) => {
+                                  params.delete("slug");
+                                  params.delete("edit");
+                                  return params;
+                                });
+                                deleteCategoryMutation.mutate(category.id);
+                              }}
+                              type="button"
+                            >
+                              {deleteCategoryMutation.isPending && (
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              )}
+                              Yes, Delete
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
         </div>
-        <div className="border p-4">
-          <p className="font-bold">Edit Category</p>
-          {!isEdit ? (
-            <p>Choose an item to edit</p>
-          ) : (
-            <Form {...formEdit}>
-              <form
-                onSubmit={formEdit.handleSubmit(onEdit)}
-                className="space-y-1"
-              >
-                <FormField
-                  control={formEdit.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Category Name</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={formEdit.control}
-                  name="color"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Category Color</FormLabel>
-                      <FormControl>
-                        <div
-                          onClick={() =>
-                            setShowColorPicker({
-                              ...showColorPicker,
-                              edit: !showColorPicker.edit,
-                            })
-                          }
-                          className="flex items-center"
-                        >
-                          <div className="relative p-4">
-                            <div
-                              style={{ backgroundColor: field.value }}
-                              className={` w-[150px] h-[20px] rounded-sm`}
-                            />
-                            {showColorPicker.edit && (
-                              <ChromePicker
-                                className="absolute right-0 top-0 transform translate-x-[100%]"
-                                color={field.value}
-                                onChange={(color) => field.onChange(color.hex)}
-                              />
-                            )}
-                          </div>
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <div className="flex justify-around">
-                  <Button type="submit">
-                    {categoryMutation.isPending && (
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    )}
-                    Submit
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setIsEdit(false);
-                    }}
-                    className="bg-slate-950 hover:bg-slate-500"
-                  >
-                    {categoryMutation.isPending && (
-                      <Loader2 className="w-4 h-4 mr-2" />
-                    )}
-                    Cancel
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          )}
+        <div className="border w-full p-4">
+          <div className="flex gap-2 items-center mb-8">
+            <p className="font-bold">{edit ? "Edit" : "Add"} Category</p>
+          </div>
+          {edit ? <EditCategoryForm /> : <AddCategoryForm />}
         </div>
-      </div>
-      <div className="mt-4">
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : (
-          <>
-            {categoriess &&
-              categoriess.map((category) => (
-                <div
-                  key={category.id}
-                  className="mt-2 flex items-center justify-between w-full border border-gray-300 rounded-lg p-2"
-                >
-                  <div className="flex justify-evenly">
-                    {category.name}
-                    <div
-                      style={{
-                        background: category.color,
-                        width: 20,
-                        height: 20,
-                        borderRadius: "50%",
-                        marginLeft: 10,
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <button
-                      onClick={() => {
-                        setCurrentCategoryId(category.id), setIsEdit(true);
-                      }}
-                      className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => onDelete(category.id)}
-                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
-          </>
-        )}
       </div>
     </div>
   );

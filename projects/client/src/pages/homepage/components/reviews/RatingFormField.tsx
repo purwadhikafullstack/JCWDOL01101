@@ -46,14 +46,18 @@ const RatingFormField = ({ rating, setRating }: RatingFormFieldProps) => {
                     >
                       <motion.div
                         transition={{
-                          type: "spring",
+                          type: "tween",
                           ease: "anticipate",
-                          duration: 0.2,
+                          duration: 0.4,
                         }}
                         whileTap={{ scale: 1.3 }}
                         whileHover={{
-                          rotate: [-10, 10],
+                          rotate: [-10, 10, -10, 0],
                           scale: 0.9,
+                        }}
+                        initial={{
+                          scale: 1,
+                          rotate: 0,
                         }}
                       >
                         <Star

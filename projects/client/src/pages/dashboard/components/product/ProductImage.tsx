@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useBoundStore } from "@/store/client/useStore";
 import { Image, X } from "lucide-react";
@@ -7,7 +6,7 @@ import { useDropzone } from "react-dropzone";
 import z, { ZodError } from "zod";
 export type Image = {
   url: string;
-  file: File | undefined;
+  file: File | undefined | null;
 };
 
 const ProductImage = ({ index }: { index: number }) => {

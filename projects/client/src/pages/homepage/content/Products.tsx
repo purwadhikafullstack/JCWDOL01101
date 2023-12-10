@@ -89,7 +89,7 @@ const ProductsPage = () => {
             {categories && categories.length > 0 && (
               <SelectContent>
                 {categories.map((category) => (
-                  <SelectItem key={category.id} value={category.id.toString()}>
+                  <SelectItem key={category.id} value={category.slug}>
                     {category.name}
                   </SelectItem>
                 ))}

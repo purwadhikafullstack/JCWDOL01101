@@ -13,6 +13,7 @@ import { WarehouseModel } from '@/models/warehouse.model';
 import { InventoryModel } from '@/models/inventory.model';
 import fs from 'fs';
 import { WishlistModel } from '@/models/wishlist.model';
+import { Category } from '@/interfaces/category.interface';
 
 @Service()
 export class ProductService {
@@ -68,6 +69,7 @@ export class ProductService {
         {
           model: CategoryModel,
           as: 'productCategory',
+          paranoid: true,
         },
         {
           model: WishlistModel,
@@ -97,7 +99,8 @@ export class ProductService {
     return { totalPages: totalPages, products: warehouseProducts };
   }
 
-  public async getAllProductOnHomepage({ page, f, category }: { page: number; f: string; category: number }): Promise<Product[]> {
+  public async getAllProductOnHomepage({ page, f, category }: { page: number; f: string; category: string }): Promise<Product[]> {
+    const findCategory: Category = await DB.Categories.findOne({ paranoid: true, where: { slug: category } });
     const options: FindOptions = {
       offset: (Number(page) - 1) * 12,
       limit: 12,
@@ -120,7 +123,7 @@ export class ProductService {
       ],
       where: {
         status: 'ACTIVE',
-        ...(category && { categoryId: category }),
+        ...(findCategory && { categoryId: findCategory.id }),
       },
     };
 
