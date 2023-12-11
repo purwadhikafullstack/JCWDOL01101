@@ -28,6 +28,7 @@ import EditProductForm from "./dashboard/components/product/EditProductForm"
 import Order from "./homepage/content/Order"
 import ManageCategory from "./dashboard/content/Category"
 import ProductsPage from "./homepage/content/Products"
+import AddStockForm from "./dashboard/components/product/AddStockForm"
 
 const router = createBrowserRouter([
   {
@@ -173,6 +174,11 @@ const router = createBrowserRouter([
         path: "product/edit/:slug",
         element: <EditProductForm />,
       },
+      // {
+      //   path: "product/add-stock/:productId", // add path here
+      //   element: <AddStockForm />,
+      // },
+      
     ],
   },
 ])

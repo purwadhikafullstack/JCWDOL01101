@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { MapPin, Plus, SearchIcon } from "lucide-react";
 import {
@@ -39,6 +39,8 @@ const Product = () => {
   const searchTerm = searchParams.get("s") || "";
   const [debounceSearch] = useDebounce(searchTerm, 1000);
 
+  const [selectedWarehouse, setSelectedWarehouse] = useState('')
+
   const { data: warehouses } = useGetWarehouse();
   const { data, isLoading } = useProducts({
     page: currentPage,
@@ -48,11 +50,19 @@ const Product = () => {
     limit: 10,
     warehouse: searchParams.get("warehouse") || "",
   });
-
   const clearImage = useBoundStore((state) => state.clearImage);
   useEffect(() => {
     clearImage();
   }, []);
+
+  useEffect(() => {
+    // Jika selectedWarehouse belum ditetapkan, atur ke ID gudang dengan ID terendah
+    if (!selectedWarehouse && warehouses && warehouses.length > 0) {
+      const defaultWarehouse = warehouses.reduce((min, warehouse) => warehouse.id < min.id ? warehouse : min, warehouses[0]);
+      setSelectedWarehouse(defaultWarehouse.id.toString());
+    }
+  }, [warehouses, selectedWarehouse]);
+
 
   return (
     <div className="flex flex-col p-2 w-full">
@@ -86,20 +96,22 @@ const Product = () => {
           <div className="flex gap-2 items-center">
             {warehouses && warehouses.length > 0 && (
               <Select
-                defaultValue={warehouses ? warehouses[0].name : ""}
+                defaultValue={warehouses ? warehouses[0].id.toString() : ""}
                 onValueChange={(value) => {
                   setSearchParams((params) => {
                     params.set("warehouse", value);
                     return params;
                   });
-                }}
+                  setSelectedWarehouse(value);
+                }
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Warehouse" />
                 </SelectTrigger>
                 <SelectContent>
                   {warehouses.map((warehouse) => (
-                    <SelectItem key={warehouse.id} value={warehouse.name}>
+                    <SelectItem key={warehouse.id.toString()} value={warehouse.id.toString()}>
                       <div className="flex items-center w-[300px] justify-between">
                         <span className="font-bold w-full self-start">
                           {warehouse.name}
@@ -150,7 +162,8 @@ const Product = () => {
             </TableHeader>
             <TableBody>
               {data && data.products && data.products.length > 0 ? (
-                <ProductTableRow products={data.products} />
+                <ProductTableRow products={data.products} selectedWarehouse={selectedWarehouse} />
+
               ) : (
                 <TableRow>
                   <TableCell colSpan={10} className="text-center h-24">

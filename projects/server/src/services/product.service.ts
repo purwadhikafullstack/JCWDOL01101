@@ -34,7 +34,7 @@ export class ProductService {
           }
         : role === 'WAREHOUSE ADMIN'
         ? {
-            id: findUser.warehouseId,
+            id: findUser.id,
           }
         : {};
 

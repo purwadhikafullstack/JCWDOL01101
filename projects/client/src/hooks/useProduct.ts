@@ -17,6 +17,7 @@ export interface Product {
   productImage: Image[];
   productCategory: Category;
   inventory: Inventory[];
+  warehouse: string; // tes
 }
 
 export interface Warehouse {

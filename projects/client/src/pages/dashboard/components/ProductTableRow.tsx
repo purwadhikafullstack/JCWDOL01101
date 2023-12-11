@@ -1,8 +1,7 @@
-import React from "react";
-
-import { Inventory, Product } from "@/hooks/useProduct";
+import React, { useState, useEffect } from "react";
+import { Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
-import { baseURL } from "@/service";
+import service, { baseURL } from "@/service";
 import {
   Dialog,
   DialogTrigger,
@@ -27,9 +26,56 @@ import { Link } from "react-router-dom";
 import DeleteProduct from "./product/DeleteProduct";
 import { useUser } from "@clerk/clerk-react";
 import { AlertTriangle } from "lucide-react";
+import AddStockForm from "./product/AddStockForm";
 
-const ProductTableRow = ({ products }: { products: Product[] }) => {
+interface ProductTableRowProps {
+  products: Product[];
+  selectedWarehouse: string | undefined;
+}
+
+const ProductTableRow = ({ products, selectedWarehouse }: ProductTableRowProps) => {
   const { user } = useUser();
+  const [stocks, setStocks] = useState<Record<number, any>>({});
+  const [dialog, setDialog] = useState("")
+
+  useEffect(() => {
+    const fetchStocks = async () => {
+      const newStocks: Record<number, any> = {};
+
+      for (const product of products) {
+        if (product && product.id) {
+          try {
+            const response = await service.get(`inventories/${selectedWarehouse}/${product.id}`);
+            const data = response.data.data;
+
+            if (response.status !== 200) {
+              throw new Error(data.message || 'Could not fetch stock.');
+            }
+
+            newStocks[product.id] = data.stock;
+          } catch (error) {
+            console.error('Fetch stock error:', error);
+          }
+        }
+      }
+
+      setStocks(newStocks);
+    };
+
+    fetchStocks();
+  }, [selectedWarehouse, products]);
+
+  const handleDialogStock = () => {
+    setDialog("add")
+    console.log(dialog)
+  }
+
+  const handleDialogDelete = () => {
+    setDialog("delete")
+    console.log(dialog)
+
+  }
+
   return (
     <>
       {products.map((product, i) => (
@@ -42,8 +88,9 @@ const ProductTableRow = ({ products }: { products: Product[] }) => {
             <i className="text-xs"> grams</i>
           </TableCell>
           <TableCell className="text-center">
-            {product.inventory[0].stock}
+            {product && product.id && stocks && stocks[product.id] ? stocks[product.id] : 'N/A'}
           </TableCell>
+
           <TableCell className="text-center">
             {product.inventory[0].sold}
           </TableCell>
@@ -83,32 +130,56 @@ const ProductTableRow = ({ products }: { products: Product[] }) => {
                       </DropdownMenuItem>
                     </Link>
                     <DropdownMenuSeparator />
-                    <DialogTrigger className="w-full">
-                      <DropdownMenuItem className="w-full cursor-pointer">
-                        Delete
-                      </DropdownMenuItem>
-                    </DialogTrigger>
+                    <div onClick={handleDialogDelete} className="w-200">
+                      <DialogTrigger className="w-full" >
+                        <DropdownMenuItem className="w-full cursor-pointer">
+                          Delete
+                        </DropdownMenuItem>
+                      </DialogTrigger>
+                    </div>
+
+
+                    <DropdownMenuSeparator />
+ 
+                    <div onClick={handleDialogStock} >
+                      <DialogTrigger className="w-full">
+                        <DropdownMenuItem className="cursor-pointer">
+                          Add Stock
+                        </DropdownMenuItem>
+                      </DialogTrigger>
+                    </div>
+
+
+                    <DropdownMenuSeparator />
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>
-                      Are you sure deleting {product.name} ?
-                    </DialogTitle>
-                    <DialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      your product and remove your data from our servers.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter className="sm:justify-start">
-                    <DeleteProduct productId={Number(product.id)} />
-                    <DialogClose asChild>
-                      <Button type="button" variant="secondary">
-                        Cancel
-                      </Button>
-                    </DialogClose>
-                  </DialogFooter>
-                </DialogContent>
+
+                {dialog === "add" && (
+                  <DialogContent>
+                    <AddStockForm productss={product.id} selectedWarehouse={selectedWarehouse}/>
+                  </DialogContent>
+                )}
+                {dialog === "delete" && (
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>
+                        Are you sure deleting {product.name} ?
+                      </DialogTitle>
+                      <DialogDescription>
+                        This action cannot be undone. This will permanently delete
+                        your product and remove your data from our servers.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="sm:justify-start">
+                      <DeleteProduct productId={Number(product.id)} />
+                      <DialogClose asChild>
+                        <Button type="button" variant="secondary">
+                          Cancel
+                        </Button>
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                )}
               </Dialog>
             </TableCell>
           )}
