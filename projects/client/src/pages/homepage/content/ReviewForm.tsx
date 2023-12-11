@@ -18,7 +18,6 @@ import {
   ReviewSuccessModal,
   TosFormField,
 } from "../components/reviews";
-import { useUser } from "@clerk/clerk-react";
 import AllowReviewModal from "../components/reviews/AllowReviewModal";
 
 const reviewSchema = z.object({
@@ -41,7 +40,7 @@ const reviewSchema = z.object({
 const ReviewForm = () => {
   const navigate = useNavigate();
   const { slug } = useParams();
-  const { data: product } = useProduct(slug || "");
+  const { data: pd } = useProduct(slug || "");
 
   const [rating, setRating] = useState(0);
   const [modal, setModal] = useState(false);
@@ -71,9 +70,9 @@ const ReviewForm = () => {
   }, [reviewMutation.isSuccess]);
 
   const onSubmit = (values: z.infer<typeof reviewSchema>) => {
-    if (product) {
+    if (pd && pd.product) {
       reviewMutation.mutate({
-        productId: product.id,
+        productId: pd.product.id,
         rating: values.rating,
         title: values.title,
         nickname: values.name,
@@ -83,87 +82,84 @@ const ReviewForm = () => {
   };
 
   return (
-    <div>
-      {product && <AllowReviewModal slug={product?.slug} />}
-      {product && (
+    pd &&
+    pd.product && (
+      <div>
+        <AllowReviewModal slug={pd.product.slug} />
         <Breadcrumbs
-          slug={product.slug}
-          categoryId={product.categoryId}
-          category={product.productCategory}
-          productName={product.name}
+          slug={pd.product.slug}
+          categoryId={pd.product.categoryId}
+          category={pd.product.productCategory}
+          productName={pd.product.name}
         />
-      )}
-      <div className="flex justify-between ">
-        <div className="flex-1">
-          <h3 className="text-2xl font-bold">{product?.name}</h3>
-          <div className="border px-4 py-6 pb-10 flex-1 mt-6">
-            <span className="flex items-center justify-between">
-              <p className="uppercase font-bold text-lg">Write review</p>
-              <p className="text-primary text-sm">required*</p>
-            </span>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-5 mt-10"
-              >
-                <RatingFormField rating={rating} setRating={setRating} />
-                <NicknameFormField />
-                <TitleFormField />
-                <CommentFormField />
-                <div>
-                  <h3 className="font-bold">GIVING A REVIEW:</h3>
-                  <ul className="list-disc pl-10 text-sm">
-                    <li>
-                      The comments you provide may be used for advertising
-                      purposes.
-                    </li>
-                    <li>
-                      We do not accept requests to place advertisements
-                      including for other brands, individuals or organizations.
-                      We also cannot store stock or sizes.
-                    </li>
-                  </ul>
-                </div>
-                <TosFormField />
-                <div className="flex gap-4 items-center justify-end">
-                  <Button
-                    onClick={() => navigate(`/product/${product?.slug}`)}
-                    type="button"
-                    variant="outline"
-                    className="px-20 border-black uppercase rounded-none"
-                  >
-                    Back to product detail
-                  </Button>
-                  <Button
-                    disabled={reviewMutation.isPending}
-                    type="submit"
-                    className="px-20 bg-black hover:bg-black/80 uppercase rounded-none "
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </form>
-            </Form>
-            {product && (
+        <div className="flex justify-between ">
+          <div className="flex-1">
+            <h3 className="text-2xl font-bold">{pd.product.name}</h3>
+            <div className="border px-4 py-6 pb-10 flex-1 mt-6">
+              <span className="flex items-center justify-between">
+                <p className="uppercase font-bold text-lg">Write review</p>
+                <p className="text-primary text-sm">required*</p>
+              </span>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-5 mt-10"
+                >
+                  <RatingFormField rating={rating} setRating={setRating} />
+                  <NicknameFormField />
+                  <TitleFormField />
+                  <CommentFormField />
+                  <div>
+                    <h3 className="font-bold">GIVING A REVIEW:</h3>
+                    <ul className="list-disc pl-10 text-sm">
+                      <li>
+                        The comments you provide may be used for advertising
+                        purposes.
+                      </li>
+                      <li>
+                        We do not accept requests to place advertisements
+                        including for other brands, individuals or
+                        organizations. We also cannot store stock or sizes.
+                      </li>
+                    </ul>
+                  </div>
+                  <TosFormField />
+                  <div className="flex gap-4 items-center justify-end">
+                    <Button
+                      onClick={() => navigate(`/product/${pd.product.slug}`)}
+                      type="button"
+                      variant="outline"
+                      className="px-20 border-black uppercase rounded-none"
+                    >
+                      Back to product detail
+                    </Button>
+                    <Button
+                      disabled={reviewMutation.isPending}
+                      type="submit"
+                      className="px-20 bg-black hover:bg-black/80 uppercase rounded-none "
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                </form>
+              </Form>
               <ReviewSuccessModal
-                slug={product?.slug}
+                slug={pd.product.slug}
                 modal={modal}
                 setModal={setModal}
               />
-            )}
+            </div>
           </div>
-        </div>
-        <div className="w-[450px] relative">
-          <div className="w-[355px] sticky top-[100px] ml-auto">
-            {product && (
+          <div className="w-[450px] relative">
+            <div className="w-[355px] sticky top-[100px] ml-auto">
               <LazyLoadImage
-                src={`${baseURL}/images/${product.primaryImage}`}
+                src={`${baseURL}/images/${pd.product.primaryImage}`}
               />
-            )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    )
   );
 };
 

@@ -16,16 +16,17 @@ import { useToggleWishlist } from "@/hooks/useWishlistMutation";
 
 type ProductDescriptionProps = {
   product: Product;
+  totalStock: number;
+  totalSold: number;
 };
 
-const ProductDescription = ({ product }: ProductDescriptionProps) => {
+const ProductDescription = ({
+  product,
+  totalSold,
+  totalStock,
+}: ProductDescriptionProps) => {
   const { t } = useTranslation();
-  const stock = product?.inventory
-    ? product.inventory.reduce((prev, curr) => prev + curr.stock, 0)
-    : 0;
-  const sold = product?.inventory
-    ? product.inventory.reduce((prev, curr) => prev + curr.sold, 0)
-    : 0;
+
 
   const navigate = useNavigate();
   const userContext = useContext(UserContext);
@@ -52,7 +53,7 @@ const ProductDescription = ({ product }: ProductDescriptionProps) => {
     if (!user) {
       return navigate("/register");
     }
-    if (stock > 0) {
+    if (totalStock > 0) {
       cartMutation.mutate({
         quantity,
         productId: product.id,
@@ -67,10 +68,13 @@ const ProductDescription = ({ product }: ProductDescriptionProps) => {
 
     if (quantity <= 0) {
       setError("This product(s) minimum quantity is 1 item(s)");
-    } else if (stock && (quantity > stock || totalQuantity > stock)) {
-      setError(`This product(s) maximum quantity is ${stock} item(s)`);
+    } else if (
+      totalStock &&
+      (quantity > totalStock || totalQuantity > totalStock)
+    ) {
+      setError(`This product(s) maximum quantity is ${totalStock} item(s)`);
     }
-  }, [cartProduct?.quantity, quantity, stock]);
+  }, [cartProduct?.quantity, quantity, totalStock]);
 
   useEffect(() => {
     function handleClickOuside(event: MouseEvent) {
@@ -113,13 +117,13 @@ const ProductDescription = ({ product }: ProductDescriptionProps) => {
         <div className="space-y-4">
           <span className="uppercase font-semibold">Size: {product?.size}</span>
           <div>
-            <p className={`${stock <= 0 && "text-primary"} uppercase`}>
-              {stock > 0
-                ? `${t("productDetailPage.options.stock")} ${stock}`
+            <p className={`${totalStock <= 0 && "text-primary"} uppercase`}>
+              {totalStock > 0
+                ? `${t("productDetailPage.options.stock")} ${totalStock}`
                 : t("productDetailPage.options.noStock")}
             </p>
             <p className="uppercase text-muted-foreground text-sm">
-              {t("productDetailPage.product.sold")}: {sold}
+              {t("productDetailPage.product.sold")}: {totalSold}
             </p>
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -133,7 +137,7 @@ const ProductDescription = ({ product }: ProductDescriptionProps) => {
                   <Minus />
                 </Button>
                 <Input
-                  disabled={stock <= 0}
+                  disabled={totalStock <= 0}
                   ref={inputRef}
                   value={quantity}
                   onChange={(e) => {
@@ -147,9 +151,12 @@ const ProductDescription = ({ product }: ProductDescriptionProps) => {
                   className="rounded-none text-lg focus-visible:ring-black outline-none text-center"
                 />
                 <Button
-                  disabled={(cartProduct?.quantity || 0) >= stock || stock <= 0}
+                  disabled={
+                    (cartProduct?.quantity || 0) >= totalStock ||
+                    totalStock <= 0
+                  }
                   onClick={() => {
-                    if (quantity < stock) {
+                    if (quantity < totalStock) {
                       setQuantity(quantity + 1);
                     }
                   }}
@@ -169,9 +176,9 @@ const ProductDescription = ({ product }: ProductDescriptionProps) => {
           </div>
           <Button
             disabled={
-              stock <= 0 ||
+              totalStock <= 0 ||
               cartMutation.isPending ||
-              (cartProduct?.quantity || 0) + quantity > stock
+              (cartProduct?.quantity || 0) + quantity > totalStock
             }
             onClick={addToCart}
             className="rounded-none w-full uppercase font-semibold py-6"

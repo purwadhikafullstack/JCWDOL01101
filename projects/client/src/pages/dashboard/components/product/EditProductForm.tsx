@@ -55,7 +55,7 @@ const EditProductForm = () => {
   }, [slug, navigate]);
 
   const [button, setButton] = useState("");
-  const { data: product } = useProduct(slug || "");
+  const { data: pd } = useProduct(slug || "");
   const editImages = useBoundStore((state) => state.editImages);
   const clearImage = useBoundStore((state) => state.clearImage);
   const setEditImageForm = useBoundStore((state) => state.setEditImageForm);
@@ -90,7 +90,8 @@ const EditProductForm = () => {
   };
 
   useEffect(() => {
-    if (product) {
+    if (pd && pd.product) {
+      const { product } = pd;
       form.setValue("name", product.name);
       form.setValue("categoryId", String(product.categoryId));
       form.setValue("price", product.price);
@@ -110,7 +111,7 @@ const EditProductForm = () => {
         );
       });
     }
-  }, [product]);
+  }, [pd]);
 
   useEffect(() => {
     if (editMutation.status === "success") {
@@ -140,9 +141,6 @@ const EditProductForm = () => {
       </span>
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-bold">Edit Product</h3>
-        <span className="border rounded-full p-2 px-4">
-          Your Product: {`2/100`}
-        </span>
       </div>
       <div className="border rounded-lg p-4">
         <Form {...form}>

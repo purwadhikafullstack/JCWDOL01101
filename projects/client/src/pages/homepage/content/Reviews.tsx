@@ -14,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const Reviews = () => {
   const { slug } = useParams();
-  const { data: product, isLoading: productLoading } = useProduct(slug || "");
+  const { data: pd, isLoading: productLoading } = useProduct(slug || "");
 
   const {
     data,
@@ -23,7 +23,7 @@ const Reviews = () => {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = useReviewsInfinite({ productId: product?.id, limit: 5 });
+  } = useReviewsInfinite({ productId: pd?.product?.id, limit: 5 });
   const reviewData: ReviewByProduct = isSuccess && data.pages[0];
 
   const [isVisible, setIsVisible] = useState(false);
@@ -54,11 +54,11 @@ const Reviews = () => {
         <Skeleton className="rounded-none w-[35%] h-6 mb-4" />
       ) : (
         <>
-          {product && slug && (
+          {pd && pd.product && slug && (
             <Breadcrumbs
-              productName={product.name}
-              categoryId={product.categoryId}
-              category={product.productCategory}
+              productName={pd.product.name}
+              categoryId={pd.product.categoryId}
+              category={pd.product.productCategory}
               slug={slug}
             />
           )}
@@ -71,7 +71,7 @@ const Reviews = () => {
       {productLoading ? (
         <Skeleton className="h-8 w-[40%] my-2" />
       ) : (
-        <h1 className="text-2xl font-bold my-2">{product?.name}</h1>
+        <h1 className="text-2xl font-bold my-2">{pd?.product?.name}</h1>
       )}
       <div className="flex gap-10">
         <div className="flex-1">
@@ -150,7 +150,7 @@ const Reviews = () => {
                   )}
                 </>
               )}
-              <Link to={`/product/${product?.slug}/reviews/new`}>
+              <Link to={`/product/${pd?.product?.slug}/reviews/new`}>
                 <Button
                   variant="outline"
                   className="border-black uppercase mt-6 w-full rounded-none"

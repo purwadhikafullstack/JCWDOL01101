@@ -5,7 +5,14 @@ import { ProductService } from '@/services/product.service';
 import { RequireAuthProp } from '@clerk/clerk-sdk-node';
 import { NextFunction, Request, Response } from 'express';
 import Container from 'typedi';
-
+export type ProductQuery = {
+  f: string;
+  page: number;
+  size: string;
+  pmax: string;
+  pmin: string;
+  category: string;
+};
 export class ProductController {
   product = Container.get(ProductService);
 
@@ -34,12 +41,9 @@ export class ProductController {
     }
   };
 
-  public getProductsHomepage = async (req: Request, res: Response, next: NextFunction) => {
+  public getProductsHomepage = async (req: Request<{}, {}, {}, ProductQuery>, res: Response, next: NextFunction) => {
     try {
-      const page = Number(req.query.page);
-      const category = String(req.query.category);
-      const f = req.query.f as string;
-      const products = await this.product.getAllProductOnHomepage({ page, f, category });
+      const products = await this.product.getAllProductOnHomepage({ ...req.query });
       res.status(200).json({
         data: products,
         message: 'get.products',
@@ -92,9 +96,9 @@ export class ProductController {
   public getProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const slug = String(req.params.slug);
-      const proudct: Product = await this.product.getProduct(slug);
+      const { product, totalStock, totalSold } = await this.product.getProduct(slug);
       res.status(200).json({
-        data: proudct,
+        data: { product, totalStock, totalSold },
         message: 'get.products',
       });
     } catch (err) {

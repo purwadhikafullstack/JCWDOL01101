@@ -29,7 +29,7 @@
     "category": "Category",
     "clear": "Clear",
     "filter": {
-      "header": "Filter",
+      "header": "Select By",
       "sub": "Set a Filter"
     }
   },
@@ -43,7 +43,7 @@
     },
     "options": {
       "header": "Set Amount",
-      "stock": "total stock",
+      "stock": "stock",
       "noStock": "out of stock",
       "subTotal": "subtotal",
       "btn": "Cart"

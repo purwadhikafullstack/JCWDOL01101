@@ -16,36 +16,19 @@ const Homepage = () => {
     key: ["new-products"],
     url: "/products/new",
   });
-  const { data: categories } = useCategories(4);
+  const { data: categories } = useCategories(8);
   const { data: highestSell, isLoading: highestSellLoading } =
     useHighestSellProducts();
   return (
     <>
       <MainCarousel />
       <div className="mt-2 flex flex-col">
-        <span className="flex items-center justify-between mt-8 my-2 capitalize">
-          <h3 className="font-bold text-base lg:text-xl uppercase">
-            {t("homepage.title1")}
-          </h3>
-          <Link
-            to="/products"
-            className="text-primary text-xs md:text-sm font-bold"
-          >
-            {t("homepage.sub1")}
-          </Link>
-        </span>
-        <section className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2">
-          {categories &&
-            categories.map((category) => (
-              <CategoryCard key={category.id} category={category} />
-            ))}
-        </section>
         <span className="flex items-center justify-between mt-8 my-2">
           <h3 className="font-bold text-base lg:text-xl capitalize">
             {t("homepage.title2")}
           </h3>
           <Link
-            to="/search?sell=highest"
+            to="/products?f=hs"
             className="text-primary text-xs md:text-sm font-bold"
           >
             {t("homepage.sub2")}
@@ -69,6 +52,24 @@ const Homepage = () => {
             ))}
           </section>
         )}
+        <span className="flex items-center justify-between mt-8 my-2 capitalize">
+          <h3 className="font-bold text-base lg:text-xl uppercase">
+            {t("homepage.title1")}
+          </h3>
+          <Link
+            to="/products"
+            className="text-primary text-xs md:text-sm font-bold"
+          >
+            {t("homepage.sub1")}
+          </Link>
+        </span>
+        <section className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2">
+          {categories &&
+            categories.map((category) => (
+              <CategoryCard key={category.id} category={category} />
+            ))}
+        </section>
+
         <h3 className="font-bold text-xl my-2 mt-8 case capitalize">
           {t("homepage.title3")}
         </h3>

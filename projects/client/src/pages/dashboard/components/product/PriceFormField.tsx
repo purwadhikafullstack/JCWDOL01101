@@ -42,22 +42,20 @@ const PriceFormField = () => {
             </FormLabel>
             <div className="col-span-2">
               <FormControl>
-                <div className="w-full flex flex-col gap-1">
-                  <div className="border w-full focus-within:ring-2 focus-within:ring-primary rounded-lg flex items-center">
-                    <div className="w-max h-full bg-muted border-r py-2 px-4 rounded-l-lg font-bold text-muted-foreground text-sm">
-                      Rp
-                    </div>
-                    <input
-                      {...field}
-                      placeholder="Enter Price"
-                      className="w-full outline-none py-1 pl-2 rounded-r-lg"
-                      value={form.watch("formattedPrice") || ""}
-                      onChange={(e) => {
-                        const formattedValue = formatNumber(e.target.value);
-                        field.onChange(formattedValue);
-                      }}
-                    />
+                <div className="border w-full focus-within:ring-2 focus-within:ring-primary rounded-lg flex items-center">
+                  <div className="w-max h-full bg-muted border-r py-2 px-4 rounded-l-lg font-bold text-muted-foreground text-sm">
+                    Rp
                   </div>
+                  <input
+                    {...field}
+                    placeholder="Enter Price"
+                    className="w-full outline-none py-1 pl-2 rounded-r-lg"
+                    value={form.watch("formattedPrice") || ""}
+                    onChange={(e) => {
+                      const formattedValue = formatNumber(e.target.value);
+                      field.onChange(formattedValue);
+                    }}
+                  />
                 </div>
               </FormControl>
               <FormMessage />

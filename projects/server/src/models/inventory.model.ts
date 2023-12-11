@@ -4,7 +4,7 @@ import { Inventory } from '@/interfaces/inventory.interface';
 export class InventoryModel extends Model<Inventory> implements Inventory {
   public id: number;
   public warehouseId: number;
-  public productId?: number;
+  public productId: number;
   public stock: number;
   public sold: number;
 

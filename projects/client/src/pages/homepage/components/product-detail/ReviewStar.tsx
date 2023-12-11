@@ -14,6 +14,7 @@ const ReviewStar = ({ rating }: ReviewStarProps) => {
     const fill = index < rating ? fillColor : emptyColor;
     return fill === fillColor ? (
       <motion.div
+        key={index}
         transition={{
           type: "spring",
           ease: "anticipate",
@@ -31,7 +32,7 @@ const ReviewStar = ({ rating }: ReviewStarProps) => {
       >
         <Star
           fill={fill}
-          className="text-transparent w-6 h-6 transition-colors duration-100"
+          className="text-transparent w-5 h-5 transition-colors duration-100"
         />
       </motion.div>
     ) : (

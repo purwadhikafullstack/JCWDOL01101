@@ -14,6 +14,8 @@ import { InventoryModel } from '@/models/inventory.model';
 import fs from 'fs';
 import { WishlistModel } from '@/models/wishlist.model';
 import { Category } from '@/interfaces/category.interface';
+import { ProductQuery } from '@/controllers/product.controller';
+import { ReviewModel } from '@/models/review.model';
 
 @Service()
 export class ProductService {
@@ -99,8 +101,31 @@ export class ProductService {
     return { totalPages: totalPages, products: warehouseProducts };
   }
 
-  public async getAllProductOnHomepage({ page, f, category }: { page: number; f: string; category: string }): Promise<Product[]> {
+  public async getAllProductOnHomepage({ page, f, category, size, pmin, pmax }: ProductQuery): Promise<Product[]> {
     const findCategory: Category = await DB.Categories.findOne({ paranoid: true, where: { slug: category } });
+
+    const where: { [k: string]: any } = {
+      status: 'ACTIVE',
+    };
+
+    if (size) {
+      where.size = size;
+    }
+
+    if (pmin && !Number.isNaN(+pmin)) {
+      where.price = where.price || {};
+      where.price[Op.gte] = Number(pmin);
+    }
+
+    if (pmax && !Number.isNaN(+pmax)) {
+      where.price = where.price || {};
+      where.price[Op.lte] = Number(pmax);
+    }
+
+    if (findCategory) {
+      where.categoryId = findCategory.id;
+    }
+
     const options: FindOptions = {
       offset: (Number(page) - 1) * 12,
       limit: 12,
@@ -120,11 +145,12 @@ export class ProductService {
           paranoid: true,
           limit: 1,
         },
+        {
+          model: ReviewModel,
+          as: 'productReviews',
+        },
       ],
-      where: {
-        status: 'ACTIVE',
-        ...(findCategory && { categoryId: findCategory.id }),
-      },
+      where: where,
     };
 
     switch (f) {
@@ -140,10 +166,14 @@ export class ProductService {
       case 'hs':
         options.order = [[{ model: InventoryModel, as: 'inventory' }, 'sold', 'DESC']];
         break;
+      case 'rating':
+        options.order = [[{ model: ReviewModel, as: 'productReviews' }, 'rating', 'DESC']];
+        break;
       default:
         options.order = [['createdAt', 'DESC']];
         break;
     }
+
     const products = await DB.Product.findAll(options);
 
     return products;
@@ -271,7 +301,7 @@ export class ProductService {
     return findProducts;
   }
 
-  public async getProduct(slug: string): Promise<Product> {
+  public async getProduct(slug: string): Promise<{ totalStock: number; totalSold: number; product: Product }> {
     const findProduct: Product = await DB.Product.findOne({
       where: { slug, status: 'ACTIVE' },
       include: [
@@ -297,9 +327,12 @@ export class ProductService {
         },
       ],
     });
+
+    const totalStock = await DB.Inventories.sum('stock', { where: { productId: findProduct.id } });
+    const totalSold = await DB.Inventories.sum('sold', { where: { productId: findProduct.id } });
     if (!findProduct) throw new HttpException(409, "Product doesn't exist");
 
-    return findProduct;
+    return { totalStock, totalSold, product: findProduct };
   }
 
   public async getProductByCategory(productId: number, categoryId: number, limit: number): Promise<Product[]> {

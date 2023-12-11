@@ -101,21 +101,31 @@ export const useProducts = ({
   return { data, isLoading, isFetched };
 };
 
-export const useProductInfinite = ({
-  f,
-  category,
-  limit = 12,
-}: {
+type ProductParams = {
   category: string;
   f: string;
   limit?: number;
   search?: string;
-}) => {
+  size?: string;
+  pmax?: string;
+  pmin?: string;
+};
+export const useProductInfinite = ({
+  f,
+  size,
+  pmax,
+  pmin,
+  category,
+  limit = 12,
+}: ProductParams) => {
   const fetchProjects = async (page: number) => {
     const res = await service.get("/products/home", {
       params: {
         f,
         page,
+        size,
+        pmax,
+        pmin,
         limit,
         category,
       },
@@ -124,7 +134,7 @@ export const useProductInfinite = ({
   };
 
   const query = useInfiniteQuery({
-    queryKey: ["home/products", category, f],
+    queryKey: ["home/products", category, f, size, pmax, pmin],
     queryFn: ({ pageParam }) => fetchProjects(pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage, page) =>
@@ -171,7 +181,11 @@ export const useHighestSellProducts = (limit = 3) => {
 };
 
 export const useProduct = (slug: string) => {
-  const { data, isLoading } = useQuery<Product>({
+  const product = useQuery<{
+    product: Product;
+    totalStock: number;
+    totalSold: number;
+  }>({
     queryKey: ["product", slug],
     queryFn: async () => {
       const res = await service.get(`/products/${slug}`, {
@@ -181,7 +195,7 @@ export const useProduct = (slug: string) => {
     },
   });
 
-  return { data, isLoading };
+  return product;
 };
 
 export const useProductsByCategory = (categoryId: number, limit = 12) => {

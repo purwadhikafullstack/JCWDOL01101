@@ -14,75 +14,78 @@ import { useReviewByProduct } from "@/hooks/useReview";
 
 const ProductDetail = () => {
   const { slug } = useParams();
-  const { data: product } = useProduct(slug || "");
-  const { data: reviewData } = useReviewByProduct(product?.id);
+  const { data: pd } = useProduct(slug || "");
+  const { data: reviewData } = useReviewByProduct(pd?.product?.id);
   return (
-    <div>
-      {product && (
-        <Breadcrumbs
-          slug={product.slug}
-          categoryId={product.categoryId}
-          category={product.productCategory}
-          productName={product.name}
-        />
-      )}
-      <div className="w-full flex justify-between">
-        <div className="flex-1 pt-2">
-          <section className="max-w-[655px]">
-            <ProductCarousel images={product?.productImage || []} />
-            <section>
-              {reviewData && (
-                <>
-                  <div className="flex items-center gap-2">
-                    <span className="leading-3 text-xl font-semibold mr-4">
-                      REVIEW
-                    </span>
-                    <ReviewStar rating={reviewData.averageRating} />
-                    <Link
-                      to={`/product/${product?.slug}/reviews`}
-                      className="underline"
-                    >
-                      ({reviewData.totalReviews || 0})
-                    </Link>
-                  </div>
-                  <Separator className="my-4" />
-                  <OverallRating ratingCounts={reviewData.ratingCounts} />
-                </>
-              )}
-              <Link to={`/product/${product?.slug}/reviews/new`}>
-                <Button
-                  variant="outline"
-                  className="border-black uppercase mt-6 px-10 rounded-none"
-                >
-                  Write Review
-                </Button>
-              </Link>
-              <Separator className="my-4" />
-              {product && <ReviewProduct productId={product.id} />}
-              <Link to={`/product/${product?.slug}/reviews`}>
-                <Button
-                  variant="outline"
-                  className="border-black uppercase mt-6 px-10 rounded-none"
-                >
-                  See More
-                </Button>
-              </Link>
-            </section>
-          </section>
-        </div>
-        <div className="w-[522px] relative">
-          {product && <ProductDescription product={product} />}
-        </div>
-      </div>
+    pd &&
+    pd.product && (
       <div>
-        {product && (
+        <Breadcrumbs
+          slug={pd.product.slug}
+          categoryId={pd.product.categoryId}
+          category={pd.product.productCategory}
+          productName={pd.product.name}
+        />
+        <div className="w-full flex justify-between">
+          <div className="flex-1 pt-2">
+            <section className="max-w-[655px]">
+              <ProductCarousel images={pd.product.productImage || []} />
+              <section>
+                {reviewData && (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <span className="leading-3 text-xl font-semibold mr-4">
+                        REVIEW
+                      </span>
+                      <ReviewStar rating={reviewData.averageRating} />
+                      <Link
+                        to={`/product/${pd.product?.slug}/reviews`}
+                        className="underline"
+                      >
+                        ({reviewData.totalReviews || 0})
+                      </Link>
+                    </div>
+                    <Separator className="my-4" />
+                    <OverallRating ratingCounts={reviewData.ratingCounts} />
+                  </>
+                )}
+                <Link to={`/product/${pd.product.slug}/reviews/new`}>
+                  <Button
+                    variant="outline"
+                    className="border-black uppercase mt-6 px-10 rounded-none"
+                  >
+                    Write Review
+                  </Button>
+                </Link>
+                <Separator className="my-4" />
+                <ReviewProduct productId={pd.product.id} />
+                <Link to={`/product/${pd.product.slug}/reviews`}>
+                  <Button
+                    variant="outline"
+                    className="border-black uppercase mt-6 px-10 rounded-none"
+                  >
+                    See More
+                  </Button>
+                </Link>
+              </section>
+            </section>
+          </div>
+          <div className="w-[522px] relative">
+            <ProductDescription
+              product={pd.product}
+              totalStock={pd.totalStock}
+              totalSold={pd.totalSold}
+            />
+          </div>
+        </div>
+        <div>
           <RecommendedProduct
-            productId={product.id}
-            categoryId={product.categoryId}
+            productId={pd.product.id}
+            categoryId={pd.product.categoryId}
           />
-        )}
+        </div>
       </div>
-    </div>
+    )
   );
 };
 

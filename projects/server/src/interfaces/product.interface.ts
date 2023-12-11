@@ -12,6 +12,7 @@ export interface Product {
   status: Status;
   slug: string;
   size: string;
+  totalStock?: number;
   createdAt?: Date;
   updateAt?: Date;
 }

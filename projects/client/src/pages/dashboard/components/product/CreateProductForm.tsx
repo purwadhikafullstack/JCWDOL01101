@@ -97,9 +97,6 @@ const CreateProductForm = () => {
       </span>
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-bold">Add Product</h3>
-        <span className="border rounded-full p-2 px-4">
-          Your Product: {`2/100`}
-        </span>
       </div>
       <div className="border rounded-lg p-4">
         <Form {...form}>
