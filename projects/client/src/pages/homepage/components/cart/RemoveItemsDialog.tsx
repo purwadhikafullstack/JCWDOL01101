@@ -35,14 +35,13 @@ const RemoveItemsDialog = ({ cartId }: { cartId: number }) => {
   }, [deleteAllCart.isSuccess]);
   return (
     <Dialog>
-      <DialogTrigger
-        className={buttonVariants({
-          variant: "ghost",
-          className:
-            "text-primary font-semibold hover:text-primary/90 hover:bg-transparent uppercase",
-        })}
-      >
-        {t("cartPage.remove")}
+      <DialogTrigger asChild>
+        <Button
+          className="text-primary px-0 font-semibold hover:text-primary/90 hover:bg-transparent uppercase"
+          variant="ghost"
+        >
+          {t("cartPage.remove")}
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

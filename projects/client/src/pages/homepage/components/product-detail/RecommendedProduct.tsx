@@ -23,7 +23,7 @@ const RecommendedProduct = ({
   return (
     <div className="mt-8 ">
       <span className="flex items-center justify-between uppercase">
-        <p className="font-bold text-xl my-4">
+        <p className="font-bold text-sm lg:text-xl my-4">
           {t("productDetailPage.misc.title")}
         </p>
         {productsCategory && productsCategory.length > 0 && (
@@ -35,7 +35,7 @@ const RecommendedProduct = ({
           </Link>
         )}
       </span>
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {isLoading ? (
           <NewestProductSekeleton product={8} />
         ) : (

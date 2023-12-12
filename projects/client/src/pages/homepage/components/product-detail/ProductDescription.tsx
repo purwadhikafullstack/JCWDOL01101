@@ -27,7 +27,6 @@ const ProductDescription = ({
 }: ProductDescriptionProps) => {
   const { t } = useTranslation();
 
-
   const navigate = useNavigate();
   const userContext = useContext(UserContext);
   if (!userContext) {
@@ -95,9 +94,11 @@ const ProductDescription = ({
   return (
     <div className="sticky top-[100px]">
       <div className="w-full h-full">
-        <h2 className="text-4xl font-bold leading-2">{product?.name}</h2>
+        <h2 className="text-2xl lg:text-4xl font-bold leading-2">
+          {product?.name}
+        </h2>
         <div className="flex items-center justify-between my-4">
-          <span className="text-2xl font-bold">
+          <span className="lg:text-2xl font-bold">
             {formatToIDR(product?.price || 0)}
           </span>
           {reviewData && (
@@ -115,7 +116,9 @@ const ProductDescription = ({
         <p>{product?.description}</p>
         <Separator className="my-2 mt-6" />
         <div className="space-y-4">
-          <span className="uppercase font-semibold">Size: {product?.size}</span>
+          <span className="uppercase font-semibold">
+            {t("productDetailPage.product.size")}: {product?.size}
+          </span>
           <div>
             <p className={`${totalStock <= 0 && "text-primary"} uppercase`}>
               {totalStock > 0
@@ -168,7 +171,9 @@ const ProductDescription = ({
               <p className="text-primary text-xs mt-2">{error}</p>
             </div>
             <div className="flex flex-col items-end">
-              <span className="">Subtotal</span>
+              <span className="capitalize">
+                {t("productDetailPage.options.subTotal")}
+              </span>
               <p className="font-bold">
                 {formatToIDR(product.price * quantity || 0)}
               </p>
@@ -183,7 +188,7 @@ const ProductDescription = ({
             onClick={addToCart}
             className="rounded-none w-full uppercase font-semibold py-6"
           >
-            Add to cart
+            {t("productDetailPage.options.addToCart")}
           </Button>
 
           {product.productWishlist.length <= 0 ? (
@@ -192,7 +197,7 @@ const ProductDescription = ({
               variant="outline"
               className="rounded-none border-black w-full uppercase font-semibold"
             >
-              add to wishlist
+              {t("productDetailPage.options.addToWishlist")}
             </Button>
           ) : (
             <Button
@@ -200,7 +205,7 @@ const ProductDescription = ({
               variant="outline"
               className="rounded-none border-black w-full uppercase font-semibold"
             >
-              remove from wishlist
+              {t("productDetailPage.options.removeFromWishlist")}
             </Button>
           )}
           <div className="mt-4">

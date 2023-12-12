@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 type ReviewSuccessModalProps = {
   slug: string;
@@ -22,17 +23,15 @@ const ReviewSuccessModal = ({
   modal,
   setModal,
 }: ReviewSuccessModalProps) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   return (
     <Dialog open={modal}>
       <DialogContent className="lg:rounded-none">
         <DialogHeader>
-          <DialogTitle>Review Submitted Successfully!</DialogTitle>
+          <DialogTitle>{t("reviewsPage.successModal.title")}</DialogTitle>
           <DialogDescription>
-            Your review has been successfully posted and saved. We value your
-            feedback and appreciate the time you took to share your experience.
-            You can view your review in the reviews section. Thank you for
-            helping us improve our services.
+            {t("reviewsPage.successModal.desc")}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -42,14 +41,14 @@ const ReviewSuccessModal = ({
             variant="outline"
             className="w-full border-black uppercase rounded-none"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back to product detail
+            <ArrowLeft className="w-4 h-4 mr-2" /> {t("reviewsPage.form.back")}
           </Button>
           <Button
             onClick={() => setModal(false)}
             type="button"
-            className="bg-black hover:bg-black/80 w-full border-black uppercase rounded-none"
+            className="bg-black hover:bg-black/80 w-full border-black uppercase rounded-none  mb-2 lg:mb-0"
           >
-            Post Another Review
+            {t("reviewsPage.successModal.post")}
           </Button>
         </DialogFooter>
       </DialogContent>

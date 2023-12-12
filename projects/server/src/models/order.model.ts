@@ -31,7 +31,7 @@ export default function (sequelize: Sequelize): typeof OrderModel {
       status: {
         allowNull: false,
         type: DataTypes.ENUM,
-        values: ['PENDING', 'SUCCESS', 'FAILED', 'PROCESS'],
+        values: ['PENDING', 'WAITING', 'DELIVERED', 'SHIPPED', 'FAILED', 'PROCESS'],
       },
       totalPrice: {
         allowNull: false,

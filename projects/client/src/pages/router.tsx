@@ -30,6 +30,7 @@ import ProductDetail from "./homepage/content/ProductDetail";
 import ReviewForm from "./homepage/content/ReviewForm";
 import Reviews from "./homepage/content/Reviews";
 import Wishlist from "./homepage/content/Wishlist";
+import ProductReviews from "./dashboard/content/ProductReviews";
 
 const router = createBrowserRouter([
   {
@@ -82,7 +83,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "order",
+        path: "transactions",
         element: (
           <ProtectedRoute>
             <Order />
@@ -182,6 +183,10 @@ const router = createBrowserRouter([
       {
         path: "product/category",
         element: <ManageCategory />,
+      },
+      {
+        path: "product/reviews/:slug",
+        element: <ProductReviews />,
       },
       {
         path: "product/create",

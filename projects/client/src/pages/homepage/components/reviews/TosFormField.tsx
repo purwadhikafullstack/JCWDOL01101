@@ -7,8 +7,10 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useTranslation } from "react-i18next";
 
 const TosFormField = () => {
+  const { t } = useTranslation();
   const form = useFormContext();
   return (
     <FormField
@@ -25,7 +27,7 @@ const TosFormField = () => {
               className="rounded-none"
             />
             <FormLabel htmlFor="tos" className="font-semibold">
-              I agree to the TOKEN TERMS OF USE
+              {t("reviewsPage.form.note.tos")}
             </FormLabel>
           </div>
         </FormItem>

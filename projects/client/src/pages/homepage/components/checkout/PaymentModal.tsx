@@ -94,7 +94,7 @@ const PaymentModal = ({
     if (createPayment.isSuccess) {
       const data = createPayment.data;
       window.open(data.virtual_account_info.how_to_pay_page, "_blank");
-      return navigate("/order");
+      return navigate("/transactions");
     }
   }, [createPayment.isSuccess]);
   return (
@@ -102,7 +102,7 @@ const PaymentModal = ({
       <Button
         disabled={isLoading || checkClosestWarehouse.isError}
         onClick={onSubmit}
-        className="font-bold w-full py-6 text-lg rounded-lg"
+        className="font-bold w-full lg:py-6 text-base lg:text-lg rounded-lg"
       >
         {checkClosestWarehouse.isPending ? (
           <span className="animate-pulse">
@@ -130,7 +130,7 @@ const PaymentModal = ({
         {show && (
           <div className="top-0  m-0 left-0 z-30 w-full h-screen fixed bg-black/80">
             <div className="w-full flex justify-center items-center h-full">
-              <div className="w-[500px] overflow-hidden  transition-all duration-200 relative">
+              <div className="w-[95%] lg:w-[500px] overflow-hidden  transition-all duration-200 relative">
                 <div
                   className={`absolute w-full transform ${
                     exit ? "translate-y-20" : "-translate-y-[300px]"

@@ -53,6 +53,7 @@ type ProductOptions = {
   order: string;
   limit: number;
   warehouse: string;
+  category: string;
 };
 
 export interface ProductWarehouse {
@@ -73,6 +74,7 @@ export const useProducts = ({
   filter,
   order,
   limit,
+  category,
   warehouse,
 }: ProductOptions) => {
   const { getToken } = useAuth();
@@ -80,7 +82,7 @@ export const useProducts = ({
     products: Product[];
     totalPages: number;
   }>({
-    queryKey: ["products", page, s, filter, order, warehouse],
+    queryKey: ["products", page, s, filter, order, warehouse, category],
     queryFn: async () => {
       const res = await service.get("/products", {
         params: {
@@ -89,6 +91,7 @@ export const useProducts = ({
           order,
           limit,
           filter,
+          category,
           warehouse,
         },
         withCredentials: true,

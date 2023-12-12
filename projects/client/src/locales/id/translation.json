@@ -27,16 +27,28 @@
   "productsPage": {
     "title": "Semua Produk",
     "category": "Kategori",
-    "clear": "Clear",
+    "clear": "Bersihkan",
+    "price": {
+      "label": "Harga",
+      "pmin": "Harga Minimum",
+      "pmax": "Harga Maksimum"
+    },
+    "size": "Ukuran",
+    "activeFilter": "FILTER AKTIF",
     "filter": {
-      "header": "Filter",
-      "sub": "Atur Filter"
+      "header": "Pilih Berdasarkan",
+      "sub": "Pilih berdasarkan",
+      "select1": "Produk Unggulan",
+      "select2": "Baru Tiba",
+      "select3": "Rendah ke Tinggi",
+      "select4": "Tinggi ke Rendah",
+      "select5": "Peringkat Tertinggi"
     }
   },
   "productDetailPage": {
     "product": {
       "rating": "rating",
-      "discution": "Diskusi",
+      "size": "Ukuran",
       "sold": "Terjual",
       "desc": "Deskripsi",
       "average": "Rating Rata-rata"
@@ -46,7 +58,9 @@
       "stock": "stok total",
       "noStock": "stok habis",
       "subTotal": "subtotal",
-      "btn": "Keranjang"
+      "addToCart": "Tambahkan Ke Keranjang",
+      "addToWishlist": "Tambahkan ke Wishlist",
+      "removeFromWishlist": "Hapus Dari Wishlist"
     },
     "misc": {
       "title": "Produk lain dari kategori ini",
@@ -80,6 +94,56 @@
     },
     "misc": {
       "title": "Produk Rekomendasi"
+    }
+  },
+  "wishlistPage": {
+    "successRemoveModal": "Success! satu item telah dihapus dari daftar wishlist Anda",
+    "product": "Produk",
+    "emptyStock": "Kami akan mengisi ulang stok segera.",
+    "addBtn": "TAMBAH KE KERANJANG",
+    "noWishlist": {
+      "title": "Tidak ada produk di wishlist Anda.",
+      "desc": "Tekan hati untuk menambahkan produk ke wishlist Anda"
+    }
+  },
+  "reviewsPage": {
+    "backToProduct": "KEMBALI KE DETAIL PRODUK",
+    "review": "Ulasan",
+    "rating": "Peringkat",
+    "reviewSummary": "Ringkasan Ulasan",
+    "backToTop": "KEMBALI KE ATAS",
+    "load": {
+      "loading": "Memuat Lebih Banyak...",
+      "hasNextPage": "Muat Lebih Banyak"
+    },
+    "form": {
+      "writeReview": "TULIS ULASAN",
+      "required": "wajib",
+      "rating": "PERINGKAT",
+      "nickname": "NAMA PANGGILAN",
+      "nicknamePlaceholder": "silakan masukkan nama panggilan Anda",
+      "title": "JUDUL",
+      "titlePlaceholder": "ringkas ulasan Anda",
+      "comment": "KOMENTAR",
+      "commentDesc": "Anda harus menulis minimal 50 karakter di kolom ini.",
+      "note": {
+        "title": "MENULIS ULASAN",
+        "list1": "Komentar yang Anda berikan dapat digunakan untuk tujuan periklanan.",
+        "list2": "Kami tidak menerima permintaan untuk menempatkan iklan termasuk untuk merek lain, individu atau organisasi. Kami juga tidak dapat menyimpan stok atau ukuran.",
+        "tos": "Saya setuju dengan SYARAT PENGGUNAAN TOTEN"
+      },
+      "submit": "KIRIM",
+      "back": "KEMBALI KE DETAIL PRODUK"
+    },
+    "successModal": {
+      "title": "Ulasan Berhasil Dikirim!",
+      "desc": "Ulasan Anda telah berhasil diposting dan disimpan. Kami menghargai umpan balik Anda dan menghargai waktu yang Anda luangkan untuk berbagi pengalaman Anda. Anda dapat melihat ulasan Anda di bagian ulasan. Terima kasih telah membantu kami meningkatkan layanan kami.",
+      "post": "POSTING  ULASAN LAIN"
+    },
+    "allowReview": {
+      "btn": "TULIS ULASAN",
+      "title": "Ulasan Tidak Tersedia",
+      "desc": "Hanya pelanggan yang telah membeli produk ini yang dapat mengirimkan ulasan. Terima kasih atas pengertiannya."
     }
   },
   "checkoutPage": {

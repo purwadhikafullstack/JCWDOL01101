@@ -38,7 +38,7 @@ const CheckoutItem = ({
           {t("checkoutPage.cartItem.title")} {index + 1}
         </b>
       )}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid lg:grid-cols-2 gap-4">
         <div>
           <div className="flex flex-col">
             <span className="flex items-center">
@@ -64,16 +64,14 @@ const CheckoutItem = ({
           </div>
           <Separator className="my-2" />
         </div>
-        <div className="flex flex-col gap-2 px-4">
-          {warehouse?.warehouseAddress && (
-            <SelectCourier
-              quantity={quantity}
-              product={product}
-              address={activeAddress}
-              origin={warehouse.warehouseAddress.cityId}
-            />
-          )}
-        </div>
+        {warehouse?.warehouseAddress && (
+          <SelectCourier
+            quantity={quantity}
+            product={product}
+            address={activeAddress}
+            origin={warehouse.warehouseAddress.cityId}
+          />
+        )}
       </div>
       <Separator className="mt-6 mb-2" />
       <div className="w-full flex justify-between items-center">

@@ -1,7 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 const Order = () => {
-  return <div>Order</div>;
+  return (
+    <div>
+      <h1>transactions</h1>
+    </div>
+  );
 };
 
 export default Order;

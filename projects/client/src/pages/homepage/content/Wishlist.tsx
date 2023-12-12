@@ -3,8 +3,10 @@ import { Separator } from "@/components/ui/separator";
 import { WishlistData, useWishlist } from "@/hooks/useWishlist";
 import React from "react";
 import WishlistItem from "../components/WishlistItem";
+import { useTranslation } from "react-i18next";
 
 const Wishlist = () => {
+  const { t } = useTranslation();
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useWishlist(5);
   const totalProduct = data ? data.pages[0].totalWishlist : 0;
@@ -12,11 +14,13 @@ const Wishlist = () => {
     <div>
       <h1 className="uppercase font-bold text-3xl mb-10">Wishlist</h1>
       <div className="border p-4">
-        <span>{totalProduct} Product</span>
+        <span>
+          {totalProduct} {t("wishlistPage.product")}
+        </span>
         <Separator className="my-4" />
         <div className="flex flex-col">
           {data &&
-            data.pages.map((page) =>
+            data.pages.map((page, index) =>
               page.wishlist.length > 0 ? (
                 page.wishlist.map(
                   ({ productWishlist: product, id }: WishlistData) => (
@@ -24,12 +28,12 @@ const Wishlist = () => {
                   )
                 )
               ) : (
-                <>
+                <div key={index}>
                   <p className="font-bold">
-                    THERE ARE NO PRODUCTS ON YOUR WISH LIST.
+                    {t("wishlistPage.noWishlist.title")}
                   </p>
-                  <p>Press the heart to add the product to your wishlist</p>
-                </>
+                  <p>{t("wishlistPage.noWishlist.desc")}</p>
+                </div>
               )
             )}
           {hasNextPage && (

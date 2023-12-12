@@ -82,7 +82,7 @@ const SelectCourier = ({
               disabled={isLoading}
               className={buttonVariants({
                 variant: "default",
-                className: `rounded-lg lg:justify-between py-6 font-semibold ${
+                className: `rounded-lg lg:justify-between lg:py-6 font-semibold ${
                   isLoading && "animate-pulse"
                 }`,
               })}

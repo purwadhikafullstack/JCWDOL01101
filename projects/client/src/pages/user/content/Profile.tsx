@@ -1,22 +1,22 @@
-import UserContext from "@/context/UserContext"
-import React, { useContext } from "react"
-import ProfileAvatar from "../components/ProfileAvatar"
-import { Edit, User } from "lucide-react"
-import { buttonVariants } from "@/components/ui/button"
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
-import EditProfile from "../components/EditProfile"
+import UserContext from "@/context/UserContext";
+import React, { useContext } from "react";
+import ProfileAvatar from "../components/ProfileAvatar";
+import { Edit, User } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import EditProfile from "../components/EditProfile";
 
 const Profile = () => {
-  const userContext = useContext(UserContext)
+  const userContext = useContext(UserContext);
   if (!userContext) {
-    throw new Error("useUser must be used within a UserProvider")
+    throw new Error("useUser must be used within a UserProvider");
   }
-  const { user } = userContext
+  const { user } = userContext;
   return (
     <>
-      <div className="p-6 flex gap-8">
+      <div className="md:p-6 flex flex-col md:flex-row md:gap-8">
         <ProfileAvatar />
-        <div className="py-2 flex flex-col space-y-4">
+        <div className="py-2 flex flex-col space-y-4 mt-10 md:mt-0">
           <span className="flex items-center gap-1 mb-4">
             <User />
             <h2 className="text-2xl">Account</h2>
@@ -35,8 +35,8 @@ const Profile = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
 const LabelName = ({ label, data }: { label: string; data: string }) => {
   return (
@@ -44,7 +44,7 @@ const LabelName = ({ label, data }: { label: string; data: string }) => {
       <p className="w-[150px]">{label}</p>
       <p>{data}</p>
     </span>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;

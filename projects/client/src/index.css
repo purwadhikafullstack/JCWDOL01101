@@ -75,12 +75,16 @@
     column-gap: 1rem;
     row-gap: 0.5rem;
   }
+
+  .product_banner {
+    margin-bottom: 3rem;
+  }
 }
 
 .product_banner {
   grid-area: product_banner;
   margin: 0;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
 }
 
 .product_filter {

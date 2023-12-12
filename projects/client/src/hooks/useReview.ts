@@ -1,12 +1,14 @@
 import service from "@/service";
+import { useAuth } from "@clerk/clerk-react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 export interface Review {
-  id?: number;
-  productId?: number;
-  userId?: number;
+  id: number;
+  productId: number;
+  userId: number;
   rating: number;
   nickname: string;
   title: string;
+  status: "ACTIVE" | "DEACTIVATED" | "DELETED";
   comment: string;
   createdAt: string;
 }
@@ -41,6 +43,44 @@ export const useReviewByProduct = (
   });
 
   return cart;
+};
+
+interface DashboardReview extends ReviewByProduct {
+  totalPages: number;
+}
+
+type Params = {
+  productId: number | undefined;
+  status: string;
+  rating: string;
+  page: number;
+  limit: number;
+};
+
+export const useDashboardReviewProduct = ({
+  page,
+  limit,
+  rating,
+  status,
+  productId,
+}: Params) => {
+  const review = useQuery<DashboardReview>({
+    queryKey: ["dashboard/reviews", page, productId, limit, status, rating],
+    queryFn: async () => {
+      const res = await service.get(`/reviews/dashboard/product/${productId}`, {
+        params: {
+          page,
+          limit,
+          status,
+          rating,
+        },
+      });
+      return res.data.data;
+    },
+    enabled: !!productId,
+  });
+
+  return review;
 };
 
 export const useReviewsInfinite = ({

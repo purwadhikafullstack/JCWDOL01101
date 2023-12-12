@@ -25,4 +25,5 @@ export interface GetFilterProduct {
   limit: number;
   externalId: string;
   warehouse: string;
+  category: string;
 }

@@ -133,17 +133,17 @@ const CartItem = ({
             <X className="text-foreground cursor-pointer " />
           </Button>
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid lg:grid-cols-2 gap-2">
           <div className="flex items-start pl-6 gap-4">
             <img
-              className="w-32  object-contain"
+              className="w-24 lg:w-32  object-contain"
               src={`${baseURL}/images/${product.primaryImage}`}
               alt={product.name}
             />
             <div>
               <Link
                 to={`/product/${product.slug}`}
-                className="text-lg font-bold"
+                className="text-sm lg:text-lg font-bold "
               >
                 {product.name}
               </Link>
@@ -160,23 +160,25 @@ const CartItem = ({
               <Button
                 disabled={quantity <= 1}
                 onClick={() => changeQuantity(-1)}
-                className="bg-black hover:bg-black/80 rounded-none"
+                size="sm"
+                className="h-8 bg-black hover:bg-black/80 rounded-none"
               >
                 <Minus className="text-primary-foreground w-5 h-5" />
               </Button>
-              <span className=" border  h-10 grid place-content-center px-8 text-xl leading-3 select-none">
+              <span className=" border  h-8 grid place-content-center px-8 text-xl leading-3 select-none">
                 {quantity}
               </span>
               <Button
                 disabled={quantity >= stock}
                 onClick={() => changeQuantity(+1)}
                 variant="ghost"
-                className="bg-black hover:bg-black/80 rounded-none"
+                size="sm"
+                className="h-8 bg-black hover:bg-black/80 rounded-none"
               >
                 <Plus className="text-primary-foreground w-5 h-5" />
               </Button>
             </div>
-            <span className="font-bold uppercase">
+            <span className="text-sm lg:text-base font-bold uppercase">
               {t("cartPage.subTotal")}:{" "}
               {formatToIDR((product.price * quantity).toString())}
             </span>

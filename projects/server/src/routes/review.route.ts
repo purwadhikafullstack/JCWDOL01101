@@ -14,6 +14,8 @@ export class ReviewRoute implements Routes {
 
   private initializeRoutes() {
     this.router.post(`${this.path}`, ClerkExpressRequireAuth(), this.review.createReview);
+    this.router.patch(`${this.path}/:reviewId`, ClerkExpressRequireAuth(), this.review.patchReviewStatus);
     this.router.get(`${this.path}/product/:productId`, this.review.getReviewByProduct);
+    this.router.get(`${this.path}/dashboard/product/:productId`, this.review.getDashboardReviewProduct);
   }
 }

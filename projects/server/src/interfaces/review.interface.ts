@@ -1,3 +1,5 @@
+import { Status } from '.';
+
 export interface Review {
   id?: number;
   productId?: number;
@@ -5,5 +7,6 @@ export interface Review {
   rating: number;
   nickname: string;
   title: string;
+  status: Status;
   comment: string;
 }

@@ -28,17 +28,29 @@
     "title": "All Products",
     "category": "Category",
     "clear": "Clear",
+    "price": {
+      "label": "Price",
+      "pmin": "Minimum Price",
+      "pmax": "Maximum Price"
+    },
+    "size": "Size",
+    "activeFilter": "ACTIVE FILTER",
     "filter": {
       "header": "Select By",
-      "sub": "Set a Filter"
+      "sub": "Select by",
+      "select1": "Featured Product",
+      "select2": "Just Arrived",
+      "select3": "Low To High",
+      "select4": "High To Low",
+      "select5": "Highest Rating"
     }
   },
   "productDetailPage": {
     "product": {
       "rating": "rating",
-      "discution": "Discution",
       "sold": "Sold",
       "desc": "Description",
+      "size": "Size",
       "average": "Average Rating"
     },
     "options": {
@@ -46,7 +58,9 @@
       "stock": "stock",
       "noStock": "out of stock",
       "subTotal": "subtotal",
-      "btn": "Cart"
+      "addToCart": "Add To Cart",
+      "addToWishlist": "Add To Wishlist",
+      "removeFromWishlist": "Remove From Wishlist"
     },
     "misc": {
       "title": "Other products from this category",
@@ -80,6 +94,56 @@
     },
     "misc": {
       "title": "Recommended Product"
+    }
+  },
+  "wishlistPage": {
+    "successRemoveModal": "Success! One item has been removed from your wishlist",
+    "product": "Product",
+    "emptyStock": "We'll be restocking soon.",
+    "addBtn": "ADD TO CART",
+    "noWishlist": {
+      "title": "There are no products on your wishlist.",
+      "desc": "Press the heart to add the product to your wishlist"
+    }
+  },
+  "reviewsPage": {
+    "backToProduct": "BACK TO PRODUCT DETAIL",
+    "review": "Review",
+    "rating": "Rating",
+    "reviewSummary": "Review Summary",
+    "backToTop": "BACK TO TOP",
+    "load": {
+      "loading": "Loading More...",
+      "hasNextPage": "Load More"
+    },
+    "form": {
+      "writeReview": "WRITE REVIEW",
+      "required": "required",
+      "rating": "RATING",
+      "nickname": "NICNAME",
+      "nicknamePlaceholder": "please enter your nickname",
+      "title": "TITLE",
+      "titlePlaceholder": "summarize your review",
+      "comment": "COMMENT",
+      "commentDesc": "You must write a minimum of 50 characters in this column.",
+      "note": {
+        "title": "GIVING A REVIEW",
+        "list1": "The comments you provide may be used for advertising purposes.",
+        "list2": "We do not accept requests to place advertisements including for other brands, individuals or organizations. We also cannot store stock or sizes.",
+        "tos": "I agree to the TOTEN TERMS OF USE"
+      },
+      "submit": "SUBMIT",
+      "back": "BACK TO PRODUCT DETAIL"
+    },
+    "successModal": {
+      "title": "Review Submitted Successfully!",
+      "desc": "Your review has been successfully posted and saved. We value your feedback and appreciate the time you took to share your experience. You can view your review in the reviews section. Thank you for helping us improve our services.",
+      "post": "POST ANOTHER REVIEW"
+    },
+    "allowReview": {
+      "btn": "WRITE REVIEW",
+      "title": "Review Unavailable",
+      "desc": "Only customers who have purchased this product can submit a review. Thank you for understanding."
     }
   },
   "checkoutPage": {

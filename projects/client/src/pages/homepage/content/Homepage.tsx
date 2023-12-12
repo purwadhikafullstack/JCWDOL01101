@@ -24,7 +24,7 @@ const Homepage = () => {
       <MainCarousel />
       <div className="mt-2 flex flex-col">
         <span className="flex items-center justify-between mt-8 my-2">
-          <h3 className="font-bold text-base lg:text-xl capitalize">
+          <h3 className="font-bold text-sm lg:text-xl uppercase">
             {t("homepage.title2")}
           </h3>
           <Link
@@ -53,7 +53,7 @@ const Homepage = () => {
           </section>
         )}
         <span className="flex items-center justify-between mt-8 my-2 capitalize">
-          <h3 className="font-bold text-base lg:text-xl uppercase">
+          <h3 className="font-bold text-sm lg:text-xl uppercase">
             {t("homepage.title1")}
           </h3>
           <Link
@@ -70,7 +70,7 @@ const Homepage = () => {
             ))}
         </section>
 
-        <h3 className="font-bold text-xl my-2 mt-8 case capitalize">
+        <h3 className="font-bold text-sm md:text-xl my-2 mt-8 case uppercase">
           {t("homepage.title3")}
         </h3>
         <section className="grid grid-cols-2 md:grid-cols-4  lg:grid-cols-6 gap-2 gap-y-6">

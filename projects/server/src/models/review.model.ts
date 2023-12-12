@@ -1,3 +1,4 @@
+import { Status } from '@/interfaces';
 import { Review } from '@/interfaces/review.interface';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
@@ -8,6 +9,7 @@ export class ReviewModel extends Model<Review> implements Review {
   public rating: number;
   public nickname: string;
   public title: string;
+  public status: Status;
   public comment: string;
 }
 
@@ -38,6 +40,11 @@ export default function (sequelize: Sequelize): typeof ReviewModel {
       title: {
         allowNull: false,
         type: DataTypes.STRING(256),
+      },
+      status: {
+        type: DataTypes.ENUM,
+        values: ['ACTIVE', 'DEACTIVATED', 'DELETED'],
+        defaultValue: 'ACTIVE',
       },
       comment: {
         allowNull: false,

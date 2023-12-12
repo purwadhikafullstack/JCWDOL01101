@@ -30,7 +30,7 @@ const Breadcrumbs = ({
           <>
             <ChevronRight className="w-4 h-4 text-muted-foreground" />
             <Link
-              to={`/products?category=${categoryId}`}
+              to={`/products?category=${category.slug}`}
               className="text-primary"
             >
               {category.name}
@@ -40,7 +40,7 @@ const Breadcrumbs = ({
         <ChevronRight className="w-4 h-4 text-muted-foreground" />
         <Link
           to={`/product/${slug}`}
-          className=" overflow-hidden text-ellipsis whitespace-nowrap  w-[350px] group-hover:w-max"
+          className=" overflow-hidden text-ellipsis whitespace-nowrap w-[100px]  lg:w-[350px] group-hover:w-max"
         >
           {productName}
         </Link>

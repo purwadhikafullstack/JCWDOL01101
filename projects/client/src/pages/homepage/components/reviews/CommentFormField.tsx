@@ -8,8 +8,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import { useTranslation } from "react-i18next";
 
 const CommentFormField = () => {
+  const { t } = useTranslation();
   const form = useFormContext();
   return (
     <FormField
@@ -17,14 +19,15 @@ const CommentFormField = () => {
       name="comment"
       render={({ field }) => (
         <FormItem>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid lg:grid-cols-4 gap-2">
             <FormLabel className="font-semibold">
-              COMMENT<b className="text-primary">*</b>
+              {t("reviewsPage.form.comment")}
+              <b className="text-primary">*</b>
             </FormLabel>
             <div className="col-span-3">
               <Textarea {...field} className="rounded-none" />
               <FormDescription>
-                You must write a minimum of 50 characters in this column.
+                {t("reviewsPage.form.commentDesc")}
               </FormDescription>
               <FormMessage />
             </div>

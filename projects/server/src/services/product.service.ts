@@ -25,8 +25,9 @@ export class ProductService {
     order,
     limit,
     filter,
-    externalId,
+    category,
     warehouse,
+    externalId,
   }: GetFilterProduct): Promise<{ products: Product[]; totalPages: number }> {
     const findUser: User = await DB.User.findOne({ where: { externalId } });
     if (!findUser) throw new HttpException(409, "user doesn't exist");
@@ -44,25 +45,26 @@ export class ProductService {
 
     const LIMIT = Number(limit) || 10;
     const offset = (page - 1) * LIMIT;
+    const categories =
+      category.length > 0
+        ? category
+            .trim()
+            .split(',')
+            .map(c => +c)
+        : [];
     const options: FindOptions<Product> = {
       offset,
       limit: LIMIT,
       where: {
         status: 'ACTIVE',
         ...(s && { name: { [Op.like]: `%${s}%` } }),
+        ...(categories.length > 0 && {
+          categoryId: {
+            [Op.in]: categories,
+          },
+        }),
       },
-      ...(order && {
-        order:
-          filter === 'stock' || filter === 'sold'
-            ? [
-                ['createdAt', 'DESC'],
-                [{ model: InventoryModel, as: 'inventory' }, filter, order],
-              ]
-            : [
-                ['createdAt', 'DESC'],
-                [filter, order],
-              ],
-      }),
+      order: [['createdAt', 'DESC']],
       include: [
         {
           model: ImageModel,
@@ -93,6 +95,10 @@ export class ProductService {
         },
       ],
     };
+
+    if (order) {
+      options.order = filter === 'stock' || filter === 'sold' ? [[{ model: InventoryModel, as: 'inventory' }, filter, order]] : [[filter, order]];
+    }
 
     const warehouseProducts = await DB.Product.findAll(options);
     const totalCount = await DB.Product.count({ where: options.where });

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Product, useProductInfinite } from "@/hooks/useProduct";
 import { useInView } from "react-intersection-observer";
 import ProductCard from "@/pages/homepage/components/ProductCard";
@@ -58,9 +58,11 @@ const ProductsPage = () => {
       <div className="product_banner">
         <img src="/carousel/ads.jpg" alt="ads banner" />
       </div>
-      <div className="flex items-center justify-between gap-8 w-full product_filter">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-8 w-full product_filter">
         <div className="flex items-center gap-2 ">
-          {(size || pmax || pmin) && <span>ACTIVE FILTER:</span>}
+          {(size || pmax || pmin) && (
+            <span>{t("productsPage.activeFilter")}:</span>
+          )}
           {size && (
             <div className="border p-2 flex items-center pr-1">
               {size}
@@ -107,7 +109,7 @@ const ProductsPage = () => {
         <SelectBy />
       </div>
       <div className="w-full lg:w-[280px] product_side">
-        <div className="sticky pt-10 md:pt-0 lg:top-[100px]">
+        <div className="sticky pt-2 lg:pt-10 md:pt-0 lg:top-[100px]">
           <div className="flex gap-2 items-center justify-between my-2">
             <Label className="uppercase tracking-wide">
               {t("productsPage.category")}
@@ -121,7 +123,8 @@ const ProductsPage = () => {
                   });
                 }}
                 variant="ghost"
-                className="font-bold uppercase"
+                size="sm"
+                className="font-bold uppercase h-8"
               >
                 {t("productsPage.clear")}
               </Button>

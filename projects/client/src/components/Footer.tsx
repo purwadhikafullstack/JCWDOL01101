@@ -4,58 +4,15 @@ import {
   TwitterIcon,
   YoutubeIcon,
 } from "lucide-react";
-import React, { useEffect } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-interface Lang {
-  id: string;
-  label: string;
-}
-
-interface AvailableLang {
-  [key: string]: Lang;
-}
-
-const availableLang: AvailableLang = {
-  en: {
-    id: "en",
-    label: "English",
-  },
-  id: {
-    id: "id",
-    label: "Indonesia",
-  },
-  jp: {
-    id: "jp",
-    label: "Japan",
-  },
-};
+import LanguageSelector from "./LanguageSelector";
 
 const Footer = () => {
-  const { t, i18n } = useTranslation();
-  const lang = i18n.resolvedLanguage;
-
-  useEffect(() => {
-    let savedLang = localStorage.getItem("i18nLng");
-    if (savedLang) {
-      i18n.changeLanguage(savedLang);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (lang) {
-      localStorage.setItem("i18nLng", lang);
-    }
-  }, [lang]);
+  const { t } = useTranslation();
 
   return (
-    <footer className="w-full border-t py-6 mt-24 pb-10 md:pb-24">
+    <footer className="w-full border-t py-6 mt-24 pb-10 md:pb-24 hidden lg:block">
       <div className="container justify-between flex flex-col md:flex-row gap-4 ">
         <div>
           <h4 className="font-bold text-base lg:text-lg">
@@ -77,30 +34,7 @@ const Footer = () => {
         </div>
         <div>
           <div className="flex justify-end mb-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <div className="flex gap-2 items-center">
-                  <span>{availableLang[lang!].label}</span>
-                  <img src={`/lang/${lang}.png`} className="w-6 h-6" />
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {Object.keys(availableLang).map((key) => (
-                  <DropdownMenuItem
-                    onClick={() => i18n.changeLanguage(availableLang[key].id)}
-                    key={key}
-                  >
-                    <div className="flex gap-2 items-center">
-                      <img
-                        src={`/lang/${availableLang[key].id}.png`}
-                        className="w-6 h-6"
-                      />
-                      <span>{availableLang[key].label}</span>
-                    </div>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <LanguageSelector />
           </div>
           <h4 className="font-bold text-base lg:text-lg mb-2">
             {t("footer.social")}

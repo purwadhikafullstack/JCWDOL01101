@@ -20,7 +20,31 @@ export const usePostReview = () => {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["review"] });
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard/reviews"] });
+    },
+  });
+
+  return addressMutation;
+};
+
+export type STATUS = "ACTIVE" | "DEACTIVATED" | "DELETED";
+export const useChangeReviewStatus = (reviewId: number) => {
+  const { getToken } = useAuth();
+  const queryClient = useQueryClient();
+  const addressMutation = useMutation({
+    mutationFn: async ({ status }: { status: STATUS }) => {
+      return await service.patch(
+        `/reviews/${reviewId}`,
+        { status },
+        {
+          headers: { Authorization: `Bearer ${await getToken()}` },
+        }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard/reviews"] });
     },
   });
 

@@ -84,6 +84,7 @@ const Login = () => {
         redirectUrlComplete: url,
       });
     } catch (err: any) {
+      console.log(err);
       setError(err.errors[0].longMessage);
     }
   };

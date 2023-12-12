@@ -2,8 +2,6 @@ import React from "react";
 import { baseURL } from "@/service";
 import { Crown } from "lucide-react";
 import { Link } from "react-router-dom";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
 import { convertToK, formatToIDR } from "@/lib/utils";
 import { Product } from "@/hooks/useProduct";
 
@@ -18,7 +16,7 @@ const TopProductCard = ({ product, size }: TopProductCardProps) => {
       className="relative block aspect-square h-full w-full"
     >
       <div className="group flex h-full w-full items-center justify-center overflow-hidden  border bg-background hover:border-primary relative border-muted ">
-        <LazyLoadImage
+        <img
           className="relative h-full w-full object-contain transition duration-300 ease-in-out group-hover:scale-105"
           src={`${baseURL}/images/${product.primaryImage}`}
           alt="black shirt"

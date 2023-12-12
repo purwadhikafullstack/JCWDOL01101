@@ -11,10 +11,20 @@ import OverallRating from "../components/product-detail/OverallRating";
 import { ArrowUp } from "lucide-react";
 import ReviewSkeleton from "@/components/skeleton/ReviewSkeleton";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useUser } from "@clerk/clerk-react";
+import { useProductIsOrder } from "@/hooks/useOrder";
+import PurchasedReviewModal from "../components/reviews/PurchasedReviewModal";
+import { useTranslation } from "react-i18next";
 
 const Reviews = () => {
+  const { t } = useTranslation();
+  const { user } = useUser();
   const { slug } = useParams();
   const { data: pd, isLoading: productLoading } = useProduct(slug || "");
+  const { data: userIsOrderProduct } = useProductIsOrder(
+    user?.id,
+    pd?.product.id
+  );
 
   const {
     data,
@@ -66,17 +76,19 @@ const Reviews = () => {
       )}
 
       <Link to={`/product/${slug}`} className="underline uppercase">
-        Back To Product Detail
+        {t("reviewsPage.backToProduct")}
       </Link>
       {productLoading ? (
         <Skeleton className="h-8 w-[40%] my-2" />
       ) : (
         <h1 className="text-2xl font-bold my-2">{pd?.product?.name}</h1>
       )}
-      <div className="flex gap-10">
+      <div className="flex flex-col lg:flex-row gap-10">
         <div className="flex-1">
           <div className="flex justify-between items-center">
-            <b className="uppercase font-bold text-3xl">Review</b>
+            <b className="uppercase font-bold text-3xl">
+              {t("reviewsPage.review")}
+            </b>
             {isLoading ? (
               <Skeleton className="rounded-none w-[150px] h-5" />
             ) : (
@@ -95,7 +107,7 @@ const Reviews = () => {
             <Skeleton className="rounded-none w-[100px] h-6" />
           ) : (
             <span className="font-bold">
-              {reviewData?.totalReviews || 0} Review
+              {reviewData?.totalReviews || 0} {t("reviewsPage.review")}
             </span>
           )}
           <Separator className="my-4" />
@@ -118,10 +130,10 @@ const Reviews = () => {
                     className="border-black rounded-none w-max mx-auto md:px-20"
                   >
                     {isFetchingNextPage
-                      ? "Loading more..."
+                      ? t("reviewsPage.load.loading")
                       : hasNextPage
-                      ? "Load More"
-                      : "nothing more to load"}
+                      ? t("reviewsPage.load.hasNextPage")
+                      : ""}
                   </Button>
                 )}
               </>
@@ -131,7 +143,9 @@ const Reviews = () => {
         <div className="w-[350px] relative">
           <div className="sticky top-[100px]">
             <div className="border p-4 space-y-3">
-              <h3 className="uppercase font-bold text-2xl">Review Summary</h3>
+              <h3 className="uppercase font-bold text-2xl">
+                {t("reviewsPage.reviewSummary")}
+              </h3>
               {isLoading ? (
                 <div>
                   <Skeleton className="w-[100px] h-5 mb-4  rounded-none" />
@@ -150,14 +164,18 @@ const Reviews = () => {
                   )}
                 </>
               )}
-              <Link to={`/product/${pd?.product?.slug}/reviews/new`}>
-                <Button
-                  variant="outline"
-                  className="border-black uppercase mt-6 w-full rounded-none"
-                >
-                  Write Review
-                </Button>
-              </Link>
+              {userIsOrderProduct ? (
+                <Link to={`/product/${pd?.product?.slug}/reviews/new`}>
+                  <Button
+                    variant="outline"
+                    className="border-black uppercase mt-6 w-full rounded-none"
+                  >
+                    {t("reviewsPage.allowReview.btn")}
+                  </Button>
+                </Link>
+              ) : (
+                <PurchasedReviewModal />
+              )}
             </div>
           </div>
         </div>
@@ -170,7 +188,7 @@ const Reviews = () => {
           className="border-black uppercase mt-6 w-max rounded-none"
         >
           <ArrowUp className="w-4 h-4 mr-2" />
-          Back To Top
+          {t("reviewsPage.backToTop")}
         </Button>
       )}
     </div>

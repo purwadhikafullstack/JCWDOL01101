@@ -7,8 +7,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next";
 
 const NicknameFormField = () => {
+  const { t } = useTranslation();
   const form = useFormContext();
   return (
     <FormField
@@ -16,15 +18,16 @@ const NicknameFormField = () => {
       name="name"
       render={({ field }) => (
         <FormItem>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid lg:grid-cols-4 gap-2">
             <FormLabel className="font-semibold">
-              NICKNAME<b className="text-primary">*</b>
+              {t("reviewsPage.form.nickname")}
+              <b className="text-primary">*</b>
             </FormLabel>
             <div className="col-span-3">
               <Input
                 {...field}
                 className="rounded-none"
-                placeholder="please enter your nickname"
+                placeholder={t("reviewsPage.form.nicknamePlaceholder")}
               />
               <FormMessage />
             </div>

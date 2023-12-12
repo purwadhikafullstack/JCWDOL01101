@@ -8,7 +8,9 @@ const CategoryCard = ({ category }: { category: Category }) => {
     <div>
       <Link to={`/products?category=${category.slug}`} className="relative">
         <img src={`${baseURL}/images/${category.image}`} />
-        <p className="text-center mt-2 capitalize">{category.name}</p>
+        <p className="text-center text-sm md:text-base  mt-2 capitalize">
+          {category.name}
+        </p>
       </Link>
     </div>
   );

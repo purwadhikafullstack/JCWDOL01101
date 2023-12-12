@@ -123,7 +123,7 @@ const EditAddressDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={(value) => setEditDialog(value)}>
-      <DialogContent className="sm:max-w-[712px]">
+      <DialogContent className="w-full lg:max-w-[712px]">
         <DialogClose
           onClick={() => {
             handleToggleDialog(true);
@@ -144,12 +144,12 @@ const EditAddressDialog = ({
           <span className="sr-only">Close</span>
         </DialogClose>
         <DialogHeader>
-          <DialogTitle className="text-center text-3xl">
+          <DialogTitle className="text-center lg:text-3xl">
             {t("checkoutPage.addressModal.modify.header")}
           </DialogTitle>
         </DialogHeader>
         <Separator />
-        <div className="w-full max-h-[500px] overflow-y-auto pb-10 p-4">
+        <div className="w-full h-[500px] overflow-y-auto pb-10 p-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <EditForm

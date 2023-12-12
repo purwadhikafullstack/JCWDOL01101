@@ -19,6 +19,8 @@ import {
   TosFormField,
 } from "../components/reviews";
 import AllowReviewModal from "../components/reviews/AllowReviewModal";
+import { useUser } from "@clerk/clerk-react";
+import { useTranslation } from "react-i18next";
 
 const reviewSchema = z.object({
   rating: z.number().min(1, " "),
@@ -38,6 +40,8 @@ const reviewSchema = z.object({
 });
 
 const ReviewForm = () => {
+  const { t } = useTranslation();
+  const { isLoaded } = useUser();
   const navigate = useNavigate();
   const { slug } = useParams();
   const { data: pd } = useProduct(slug || "");
@@ -82,23 +86,28 @@ const ReviewForm = () => {
   };
 
   return (
+    isLoaded &&
     pd &&
     pd.product && (
       <div>
-        <AllowReviewModal slug={pd.product.slug} />
+        <AllowReviewModal slug={pd.product.slug} productId={pd.product.id} />
         <Breadcrumbs
           slug={pd.product.slug}
           categoryId={pd.product.categoryId}
           category={pd.product.productCategory}
           productName={pd.product.name}
         />
-        <div className="flex justify-between ">
-          <div className="flex-1">
+        <div className="flex flex-col md:flex-row justify-between ">
+          <div className="flex-1 order-2 lg:order-1 mt-4 lg:mt-0">
             <h3 className="text-2xl font-bold">{pd.product.name}</h3>
             <div className="border px-4 py-6 pb-10 flex-1 mt-6">
               <span className="flex items-center justify-between">
-                <p className="uppercase font-bold text-lg">Write review</p>
-                <p className="text-primary text-sm">required*</p>
+                <p className="uppercase font-bold text-lg">
+                  {t("reviewsPage.form.writeReview")}
+                </p>
+                <p className="text-primary text-sm">
+                  {t("reviewsPage.form.required")}*
+                </p>
               </span>
               <Form {...form}>
                 <form
@@ -110,35 +119,30 @@ const ReviewForm = () => {
                   <TitleFormField />
                   <CommentFormField />
                   <div>
-                    <h3 className="font-bold">GIVING A REVIEW:</h3>
+                    <h3 className="font-bold">
+                      {t("reviewsPage.form.note.title")}:
+                    </h3>
                     <ul className="list-disc pl-10 text-sm">
-                      <li>
-                        The comments you provide may be used for advertising
-                        purposes.
-                      </li>
-                      <li>
-                        We do not accept requests to place advertisements
-                        including for other brands, individuals or
-                        organizations. We also cannot store stock or sizes.
-                      </li>
+                      <li>{t("reviewsPage.form.note.list1")}:</li>
+                      <li>{t("reviewsPage.form.note.list2")}:</li>
                     </ul>
                   </div>
                   <TosFormField />
-                  <div className="flex gap-4 items-center justify-end">
+                  <div className="flex flex-col lg:flex-row gap-4 items-center justify-end">
                     <Button
                       onClick={() => navigate(`/product/${pd.product.slug}`)}
                       type="button"
                       variant="outline"
-                      className="px-20 border-black uppercase rounded-none"
+                      className="lg:px-20 w-full lg:w-max border-black uppercase rounded-none"
                     >
-                      Back to product detail
+                      {t("reviewsPage.form.back")}
                     </Button>
                     <Button
                       disabled={reviewMutation.isPending}
                       type="submit"
-                      className="px-20 bg-black hover:bg-black/80 uppercase rounded-none "
+                      className="lg:px-20 w-full lg:w-max bg-black hover:bg-black/80 uppercase rounded-none "
                     >
-                      Submit
+                      {t("reviewsPage.form.submit")}
                     </Button>
                   </div>
                 </form>
@@ -150,8 +154,8 @@ const ReviewForm = () => {
               />
             </div>
           </div>
-          <div className="w-[450px] relative">
-            <div className="w-[355px] sticky top-[100px] ml-auto">
+          <div className="lg:w-[450px] relative order-1 lg:order-2">
+            <div className=" lg:w-[355px] lg:sticky lg:top-[140px] ml-auto">
               <LazyLoadImage
                 src={`${baseURL}/images/${pd.product.primaryImage}`}
               />

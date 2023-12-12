@@ -101,7 +101,7 @@ export class DokuService {
     if (transactionStatus !== 'SUCCESS') throw new HttpException(500, 'Something went wrong');
     const findOrder = await DB.Order.findOne({ where: { invoice } });
     if (!findOrder) throw new HttpException(409, "Order doesn't found");
-    await DB.Order.update({ status: 'PROCESS' }, { where: { invoice } });
+    await DB.Order.update({ status: 'WAITING' }, { where: { invoice } });
 
     const findOrderDetails: OrderDetails[] = await DB.OrderDetails.findAll({ where: { orderId: findOrder.id } });
 

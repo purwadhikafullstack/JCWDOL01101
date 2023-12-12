@@ -11,16 +11,19 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, X } from "lucide-react";
 import { useUser } from "@clerk/clerk-react";
+import { useProductIsOrder } from "@/hooks/useOrder";
 
 type ReviewSuccessModalProps = {
   slug: string;
+  productId: number;
 };
 
-const AllowReviewModal = ({ slug }: ReviewSuccessModalProps) => {
-  const { isSignedIn } = useUser();
+const AllowReviewModal = ({ slug, productId }: ReviewSuccessModalProps) => {
+  const { isSignedIn, user } = useUser();
+  const { data: userIsOrderProduct } = useProductIsOrder(user?.id, productId);
   const navigate = useNavigate();
   return (
-    <Dialog open={!isSignedIn}>
+    <Dialog open={!isSignedIn || !Boolean(userIsOrderProduct)}>
       <DialogContent className="lg:rounded-none">
         <DialogHeader>
           <Button
@@ -30,8 +33,20 @@ const AllowReviewModal = ({ slug }: ReviewSuccessModalProps) => {
           >
             <X />
           </Button>
-          <DialogTitle>LOG IN MUST</DialogTitle>
-          <DialogDescription>Please go to the Login page.</DialogDescription>
+          <DialogTitle>
+            {!isSignedIn
+              ? "LOG IN MUST"
+              : !Boolean(userIsOrderProduct)
+              ? "Review Unavailable"
+              : "LOG IN MUST"}
+          </DialogTitle>
+          <DialogDescription>
+            {!isSignedIn
+              ? "Please go to the Login page."
+              : !Boolean(userIsOrderProduct)
+              ? "Only customers who have purchased this product can submit a review. Thank you for understanding."
+              : "Please go to the Login page."}
+          </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button
@@ -42,13 +57,15 @@ const AllowReviewModal = ({ slug }: ReviewSuccessModalProps) => {
           >
             <ArrowLeft className="w-4 h-4 mr-2" /> Back to product detail
           </Button>
-          <Button
-            onClick={() => navigate("/login")}
-            type="button"
-            className="bg-black hover:bg-black/80 w-full border-black uppercase rounded-none"
-          >
-            Login
-          </Button>
+          {!isSignedIn && !Boolean(userIsOrderProduct) && (
+            <Button
+              onClick={() => navigate("/login")}
+              type="button"
+              className="bg-black hover:bg-black/80 w-full border-black uppercase rounded-none"
+            >
+              Login
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

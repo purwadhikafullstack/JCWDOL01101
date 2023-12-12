@@ -67,7 +67,7 @@ const Checkout = () => {
         </div>
       </div>
       <div className="container mb-24">
-        <div className="flex w-full gap-8">
+        <div className="flex flex-col lg:flex lg:flex-row w-full gap-8">
           <section className="flex-1">
             <h3 className="font-bold text-xl pt-4">
               {t("checkoutPage.header")}
@@ -100,9 +100,9 @@ const Checkout = () => {
                 ))}
             </>
           </section>
-          <div className="w-[420px] relative ">
-            <div className="w-ful sticky top-[100px]">
-              <div className="w-full h-full px-4 py-6 mt-[100px] border rounded-lg">
+          <div className="w-full lg:w-[420px] relative">
+            <div className="w-ful lg:sticky lg:top-[100px]">
+              <div className="w-full h-full px-4 py-6 lg:mt-[100px] border rounded-lg">
                 <div className="space-y-3 mb-5">
                   <b className="font-bold">{t("checkoutPage.summary.title")}</b>
                   <div className="text-sm">

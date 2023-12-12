@@ -110,7 +110,7 @@ const AddNewAddressDialog = ({
       open={addressMutation.isPending || open}
       onOpenChange={(value) => setAddDialog(value)}
     >
-      <DialogContent className="sm:max-w-[712px]">
+      <DialogContent className="w-full lg:max-w-[712px]">
         <DialogClose
           disabled={addressMutation.isPending}
           onClick={() => {
@@ -133,7 +133,7 @@ const AddNewAddressDialog = ({
           <span className="sr-only">Close</span>
         </DialogClose>
         <DialogHeader>
-          <DialogTitle className="text-center text-3xl">
+          <DialogTitle className="text-center lg:text-3xl">
             {t("checkoutPage.addressModal.add.header")}
           </DialogTitle>
         </DialogHeader>

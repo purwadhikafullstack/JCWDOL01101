@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import React from "react";
 import ReviewStar from "../product-detail/ReviewStar";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 const Review = ({ review }: { review: ReviewType }) => {
   return (
@@ -17,7 +18,14 @@ const Review = ({ review }: { review: ReviewType }) => {
         <ReviewStar rating={review.rating} />
       </div>
       <h3 className="text-xl font-bold">{review.title}</h3>
-      <p>{review.comment}</p>
+      <p
+        className={cn(
+          review.comment.split(" ")[0].length > 100 &&
+            "overflow-hidden text-ellipsis whitespace-nowrap w-[350px]"
+        )}
+      >
+        {review.comment}
+      </p>
       <Separator className="my-3" />
     </>
   );

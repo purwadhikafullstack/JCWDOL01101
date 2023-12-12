@@ -28,15 +28,27 @@
     "title": "すべての製品",
     "category": "カテゴリー",
     "clear": "クリア",
+    "price": {
+      "label": "価格",
+      "pmin": "最低価格",
+      "pmax": "最高価格"
+    },
+    "size": "サイズ",
+    "activeFilter": "アクティブなフィルター",
     "filter": {
-      "header": "フィルター",
-      "sub": "フィルターを設定する"
+      "header": "選択",
+      "sub": "選択",
+      "select1": "注目の製品",
+      "select2": "新着",
+      "select3": "価格の低い順",
+      "select4": "価格の高い順",
+      "select5": "最高評価"
     }
   },
   "productDetailPage": {
     "product": {
       "rating": "評価",
-      "discution": "ディスカッション",
+      "size": "サイズ",
       "sold": "販売済み",
       "desc": "説明",
       "average": "平均評価"
@@ -46,7 +58,9 @@
       "stock": "在庫総数",
       "noStock": "在庫切れ",
       "subTotal": "小計",
-      "btn": "カート"
+      "addToCart": "カートに追加",
+      "addToWishlist": "ウィッシュリストに追加",
+      "removeFromWishlist": "ウィッシュリストから削除"
     },
     "misc": {
       "title": "このカテゴリーからの他の商品",
@@ -80,6 +94,56 @@
     },
     "misc": {
       "title": "おすすめ商品"
+    }
+  },
+  "wishlistPage": {
+    "successRemoveModal": "成功！ 1 つの商品がウィッシュリストから削除されました",
+    "product": "製品",
+    "emptyStock": "近日中に再入荷します。",
+    "addBtn": "カートに追加",
+    "noWishlist": {
+      "title": "ウィッシュリストに商品はありません。",
+      "desc": "ハートを押して商品をウィッシュリストに追加してください"
+    }
+  },
+  "reviewsPage": {
+    "backToProduct": "製品詳細に戻る",
+    "review": "レビュー",
+    "rating": "評価",
+    "reviewSummary": "レビューの概要",
+    "backToTop": "トップに戻る",
+    "load": {
+      "loading": "さらに読み込む...",
+      "hasNextPage": "さらに読み込む"
+    },
+    "form": {
+      "writeReview": "レビューを書く",
+      "required": "必須",
+      "rating": "評価",
+      "nickname": "ニックネーム",
+      "nicknamePlaceholder": "ニックネームを入力してください",
+      "title": "タイトル",
+      "titlePlaceholder": "レビューを要約する",
+      "comment": "コメント",
+      "commentDesc": "この欄には最低50文字を書く必要があります。",
+      "note": {
+        "title": "レビューを書く",
+        "list1": "提供したコメントは広告目的で使用される可能性があります。",
+        "list2": "他のブランド、個人、または組織を含む広告の掲載要求は受け付けておりません。また、在庫やサイズを保管することもできません。",
+        "tos": "TOTEN利用規約に同意する"
+      },
+      "submit": "送信",
+      "back": "製品詳細に戻る"
+    },
+    "successModal": {
+      "title": "レビューが正常に送信されました！",
+      "desc": "レビューは正常に投稿され、保存されました。フィードバックを大切にし、経験を共有していただいた時間に感謝します。レビューセクションでレビューを見ることができます。サービスの改善にご協力いただきありがとうございます。",
+      "post": "別のレビューを投稿する"
+    },
+    "allowReview": {
+      "btn": "レビューを書く",
+      "title": "レビューは利用できません",
+      "desc": "この商品をご購入いただいた方のみレビューを投稿していただけます。ご理解のほどよろしくお願いいたします。"
     }
   },
   "checkoutPage": {

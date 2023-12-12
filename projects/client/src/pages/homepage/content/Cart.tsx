@@ -54,8 +54,8 @@ const Cart = () => {
   }, [carts]);
   return (
     <>
-      <div className="flex w-full gap-8">
-        <div className="flex flex-col flex-1">
+      <div className="flex flex-col md:flex md:flex-row w-full gap-8">
+        <div className="flex flex-col  flex-1">
           {carts.length > 0 ? (
             <section className="w-full">
               <h3 className="font-bold text-xl pt-4 uppercase">
@@ -68,11 +68,7 @@ const Cart = () => {
                       toggleAllSelectedCart.mutate(cart.cart.id);
                     }
                   }}
-                  className={buttonVariants({
-                    variant: "ghost",
-                    className:
-                      "flex items-center gap-4 cursor-pointer px-0 lg:px-0 hover:bg-transparent",
-                  })}
+                  className="flex items-center gap-4 py-2 my-2 text-sm cursor-pointer px-0 lg:px-0 hover:bg-transparent"
                 >
                   <Checkbox
                     id="select"
@@ -112,8 +108,11 @@ const Cart = () => {
               </div>
             </section>
           ) : (
-            <div className="container flex flex-col justify-center items-center">
-              <img src="/ilus/empty-cart.svg" className="w-[300px] mx-auto" />
+            <div className="container flex flex-col justify-center items-center mb-24 md:mb-0">
+              <img
+                src="/ilus/empty-cart.svg"
+                className="w-[200px] lg:w-[300px] mx-auto"
+              />
               <h2 className="text-xl font-bold">{t("cartPage.empty.title")}</h2>
               <p className="text-sm text-muted-foreground">
                 {t("cartPage.empty.desc")}
@@ -137,7 +136,7 @@ const Cart = () => {
       </div>
       <div>
         <p className="font-bold my-4">{t("cartPage.misc.title")}</p>
-        <div className="grid grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
           {highestSellLoading ? (
             <NewestProductSekeleton product={12} />
           ) : (

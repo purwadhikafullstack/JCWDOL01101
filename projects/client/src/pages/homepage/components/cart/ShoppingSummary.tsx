@@ -17,7 +17,7 @@ const ShoppingSummary = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   return (
-    <div className="w-[320px] relative ">
+    <div className="w-full md:w-[320px] relative ">
       <div className="sticky top-[100px] ">
         <div className="w-full h-full px-4 py-6 border space-y-2">
           <p className="font-bold">{t("cartPage.summary.title")}</p>

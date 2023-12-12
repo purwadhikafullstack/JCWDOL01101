@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/form";
 import { Star } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const ratingText = ["Poor", "Fair", "Fair", "Good", "Very Good"];
 type RatingFormFieldProps = {
@@ -16,6 +17,7 @@ type RatingFormFieldProps = {
   setRating: (rating: number) => void;
 };
 const RatingFormField = ({ rating, setRating }: RatingFormFieldProps) => {
+  const { t } = useTranslation();
   const form = useFormContext();
   const fillColor = "#ebbe00";
   const emptyColor = "#dadada";
@@ -25,9 +27,10 @@ const RatingFormField = ({ rating, setRating }: RatingFormFieldProps) => {
       name="rating"
       render={({ field }) => (
         <FormItem>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid lg:grid-cols-4 gap-2">
             <FormLabel className="font-semibold">
-              RATING<b className="text-primary">*</b>
+              {t("reviewsPage.form.rating")}
+              <b className="text-primary">*</b>
             </FormLabel>
             <div className="col-span-3">
               <div className="flex gap-1 items-center">
@@ -46,7 +49,7 @@ const RatingFormField = ({ rating, setRating }: RatingFormFieldProps) => {
                     >
                       <motion.div
                         transition={{
-                          type: "tween",
+                          type: "spring",
                           ease: "anticipate",
                           duration: 0.4,
                         }}

@@ -47,7 +47,7 @@ const AddressModal = ({
   return (
     <Dialog open={mainDialog} onOpenChange={(value) => setMainDialog(value)}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[712px] pb-10">
+      <DialogContent className="max-w-full lg:max-w-[712px] pb-10">
         <DialogClose
           onClick={() => {
             handleToggleDialog(false);
@@ -83,7 +83,7 @@ const AddressModal = ({
           >
             {t("checkoutPage.addressModal.main.addAddressBtn")}
           </Button>
-          <div className="space-y-4 overflow-y-auto max-h-[580px] ">
+          <div className="space-y-4 overflow-y-auto  max-h-[580px] ">
             {!isLoading ? (
               <>
                 {address && address?.length > 0 ? (

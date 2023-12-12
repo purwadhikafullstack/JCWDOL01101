@@ -18,7 +18,7 @@ export class ProductController {
 
   public getProducts = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
-      const { page, s, order, filter, limit, warehouse } = req.query;
+      const { page, s, order, filter, limit, warehouse, category } = req.query;
 
       const { products, totalPages } = await this.product.getAllProduct({
         s: String(s),
@@ -28,6 +28,7 @@ export class ProductController {
         page: Number(page),
         warehouse: String(warehouse),
         externalId: req.auth.userId,
+        category: String(category),
       });
       res.status(200).json({
         data: {

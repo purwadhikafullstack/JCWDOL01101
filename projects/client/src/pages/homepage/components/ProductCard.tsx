@@ -4,7 +4,6 @@ import { formatToIDR } from "@/lib/utils";
 import { baseURL } from "@/service";
 import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useReviewByProduct } from "@/hooks/useReview";
 import ReviewStar from "./product-detail/ReviewStar";
@@ -44,10 +43,9 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
                 <Heart />
               )}
             </motion.div>
-            <LazyLoadImage
+            <img
               className="object-cover"
               src={`${baseURL}/images/${product.primaryImage}`}
-              effect="opacity"
               alt={product.name}
             />
             <div className="flex flex-col gap-2 text-sm p-2">
@@ -57,9 +55,9 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
                 </span>
                 <span>{product.size}</span>
               </div>
-              <p className="font-bold">{product.name}</p>
+              <p className="font-bold text-sm md:text-base">{product.name}</p>
               <span>
-                <p className="font-bold text-xl">
+                <p className="font-bold text-base md:text-xl">
                   {formatToIDR(product.price.toString())}
                 </p>
               </span>

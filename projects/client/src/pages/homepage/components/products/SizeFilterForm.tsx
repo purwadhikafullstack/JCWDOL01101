@@ -19,7 +19,7 @@ const SizeFilterForm = () => {
             }}
             className={`${
               sizeParams === size && "border-primary"
-            } border hover:border-primary/80 hover:bg-muted cursor-pointer  w-11 p-2 grid place-content-center`}
+            } border hover:border-primary/80 hover:bg-muted cursor-pointer w-12 lg:w-11 p-2 grid place-content-center`}
             key={size}
           >
             {size}

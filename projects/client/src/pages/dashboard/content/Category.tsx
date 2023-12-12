@@ -131,10 +131,11 @@ export default function ManageCategory() {
             </TableBody>
           </Table>
         </div>
-        <div className="border w-full p-4">
+        <div className="border h-max w-full p-4 sticky top-[120px]">
           <div className="flex gap-2 items-center mb-8">
             <p className="font-bold">{edit ? "Edit" : "Add"} Category</p>
           </div>
+
           {edit ? <EditCategoryForm /> : <AddCategoryForm />}
         </div>
       </div>
