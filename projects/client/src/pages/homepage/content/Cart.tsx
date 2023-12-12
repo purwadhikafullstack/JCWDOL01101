@@ -28,6 +28,11 @@ const Cart = () => {
     clearCheckout();
   }, []);
 
+  const clearCheckout = useBoundStore((state) => state.clear);
+  useEffect(() => {
+    clearCheckout();
+  }, []);
+
   const { data: cart } = useCart(user?.id!, !!user?.userCart);
   const { data: highestSell, isLoading: highestSellLoading } =
     useHighestSellProducts(12);
@@ -36,6 +41,22 @@ const Cart = () => {
   const totalQuantity = cart?.totalQuantity || 0;
   const totalPrice = cart?.totalPrice || 0;
 
+  const toggleAllSelectedCart = useToggleAllSelectProduct();
+  const [selected, setSelected] = useState({ allTrue: false, someTrue: false });
+
+  useEffect(() => {
+    if (carts.length > 0) {
+      const { allTrue, someTrue } = carts.reduce(
+        (acc, value) => ({
+          allTrue: acc.allTrue && value.selected,
+          someTrue: acc.someTrue || value.selected,
+        }),
+        { allTrue: true, someTrue: false }
+      );
+
+      setSelected({ allTrue, someTrue });
+    }
+  }, [carts]);
   const toggleAllSelectedCart = useToggleAllSelectProduct();
   const [selected, setSelected] = useState({ allTrue: false, someTrue: false });
 

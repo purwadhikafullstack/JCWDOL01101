@@ -55,6 +55,13 @@ export class WarehouseService {
     return findWarehouse;
   }
 
+  public async findWarehouseByUserId(userId: number): Promise<Warehouse> {
+    const findWarehouse: Warehouse = await DB.Warehouses.findOne({where:{userId:userId}});
+    if (!findWarehouse) throw new HttpException(409, "Warehouse doesn't exist");
+
+    return findWarehouse;
+  }
+
   public async createWarehouse(warehouseData: Warehouse): Promise<Warehouse> {
     const findWarehouse: Warehouse = await DB.Warehouses.findOne({ where: { name: warehouseData.name } });
     if (findWarehouse) throw new HttpException(409, 'Warehouse already exist');
@@ -89,4 +96,19 @@ export class WarehouseService {
 
     return findWarehouse;
   }
+
+  public async assignAdmin(warehouseId: number, userId: number): Promise<Warehouse> {
+    const findWarehouse: Warehouse = await DB.Warehouses.findByPk(warehouseId);
+    if (!findWarehouse) throw new HttpException(409, "Warehouse doesn't exist");
+  
+    await DB.Warehouses.update({ userId }, { where: { id: warehouseId } });
+    const updatedWarehouse: Warehouse = await DB.Warehouses.findByPk(warehouseId);
+    return updatedWarehouse;
+  }
+
+  public async unassignAdmin(userId: number): Promise<void> {
+    await DB.Warehouses.update({ userId: null }, { where: { userId } });
+  }
+  
+  
 }

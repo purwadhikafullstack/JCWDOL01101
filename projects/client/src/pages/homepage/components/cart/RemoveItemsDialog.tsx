@@ -57,6 +57,7 @@ const RemoveItemsDialog = ({ cartId }: { cartId: number }) => {
             <Button
               onClick={() => {
                 deleteAllCart.mutate();
+                deleteAllCart.mutate();
               }}
             >
               {deleteAllCart.isPending ? (

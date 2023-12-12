@@ -4,7 +4,6 @@ import { formatToIDR } from "@/lib/utils";
 import { baseURL } from "@/service";
 import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
-import "react-lazy-load-image-component/src/effects/blur.css";
 import { useReviewByProduct } from "@/hooks/useReview";
 import ReviewStar from "./product-detail/ReviewStar";
 import { useToggleWishlist } from "@/hooks/useWishlistMutation";

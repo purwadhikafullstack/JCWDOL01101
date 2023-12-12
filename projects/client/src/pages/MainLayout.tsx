@@ -17,8 +17,7 @@ import {
 } from "lucide-react";
 import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
-import { Link, Outlet } from "react-router-dom";
-import PurchasedReviewModal from "./homepage/components/reviews/PurchasedReviewModal";
+import { Outlet } from "react-router-dom";
 
 const MainLayout = () => {
   const { user, isSignedIn, isLoaded } = useUser();

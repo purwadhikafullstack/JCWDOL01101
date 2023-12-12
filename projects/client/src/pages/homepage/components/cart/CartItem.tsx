@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCartProduct } from "@/hooks/useCart";
 import { Product } from "@/hooks/useProduct";
