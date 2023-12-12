@@ -11,6 +11,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useSignIn } from "@clerk/clerk-react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { EyeClosedIcon } from "@radix-ui/react-icons";
+import { EyeIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, Location, useLocation, useNavigate } from "react-router-dom";
@@ -28,6 +30,10 @@ type RedicrectLocationState = {
 };
 const Login = () => {
   const { state: locationState } = useLocation();
+  const [passwordVisible, setPasswordVisible] = useState({
+    pwd: false,
+    confirm: false,
+  });
   const navigate = useNavigate();
   const { signIn, isLoaded, setActive } = useSignIn();
   const [error, setError] = useState("");
@@ -78,6 +84,7 @@ const Login = () => {
         redirectUrlComplete: url,
       });
     } catch (err: any) {
+      console.log(err);
       setError(err.errors[0].longMessage);
     }
   };
@@ -136,7 +143,34 @@ const Login = () => {
                   <FormItem>
                     <FormLabel htmlFor="password">Password</FormLabel>
                     <FormControl>
-                      <Input type="password" {...field} />
+                      <div className="flex relative">
+                        <Input
+                          type={passwordVisible.pwd ? "string" : "password"}
+                          id="password"
+                          {...field}
+                        />
+                        {passwordVisible.pwd ? (
+                          <EyeIcon
+                            onClick={() =>
+                              setPasswordVisible({
+                                ...passwordVisible,
+                                pwd: false,
+                              })
+                            }
+                            className="absolute hover:text-primary right-3 top-1/2 h-5 w-5 cursor-pointer -translate-y-1/2 text-muted-foreground peer-focus:text-primary"
+                          />
+                        ) : (
+                          <EyeClosedIcon
+                            onClick={() =>
+                              setPasswordVisible({
+                                ...passwordVisible,
+                                pwd: true,
+                              })
+                            }
+                            className="absolute hover:text-primary right-3 top-1/2 h-5 w-5 cursor-pointer -translate-y-1/2 text-muted-foreground peer-focus:text-primary"
+                          />
+                        )}
+                      </div>
                     </FormControl>
                     <FormMessage />
                     <FormDescription>{error}</FormDescription>

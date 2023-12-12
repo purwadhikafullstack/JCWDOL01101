@@ -1,6 +1,7 @@
 import { AddressDto } from '@/dtos/address.dto';
 import { Address } from '@/interfaces/address.interface';
 import { AddressService } from '@/services/address.service';
+import { RequireAuthProp, WithAuthProp } from '@clerk/clerk-sdk-node';
 import { NextFunction, Request, Response } from 'express';
 import Container from 'typedi';
 
@@ -35,10 +36,11 @@ export class AdressController {
     }
   };
 
-  public getAllAddress = async (req: Request, res: Response, next: NextFunction) => {
+  public getAllAddress = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
+      const externalId = req.auth.userId;
       const search = String(req.query.search);
-      const findAllAddress = await this.address.getAllAddress(search);
+      const findAllAddress = await this.address.getAllAddress(externalId, search);
 
       res.status(200).json({
         message: 'get.address',
@@ -86,9 +88,10 @@ export class AdressController {
     }
   };
 
-  public getActiveAddress = async (req: Request, res: Response, next: NextFunction) => {
+  public getActiveAddress = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
-      const findAddress: Address = await this.address.getActiveAddress();
+      const externalId = req.auth.userId;
+      const findAddress: Address = await this.address.getActiveAddress(externalId);
 
       res.status(200).json({
         message: 'get.activeAddress',

@@ -17,6 +17,7 @@ export class ProductRoute implements Routes {
   private initializeMiddleware() {
     this.router.get(`${this.path}`, this.auth.ClerkAuth, this.product.getProducts);
     this.router.get(`${this.path}/home`, this.product.getProductsHomepage);
+    this.router.get(`${this.path}/:productId/category/:categoryId`, this.product.getProductsByCategory);
     this.router.get(`${this.path}/new`, this.product.getNewestProducts);
     this.router.get(`${this.path}/highest-sell`, this.product.getHigestSellProducts);
     this.router.get(`${this.path}/:slug`, this.product.getProduct);

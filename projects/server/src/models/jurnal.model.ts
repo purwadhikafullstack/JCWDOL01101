@@ -3,6 +3,7 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class JurnalModel extends Model<Jurnal> implements Jurnal {
   public id?: number;
+  public warehouseId?: number;
   public inventoryId?: number;
   public oldQty: number;
   public qtyChange: number;
@@ -18,6 +19,10 @@ export default function (sequelize: Sequelize): typeof JurnalModel {
       id: {
         primaryKey: true,
         autoIncrement: true,
+        type: DataTypes.INTEGER,
+      },
+      warehouseId: {
+        allowNull: false,
         type: DataTypes.INTEGER,
       },
       inventoryId: {

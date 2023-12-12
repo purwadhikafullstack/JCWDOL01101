@@ -5,6 +5,8 @@ export interface Categories {
   id: number;
   name: string;
   color: string;
+  image: string;
+  slug: string;
 }
 
 export const useCategories = (limit?: number) => {
@@ -23,14 +25,14 @@ export const useCategories = (limit?: number) => {
   return categories;
 };
 
-export const useFetchCategory = (id: number | null) => {
+export const useFetchCategory = (slug: string | null) => {
   const categories = useQuery<Categories>({
-    queryKey: ["categories", id],
+    queryKey: ["category", slug],
     queryFn: async () => {
-      const res = await service.get(`/categories/${id}`);
+      const res = await service.get(`/categories/${slug}`);
       return res.data.data;
     },
-    enabled: !!id,
+    enabled: !!slug,
   });
 
   return categories;

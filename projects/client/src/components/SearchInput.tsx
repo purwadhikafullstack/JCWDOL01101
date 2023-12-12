@@ -5,9 +5,15 @@ import { useDebounce } from "use-debounce";
 import { useSearchProducts } from "@/hooks/useProduct";
 import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import { Skeleton } from "./ui/skeleton";
+import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
 
-const SearchInput = () => {
+type SearchInputProps = {
+  expandSearch: boolean;
+  setExpandSearch: (e: boolean) => void;
+};
+const SearchInput = ({ expandSearch, setExpandSearch }: SearchInputProps) => {
+  const { t } = useTranslation();
   const [isClick, setIsClick] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [debounceSearch] = useDebounce(searchTerm.trim(), 200);
@@ -19,6 +25,7 @@ const SearchInput = () => {
   const handleClickOutside = (event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as Node)) {
       setIsClick(false);
+      setExpandSearch(false);
       queryClient.removeQueries({
         queryKey: ["search/products", searchTerm],
       });
@@ -35,20 +42,27 @@ const SearchInput = () => {
   return (
     <div
       ref={ref}
-      className="flex-1 items-center relative flex-shrink-0 border rounded-full"
+      className="flex-1 items-center relative flex-shrink-0 border"
     >
       <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground peer-focus:text-primary" />
       <Input
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        onClick={() => setIsClick(true)}
-        className="w-full peer pl-10 rounded-full  bg-background"
-        placeholder="Search Product"
+        onClick={() => {
+          setIsClick(true);
+          setExpandSearch(true);
+        }}
+        className={cn(
+          "peer pl-10 rounded-none bg-background h-8 lg:h-9",
+          expandSearch && "w-full"
+        )}
+        placeholder={t("navbar.searchPlaceholder")}
       />
       <div
-        className={`${
-          searchTerm.length > 0 && isClick && "scale-y-100"
-        } absolute z-50 scale-y-0 w-full  goup-hover:scale-y-100 origin-top left-1/2 -translate-x-1/2 translate-y-4 transition-all duration-100  bg-white shadow-md  p-2`}
+        className={cn(
+          "absolute overflow-y-auto max-h-[200px] z-50 scale-y-0 w-full  goup-hover:scale-y-100 origin-top left-1/2 -translate-x-1/2 translate-y-2 lg:translate-y-4 transition-all duration-100  bg-white shadow-md p-2",
+          searchTerm.trim().length > 0 && isClick && "scale-y-100"
+        )}
       >
         {isLoading ? (
           <Loader2 className="animate-spin w-5 h-5 mx-auto text-muted-foreground" />

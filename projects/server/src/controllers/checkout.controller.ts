@@ -1,4 +1,5 @@
 import { CheckoutService } from '@/services/checkout.service';
+import { RequireAuthProp } from '@clerk/clerk-sdk-node';
 import { NextFunction, Request, Response } from 'express';
 import Container from 'typedi';
 
@@ -30,6 +31,22 @@ export class CheckoutController {
       res.status(200).json({
         data: findAllCartProduct,
         message: 'get.cartproducts',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public getClosestWarehouseWithStock = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
+    try {
+      const externalId = req.auth.userId;
+      const lat = Number(req.body.lat);
+      const lng = Number(req.body.lng);
+      const closestWarehouse = await this.checkout.findClosestWarehouseWithStock(externalId, { lat, lng });
+
+      res.status(200).json({
+        data: closestWarehouse,
+        message: 'post.closest',
       });
     } catch (err) {
       next(err);

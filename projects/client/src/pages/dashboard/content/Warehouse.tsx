@@ -248,7 +248,7 @@ const Warehouse = () => {
   return (
     <div className="flex flex-col p-2 w-full">
       <Dialog>
-        <DialogTrigger>
+        <DialogTrigger asChild>
           <Button className="self-end">
             <Plus className="w-4 h-4 mr-2" /> New Warehouse
           </Button>
@@ -434,34 +434,39 @@ const Warehouse = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {warehouses.map((warehouse) => (
-              <TableRow key={warehouse.id}>
-                <TableCell className="font-medium">{warehouse.name}</TableCell>
-                <TableCell>{warehouse.capacity}</TableCell>
-                <TableCell>
-                  {warehouse.warehouseAddress?.addressDetail}
-                </TableCell>
-                <TableCell>
-                  {
-                    warehouse.warehouseAddress?.cityWarehouse?.cityProvince
-                      ?.province
-                  }
-                </TableCell>
-                <TableCell>
-                  {warehouse.warehouseAddress?.cityWarehouse?.cityName}
-                </TableCell>
-                <TableCell>{warehouse.userId}</TableCell>
-                <Button
-                  onClick={() => handleEditWarehouse(warehouse)}
-                  className="self-end mt-1.5 mr-1"
-                >
-                  Edit
-                </Button>
-                <Button onClick={() => handleDeleteWarehouse(warehouse.id)}>
-                  Delete
-                </Button>
-              </TableRow>
-            ))}
+            {warehouses.length > 0 &&
+              warehouses.map((warehouse) => (
+                <TableRow key={warehouse.id}>
+                  <TableCell className="font-medium">
+                    {warehouse.name}
+                  </TableCell>
+                  <TableCell>{warehouse.capacity}</TableCell>
+                  <TableCell>
+                    {warehouse.warehouseAddress?.addressDetail}
+                  </TableCell>
+                  <TableCell>
+                    {
+                      warehouse.warehouseAddress?.cityWarehouse?.cityProvince
+                        ?.province
+                    }
+                  </TableCell>
+                  <TableCell>
+                    {warehouse.warehouseAddress?.cityWarehouse?.cityName}
+                  </TableCell>
+                  <TableCell>{warehouse.userId}</TableCell>
+                  <TableCell>
+                    <Button
+                      onClick={() => handleEditWarehouse(warehouse)}
+                      className="self-end mt-1.5 mr-1"
+                    >
+                      Edit
+                    </Button>
+                    <Button onClick={() => handleDeleteWarehouse(warehouse.id)}>
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </div>

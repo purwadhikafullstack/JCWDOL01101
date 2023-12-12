@@ -62,13 +62,13 @@ const links = [
     title: "Product",
     icon: <Shirt className="w-4 h-4" />,
     path: "/dashboard/product",
-    children:[
+    children: [
       {
-        title: "Product Category",
-        icon: <UserCog className="w-4 h-4" />,
+        title: "Category",
+        icon: <Shirt className="w-4 h-4" />,
         path: "/dashboard/product/category",
       },
-    ]
+    ],
   },
   {
     title: "Order",

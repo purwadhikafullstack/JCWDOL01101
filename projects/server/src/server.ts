@@ -11,6 +11,8 @@ import { CartRoute } from './routes/cart.route';
 import { AddressRoute } from './routes/address.route';
 import { CheckoutRoute } from './routes/checkout.route';
 import { DokuRoute } from './routes/doku.route';
+import { ReviewRoute } from './routes/review.route';
+import { WishlistRoute } from './routes/wishlist.route';
 import { OrderRoute } from './routes/order.route';
 
 ValidateEnv();
@@ -27,9 +29,11 @@ const app = new App([
   new AddressRoute(),
   new CheckoutRoute(),
   new DokuRoute(),
+  new OrderRoute(),
   new AddressRoute(),
   new CheckoutRoute(),
-  new OrderRoute(),
+  new ReviewRoute(),
+  new WishlistRoute(),
 ]);
 
 app.listen();

@@ -11,8 +11,10 @@ import {
 import { DialogClose } from "@radix-ui/react-dialog";
 import { Link } from "react-router-dom";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 const BackToCartDialog = ({ children }: { children: React.ReactNode }) => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -20,15 +22,15 @@ const BackToCartDialog = ({ children }: { children: React.ReactNode }) => {
       <DialogContent className="space-y-4">
         <DialogHeader>
           <DialogTitle className="text-xl text-center">
-            Back To Cart?
+            {t("checkoutPage.exitModal.header")}
           </DialogTitle>
           <DialogDescription className="text-center">
-            Discard all changes and return to cart?
+            {t("checkoutPage.exitModal.desc")}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-2">
           <DialogClose asChild>
-            <Button>Stay On This Page</Button>
+            <Button>{t("checkoutPage.exitModal.stayBtn")}</Button>
           </DialogClose>
           <Link
             className={buttonVariants({
@@ -37,7 +39,7 @@ const BackToCartDialog = ({ children }: { children: React.ReactNode }) => {
             })}
             to="/cart"
           >
-            Back And Discard Changes
+            {t("checkoutPage.exitModal.leaveBtn")}
           </Link>
         </div>
       </DialogContent>

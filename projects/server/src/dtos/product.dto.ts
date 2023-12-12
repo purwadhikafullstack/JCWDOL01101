@@ -17,6 +17,10 @@ export class ProductDto {
   @IsNumber()
   public weight: number;
 
+  @IsNotEmpty()
+  @IsString()
+  public size: string;
+
   @IsString()
   public description: string;
 }

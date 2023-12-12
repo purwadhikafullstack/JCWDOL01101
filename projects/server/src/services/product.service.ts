@@ -5,6 +5,7 @@ import { GetFilterProduct, Product } from '@/interfaces/product.interface';
 import { Service } from 'typedi';
 import { unlinkAsync } from './multer.service';
 import { FindOptions, Op } from 'sequelize';
+import { FindOptions, Op } from 'sequelize';
 import { ImageModel } from '@/models/image.model';
 import { Image } from '@/interfaces/image.interface';
 import { User } from '@/interfaces/user.interface';
@@ -12,6 +13,10 @@ import { CategoryModel } from '@/models/category.model';
 import { WarehouseModel } from '@/models/warehouse.model';
 import { InventoryModel } from '@/models/inventory.model';
 import fs from 'fs';
+import { WishlistModel } from '@/models/wishlist.model';
+import { Category } from '@/interfaces/category.interface';
+import { ProductQuery } from '@/controllers/product.controller';
+import { ReviewModel } from '@/models/review.model';
 
 @Service()
 export class ProductService {
@@ -21,8 +26,9 @@ export class ProductService {
     order,
     limit,
     filter,
-    externalId,
+    category,
     warehouse,
+    externalId,
   }: GetFilterProduct): Promise<{ products: Product[]; totalPages: number }> {
     const findUser: User = await DB.User.findOne({ where: { externalId } });
     if (!findUser) throw new HttpException(409, "user doesn't exist");
@@ -34,22 +40,32 @@ export class ProductService {
           }
         : role === 'WAREHOUSE ADMIN'
         ? {
-            id: findUser.warehouseId,
+            userId: findUser.id,
           }
         : {};
 
     const LIMIT = Number(limit) || 10;
     const offset = (page - 1) * LIMIT;
+    const categories =
+      category.length > 0
+        ? category
+            .trim()
+            .split(',')
+            .map(c => +c)
+        : [];
     const options: FindOptions<Product> = {
       offset,
       limit: LIMIT,
       where: {
         status: 'ACTIVE',
         ...(s && { name: { [Op.like]: `%${s}%` } }),
+        ...(categories.length > 0 && {
+          categoryId: {
+            [Op.in]: categories,
+          },
+        }),
       },
-      ...(order && {
-        order: filter === 'stock' || filter === 'sold' ? [[{ model: InventoryModel, as: 'inventory' }, filter, order]] : [[filter, order]],
-      }),
+      order: [['createdAt', 'DESC']],
       include: [
         {
           model: ImageModel,
@@ -58,6 +74,13 @@ export class ProductService {
         {
           model: CategoryModel,
           as: 'productCategory',
+          paranoid: true,
+        },
+        {
+          model: WishlistModel,
+          as: 'productWishlist',
+          paranoid: true,
+          limit: 1,
         },
         {
           model: InventoryModel,
@@ -74,14 +97,42 @@ export class ProductService {
       ],
     };
 
+    if (order) {
+      options.order = filter === 'stock' || filter === 'sold' ? [[{ model: InventoryModel, as: 'inventory' }, filter, order]] : [[filter, order]];
+    }
+
     const warehouseProducts = await DB.Product.findAll(options);
-    const totalCount = await DB.Product.count(options);
+    const totalCount = await DB.Product.count({ where: options.where });
     const totalPages = Math.ceil(totalCount / LIMIT);
 
     return { totalPages: totalPages, products: warehouseProducts };
   }
 
-  public async getAllProductOnHomepage({ page, f, category }: { page: number; f: string; category: number }): Promise<Product[]> {
+  public async getAllProductOnHomepage({ page, f, category, size, pmin, pmax }: ProductQuery): Promise<Product[]> {
+    const findCategory: Category = await DB.Categories.findOne({ paranoid: true, where: { slug: category } });
+
+    const where: { [k: string]: any } = {
+      status: 'ACTIVE',
+    };
+
+    if (size) {
+      where.size = size;
+    }
+
+    if (pmin && !Number.isNaN(+pmin)) {
+      where.price = where.price || {};
+      where.price[Op.gte] = Number(pmin);
+    }
+
+    if (pmax && !Number.isNaN(+pmax)) {
+      where.price = where.price || {};
+      where.price[Op.lte] = Number(pmax);
+    }
+
+    if (findCategory) {
+      where.categoryId = findCategory.id;
+    }
+
     const options: FindOptions = {
       offset: (Number(page) - 1) * 12,
       limit: 12,
@@ -95,11 +146,18 @@ export class ProductService {
           as: 'inventory',
           attributes: ['stock', 'sold'],
         },
+        {
+          model: WishlistModel,
+          as: 'productWishlist',
+          paranoid: true,
+          limit: 1,
+        },
+        {
+          model: ReviewModel,
+          as: 'productReviews',
+        },
       ],
-      where: {
-        status: 'ACTIVE',
-        ...(category && { categoryId: category }),
-      },
+      where: where,
     };
 
     switch (f) {
@@ -115,21 +173,26 @@ export class ProductService {
       case 'hs':
         options.order = [[{ model: InventoryModel, as: 'inventory' }, 'sold', 'DESC']];
         break;
+      case 'rating':
+        options.order = [[{ model: ReviewModel, as: 'productReviews' }, 'rating', 'DESC']];
+        break;
       default:
         options.order = [['createdAt', 'DESC']];
         break;
     }
+
     const products = await DB.Product.findAll(options);
 
     return products;
   }
 
-  public async getHighestSell(): Promise<Product[]> {
+  public async getHighestSell(limit: number): Promise<Product[]> {
+    limit = limit || 3;
     const date = new Date();
     const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
     const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
     const highestSellForThisMonth: Product[] = await DB.Product.findAll({
-      limit: 3,
+      limit,
       where: {
         status: 'ACTIVE',
         createdAt: {
@@ -147,6 +210,12 @@ export class ProductService {
           as: 'inventory',
           attributes: ['stock', 'sold'],
         },
+        {
+          model: WishlistModel,
+          as: 'productWishlist',
+          paranoid: true,
+          limit: 1,
+        },
       ],
       order: [[{ model: InventoryModel, as: 'inventory' }, 'sold', 'DESC']],
     });
@@ -163,9 +232,19 @@ export class ProductService {
           as: 'productImage',
         },
         {
+          model: CategoryModel,
+          as: 'productCategory',
+        },
+        {
           model: InventoryModel,
           as: 'inventory',
           attributes: ['stock', 'sold'],
+        },
+        {
+          model: WishlistModel,
+          as: 'productWishlist',
+          paranoid: true,
+          limit: 1,
         },
       ],
       where: {
@@ -189,15 +268,23 @@ export class ProductService {
           as: 'inventory',
           attributes: ['stock', 'sold'],
         },
+        {
+          model: WishlistModel,
+          as: 'productWishlist',
+          paranoid: true,
+          limit: 1,
+        },
       ],
     });
 
     return findProducts || [];
   }
 
-  public async getProduct(slug: string): Promise<Product> {
-    const findProduct: Product = await DB.Product.findOne({
-      where: { slug },
+  public async getProductsByCategory(categoryId: number, limit: number): Promise<Product[]> {
+    limit = limit || 12;
+    const findProducts: Product[] = await DB.Product.findAll({
+      limit,
+      where: { categoryId, status: 'ACTIVE' },
       include: [
         {
           model: ImageModel,
@@ -208,18 +295,92 @@ export class ProductService {
           as: 'inventory',
           attributes: ['stock', 'sold'],
         },
+        {
+          model: WishlistModel,
+          as: 'productWishlist',
+          paranoid: true,
+          limit: 1,
+        },
       ],
     });
+    if (!findProducts || findProducts.length === 0) throw new HttpException(409, "Products doesn't exist");
+
+    return findProducts;
+  }
+
+  public async getProduct(slug: string): Promise<{ totalStock: number; totalSold: number; product: Product }> {
+    const findProduct: Product = await DB.Product.findOne({
+      where: { slug, status: 'ACTIVE' },
+      include: [
+        {
+          model: CategoryModel,
+          as: 'productCategory',
+          paranoid: true,
+        },
+        {
+          model: ImageModel,
+          as: 'productImage',
+        },
+        {
+          model: InventoryModel,
+          as: 'inventory',
+          attributes: ['stock', 'sold'],
+        },
+        {
+          model: WishlistModel,
+          as: 'productWishlist',
+          paranoid: true,
+          limit: 1,
+        },
+      ],
+    });
+
+    const totalStock = await DB.Inventories.sum('stock', { where: { productId: findProduct.id } });
+    const totalSold = await DB.Inventories.sum('sold', { where: { productId: findProduct.id } });
     if (!findProduct) throw new HttpException(409, "Product doesn't exist");
 
-    return findProduct;
+    return { totalStock, totalSold, product: findProduct };
+  }
+
+  public async getProductByCategory(productId: number, categoryId: number, limit: number): Promise<Product[]> {
+    limit = limit || 12;
+    const findProducts: Product[] = await DB.Product.findAll({
+      limit,
+      where: {
+        categoryId,
+        id: {
+          [Op.ne]: productId,
+        },
+        status: 'ACTIVE',
+      },
+      include: [
+        {
+          model: ImageModel,
+          as: 'productImage',
+        },
+        {
+          model: InventoryModel,
+          as: 'inventory',
+          attributes: ['stock', 'sold'],
+        },
+        {
+          model: WishlistModel,
+          as: 'productWishlist',
+          paranoid: true,
+          limit: 1,
+        },
+      ],
+    });
+
+    return findProducts || [];
   }
 
   public async createProduct(files: Express.Multer.File[], productData: ProductDto): Promise<Product> {
     const { name } = productData;
+
     const slug = name
       .toLocaleLowerCase()
-      .replace(/^a-z0-9\s/g, '')
+      .replace(/[^a-z\s]/g, '')
       .replace(/\s+/g, '-');
     const [product, created] = await DB.Product.findOrCreate({
       where: { name },
@@ -228,7 +389,12 @@ export class ProductService {
     if (!created) throw new HttpException(409, 'Product already exist');
 
     const imageData = files.map(file => ({ image: file.filename, productId: product.id }));
-    await DB.Image.bulkCreate(imageData);
+    const images: Image[] = await DB.Image.bulkCreate(imageData);
+
+    const primaryImage = images[0]?.image;
+    if (primaryImage) {
+      await DB.Product.update({ primaryImage }, { where: { id: product.id } });
+    }
 
     const findAllWarehouse = await DB.Warehouses.findAll();
     if (!findAllWarehouse && findAllWarehouse.length === 0) throw new HttpException(409, 'No Warehouse');
@@ -267,9 +433,11 @@ export class ProductService {
 
     const newSlug = productData.name
       .toLocaleLowerCase()
-      .replace(/^a-z0-9\s/g, '')
+      .replace(/[^a-z\s]/g, '')
       .replace(/\s+/g, '-');
-    await DB.Product.update({ ...productData, slug: newSlug }, { where: { slug } });
+    const images: Image[] = await DB.Image.findAll({ where: { productId: findProduct.id } });
+    if (!images || images.length === 0) throw new HttpException(409, 'No image');
+    await DB.Product.update({ ...productData, slug: newSlug, primaryImage: images[0].image }, { where: { slug } });
     const updatedProduct: Product = await DB.Product.findOne({ where: { slug: newSlug } });
     return updatedProduct;
   }
@@ -284,6 +452,9 @@ export class ProductService {
         unlinkAsync(`uploads/${findProductImage.image}`);
       }
     });
+    const images: Image[] = await DB.Image.findAll({ where: { productId: findProductImage.productId } });
+    if (!images || images.length === 0) throw new HttpException(409, 'No image');
+    await DB.Product.update({ primaryImage: images[0].image }, { where: { id: findProductImage.productId } });
     return findProductImage;
   }
 

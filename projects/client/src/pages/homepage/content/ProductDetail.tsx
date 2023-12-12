@@ -1,121 +1,101 @@
-import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useProduct } from "@/hooks/useProduct";
-import { formatToIDR } from "@/lib/utils";
-import { Car, MapPin, Star, Verified } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import React, { useState } from "react";
 import ProductCarousel from "../components/ProductCarousel";
-import Review from "../components/Review";
-import ProductCartOptions from "../components/ProductCartOptions";
-import { useBoundStore } from "@/store/client/useStore";
-import { useGetClosestWarehouse } from "@/hooks/useWarehouse";
+import ReviewStar from "../components/product-detail/ReviewStar";
+import ProductDescription from "../components/product-detail/ProductDescription";
+import Breadcrumbs from "../components/product-detail/Breadcrumbs";
+import RecommendedProduct from "../components/product-detail/RecommendedProduct";
+import { useProduct } from "@/hooks/useProduct";
+import { Link, useParams } from "react-router-dom";
+import { Separator } from "@/components/ui/separator";
+import OverallRating from "../components/product-detail/OverallRating";
+import { Button } from "@/components/ui/button";
+import ReviewProduct from "../components/reviews/ReviewProduct";
+import { useReviewByProduct } from "@/hooks/useReview";
+import { useUser } from "@clerk/clerk-react";
+import { useProductIsOrder } from "@/hooks/useOrder";
+import PurchasedReviewModal from "../components/reviews/PurchasedReviewModal";
+import { t } from "i18next";
 
 const ProductDetail = () => {
+  const { user } = useUser();
   const { slug } = useParams();
-  const { data: product } = useProduct(slug || "");
-  const stock = product?.inventory
-    ? product.inventory.reduce((prev, curr) => prev + curr.stock, 0)
-    : 0;
-
-  const location = useBoundStore((state) => state.location);
-  const { data: closestWarehouse } = useGetClosestWarehouse({
-    lat: location?.lat,
-    lng: location?.lng,
-  });
+  const { data: pd } = useProduct(slug || "");
+  const { data: userIsOrderProduct } = useProductIsOrder(
+    user?.id,
+    pd?.product.id
+  );
+  const { data: reviewData } = useReviewByProduct(pd?.product?.id);
   return (
-    <div className="product-detail">
-      <div className="w-full  product-media">
-        <div className="sticky top-[100px]">
-          <ProductCarousel images={product?.productImage || []} />
-        </div>
-      </div>
-      <ProductCartOptions
-        price={product?.price || 0}
-        productId={product?.id!}
-        totalStock={stock}
-      />
-      <div className="w-full product-content">
-        <p className="font-bold">{product?.name}</p>
-        <div className="flex items-center gap-4">
-          <span className="flex items-center gap-2">
-            Sold <span className="text-muted-foreground">{product?.sold}+</span>
-          </span>
-          <span className="flex items-center gap-2 leading-3">
-            <Star className="w-4 h-4" />5
-            <span className="text-muted-foreground ml-2 text-sm">
-              (27 rating)
-            </span>
-          </span>
-          <span className="flex items-center">
-            Discution{" "}
-            <span className="text-muted-foreground text-sm ml-2">(2)</span>
-          </span>
-        </div>
-        <p className="font-bold text-2xl">
-          {formatToIDR(product?.price.toString() || "")}
-        </p>
-      </div>
-      <div className="w-full product-details">
-        <div className="border-y mt-4 mb-2 py-2">
-          <span className="font-bold text-primary text-sm">Description</span>
-        </div>
-        <p>{product?.description}</p>
-      </div>
-      <div className="w-full  shop-credibility">
-        <div className="flex gap-2 items-center my-4 border-y  py-2">
-          <Avatar className="h-10 w-10">
-            <AvatarImage className="object-cover" src="/t10logo.png" />
-            <AvatarFallback>T10</AvatarFallback>
-          </Avatar>
-          <div>
-            <span className="flex items-center gap-1">
-              <Verified className="w-4 h-4 text-primary" />
-              <p className="font-bold">Toten Official</p>
-            </span>
-            <span className="text-sm flex gap-2 items-center">
-              <Star className="w-4 h-4 text-muted-foreground" />
-              <p>4.8</p>
-              <p className="text-muted-foreground">rata-rata ulasan</p>
-            </span>
+    pd &&
+    pd.product && (
+      <div>
+        <Breadcrumbs
+          slug={pd.product.slug}
+          categoryId={pd.product.categoryId}
+          category={pd.product.productCategory}
+          productName={pd.product.name}
+        />
+        <div className="w-full flex flex-col lg:flex-row justify-between">
+          <div className="flex-1 pt-2">
+            <div className="lg:max-w-[655px]">
+              <ProductCarousel images={pd.product.productImage || []} />
+              <div className="lg:hidden">
+                <ProductDescription
+                  product={pd.product}
+                  totalStock={pd.totalStock}
+                  totalSold={pd.totalSold}
+                />
+              </div>
+              {reviewData && (
+                <>
+                  <div className="flex items-center gap-2 mt-10 lg:mt-0">
+                    <span className="leading-3 text-xl font-semibold mr-4">
+                      {t("reviewsPage.review")}
+                    </span>
+                    <ReviewStar rating={reviewData.averageRating} />
+                    <Link
+                      to={`/product/${pd.product?.slug}/reviews`}
+                      className="underline"
+                    >
+                      ({reviewData.totalReviews || 0})
+                    </Link>
+                  </div>
+                  <Separator className="my-4" />
+                  <OverallRating ratingCounts={reviewData.ratingCounts} />
+                </>
+              )}
+              {userIsOrderProduct ? (
+                <Link to={`/product/${pd.product.slug}/reviews/new`}>
+                  <Button
+                    variant="outline"
+                    className="border-black uppercase mt-6 px-10 rounded-none"
+                  >
+                    {t("reviewsPage.form.writeReview")}
+                  </Button>
+                </Link>
+              ) : (
+                <PurchasedReviewModal />
+              )}
+              <Separator className="my-4" />
+              <ReviewProduct slug={pd.product.slug} productId={pd.product.id} />
+            </div>
+          </div>
+          <div className="w-full hidden md:block order-1 lg:order-2 lg:w-[522px] relative">
+            <ProductDescription
+              product={pd.product}
+              totalStock={pd.totalStock}
+              totalSold={pd.totalSold}
+            />
           </div>
         </div>
-      </div>
-      <div className="w-full shipment-variant">
         <div>
-          <p className="font-bold">Shipment</p>
-          <span className="flex gap-2 items-center">
-            <MapPin className="w-4 h-4 text-muted-foreground" />
-            <p className="text-sm">
-              Send from{" "}
-              <strong>
-                {closestWarehouse?.warehouseAddress?.cityWarehouse?.cityName}
-              </strong>
-            </p>
-          </span>
-          <span className="flex gap-2 items-center">
-            <Car className="w-4 h-4 text-muted-foreground" />
-            <p className="text-sm">Regular shipping cost 40rb - 70rb</p>
-          </span>
-          <p className="ml-6 text-sm text-muted-foreground">
-            Estimated arrival 18 - 22 Nov
-          </p>
+          <RecommendedProduct
+            productId={pd.product.id}
+            categoryId={pd.product.categoryId}
+          />
         </div>
       </div>
-      <Review />
-      <div className="other-product">
-        <div className="mt-8 ">
-          <span className="flex items-center justify-between">
-            <p className="font-bold text-lg my-2">
-              Other products from this category
-            </p>
-            <Link className="text-primary font-bold text-sm" to="/category">
-              See More
-            </Link>
-          </span>
-          <div className="grid grid-cols-6 gap-4"></div>
-        </div>
-      </div>
-    </div>
+    )
   );
 };
 

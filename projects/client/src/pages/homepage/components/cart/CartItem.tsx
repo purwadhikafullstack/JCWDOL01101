@@ -1,16 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCartProduct } from "@/hooks/useCart";
 import { Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import { baseURL } from "@/service";
-import {
-  CheckSquare,
-  MapPin,
-  MinusCircle,
-  PlusCircle,
-  Trash2,
-} from "lucide-react";
+import { Minus, Plus, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import {
@@ -20,8 +14,8 @@ import {
   useToggleSelectedProduct,
 } from "@/hooks/useCartMutation";
 import { Button } from "@/components/ui/button";
-import { useBoundStore } from "@/store/client/useStore";
-import { useGetClosestWarehouse } from "@/hooks/useWarehouse";
+import { useTranslation } from "react-i18next";
+import { debounce } from "lodash";
 
 type CartItemProps = {
   cartId: number;
@@ -38,7 +32,7 @@ const CartItem = ({
   quantity,
   cartProductId,
 }: CartItemProps) => {
-  const qtyMutation = useChageQty();
+  const { t } = useTranslation();
   const { data: cartProduct } = useCartProduct(hasCart, product.id!);
   const stock = cartProduct
     ? cartProduct?.product?.inventory.reduce(
@@ -53,12 +47,38 @@ const CartItem = ({
     cartProductId,
     product.id!
   );
+  const [quantityChange, setQuantityChange] = useState(0);
+  const quantityChangeRef = useRef(quantityChange);
+  const qtyMutation = useChageQty();
 
-  const location = useBoundStore((state) => state.location);
-  const { data: closestWarehouse } = useGetClosestWarehouse({
-    lat: location?.lat,
-    lng: location?.lng,
-  });
+  useEffect(() => {
+    quantityChangeRef.current = quantityChange;
+  }, [quantityChange]);
+
+  const debouncedQtyMutation = useCallback(
+    debounce(() => {
+      if (product.id && quantityChangeRef.current !== 0) {
+        const newQuantity = Math.max(
+          1,
+          Math.min(stock, quantity + quantityChangeRef.current)
+        );
+        qtyMutation.mutate({
+          cartId,
+          productId: product.id,
+          qty: newQuantity,
+        });
+        setQuantityChange(0);
+      }
+    }, 300),
+    [qtyMutation.mutate, cartId, product.id, quantity]
+  );
+
+  const changeQuantity = (change: number) => {
+    if (product.id && (change > 0 ? quantity < stock : quantity > 1)) {
+      setQuantityChange(quantityChange + change);
+      debouncedQtyMutation();
+    }
+  };
 
   const deleteCart = () => {
     deleteMutation.mutate();
@@ -94,77 +114,74 @@ const CartItem = ({
   return (
     <>
       <div key={product.id} className="w-full space-y-2">
-        <div className="flex gap-2 items-center">
-          <Checkbox
-            checked={cartProduct?.selected}
-            onCheckedChange={(value) => {
-              toggleSelectedCart.mutate({ value: !!value });
-            }}
-          />
-          <div>
-            <h3 className="font-bold">Toten Offical</h3>
-            {closestWarehouse && (
-              <span className="text-muted-foreground text-xs flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                <p>
-                  {closestWarehouse.warehouseAddress?.cityWarehouse?.cityName}
-                </p>
-              </span>
+        <div className="flex justify-between items-center">
+          <div className="flex gap-2 items-center">
+            {cartProduct && (
+              <Checkbox
+                checked={cartProduct.selected}
+                onCheckedChange={(value) => {
+                  toggleSelectedCart.mutate({ value: !!value });
+                }}
+                className="rounded-none"
+              />
             )}
+            <div>
+              <h3 className="font-bold">Toten Offical</h3>
+            </div>
           </div>
-        </div>
-        <div className="flex items-start pl-6 gap-4">
-          <img
-            className="w-14 h-14 rounded-md object-contain"
-            src={`${baseURL}/images/${product.productImage[0].image}`}
-            alt={product.name}
-          />
-          <div>
-            <Link to={`/product/${product.slug}`}>{product.name}</Link>
-            <p className="font-bold">{formatToIDR(product.price.toString())}</p>
-          </div>
-        </div>
-        <div className="flex justify-end items-center">
-          <Button variant="ghost">
-            <Trash2
-              onClick={deleteCart}
-              className="text-muted-foreground cursor-pointer hover:text-primary/80"
-            />
+          <Button onClick={deleteCart} variant="ghost">
+            <X className="text-foreground cursor-pointer " />
           </Button>
-          <div className="flex  items-center">
-            <Button variant="ghost">
-              <MinusCircle
-                onClick={() => {
-                  if (quantity > 1) {
-                    qtyMutation.mutate({
-                      cartId,
-                      productId: product.id!,
-                      qty: -1,
-                    });
-                  }
-                }}
-                className={`${
-                  quantity > 1 ? "text-primary" : "text-muted-foreground"
-                }  cursor-pointer`}
-              />
-            </Button>
-            <p className="mx-2 p-2 select-none">{quantity}</p>
-            <Button variant="ghost">
-              <PlusCircle
-                onClick={() => {
-                  if (quantity < stock) {
-                    qtyMutation.mutate({
-                      cartId,
-                      productId: product.id!,
-                      qty: 1,
-                    });
-                  }
-                }}
-                className={`${
-                  quantity < stock ? "text-primary" : "text-muted-foreground"
-                }  cursor-pointer`}
-              />
-            </Button>
+        </div>
+        <div className="grid lg:grid-cols-2 gap-2">
+          <div className="flex items-start pl-6 gap-4">
+            <img
+              className="w-24 lg:w-32  object-contain"
+              src={`${baseURL}/images/${product.primaryImage}`}
+              alt={product.name}
+            />
+            <div>
+              <Link
+                to={`/product/${product.slug}`}
+                className="text-sm lg:text-lg font-bold "
+              >
+                {product.name}
+              </Link>
+              <p className="text-muted-foreground">
+                {t("cartPage.size")} : {product.size}
+              </p>
+              <p className="font-bold">
+                {formatToIDR(product.price.toString())}
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col items-end gap-2 self-end">
+            <div className="flex gap-2  items-center">
+              <Button
+                disabled={quantity <= 1}
+                onClick={() => changeQuantity(-1)}
+                size="sm"
+                className="h-8 bg-black hover:bg-black/80 rounded-none"
+              >
+                <Minus className="text-primary-foreground w-5 h-5" />
+              </Button>
+              <span className=" border  h-8 grid place-content-center px-8 text-xl leading-3 select-none">
+                {quantity}
+              </span>
+              <Button
+                disabled={quantity >= stock}
+                onClick={() => changeQuantity(+1)}
+                variant="ghost"
+                size="sm"
+                className="h-8 bg-black hover:bg-black/80 rounded-none"
+              >
+                <Plus className="text-primary-foreground w-5 h-5" />
+              </Button>
+            </div>
+            <span className="text-sm lg:text-base font-bold uppercase">
+              {t("cartPage.subTotal")}:{" "}
+              {formatToIDR((product.price * quantity).toString())}
+            </span>
           </div>
         </div>
       </div>

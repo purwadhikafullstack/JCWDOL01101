@@ -16,6 +16,7 @@ import { useAddressById, useGetLocationOnGeo } from "@/hooks/useAddress";
 import { usePutAddress } from "@/hooks/useAddressMutation";
 import EditForm from "./EditForm";
 import z from "zod";
+import { useTranslation } from "react-i18next";
 
 export const editAddressSchema = z.object({
   recepient: z.string().min(4, "required").max(50),
@@ -56,6 +57,7 @@ const EditAddressDialog = ({
   setEditDialog: (value: boolean) => void;
   handleToggleDialog: (main?: boolean, add?: boolean, edit?: boolean) => void;
 }) => {
+  const { t } = useTranslation();
   const [location, setLocation] = useState<Coordinates | null>(null);
   const { data: currentLocation } = useGetLocationOnGeo(location);
   const { data: currentAddress } = useAddressById(addressId!);
@@ -121,7 +123,7 @@ const EditAddressDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={(value) => setEditDialog(value)}>
-      <DialogContent className="sm:max-w-[712px]">
+      <DialogContent className="w-full lg:max-w-[712px]">
         <DialogClose
           onClick={() => {
             handleToggleDialog(true);
@@ -142,12 +144,12 @@ const EditAddressDialog = ({
           <span className="sr-only">Close</span>
         </DialogClose>
         <DialogHeader>
-          <DialogTitle className="text-center text-3xl">
-            Modify Your Address
+          <DialogTitle className="text-center lg:text-3xl">
+            {t("checkoutPage.addressModal.modify.header")}
           </DialogTitle>
         </DialogHeader>
         <Separator />
-        <div className="w-full max-h-[500px] overflow-y-auto pb-10 p-4">
+        <div className="w-full h-[500px] overflow-y-auto pb-10 p-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <EditForm

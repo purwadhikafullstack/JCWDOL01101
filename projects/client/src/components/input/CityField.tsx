@@ -11,6 +11,7 @@ import useOutsideClick from "@/hooks/useClickOutside";
 import { Loader2, MapPin } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useDebounce } from "use-debounce";
 export type Coordinates = {
   latitude: number;
@@ -24,6 +25,7 @@ const CityField = ({
   location: Coordinates | null;
   handleGetGeolocation: () => void;
 }) => {
+  const { t } = useTranslation();
   const { isLoading } = useGetLocationOnGeo(location);
   const ref = useRef<HTMLDivElement | null>(null);
   const [show, setShow] = useState(false);
@@ -48,7 +50,7 @@ const CityField = ({
       render={({ field }) => (
         <FormItem>
           <FormLabel htmlFor="city" className="font-bold">
-            City
+            {t("checkoutPage.addressModal.add.city")}
           </FormLabel>
           <FormControl>
             <div ref={ref}>
@@ -101,7 +103,7 @@ const CityField = ({
                           </>
                         ) : (
                           <p className="text-center p-2 mx-auto">
-                            no city found
+                            {t("checkoutPage.addressModal.add.noCity")}
                           </p>
                         )}
                       </>
