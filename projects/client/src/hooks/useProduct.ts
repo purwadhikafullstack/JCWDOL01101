@@ -91,24 +91,6 @@ export const useProducts = ({
   return { data, isLoading, isFetched };
 };
 
-export const useHomeProducts = ({ s, f }: { s: string; f: string }) => {
-  const { data, isLoading, isFetched } = useQuery<Product[]>({
-    queryKey: ["home/products", s, f],
-    queryFn: async () => {
-      const res = await service.get("/products/home", {
-        params: {
-          s,
-          f,
-        },
-        withCredentials: true,
-      });
-      return res.data.data;
-    },
-  });
-
-  return { data, isLoading, isFetched };
-};
-
 export const useProductInfinite = ({
   f,
   category,
@@ -117,6 +99,7 @@ export const useProductInfinite = ({
   category: string;
   f: string;
   limit?: number;
+  search?: string;
 }) => {
   const fetchProjects = async (page: number) => {
     const res = await service.get("/products/home", {
@@ -175,11 +158,11 @@ export const useProduct = (slug: string) => {
   return { data, isLoading };
 };
 
-export const getProduct = (search: string) => {
-  const query = useQuery<Product[]>({
-    queryKey: ["mutation/product", search],
+export const useSearchProducts = (search: string) => {
+  const { data, isLoading } = useQuery<Product[]>({
+    queryKey: ["search/products", search],
     queryFn: async () => {
-      const res = await service.get(`/mutation/product`, {
+      const res = await service.get(`/products/search/q`, {
         params: {
           search,
         },
@@ -189,5 +172,5 @@ export const getProduct = (search: string) => {
     enabled: !!search,
   });
 
-  return query;
+  return { data, isLoading };
 };

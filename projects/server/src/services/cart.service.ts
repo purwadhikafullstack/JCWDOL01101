@@ -132,6 +132,7 @@ export class CartService {
         await DB.CartProduct.update(
           {
             quantity,
+            selected: true,
             status: 'ACTIVE',
           },
           { where: { id: findCartProduct.id } },
@@ -140,6 +141,7 @@ export class CartService {
         await DB.CartProduct.create({
           quantity,
           productId,
+          selected: true,
           cartId: findCart.id,
           price: findProduct.price,
         });
@@ -148,14 +150,14 @@ export class CartService {
 
     return findCart;
   }
-  public async deleteAllCartProduct(cartId: number, keys: string[]) {
-    const findCartProduct = await DB.CartProduct.findAll({ where: { cartId, status: 'ACTIVE' } });
-    if (!findCartProduct) throw new HttpException(409, `Items doesn't exist`);
+  public async deleteAllCartProduct(cartId: number) {
+    const findCartProducts = await DB.CartProduct.findAll({ where: { cartId, status: 'ACTIVE' } });
+    if (!findCartProducts || findCartProducts.length === 0) throw new HttpException(409, `Items doesn't exist`);
 
-    const productsIds = keys.map(Number);
+    const idsToUpdate = findCartProducts.filter(cp => cp.selected).map(cp => cp.productId);
 
-    await DB.CartProduct.update({ status: 'DELETED' }, { where: { cartId, productId: productsIds } });
-    return findCartProduct;
+    await DB.CartProduct.update({ status: 'DELETED' }, { where: { cartId, productId: idsToUpdate } });
+    return findCartProducts;
   }
 
   public async deleteCartProduct(cartProductId: number) {
@@ -164,6 +166,24 @@ export class CartService {
 
     await DB.CartProduct.update({ status: 'DELETED' }, { where: { id: cartProductId } });
     return findCartProduct;
+  }
+
+  public async toggleSelectedProduct(cartProductId: number, value: boolean) {
+    const findCartProduct = await DB.CartProduct.findByPk(cartProductId);
+    if (!findCartProduct) throw new HttpException(409, `Item doesn't exist`);
+
+    await DB.CartProduct.update({ selected: value }, { where: { id: cartProductId } });
+    return findCartProduct;
+  }
+
+  public async toggleAllSelectedProduct(cartId: number): Promise<CartProduct[]> {
+    const findCartProducts = await DB.CartProduct.findAll({ where: { cartId, status: 'ACTIVE' } });
+    if (!findCartProducts || findCartProducts.length === 0) throw new HttpException(409, `Item doesn't exist`);
+
+    const allSelected = findCartProducts.every(cartProduct => cartProduct.selected);
+    const idsToUpdate = findCartProducts.map(cp => cp.id);
+    await DB.CartProduct.update({ selected: !allSelected }, { where: { id: idsToUpdate } });
+    return findCartProducts;
   }
 
   public async cancelDeleteCartProduct(cartProductId: number) {

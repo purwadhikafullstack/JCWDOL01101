@@ -1,4 +1,5 @@
 import { Product } from "@/hooks/useProduct"
+import { Warehouse } from "@/hooks/useWarehouse"
 import React from "react"
 
 export interface User {
@@ -16,6 +17,7 @@ export interface User {
   createdAt: Date
   updatedAt: Date
   userCart: Cart
+  userData: Warehouse
 }
 
 export interface Cart {
@@ -31,6 +33,7 @@ export interface cartProducts {
   cartId: number
   productId: number
   quantity: number
+  selected: boolean
   product: Product
 }
 

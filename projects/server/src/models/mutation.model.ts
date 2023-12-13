@@ -9,7 +9,8 @@ export class MutationModel extends Model<Mutation> implements Mutation {
   public receiverName?: string;
   public productId?: number;
   public quantity: number;
-  public notes?: string;
+  public senderNotes?: string;
+  public receiverNotes?: string;
   public status: 'ONGOING' | 'COMPLETED' | 'REJECTED' | 'CANCELED';
 }
 
@@ -45,14 +46,18 @@ export default function (sequelize: Sequelize): typeof MutationModel {
         allowNull: false,
         type: DataTypes.INTEGER,
       },
-      notes: {
+      senderNotes: {
+        allowNull: true,
+        type: DataTypes.TEXT,
+      },
+      receiverNotes: {
         allowNull: true,
         type: DataTypes.TEXT,
       },
       status: {
         allowNull: false,
         type: DataTypes.ENUM,
-        values: ['ONGOING', 'COMPLETED', 'REJECTED'],
+        values: ['ONGOING', 'COMPLETED', 'REJECTED', 'CANCELED'],
       },
     },
     { sequelize, tableName: 'mutations' },

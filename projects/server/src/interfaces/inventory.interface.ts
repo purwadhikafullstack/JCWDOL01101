@@ -5,3 +5,10 @@ export interface Inventory {
   stock: number;
   sold: number;
 }
+
+export interface AddStock {
+  senderWarehouseId: number;
+  receiverWarehouseId: number;
+  productId: number;
+  stock: number;
+}

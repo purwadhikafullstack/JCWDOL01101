@@ -6,8 +6,20 @@ export interface Mutation {
   receiverName?: string;
   productId?: number;
   quantity: number;
-  notes?: string;
+  senderNotes?: string;
+  receiverNotes?: string;
   status: 'ONGOING' | 'COMPLETED' | 'REJECTED' | 'CANCELED';
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export interface GetFilterMutation {
+  page: number;
+  s: string;
+  filter: string;
+  order: string;
+  limit: number;
+  externalId: string;
+  warehouse: string;
+  manage: string;
 }

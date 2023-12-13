@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { SearchIcon, Plus } from "lucide-react";
+import React, { useState } from "react"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { SearchIcon, Plus } from "lucide-react"
 import {
   Table,
   TableBody,
@@ -8,24 +8,24 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { useSearchParams } from "react-router-dom";
-import { useUsers } from "@/hooks/useUser";
-import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton";
-import { useDebounce } from "use-debounce";
-import { getDate } from "@/lib/utils";
-import TablePagination from "../components/TablePagination";
-import NewAdminFrom from "../components/NewAdminForm";
-import AdminAction from "../components/AdminAction";
-import ChangeOrderButton from "../components/ChangeOrderButton";
+} from "@/components/ui/table"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { useSearchParams } from "react-router-dom"
+import { useUsers } from "@/hooks/useUser"
+import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton"
+import { useDebounce } from "use-debounce"
+import { getDate } from "@/lib/utils"
+import TablePagination from "../components/TablePagination"
+import NewAdminFrom from "../components/NewAdminForm"
+import AdminAction from "../components/AdminAction"
+import ChangeOrderButton from "../components/ChangeOrderButton"
 
 const Admin = () => {
-  const [searchParams, setSearchParams] = useSearchParams({ page: "1" });
-  const currentPage = Number(searchParams.get("page"));
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debounceSearch] = useDebounce(searchTerm, 1000);
+  const [searchParams, setSearchParams] = useSearchParams({ page: "1" })
+  const currentPage = Number(searchParams.get("page"))
+  const [searchTerm, setSearchTerm] = useState("")
+  const [debounceSearch] = useDebounce(searchTerm, 1000)
 
   const { data, isLoading, isFetched } = useUsers({
     page: currentPage,
@@ -33,7 +33,7 @@ const Admin = () => {
     r: "WAREHOUSE ADMIN",
     filter: searchParams.get("filter") || "",
     order: searchParams.get("order") || "",
-  });
+  })
   return (
     <div className="flex flex-col p-2 w-full">
       <Dialog>
@@ -53,10 +53,10 @@ const Admin = () => {
           value={searchTerm}
           onChange={(e) => {
             setSearchParams((params) => {
-              params.set("s", e.target.value);
-              return params;
-            });
-            setSearchTerm(e.target.value);
+              params.set("s", e.target.value)
+              return params
+            })
+            setSearchTerm(e.target.value)
           }}
           className=" w-full pl-10"
           placeholder="search product ..."
@@ -71,7 +71,7 @@ const Admin = () => {
               <TableRow>
                 <TableHead className="w-[80px]">#</TableHead>
                 <TableHead className="text-center">
-                  <ChangeOrderButton paramKey="username" name="Name" />
+                  <ChangeOrderButton paramKey="firstName" name="Name" />
                 </TableHead>
                 <TableHead className="text-center">
                   <ChangeOrderButton paramKey="email" name="Email" />
@@ -98,7 +98,9 @@ const Admin = () => {
                     <TableRow key={user.id}>
                       <TableCell className="w-[80px]">{i + 1}</TableCell>
                       <TableCell className="capitalize font-medium text-center">
-                        {user.firstname ? user.firstname : user.username}
+                        {user.firstname
+                          ? `${user.firstname} ${user.lastname}`
+                          : user.username}
                       </TableCell>
                       <TableCell className="font-medium text-center">
                         {user.email}
@@ -138,7 +140,7 @@ const Admin = () => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Admin;
+export default Admin

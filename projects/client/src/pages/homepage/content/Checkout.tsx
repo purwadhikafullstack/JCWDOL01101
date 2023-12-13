@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import UserContext from "@/context/UserContext";
@@ -7,14 +7,14 @@ import { useCart } from "@/hooks/useCart";
 import { formatToIDR } from "@/lib/utils";
 import { useBoundStore } from "@/store/client/useStore";
 import ActiveAddress from "../components/checkout/ActiveAddress";
-import AddNewAddressDialog from "../components/checkout/AddNewAddressDialog";
-import AddressModal from "../components/checkout/AddressModal";
 import BackToCartDialog from "../components/checkout/BackToCartDialog";
 import CheckoutItem from "../components/checkout/CheckoutItem";
-import EditAddressDialog from "../components/checkout/EditAddressDialog";
 import PaymentModal from "../components/checkout/PaymentModal";
 import { useGetClosestWarehouse } from "@/hooks/useWarehouse";
 import { useNavigate } from "react-router-dom";
+import { useSelectedItem } from "@/hooks/useCheckout";
+import { Button } from "@/components/ui/button";
+import SelectAddressDialog from "@/components/SelectAddressDialog";
 
 export type Dialog = {
   main: boolean;
@@ -32,7 +32,7 @@ const Checkout = () => {
 
   const navigate = useNavigate();
   useEffect(() => {
-    if (!cart) {
+    if (cart && !Boolean(cart.cart)) {
       return navigate("/");
     }
   }, [cart]);
@@ -42,20 +42,13 @@ const Checkout = () => {
     lat: activeAddress?.lat,
     lng: activeAddress?.lng,
   });
-
-  const cartProducts = useMemo(() => cart?.cart.cartProducts || [], [cart]);
-  const totalPrice = cart?.totalPrice || 0;
+  const { data: selectedCartProducts } = useSelectedItem(cart?.cart.id!);
+  const cartProductsLength = selectedCartProducts?.length || 0;
+  const totalPrice = selectedCartProducts
+    ? selectedCartProducts.reduce((prev, curr) => prev + curr.product.price, 0)
+    : 0;
   const shippingFee = useBoundStore((state) => state.totalShipping);
   const shippingTotal = Number(shippingFee) + Number(totalPrice);
-  const [mainDialog, setMainDialog] = useState(false);
-  const [addDialog, setAddDialog] = useState(false);
-  const [editDialog, setEditDialog] = useState(false);
-  const [modifyAddressId, setModifyAddressId] = useState<number | null>(null);
-  const toggleDialog = (main = false, add = false, edit = false) => {
-    setMainDialog(main);
-    setAddDialog(add);
-    setEditDialog(edit);
-  };
 
   return (
     <>
@@ -75,43 +68,25 @@ const Checkout = () => {
             <h4 className="font-bold my-2 mt-8">Shipping Address</h4>
             <Separator />
             <ActiveAddress activeAddress={activeAddress} />
-            <AddressModal
-              addressProps={{
-                userId: user?.id!,
-                mainDialog,
-                toggleDialog,
-                setMainDialog,
-                setModifyAddressId,
-                activeAddress: !!activeAddress,
-                handleToggleDialog: toggleDialog,
-              }}
-            />
-            <AddNewAddressDialog
-              open={addDialog}
-              name={user?.firstname || ""}
-              userId={user?.id!}
-              setAddDialog={setAddDialog}
-              handleToggleDialog={toggleDialog}
-            />
-            <EditAddressDialog
-              open={editDialog}
-              userId={user?.id!}
-              addressId={modifyAddressId}
-              setEditDialog={setEditDialog}
-              handleToggleDialog={toggleDialog}
-            />
+            <SelectAddressDialog>
+              <Button variant="secondary">
+                {activeAddress ? "Choose Other Address" : "Create New Address"}
+              </Button>
+            </SelectAddressDialog>
+
             <>
-              {cartProducts.map(({ product, id, quantity }, i) => (
-                <CheckoutItem
-                  key={id}
-                  index={i}
-                  length={cartProducts.length || 0}
-                  product={product}
-                  quantity={quantity}
-                  warehouse={closestWarehouse}
-                  activeAddress={activeAddress}
-                />
-              ))}
+              {selectedCartProducts &&
+                selectedCartProducts.map(({ product, id, quantity }, i) => (
+                  <CheckoutItem
+                    key={id}
+                    index={i}
+                    length={cartProductsLength}
+                    product={product}
+                    quantity={quantity}
+                    warehouse={closestWarehouse}
+                    activeAddress={activeAddress}
+                  />
+                ))}
             </>
           </section>
           <div className="w-[420px] relative ">
@@ -125,8 +100,8 @@ const Checkout = () => {
                         Total Price{" "}
                         <p>
                           (
-                          {`${cartProducts.length} ${
-                            cartProducts.length > 1 ? "products" : "product"
+                          {`${cartProductsLength} ${
+                            cartProductsLength > 1 ? "products" : "product"
                           }`}
                           )
                         </p>
@@ -153,7 +128,6 @@ const Checkout = () => {
                     cartId={user.userCart.id}
                     address={activeAddress}
                     totalPrice={totalPrice}
-                    cartProducts={cartProducts}
                   />
                 )}
               </div>

@@ -1,4 +1,10 @@
 import { RAJAONGKIR_API_KEY } from '@/config';
+import { DB } from '@/database';
+import { HttpException } from '@/exceptions/HttpException';
+import { CategoryModel } from '@/models/category.model';
+import { ImageModel } from '@/models/image.model';
+import { InventoryModel } from '@/models/inventory.model';
+import { ProductModel } from '@/models/product.model';
 import axios from 'axios';
 import { Service } from 'typedi';
 
@@ -32,5 +38,35 @@ export class CheckoutService {
 
     const results: Courier = res.data.rajaongkir.results[0];
     return results;
+  }
+
+  public async getSelectedCartProduct(cartId: number) {
+    const findAllCartProduct = await DB.CartProduct.findAll({
+      where: { cartId, selected: true, status: 'ACTIVE' },
+      include: [
+        {
+          model: ProductModel,
+          as: 'product',
+          include: [
+            {
+              model: ImageModel,
+              as: 'productImage',
+            },
+            {
+              model: CategoryModel,
+              as: 'productCategory',
+            },
+            {
+              model: InventoryModel,
+              as: 'inventory',
+              attributes: ['stock', 'sold'],
+            },
+          ],
+        },
+      ],
+    });
+    if (!findAllCartProduct || findAllCartProduct.length === 0) throw new HttpException(409, 'No Selected Item(s)');
+
+    return findAllCartProduct;
   }
 }

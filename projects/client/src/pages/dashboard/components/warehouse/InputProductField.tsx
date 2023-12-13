@@ -1,3 +1,5 @@
+import React, { useRef, useState } from "react"
+import { baseURL } from "@/service"
 import {
   FormField,
   FormItem,
@@ -7,24 +9,19 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import useOutsideClick from "@/hooks/useClickOutside"
-import { getProduct } from "@/hooks/useProduct"
+import { useSearchProducts } from "@/hooks/useProduct"
 import { Loader2 } from "lucide-react"
-import React, { useRef, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { useDebounce } from "use-debounce"
-export type Coordinates = {
-  latitude: number
-  langitude: number
-}
 
 const InputProductField = () => {
   const ref = useRef<HTMLDivElement | null>(null)
   const [show, setShow] = useState(false)
   const form = useFormContext()
   const [search, setSearch] = useState("")
-  const [debounceSearch] = useDebounce(search, 500)
+  const [debounceSearch] = useDebounce(search, 300)
   const { data: products, isLoading: productsLoading } =
-    getProduct(debounceSearch)
+    useSearchProducts(debounceSearch)
 
   useOutsideClick(ref, () => {
     setShow(false)
@@ -35,13 +32,12 @@ const InputProductField = () => {
       name="productName"
       render={({ field }) => (
         <FormItem>
-          <FormLabel htmlFor="product" className="font-bold">
-            Product
-          </FormLabel>
+          <FormLabel htmlFor="product">Product</FormLabel>
           <FormControl>
             <div ref={ref}>
               <Input
                 id="product"
+                placeholder="Search product"
                 {...field}
                 value={search}
                 onChange={(e) => {
@@ -50,7 +46,7 @@ const InputProductField = () => {
                 }}
               />
               {show && products && (
-                <div className="mt-2">
+                <div className="mb-2">
                   <div className="cursor-pointer w-full border overflow-auto transition-all duration-200 max-h-[200px] flex flex-col  items-start rounded-md text-sm">
                     {productsLoading ? (
                       <div className="text-center">
@@ -69,10 +65,14 @@ const InputProductField = () => {
                                   form.setValue("productName", product.name)
                                 }}
                                 key={product.id}
-                                className="w-full p-2 rounded-md hover:bg-muted flex gap-2"
+                                className="w-full p-2 rounded-md hover:bg-muted flex gap-2 items-center"
                               >
-                                {/* {product.productImage[1]} */}
-                                <p>{product.name}</p>
+                                <img
+                                  className="h-[40px] w-[40px] object-cover"
+                                  src={`${baseURL}/images/${product.productImage[0].image}`}
+                                  alt={product.name}
+                                />
+                                <p className="text-base">{product.name}</p>
                               </div>
                             ))}
                           </>

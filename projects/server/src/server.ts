@@ -13,6 +13,7 @@ import { CheckoutRoute } from './routes/checkout.route';
 import { DokuRoute } from './routes/doku.route';
 import { OrderRoute } from './routes/order.route';
 import { MutationRoute } from './routes/mutation.route';
+import { InventoryRoute } from './routes/inventory.route';
 
 ValidateEnv();
 
@@ -32,6 +33,7 @@ const app = new App([
   new CheckoutRoute(),
   new OrderRoute(),
   new MutationRoute(),
+  new InventoryRoute(),
 ]);
 
 app.listen();

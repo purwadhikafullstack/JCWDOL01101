@@ -21,4 +21,18 @@ export class CheckoutController {
       next(err);
     }
   };
+
+  public getAllSelectedCartProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const cartId = Number(req.params.cartId);
+      const findAllCartProduct = await this.checkout.getSelectedCartProduct(cartId);
+
+      res.status(200).json({
+        data: findAllCartProduct,
+        message: 'get.cartproducts',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
 }

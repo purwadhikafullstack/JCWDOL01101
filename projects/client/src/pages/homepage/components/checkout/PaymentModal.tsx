@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
-import { cartProducts } from "@/context/UserContext";
 import { Address } from "@/hooks/useAddress";
 import { useDokuPaymentIntent } from "@/hooks/useDoku";
 import { useClosestWarehouse } from "@/hooks/useOrderMutation";
@@ -11,7 +10,7 @@ import { formatToIDR } from "@/lib/utils";
 import { useBoundStore } from "@/store/client/useStore";
 import { ShieldCheck, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
+import { useSelectedItem } from "@/hooks/useCheckout";
 
 const paymentMethods = [
   {
@@ -35,12 +34,10 @@ const PaymentModal = ({
   cartId,
   address,
   totalPrice,
-  cartProducts,
 }: {
   cartId: number;
   address: Address | undefined;
   totalPrice: number;
-  cartProducts: cartProducts[];
 }) => {
   const navigate = useNavigate();
   const shippingFee = useBoundStore((state) => state.totalShipping);
@@ -51,6 +48,7 @@ const PaymentModal = ({
   const [exit, setExit] = useState(false);
   const checkClosestWarehouse = useClosestWarehouse();
   const createPayment = useDokuPaymentIntent();
+  const { data: cartProducts } = useSelectedItem(cartId);
 
   const handleCreatePayment = () => {
     const closestWarehouse = checkClosestWarehouse.data;
@@ -189,7 +187,9 @@ const PaymentModal = ({
                       </li>
                       <Separator className="my-2" />
                       <li className="flex gap-2 justify-between items-center">
-                        <span>Total Price ({cartProducts.length})</span>
+                        <span>
+                          Total Price ({cartProducts ? cartProducts.length : 0})
+                        </span>
                         <b>{formatToIDR(totalPrice.toString())}</b>
                       </li>
                       <li className="flex gap-2 justify-between items-center">
@@ -201,40 +201,43 @@ const PaymentModal = ({
                       <b className="text-sm">Purchased Items</b>
                       <Separator className="my-2" />
                       <div className="space-y-3">
-                        {cartProducts.map(({ product, id, quantity }) => (
-                          <div
-                            key={id}
-                            className="text-sm text-muted-foreground"
-                          >
-                            <div className="flex justify-between items-center ">
-                              <span>
-                                <b className="text-foreground w-[300px] text-ellipsis overflow-hidden whitespace-nowrap">
-                                  {product.name}
-                                </b>
-                                <p className="text-xs">{`${quantity} X ${formatToIDR(
-                                  product.price.toString()
-                                )}`}</p>
-                              </span>
-                              <span>
-                                {formatToIDR(String(quantity * product.price))}
-                              </span>
-                            </div>
-                            <div className="flex justify-between items-center ">
-                              <p>Shipping Cost</p>
+                        {cartProducts &&
+                          cartProducts.map(({ product, id, quantity }) => (
+                            <div
+                              key={id}
+                              className="text-sm text-muted-foreground"
+                            >
+                              <div className="flex justify-between items-center ">
+                                <span>
+                                  <b className="text-foreground w-[300px] text-ellipsis overflow-hidden whitespace-nowrap">
+                                    {product.name}
+                                  </b>
+                                  <p className="text-xs">{`${quantity} X ${formatToIDR(
+                                    product.price.toString()
+                                  )}`}</p>
+                                </span>
+                                <span>
+                                  {formatToIDR(
+                                    String(quantity * product.price)
+                                  )}
+                                </span>
+                              </div>
+                              <div className="flex justify-between items-center ">
+                                <p>Shipping Cost</p>
+                                <p>
+                                  {formatToIDR(
+                                    String(
+                                      shipping[product.id!]?.cost[0].value || 0
+                                    )
+                                  )}
+                                </p>
+                              </div>
+                              <b>{shipping[product.id!]?.service}</b>
                               <p>
-                                {formatToIDR(
-                                  String(
-                                    shipping[product.id!]?.cost[0].value || 0
-                                  )
-                                )}
+                                Estimation {shipping[product.id!]?.cost[0].etd}
                               </p>
                             </div>
-                            <b>{shipping[product.id!]?.service}</b>
-                            <p>
-                              Estimation {shipping[product.id!]?.cost[0].etd}
-                            </p>
-                          </div>
-                        ))}
+                          ))}
                       </div>
                       <Separator className="my-2" />
                     </div>

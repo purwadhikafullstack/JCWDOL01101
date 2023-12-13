@@ -55,22 +55,7 @@ export const useUsers = ({ page, s, r, filter, order }: UserOptions) => {
   return { data, isLoading, isFetched };
 };
 
-export const useUser = (userId: string) => {
-  const { data, isLoading } = useQuery<User>({
-    queryKey: ["user", userId],
-    queryFn: async () => {
-      const res = await service.get(`/user/${userId}`, {
-        withCredentials: true,
-      });
-      return res.data.data;
-    },
-    enabled: !!userId,
-  });
-
-  return { data, isLoading };
-};
-
-export const useUserById = (userId: number) => {
+export const useUser = (userId: number) => {
   const { data, isLoading } = useQuery<User>({
     queryKey: ["user", userId],
     queryFn: async () => {
