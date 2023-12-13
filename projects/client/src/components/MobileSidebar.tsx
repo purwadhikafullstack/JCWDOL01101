@@ -45,7 +45,7 @@ type ProfileMenuCardProps = {
   setOpen: (open: boolean) => void;
 };
 
-const MobileMenuCard = ({ open, setOpen }: ProfileMenuCardProps) => {
+const MobileSidebar = ({ open, setOpen }: ProfileMenuCardProps) => {
   const navigate = useNavigate();
   const { user, isLoaded } = useUser();
   const [isBigScreen, setIsBigScreen] = useState(window.innerWidth > 720);
@@ -64,7 +64,7 @@ const MobileMenuCard = ({ open, setOpen }: ProfileMenuCardProps) => {
     isLoaded && (
       <div
         className={cn(
-          "fixed bottom-0 left-0 overflow-auto duration-300 bg-white z-50 w-full h-screen transform  transition-all",
+          "fixed bottom-0 left-0 overflow-auto duration-300 bg-background z-50 w-full h-screen transform  transition-all",
           open && !isBigScreen ? "translate-y-0 top-0" : "translate-y-full"
         )}
       >
@@ -141,4 +141,4 @@ const MobileMenuCard = ({ open, setOpen }: ProfileMenuCardProps) => {
   );
 };
 
-export default MobileMenuCard;
+export default MobileSidebar;

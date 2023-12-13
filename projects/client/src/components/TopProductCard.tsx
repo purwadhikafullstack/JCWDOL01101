@@ -2,7 +2,7 @@ import React from "react";
 import { baseURL } from "@/service";
 import { Crown } from "lucide-react";
 import { Link } from "react-router-dom";
-import { convertToK, formatToIDR } from "@/lib/utils";
+import { cn, convertToK, formatToIDR } from "@/lib/utils";
 import { Product } from "@/hooks/useProduct";
 
 type TopProductCardProps = {
@@ -28,20 +28,19 @@ const TopProductCard = ({ product, size }: TopProductCardProps) => {
           </div>
         </div>
         <div className="absolute bottom-0 w-full  overflow-hidden  flex transform translate-y-1 group-hover:translate-y-0 transition-all duration-500">
-          <div
-            className={` flex  flex-col items-start pl-2 pb-4 justify-center w-full  text-xs text-foreground`}
-          >
+          <div className="flex flex-col items-start pl-2 pb-4 justify-center w-full text-xs text-foreground">
             <div
-              className={`${
+              className={cn(
+                "justify-between flex  bg-black/80 p-2 backdrop-blur-sm rounded-full items-center pl-4 font-semibold",
                 size === "sm" ? "" : "flex"
-              } justify-between flex  bg-black/80 p-2 backdrop-blur-sm rounded-full items-center pl-4 font-semibold`}
+              )}
             >
               <h3
                 className={`${
                   size === "sm" &&
                   "max-w-[60px] lg:max-w-[150px] overflow-hidden whitespace-nowrap text-ellipsis"
                 }
-                 lg:line-clamp-2 text-xs lg:text-lg  flex-grow text-background mr-2 leading-none tracking-tight`}
+                 lg:line-clamp-2 text-xs lg:text-lg  flex-grow text-background dark:text-foreground mr-2 leading-none tracking-tight`}
               >
                 {product.name}
               </h3>

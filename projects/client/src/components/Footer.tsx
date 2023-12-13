@@ -7,6 +7,7 @@ import {
 import React from "react";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
+import ModeToggle from "./ModeToggle";
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -33,23 +34,24 @@ const Footer = () => {
           </ul>
         </div>
         <div>
-          <div className="flex justify-end mb-2">
+          <div className="flex justify-end mb-2 gap-6">
             <LanguageSelector />
+            <ModeToggle />
           </div>
           <h4 className="font-bold text-base lg:text-lg mb-2">
             {t("footer.social")}
           </h4>
           <div className="flex gap-2 ">
-            <span className="p-2 rounded-md w-max border border-muted bg-white hover:bg-muted cursor-pointer">
+            <span className="p-2 rounded-md w-max border border-muted bg-background hover:bg-muted cursor-pointer">
               <FacebookIcon strokeWidth={1} />
             </span>
-            <span className="p-2 rounded-md border border-muted bg-white hover:bg-muted cursor-pointer">
+            <span className="p-2 rounded-md border border-muted bg-background hover:bg-muted cursor-pointer">
               <TwitterIcon strokeWidth={1} />
             </span>
-            <span className="p-2 rounded-md border border-muted bg-white hover:bg-muted cursor-pointer">
+            <span className="p-2 rounded-md border border-muted bg-background hover:bg-muted cursor-pointer">
               <InstagramIcon strokeWidth={1} />
             </span>
-            <span className="p-2 rounded-md border border-muted bg-white hover:bg-muted cursor-pointer">
+            <span className="p-2 rounded-md border border-muted bg-background hover:bg-muted cursor-pointer">
               <YoutubeIcon strokeWidth={1} />
             </span>
           </div>

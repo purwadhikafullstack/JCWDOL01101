@@ -26,10 +26,10 @@ const nav = [
   },
 ];
 
-const ButtomNav = () => {
+const MobileNav = () => {
   const location = useLocation();
   return (
-    <div className="bottom-0 block md:hidden left-0 p-2 bg-white fixed border w-full">
+    <div className="bottom-0 block md:hidden left-0 p-2 bg-background fixed border w-full">
       <div className="flex items-center justify-evenly">
         {nav.map((n) => (
           <Link key={n.label} to={n.link}>
@@ -49,4 +49,4 @@ const ButtomNav = () => {
   );
 };
 
-export default ButtomNav;
+export default MobileNav;

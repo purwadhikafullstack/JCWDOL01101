@@ -40,7 +40,7 @@ const WeightFormField = () => {
                     <input
                       {...field}
                       placeholder="Weight"
-                      className="h-full py-2 outline-none pl-2 rounded-l-lg max-w-[150px]"
+                      className="h-full py-2 outline-none pl-2 rounded-l-lg max-w-[150px] bg-background"
                       value={form.watch("weight") || ""}
                       onChange={(e) => {
                         const numericValue = formatNumber(e.target.value);

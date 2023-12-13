@@ -135,7 +135,7 @@ const ProductDescription = ({
                 <Button
                   disabled={quantity <= 1}
                   onClick={() => setQuantity(quantity - 1)}
-                  className="bg-black hover:bg-black/80 rounded-none"
+                  className="bg-black dark:border hover:bg-black/80 rounded-none"
                 >
                   <Minus />
                 </Button>
@@ -163,7 +163,7 @@ const ProductDescription = ({
                       setQuantity(quantity + 1);
                     }
                   }}
-                  className="bg-black hover:bg-black/80 rounded-none"
+                  className="bg-black dark:border hover:bg-black/80 rounded-none"
                 >
                   <Plus />
                 </Button>

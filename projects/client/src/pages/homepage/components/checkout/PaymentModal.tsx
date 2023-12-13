@@ -136,7 +136,7 @@ const PaymentModal = ({
                     exit ? "translate-y-20" : "-translate-y-[300px]"
                   } duration-300 top-0 transition-all ease-in-out flex  justify-center z-50`}
                 >
-                  <div className="w-[300px] h-max bg-white p-4 border rounded-lg">
+                  <div className="w-[300px] h-max bg-background p-4 border rounded-lg">
                     <img src="/ilus/payment.svg" className="w-28 mx-auto" />
                     <p className="text-lg font-bold text-center pb-4">
                       {t("checkoutPage.paymentModal.exitModal.header")}
@@ -160,7 +160,7 @@ const PaymentModal = ({
                   <div className="z-40 w-full h-full absolute left-0 top-0 bg-black/60"></div>
                 )}
                 <div
-                  className={` w-full max-h-[500px]  bg-white rounded-lg relative overflow-y-auto transition-all duration-300 `}
+                  className={` w-full max-h-[500px]  bg-background rounded-lg relative overflow-y-auto transition-all duration-300 `}
                 >
                   <div className="absolute top-0 left-0 p-4 flex gap-2 items-center">
                     <Button
@@ -282,8 +282,8 @@ const PaymentModal = ({
                       <p className=" w-[300px] text-sm text-muted-foreground text-ellipsis overflow-hidden whitespace-nowrap">{`${address?.address}, ${address?.city.cityName}, ${address?.city.province}`}</p>
                     </div>
                   </div>
-                  <div className="bg-white sticky bottom-0 ">
-                    <div className=" w-full grid grid-cols-2 bg-gradient-to-tr from-white to-primary/20 py-4 px-2">
+                  <div className="bg-background sticky bottom-0 ">
+                    <div className=" w-full grid grid-cols-2 bg-gradient-to-tr from-background to-primary/20 dark:to-background py-4 px-2">
                       <div>
                         <p>{t("checkoutPage.paymentModal.total")}</p>
                         <b className="text-sm">
