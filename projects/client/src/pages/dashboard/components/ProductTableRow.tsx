@@ -144,7 +144,7 @@ const ProductTableRow = ({ products, selectedWarehouse }: ProductTableRowProps) 
                     <div onClick={handleDialogStock} >
                       <DialogTrigger className="w-full">
                         <DropdownMenuItem className="cursor-pointer">
-                          Add Stock
+                          Manage Stock
                         </DropdownMenuItem>
                       </DialogTrigger>
                     </div>
@@ -156,7 +156,7 @@ const ProductTableRow = ({ products, selectedWarehouse }: ProductTableRowProps) 
 
                 {dialog === "add" && (
                   <DialogContent>
-                    <AddStockForm productss={product.id} selectedWarehouse={selectedWarehouse}/>
+                    <AddStockForm productId={product.id} selectedWarehouse={selectedWarehouse}/>
                   </DialogContent>
                 )}
                 {dialog === "delete" && (

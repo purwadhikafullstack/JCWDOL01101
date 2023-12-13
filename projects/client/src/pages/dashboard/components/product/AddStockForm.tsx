@@ -7,11 +7,11 @@ import service from '@/service';
 import { Button } from '@/components/ui/button';
 
 interface StockProps {
-  productss: number | undefined;
+  productId: number | undefined;
   selectedWarehouse: string | undefined;
 }
 
-const AddStockForm = ({ productss, selectedWarehouse }: StockProps) => {
+const AddStockForm = ({ productId, selectedWarehouse }: StockProps) => {
   const { data: products } = useProducts({
     page: 1,
     s: '',
@@ -22,21 +22,19 @@ const AddStockForm = ({ productss, selectedWarehouse }: StockProps) => {
   });
 
   const { data: warehouses } = useGetWarehouse();
-  const selectedProduct = productss;
+  const selectedProduct = productId;
   // const [selectedWarehouse, setSelectedWarehouse] = useState('');
   const selectedWarehousee = selectedWarehouse
   const [stock, setStock] = useState('');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
       const response = await service.put(`/inventories/add-stock`, {
         productId: selectedProduct,
         warehouseId: selectedWarehousee,
         stock: stock,
       });
-      console.log(response);
     } catch (error) {
       console.error(error);
     }
@@ -45,12 +43,17 @@ const AddStockForm = ({ productss, selectedWarehouse }: StockProps) => {
 
   return (
     <form onSubmit={handleSubmit}>
+      <h1> Qty </h1>
       <div className="w-[180px]">
         <input
           type="number"
           value={stock}
           onChange={(e) => setStock(e.target.value)}
           placeholder="Stock"
+        />
+        <input
+          type='text'
+          placeholder='notes'
         />
       </div>
 
