@@ -4,4 +4,5 @@ export interface Inventory {
   productId: number;
   stock: number;
   sold: number;
+  totalStock?: number;
 }

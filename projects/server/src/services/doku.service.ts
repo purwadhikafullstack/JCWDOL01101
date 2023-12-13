@@ -102,30 +102,6 @@ export class DokuService {
     const findOrder = await DB.Order.findOne({ where: { invoice } });
     if (!findOrder) throw new HttpException(409, "Order doesn't found");
     await DB.Order.update({ status: 'WAITING' }, { where: { invoice } });
-
-    const findOrderDetails: OrderDetails[] = await DB.OrderDetails.findAll({ where: { orderId: findOrder.id } });
-
-    const updateInventoryAndCreateJournal = async (order: OrderDetails) => {
-      const inventory = await DB.Inventories.findOne({ where: { productId: order.productId, warehouseId: findOrder.warehouseId } });
-
-      await inventory.decrement('stock', { by: order.quantity });
-      await inventory.increment('sold', { by: order.quantity });
-      await inventory.reload();
-
-      await DB.Jurnal.create({
-        warehouseId: findOrder.warehouseId,
-        inventoryId: inventory.id,
-        oldQty: inventory.stock + order.quantity,
-        qtyChange: order.quantity,
-        newQty: inventory.stock,
-        type: 'STOCK OUT',
-        date: new Date(),
-      });
-    };
-
-    for (const order of findOrderDetails) {
-      await updateInventoryAndCreateJournal(order);
-    }
   }
 
   private generateDigest(jsonBody: string) {

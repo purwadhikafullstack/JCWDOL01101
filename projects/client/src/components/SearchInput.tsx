@@ -60,7 +60,7 @@ const SearchInput = ({ expandSearch, setExpandSearch }: SearchInputProps) => {
       />
       <div
         className={cn(
-          "absolute overflow-y-auto max-h-[200px] z-50 scale-y-0 w-full  goup-hover:scale-y-100 origin-top left-1/2 -translate-x-1/2 translate-y-2 lg:translate-y-4 transition-all duration-100  bg-white shadow-md p-2",
+          "absolute overflow-y-auto max-h-[200px] z-50 scale-y-0 w-full  goup-hover:scale-y-100 origin-top left-1/2 -translate-x-1/2 translate-y-2 lg:translate-y-4 transition-all duration-100  bg-background shadow-md p-2",
           searchTerm.trim().length > 0 && isClick && "scale-y-100"
         )}
       >

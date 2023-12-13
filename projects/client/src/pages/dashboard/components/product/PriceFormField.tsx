@@ -49,7 +49,7 @@ const PriceFormField = () => {
                   <input
                     {...field}
                     placeholder="Enter Price"
-                    className="w-full outline-none py-1 pl-2 rounded-r-lg"
+                    className="w-full outline-none py-1 pl-2 rounded-r-lg bg-background"
                     value={form.watch("formattedPrice") || ""}
                     onChange={(e) => {
                       const formattedValue = formatNumber(e.target.value);
