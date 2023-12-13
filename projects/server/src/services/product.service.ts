@@ -5,6 +5,7 @@ import { GetFilterProduct, Product } from '@/interfaces/product.interface';
 import { Service } from 'typedi';
 import { unlinkAsync } from './multer.service';
 import { FindOptions, Op } from 'sequelize';
+import { FindOptions, Op } from 'sequelize';
 import { ImageModel } from '@/models/image.model';
 import { Image } from '@/interfaces/image.interface';
 import { User } from '@/interfaces/user.interface';
