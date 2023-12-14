@@ -1,27 +1,27 @@
-import React from "react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useUser } from "@clerk/clerk-react"
-import { useState, useEffect } from "react"
-import { useLocation } from "react-router-dom"
-import { Bell } from "lucide-react"
-import { buttonVariants } from "@/components/ui/button"
-import { Link } from "react-router-dom"
+import React from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useUser } from "@clerk/clerk-react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { Bell } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const DashboardNavbar = () => {
-  const { user } = useUser()
-  const [site, setSite] = useState("Dashboard")
-  const location = useLocation()
+  const { user } = useUser();
+  const [site, setSite] = useState("Dashboard");
+  const location = useLocation();
 
   useEffect(() => {
-    const paths = location.pathname.split("/")
-    const site = paths[paths.length - 1]
-    const formatSite = site.replace(/-/g, " ")
-    setSite(formatSite || "Dashboard")
-  }, [location.pathname])
+    const paths = location.pathname.split("/");
+    const site = paths[paths.length - 1];
+    const formatSite = site.replace(/-/g, " ");
+    setSite(formatSite || "Dashboard");
+  }, [location.pathname]);
 
   return (
     <nav className="w-full sticky top-0 z-50">
-      <div className="flex justify-between items-center bg-white p-6 border-b">
+      <div className="flex justify-between items-center bg-background p-6 border-b">
         <h1 className="capitalize text-2xl font-medium">{site}</h1>
         <div className="flex items-center gap-4">
           <p className="text-lg font-medium">
@@ -43,7 +43,7 @@ const DashboardNavbar = () => {
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default DashboardNavbar
+export default DashboardNavbar;

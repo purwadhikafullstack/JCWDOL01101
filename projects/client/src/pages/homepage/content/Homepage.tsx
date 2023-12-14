@@ -9,6 +9,7 @@ import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton
 import HighestSellSkeleton from "@/components/skeleton/HighestSellSkeleton";
 import { useCategories } from "@/hooks/useCategory";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
 
 const Homepage = () => {
   const { t } = useTranslation();
@@ -41,11 +42,10 @@ const Homepage = () => {
             {highestSell?.map((product, i) => (
               <div
                 key={product.id}
-                className={
-                  i === 0
-                    ? `col-span-4 lg:col-span-4 row-span-2`
-                    : "col-span-2 row-span-1"
-                }
+                className={cn(
+                  "col-span-2 row-span-1",
+                  i === 0 && `col-span-4 lg:col-span-4 row-span-2`
+                )}
               >
                 <TopProductCard size={i !== 0 ? "sm" : ""} product={product} />
               </div>

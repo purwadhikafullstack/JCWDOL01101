@@ -1,20 +1,12 @@
-import ButtomNav from "@/components/ButtomNav";
 import Footer from "@/components/Footer";
+import MobileNav from "@/components/MobileNav";
 import Navbar from "@/components/Navbar";
 import ScrollToTop from "@/components/ScrollToTop";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import UserContext from "@/context/UserContext";
 import { useCurrentUser } from "@/hooks/useUser";
 import { useBoundStore } from "@/store/client/useStore";
 import { useUser } from "@clerk/clerk-react";
-import {
-  Box,
-  Cog,
-  Heart,
-  Home,
-  Settings,
-  Settings2,
-  ShoppingCart,
-} from "lucide-react";
 import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router-dom";
@@ -39,18 +31,20 @@ const MainLayout = () => {
   return (
     isLoaded && (
       <UserContext.Provider value={{ user: userBackend }}>
-        <div className="flex relative flex-col min-h-screen">
-          <ScrollToTop />
-          <Navbar />
-          <main className="container  mt-24  flex-auto mb-32 lg:mb-0">
-            <Outlet />
-          </main>
-          <ButtomNav />
-          <Footer />
-          <div className="flex-shrink-0">
-            <Toaster />
+        <ThemeProvider>
+          <div className="flex relative flex-col min-h-screen">
+            <ScrollToTop />
+            <Navbar />
+            <main className="container  mt-24  flex-auto mb-32 lg:mb-0">
+              <Outlet />
+            </main>
+            <MobileNav />
+            <Footer />
+            <div className="flex-shrink-0">
+              <Toaster />
+            </div>
           </div>
-        </div>
+        </ThemeProvider>
       </UserContext.Provider>
     )
   );

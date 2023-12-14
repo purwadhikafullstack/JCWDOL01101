@@ -161,7 +161,7 @@ const CartItem = ({
                 disabled={quantity <= 1}
                 onClick={() => changeQuantity(-1)}
                 size="sm"
-                className="h-8 bg-black hover:bg-black/80 rounded-none"
+                className="h-8 bg-black dark:border hover:bg-black/80 rounded-none"
               >
                 <Minus className="text-primary-foreground w-5 h-5" />
               </Button>
@@ -173,7 +173,7 @@ const CartItem = ({
                 onClick={() => changeQuantity(+1)}
                 variant="ghost"
                 size="sm"
-                className="h-8 bg-black hover:bg-black/80 rounded-none"
+                className="h-8 bg-black dark:border hover:bg-black/80 rounded-none"
               >
                 <Plus className="text-primary-foreground w-5 h-5" />
               </Button>

@@ -209,7 +209,8 @@ const ProductReviews = () => {
                     to={`/dashboard/product/edit/${slug}`}
                     className={buttonVariants({
                       variant: "outline",
-                      className: "w-ful md:border-black w-full",
+                      className:
+                        "w-ful md:border-black dark:border-border w-full",
                     })}
                   >
                     Edit This Product

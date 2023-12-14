@@ -20,7 +20,7 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
     const productContent = (
       <>
         <Link to={`/product/${product.slug}`}>
-          <div className=" shadow-sm overflow-hidden relative h-full">
+          <div className=" shadow-sm overflow-hidden relative h-full dark:bg-secondary">
             <motion.div
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}
