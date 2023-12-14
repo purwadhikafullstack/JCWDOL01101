@@ -8,9 +8,11 @@ import {
 import { Input } from "@/components/ui/input";
 import React from "react";
 import { useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 const LIMIT = 50;
 
 const RecepientField = () => {
+  const { t } = useTranslation();
   const form = useFormContext();
   return (
     <FormField
@@ -19,7 +21,7 @@ const RecepientField = () => {
       render={({ field }) => (
         <FormItem>
           <FormLabel className="font-bold" htmlFor="recepient">
-            Recepeint's name
+            {t("checkoutPage.addressModal.add.recepient")}
           </FormLabel>
           <FormControl>
             <div className="w-full flex flex-col gap-2">

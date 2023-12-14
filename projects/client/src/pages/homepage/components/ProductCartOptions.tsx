@@ -6,6 +6,7 @@ import UserContext from "@/context/UserContext";
 import { formatToIDR } from "@/lib/utils";
 import { useCartProduct } from "@/hooks/useCart";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const ProductCartOptions = ({
   price,
@@ -16,6 +17,7 @@ const ProductCartOptions = ({
   productId: number;
   totalStock: number;
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const userContext = useContext(UserContext);
   if (!userContext) {
@@ -82,7 +84,9 @@ const ProductCartOptions = ({
     <div className="w-full  variant-options">
       <div className="sticky top-[100px]">
         <div className="w-full h-full border rounded-md p-2 pb-6 space-y-2">
-          <p className="font-bold text-sm">Atur Jumlah dan Catatan</p>
+          <p className="font-bold text-sm">
+            {t("productDetailPage.options.header")}
+          </p>
           <div className="flex justify-between items-center">
             <div className="border rounded-md px-1 flex items-center border-primary select-none">
               <Button
@@ -117,12 +121,16 @@ const ProductCartOptions = ({
               </Button>
             </div>
             <p className={`${totalStock <= 0 && "text-primary/80"} text-sm`}>
-              {totalStock > 0 ? `total stock ${totalStock}` : "out of stock"}
+              {totalStock > 0
+                ? `${t("productDetailPage.options.stock")} ${totalStock}`
+                : t("productDetailPage.options.noStock")}
             </p>
           </div>
           <p className="text-primary text-xs">{error}</p>
           <div className="flex justify-between items-center">
-            <p className="text-muted-foreground text-sm ">Subtotal</p>
+            <p className="text-muted-foreground text-sm ">
+              {t("productDetailPage.options.subTotal")}
+            </p>
             <p className="font-bold ">
               {formatToIDR((price * quantity).toString())}
             </p>
@@ -137,7 +145,7 @@ const ProductCartOptions = ({
             className="w-full select-none"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Cart
+            {t("productDetailPage.options.btn")}
           </Button>
         </div>
         <div className="mt-4">

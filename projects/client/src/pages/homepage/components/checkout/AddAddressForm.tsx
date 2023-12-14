@@ -9,6 +9,7 @@ import AddressField from "@/components/input/AddressField";
 import NotesField from "@/components/input/NotesField";
 import MainCheckboxField from "@/components/input/MainCheckboxField";
 import PhoneField from "@/components/input/PhoneField";
+import { Trans, useTranslation } from "react-i18next";
 export type Coordinates = {
   latitude: number;
   langitude: number;
@@ -24,6 +25,7 @@ const AddAddressForm = ({
   location,
   handleGetGeolocation,
 }: AddAddressForm) => {
+  const { t } = useTranslation();
   const [tos, setTos] = useState(false);
 
   return (
@@ -40,9 +42,12 @@ const AddAddressForm = ({
       <MainCheckboxField />
       <div className="flex items-center gap-2 text-xs">
         <Checkbox checked={tos} onCheckedChange={(state) => setTos(!!state)} />
+
         <label>
-          I agree to the <b>Terms & Conditions</b> and <b>Privacy Policy</b>
-          address settings in Toten.
+          <Trans i18nKey="checkoutPage.addressModal.add.tos">
+            I agree to the <b>Terms & Conditions</b> and <b>Privacy Policy</b>{" "}
+            address settings in Toten.
+          </Trans>
         </label>
       </div>
       <div className="flex w-full justify-center">
@@ -52,7 +57,7 @@ const AddAddressForm = ({
           className="w-[60%] text-lg font-bold lg:py-6 mt-4"
         >
           {isPending && <Loader2 className="animate-spin w-4 h-4 mr-2" />}
-          Submit
+          {t("checkoutPage.addressModal.add.submitBtn")}
         </Button>
       </div>
     </>

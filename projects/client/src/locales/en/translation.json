@@ -1,0 +1,244 @@
+{
+  "navbar": {
+    "productBtn": "All Products",
+    "address": "Send to",
+    "searchPlaceholder": "Search product...",
+    "cart": {
+      "total": "Total",
+      "link": "Cart",
+      "empty": {
+        "header": "Cart is empty",
+        "desc": "Your cart is currently empty. It's a perfect time to start adding your favorite items. Happy shopping!"
+      }
+    },
+    "profile": {
+      "setting": "Pengaturan",
+      "dashboard": "Dashboard Admin",
+      "logout": "Keluar"
+    }
+  },
+  "homepage": {
+    "title1": "popular category",
+    "sub1": "see all category",
+    "sub2": "see all",
+    "title2": "top seller this month",
+    "title3": "try our newest products"
+  },
+  "productsPage": {
+    "title": "All Products",
+    "category": "Category",
+    "clear": "Clear",
+    "price": {
+      "label": "Price",
+      "pmin": "Minimum Price",
+      "pmax": "Maximum Price"
+    },
+    "size": "Size",
+    "activeFilter": "ACTIVE FILTER",
+    "filter": {
+      "header": "Select By",
+      "sub": "Select by",
+      "select1": "Featured Product",
+      "select2": "Just Arrived",
+      "select3": "Low To High",
+      "select4": "High To Low",
+      "select5": "Highest Rating"
+    }
+  },
+  "productDetailPage": {
+    "product": {
+      "rating": "rating",
+      "sold": "Sold",
+      "desc": "Description",
+      "size": "Size",
+      "average": "Average Rating"
+    },
+    "options": {
+      "header": "Set Amount",
+      "stock": "stock",
+      "noStock": "out of stock",
+      "subTotal": "subtotal",
+      "addToCart": "Add To Cart",
+      "addToWishlist": "Add To Wishlist",
+      "removeFromWishlist": "Remove From Wishlist"
+    },
+    "misc": {
+      "title": "Other products from this category",
+      "sub": "See More",
+      "noProduct": "no similar category product",
+      "noProductLink": "check our other product's"
+    }
+  },
+  "cartPage": {
+    "title": "Cart",
+    "selectAll": "Select All",
+    "remove": "Remove",
+    "size": "Size",
+    "subTotal": "Subtotal",
+    "summary": {
+      "title": "Shopping Summary",
+      "total": "Total Price",
+      "grandTotal": "GrandTotal",
+      "buyBtn": "Buy"
+    },
+    "empty": {
+      "title": "Your Cart is Empty",
+      "desc": "Make your dreams come true now!",
+      "btn": "Continue Shopping"
+    },
+    "removeModal": {
+      "header": "Remove item?",
+      "desc": "The selected item(s) will be remove from your cart",
+      "acceptBtn": "Remove Item",
+      "cancelBtn": "Cancel"
+    },
+    "misc": {
+      "title": "Recommended Product"
+    }
+  },
+  "wishlistPage": {
+    "successRemoveModal": "Success! One item has been removed from your wishlist",
+    "product": "Product",
+    "emptyStock": "We'll be restocking soon.",
+    "addBtn": "ADD TO CART",
+    "noWishlist": {
+      "title": "There are no products on your wishlist.",
+      "desc": "Press the heart to add the product to your wishlist"
+    }
+  },
+  "reviewsPage": {
+    "backToProduct": "BACK TO PRODUCT DETAIL",
+    "review": "Review",
+    "rating": "Rating",
+    "reviewSummary": "Review Summary",
+    "backToTop": "BACK TO TOP",
+    "load": {
+      "loading": "Loading More...",
+      "hasNextPage": "Load More"
+    },
+    "form": {
+      "writeReview": "WRITE REVIEW",
+      "required": "required",
+      "rating": "RATING",
+      "nickname": "NICNAME",
+      "nicknamePlaceholder": "please enter your nickname",
+      "title": "TITLE",
+      "titlePlaceholder": "summarize your review",
+      "comment": "COMMENT",
+      "commentDesc": "You must write a minimum of 50 characters in this column.",
+      "note": {
+        "title": "GIVING A REVIEW",
+        "list1": "The comments you provide may be used for advertising purposes.",
+        "list2": "We do not accept requests to place advertisements including for other brands, individuals or organizations. We also cannot store stock or sizes.",
+        "tos": "I agree to the TOTEN TERMS OF USE"
+      },
+      "submit": "SUBMIT",
+      "back": "BACK TO PRODUCT DETAIL"
+    },
+    "successModal": {
+      "title": "Review Submitted Successfully!",
+      "desc": "Your review has been successfully posted and saved. We value your feedback and appreciate the time you took to share your experience. You can view your review in the reviews section. Thank you for helping us improve our services.",
+      "post": "POST ANOTHER REVIEW"
+    },
+    "allowReview": {
+      "btn": "WRITE REVIEW",
+      "title": "Review Unavailable",
+      "desc": "Only customers who have purchased this product can submit a review. Thank you for understanding."
+    }
+  },
+  "checkoutPage": {
+    "header": "Chekout",
+    "main": "Main",
+    "shipping": "Shipping Address",
+    "addressBtn": "Choose Other Address",
+    "emptyAddressBtn": "Create New Address",
+    "addressError": {
+      "header": "Oops, you don't have an address?",
+      "sub": "Don't worry, though—you can create one!"
+    },
+    "cartItem": {
+      "title": "Order",
+      "address": "send from",
+      "subtotal": "Subtotal",
+      "courier": "Choose Courier",
+      "price": "Price {{total}} item",
+      "shippingFee": "Shipping Fee"
+    },
+    "summary": {
+      "title": "Shipping Summary",
+      "totalPrice": "Total Price ({{total}}) product",
+      "totalShippingFee": "Total Shipping Fee",
+      "shippingTotal": "Shipping Total",
+      "paymentBtn": "Choose Payment",
+      "loading": "preparing your stock..."
+    },
+    "paymentModal": {
+      "header": "Payment",
+      "sub": "Payment Method",
+      "summary": "Summary",
+      "paymentMethod": "Payment Method",
+      "totalPrice": "Total Price",
+      "shippingFee": "Shipping Fee",
+      "purchased": "Purchased Items",
+      "shippingCost": "Shipping Cost",
+      "estimation": "Estimation",
+      "shippingAddress": "Shipping Address",
+      "total": "Total",
+      "payBtn": "Pay",
+      "loading": "preparing payment link...",
+      "outOfStockError": "Apologies, the item is out of stock. We’re working on restocking soon.",
+      "outOfStockLink": "Choose other product",
+      "exitModal": {
+        "header": "Exit Payment Page ?",
+        "continueBtn": "Continue Pay",
+        "exitBtn": "Exit Page"
+      }
+    },
+    "exitModal": {
+      "header": "Back To Cart?",
+      "desc": "Discard all changes and return to cart?",
+      "stayBtn": "Stay On This Page",
+      "leaveBtn": "Back And Discard Changes"
+    },
+    "addressModal": {
+      "main": {
+        "header": "Select Shipment Address",
+        "searchPlaceholder": "Search recepient/ city /label",
+        "addAddressBtn": "Add New Address",
+        "changeBtn": "Change Address",
+        "makeMainBtn": "Make Main Address",
+        "pickBtn": "Pick Address",
+        "primaryBadge": "Primary"
+      },
+      "add": {
+        "header": "Add Address",
+        "desc": "Complete  the detailed address",
+        "recepient": "Recepient name",
+        "phone": "Phone Number",
+        "label": "Label Address",
+        "city": "city",
+        "noCity": "no city found",
+        "address": "Address",
+        "notes": "Notes for courier (optional)",
+        "notesDesc": "House colors, standards, special message, etc.",
+        "makeMain": "Make it main address",
+        "tos": "I agree to the <1>Terms & Conditions</1> and <1>Privacy Policy</1> address settings in Toten.",
+        "submitBtn": "Submit"
+      },
+      "modify": {
+        "header": "Modify Your Address",
+        "modifyBtn": "Modify"
+      }
+    }
+  },
+  "footer": {
+    "about": "About Toten",
+    "childAbout1": "Information",
+    "childAbout2": "Privacy Policy",
+    "contact": {
+      "head": "Contact us",
+      "child1": "For Toten Customer Complain Service"
+    },
+    "social": "Toten Social Account"
+  }
+}

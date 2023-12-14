@@ -1,22 +1,32 @@
+import { Order } from '@/interfaces/order.interface';
 import { OrderService } from '@/services/order.service';
+import { RequireAuthProp } from '@clerk/clerk-sdk-node';
 import { NextFunction, Request, Response } from 'express';
 import Container from 'typedi';
 
 export class OrderController {
-  order = Container.get(OrderService);
+  public order = Container.get(OrderService);
 
-  public getClosestWarehouseWithStock = async (req: Request, res: Response, next: NextFunction) => {
+  public getOrder = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
-      const lat = Number(req.body.lat);
-      const lng = Number(req.body.lng);
-      const closestWarehouse = await this.order.findClosestWarehouseWithStock({ lat, lng });
+      const userId = Number(req.params.userId);
+      const orders: Order[] = await this.order.findOrder(userId);
 
-      res.status(200).json({
-        data: closestWarehouse,
-        message: 'post.closest',
-      });
-    } catch (err) {
-      next(err);
+      res.status(200).json({ data: orders, message: 'get all current user order' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getAllowOrders = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
+    try {
+      const externalId = req.auth.userId;
+      const productId = Number(req.params.productId);
+      const orders: Order = await this.order.allowOrder(externalId, productId);
+
+      res.status(200).json({ data: orders, message: 'get user order' });
+    } catch (error) {
+      next(error);
     }
   };
 }

@@ -14,16 +14,6 @@ import {
 } from "@/components/ui/dialog";
 import { buttonVariants, Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { Link } from "react-router-dom";
-import DeleteProduct from "./product/DeleteProduct";
 import { useUser } from "@clerk/clerk-react";
 import { AlertTriangle } from "lucide-react";
 import AddStockForm from "./product/AddStockForm";
@@ -32,6 +22,7 @@ interface ProductTableRowProps {
   products: Product[];
   selectedWarehouse: string | undefined;
 }
+import ProductDialog from "./ProductDialog";
 
 const ProductTableRow = ({ products, selectedWarehouse }: ProductTableRowProps) => {
   const { user } = useUser();
@@ -81,7 +72,11 @@ const ProductTableRow = ({ products, selectedWarehouse }: ProductTableRowProps) 
       {products.map((product, i) => (
         <TableRow key={i}>
           <TableCell className="w-[80px]">{i + 1}</TableCell>
-          <TableCell className="font-medium">{product.name}</TableCell>
+          <TableCell>
+            <p className="overflow-hidden whitespace-nowrap text-ellipsis w-[200px]">
+              {product.name}
+            </p>
+          </TableCell>
           <TableCell>{formatToIDR(String(product.price))}</TableCell>
           <TableCell className="text-center">
             {product.weight}
@@ -94,17 +89,21 @@ const ProductTableRow = ({ products, selectedWarehouse }: ProductTableRowProps) 
           <TableCell className="text-center">
             {product.inventory[0].sold}
           </TableCell>
-          <TableCell className="overflow-hidden whitespace-nowrap text-ellipsis w-[100px]">
-            {product.productCategory.name}
+          <TableCell className="w-[100px]">
+            <p className="overflow-hidden whitespace-nowrap text-ellipsis w-[100px text-center">
+              {product.productCategory ? product.productCategory.name : "-"}
+            </p>
           </TableCell>
-          <TableCell className="overflow-hidden whitespace-nowrap text-ellipsis w-[200px]">
-            {product.description}
+          <TableCell className="w-[150px]">
+            <p className="overflow-hidden whitespace-nowrap text-ellipsis w-[150px]">
+              {product.description}
+            </p>
           </TableCell>
           <TableCell className="text-center">
             {product.productImage.length > 0 ? (
               <img
                 className="w-[40px] mx-auto"
-                src={`${baseURL}/images/${product.productImage[0].image}`}
+                src={`${baseURL}/images/${product.primaryImage}`}
                 alt={product.name}
               />
             ) : (
@@ -116,71 +115,7 @@ const ProductTableRow = ({ products, selectedWarehouse }: ProductTableRowProps) 
           </TableCell>
           {user?.publicMetadata.role === "ADMIN" && (
             <TableCell className="text-center">
-              <Dialog>
-                <DropdownMenu>
-                  <DropdownMenuTrigger
-                    className={buttonVariants({ variant: "ghost" })}
-                  >
-                    <DotsHorizontalIcon />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <Link to={`/dashboard/product/edit/${product.slug}`}>
-                      <DropdownMenuItem className="cursor-pointer">
-                        Edit
-                      </DropdownMenuItem>
-                    </Link>
-                    <DropdownMenuSeparator />
-                    <div onClick={handleDialogDelete} className="w-200">
-                      <DialogTrigger className="w-full" >
-                        <DropdownMenuItem className="w-full cursor-pointer">
-                          Delete
-                        </DropdownMenuItem>
-                      </DialogTrigger>
-                    </div>
-
-
-                    <DropdownMenuSeparator />
- 
-                    <div onClick={handleDialogStock} >
-                      <DialogTrigger className="w-full">
-                        <DropdownMenuItem className="cursor-pointer">
-                          Manage Stock
-                        </DropdownMenuItem>
-                      </DialogTrigger>
-                    </div>
-
-
-                    <DropdownMenuSeparator />
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                {dialog === "add" && (
-                  <DialogContent>
-                    <AddStockForm productId={product.id} selectedWarehouse={selectedWarehouse}/>
-                  </DialogContent>
-                )}
-                {dialog === "delete" && (
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>
-                        Are you sure deleting {product.name} ?
-                      </DialogTitle>
-                      <DialogDescription>
-                        This action cannot be undone. This will permanently delete
-                        your product and remove your data from our servers.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter className="sm:justify-start">
-                      <DeleteProduct productId={Number(product.id)} />
-                      <DialogClose asChild>
-                        <Button type="button" variant="secondary">
-                          Cancel
-                        </Button>
-                      </DialogClose>
-                    </DialogFooter>
-                  </DialogContent>
-                )}
-              </Dialog>
+              <ProductDialog product={product} />
             </TableCell>
           )}
         </TableRow>

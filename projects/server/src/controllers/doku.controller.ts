@@ -1,17 +1,16 @@
 import { DokuService } from '@/services/doku.service';
-import { OrderService } from '@/services/order.service';
 import { RequireAuthProp } from '@clerk/clerk-sdk-node';
 import { NextFunction, Request, Response } from 'express';
 import Container from 'typedi';
 
 export class DokuController {
   doku = Container.get(DokuService);
-  order = Container.get(OrderService);
 
   public createPaymentIntent = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const cartId = Number(req.body.cartId);
       const totalPrice = Number(req.body.totalPrice);
+      const shippingFee = Number(req.body.shippingFee);
       const externalId = req.auth.userId;
       const warehouseId = Number(req.body.warehouseId);
       const paymentMethod = String(req.body.payment);
@@ -19,6 +18,7 @@ export class DokuController {
         cartId,
         externalId,
         totalPrice,
+        shippingFee,
         warehouseId,
         paymentMethod,
       });

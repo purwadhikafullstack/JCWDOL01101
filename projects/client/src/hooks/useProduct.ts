@@ -3,7 +3,7 @@ import { useAuth } from "@clerk/clerk-react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 export interface Product {
-  id?: number;
+  id: number;
   categoryId: number;
   name: string;
   price: number;
@@ -13,11 +13,20 @@ export interface Product {
   weight: number;
   description: string;
   status: string;
+  size: string;
   slug: string;
+  primaryImage: string;
   productImage: Image[];
   productCategory: Category;
+  productWishlist: Wishlist[];
   inventory: Inventory[];
   warehouse: string; // tes
+}
+
+export interface Wishlist {
+  id: number;
+  userId: number;
+  productId: number;
 }
 
 export interface Warehouse {
@@ -28,7 +37,8 @@ export interface Warehouse {
 export interface Category {
   id?: number;
   name: string;
-  color: string;
+  image: string;
+  slug: string;
 }
 
 export interface Image {
@@ -44,6 +54,7 @@ type ProductOptions = {
   order: string;
   limit: number;
   warehouse: string;
+  category: string;
 };
 
 export interface ProductWarehouse {
@@ -64,6 +75,7 @@ export const useProducts = ({
   filter,
   order,
   limit,
+  category,
   warehouse,
 }: ProductOptions) => {
   const { getToken } = useAuth();
@@ -71,7 +83,7 @@ export const useProducts = ({
     products: Product[];
     totalPages: number;
   }>({
-    queryKey: ["products", page, s, filter, order, warehouse],
+    queryKey: ["products", page, s, filter, order, warehouse, category],
     queryFn: async () => {
       const res = await service.get("/products", {
         params: {
@@ -80,6 +92,7 @@ export const useProducts = ({
           order,
           limit,
           filter,
+          category,
           warehouse,
         },
         withCredentials: true,
@@ -92,21 +105,31 @@ export const useProducts = ({
   return { data, isLoading, isFetched };
 };
 
-export const useProductInfinite = ({
-  f,
-  category,
-  limit = 12,
-}: {
+type ProductParams = {
   category: string;
   f: string;
   limit?: number;
   search?: string;
-}) => {
+  size?: string;
+  pmax?: string;
+  pmin?: string;
+};
+export const useProductInfinite = ({
+  f,
+  size,
+  pmax,
+  pmin,
+  category,
+  limit = 12,
+}: ProductParams) => {
   const fetchProjects = async (page: number) => {
     const res = await service.get("/products/home", {
       params: {
         f,
         page,
+        size,
+        pmax,
+        pmin,
         limit,
         category,
       },
@@ -115,7 +138,7 @@ export const useProductInfinite = ({
   };
 
   const query = useInfiniteQuery({
-    queryKey: ["home/products", category, f],
+    queryKey: ["home/products", category, f, size, pmax, pmin],
     queryFn: ({ pageParam }) => fetchProjects(pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage, page) =>
@@ -145,8 +168,28 @@ export const useProductUrl = ({ key, url }: ProductUrlOptions) => {
   return { data, isLoading, isFetched };
 };
 
+export const useHighestSellProducts = (limit = 3) => {
+  const products = useQuery<Product[]>({
+    queryKey: ["highest-sell", limit],
+    queryFn: async () => {
+      const res = await service.get(`/products/highest-sell`, {
+        params: {
+          limit,
+        },
+      });
+      return res.data.data;
+    },
+  });
+
+  return products;
+};
+
 export const useProduct = (slug: string) => {
-  const { data, isLoading } = useQuery<Product>({
+  const product = useQuery<{
+    product: Product;
+    totalStock: number;
+    totalSold: number;
+  }>({
     queryKey: ["product", slug],
     queryFn: async () => {
       const res = await service.get(`/products/${slug}`, {
@@ -154,6 +197,45 @@ export const useProduct = (slug: string) => {
       });
       return res.data.data;
     },
+  });
+
+  return product;
+};
+
+export const useProductsByCategory = (categoryId: number, limit = 12) => {
+  const products = useQuery<Product>({
+    queryKey: ["product/category", categoryId],
+    queryFn: async () => {
+      const res = await service.get(`/products/category/${categoryId}`, {
+        params: {
+          limit,
+        },
+      });
+      return res.data.data;
+    },
+  });
+  return products;
+};
+
+export const useProductByCategory = (
+  productId: number | undefined,
+  categoryId: number | undefined,
+  limit = 10
+) => {
+  const { data, isLoading } = useQuery<Product[]>({
+    queryKey: ["product", categoryId, productId],
+    queryFn: async () => {
+      const res = await service.get(
+        `/products/${productId}/category/${categoryId}`,
+        {
+          params: {
+            limit,
+          },
+        }
+      );
+      return res.data.data;
+    },
+    enabled: !!categoryId && !!productId,
   });
 
   return { data, isLoading };

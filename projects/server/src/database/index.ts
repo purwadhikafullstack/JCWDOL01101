@@ -18,6 +18,8 @@ import ProvinceModel from '@/models/province.model';
 import CityModel from '@/models/city.model';
 import ImageModel from '@/models/image.model';
 import JurnalModel from '@/models/jurnal.model';
+import ReviewModel from '@/models/review.model';
+import WishlistModel from '@/models/wishlist.model';
 
 import associations from './associations';
 
@@ -62,6 +64,8 @@ export const DB = {
   Warehouses: WarehouseModel(sequelize),
   WarehouseAddresses: WarehouseAddressModel(sequelize),
   Jurnal: JurnalModel(sequelize),
+  Review: ReviewModel(sequelize),
+  WishList: WishlistModel(sequelize),
   sequelize,
   Sequelize,
 };

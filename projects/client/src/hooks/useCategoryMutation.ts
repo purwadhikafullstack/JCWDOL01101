@@ -1,56 +1,55 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import service from "@/service"
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import service from "@/service";
 
 type CategoryData = {
-    id?:number;
-    name: string;
-    color: string;
-}
+  id?: number;
+  data: FormData;
+};
 
 export const useCategoryMutation = () => {
-    const queryClient = useQueryClient()
-    const category = useMutation({
-        mutationFn: async (data: CategoryData) => {
-            return service.post('/categories', data)
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ 
-                queryKey: ["categories"]
-            })
-        }
-    })
+  const queryClient = useQueryClient();
+  const category = useMutation({
+    mutationFn: async (data: FormData) => {
+      return service.post("/categories", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+    },
+  });
 
-    return category;
-}
+  return category;
+};
 
-export const useEditCategoryMutation = () => {
-    const queryClient = useQueryClient()
-    const category = useMutation({
-        mutationFn: async (data: CategoryData) => {
-            return service.put(`/categories/${data.id}`, data)
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ["categories"]
-            })
-        }
-    })
+export const useEditCategoryMutation = (slug: string) => {
+  const queryClient = useQueryClient();
+  const category = useMutation({
+    mutationFn: async ({ id, data }: CategoryData) => {
+      return service.put(`/categories/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+    },
+  });
 
-    return category;
-}
+  return category;
+};
 
 export const useDeleteCategoryMutation = () => {
-    const queryClient = useQueryClient()
-    const category = useMutation({
-        mutationFn: async (id: number) => {
-            return service.delete(`/categories/${id}`)
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ["categories"]
-            })
-        }
-    })
+  const queryClient = useQueryClient();
+  const category = useMutation({
+    mutationFn: async (id: number) => {
+      return service.delete(`/categories/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+    },
+  });
 
-    return category;
-}
+  return category;
+};

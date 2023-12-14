@@ -12,6 +12,7 @@ import { RouterProvider } from "react-router-dom";
 import router from "@/pages/router";
 import { ClerkProvider } from "@clerk/clerk-react";
 import toast from "react-hot-toast";
+import "./i18n";
 
 const clerkPubKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 
@@ -19,11 +20,6 @@ if (!clerkPubKey) {
   throw new Error("Missing Publishable Key");
 }
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
-  },
   queryCache: new QueryCache({
     onError: (error) => toast.error(error.message),
   }),
@@ -35,7 +31,7 @@ root.render(
       <ClerkProvider publishableKey={clerkPubKey}>
         <RouterProvider router={router} />
       </ClerkProvider>
-      <ReactQueryDevtools />
+      {/* <ReactQueryDevtools /> */}
     </QueryClientProvider>
   </React.StrictMode>
 );

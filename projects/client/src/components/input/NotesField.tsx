@@ -9,9 +9,11 @@ import {
 import { Input } from "@/components/ui/input";
 import React from "react";
 import { useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 const LIMIT = 45;
 
 const NotesField = () => {
+  const { t } = useTranslation();
   const form = useFormContext();
   return (
     <FormField
@@ -19,7 +21,9 @@ const NotesField = () => {
       name="notes"
       render={({ field }) => (
         <FormItem>
-          <FormLabel htmlFor="notes">Notes for courier (optional)</FormLabel>
+          <FormLabel htmlFor="notes">
+            {t("checkoutPage.addressModal.add.notes")}
+          </FormLabel>
           <FormControl>
             <div className="flex flex-col gap-2 w-full">
               <Input
@@ -31,7 +35,7 @@ const NotesField = () => {
                 }}
               />
               <FormDescription>
-                House colors, standards, special messages, etc.
+                {t("checkoutPage.addressModal.add.notesDesc")}
               </FormDescription>
               <span className="self-end text-xs text-muted-foreground">{`${
                 form.getValues("notes").length

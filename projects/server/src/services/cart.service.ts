@@ -98,13 +98,15 @@ export class CartService {
     const findCartProduct = await DB.CartProduct.findOne({ where: { productId, cartId } });
     if (!findCartProduct) throw new HttpException(409, `Couldn't find items with ID ${productId}`);
 
-    if (quantity > 0) {
-      await findCartProduct.increment('quantity', { by: quantity });
-      await findCartProduct.reload();
-    } else if (quantity < 0) {
-      await findCartProduct.decrement('quantity');
-      await findCartProduct.reload();
-    }
+    await DB.CartProduct.update({ quantity }, { where: { productId, cartId } });
+
+    // if (quantity > 0) {
+    //   await findCartProduct.increment('quantity', { by: quantity });
+    //   await findCartProduct.reload();
+    // } else if (quantity < 0) {
+    //   await findCartProduct.decrement('quantity');
+    //   await findCartProduct.reload();
+    // }
     return findCartProduct;
   }
 

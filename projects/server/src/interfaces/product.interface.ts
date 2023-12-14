@@ -8,8 +8,11 @@ export interface Product {
   price: number;
   weight: number;
   description: string;
+  primaryImage: string;
   status: Status;
   slug: string;
+  size: string;
+  totalStock?: number;
   createdAt?: Date;
   updateAt?: Date;
 }
@@ -22,4 +25,5 @@ export interface GetFilterProduct {
   limit: number;
   externalId: string;
   warehouse: string;
+  category: string;
 }

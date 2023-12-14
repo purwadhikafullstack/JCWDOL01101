@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { buttonVariants } from "@/components/ui/button";
-import { MapPin, Plus, SearchIcon } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { MapPin, Plus, SearchIcon, X } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -9,7 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import { Input } from "@/components/ui/input";
 import { Link, useSearchParams } from "react-router-dom";
 import { useProducts } from "@/hooks/useProduct";
@@ -28,6 +27,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetWarehouse } from "@/hooks/useWarehouse";
+import { useCategories } from "@/hooks/useCategory";
+import ReviewStatusCombobox from "../components/ReviewStatusCombobox";
 
 const Product = () => {
   const { user } = useUser();
@@ -36,6 +37,9 @@ const Product = () => {
     page: "1",
   });
   const currentPage = Number(searchParams.get("page"));
+  const categoryParams = searchParams.get("category")?.split(",");
+  const filterParams = searchParams.get("filter");
+  const orderParams = searchParams.get("order");
   const searchTerm = searchParams.get("s") || "";
   const [debounceSearch] = useDebounce(searchTerm, 1000);
 
@@ -45,11 +49,20 @@ const Product = () => {
   const { data, isLoading } = useProducts({
     page: currentPage,
     s: debounceSearch,
-    filter: searchParams.get("filter") || "",
-    order: searchParams.get("order") || "",
+    filter: filterParams || "",
+    order: orderParams || "",
     limit: 10,
+    category: searchParams.get("category") || "",
     warehouse: searchParams.get("warehouse") || "",
   });
+  const { data: categories } = useCategories();
+  const categoriesOptions = categories
+    ? categories.map((category) => ({
+        value: category.id.toString(),
+        label: category.name,
+      }))
+    : [];
+
   const clearImage = useBoundStore((state) => state.clearImage);
   useEffect(() => {
     clearImage();
@@ -77,20 +90,57 @@ const Product = () => {
           <Plus className="w-4 h-4 mr-2" /> New Product
         </Link>
       )}
-      <div className="flex gap-2 items-center">
-        <div className="relative w-[300px]">
-          <SearchIcon className="absolute h-4 w-4 text-muted-foreground left-3 top-1/2 -translate-y-1/2" />
-          <Input
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchParams((params) => {
-                params.set("s", e.target.value);
-                return params;
-              });
-            }}
-            className=" w-full pl-10"
-            placeholder="search product ..."
-          />
+      <div className="flex gap-2 items-center justify-between">
+        <div className="flex items-center gap-2 my-2">
+          <div className="relative w-[300px]">
+            <SearchIcon className="absolute h-4 w-4 text-muted-foreground left-3 top-1/2 -translate-y-1/2" />
+            <Input
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchParams((params) => {
+                  params.set("s", e.target.value);
+                  return params;
+                });
+              }}
+              className=" w-full pl-10"
+              placeholder="search product ..."
+            />
+          </div>
+          {categoriesOptions.length > 0 && (
+            <ReviewStatusCombobox
+              title="Category"
+              param="category"
+              options={categoriesOptions}
+            />
+          )}
+          {categoryParams && (
+            <Button
+              onClick={() => {
+                setSearchParams((params) => {
+                  params.delete("category");
+                  return params;
+                });
+              }}
+              variant="outline"
+            >
+              Reset <X className="w-4 h-4 ml-2" />
+            </Button>
+          )}
+          {filterParams && orderParams && (
+            <Button
+              onClick={() => {
+                setSearchParams((params) => {
+                  params.delete("order");
+                  params.delete("filter");
+                  return params;
+                });
+              }}
+              variant="outline"
+              className="uppercase"
+            >
+              {filterParams} {orderParams} <X className="w-4 h-4 ml-2" />
+            </Button>
+          )}
         </div>
         {ROLE === "ADMIN" && (
           <div className="flex gap-2 items-center">
@@ -153,7 +203,7 @@ const Product = () => {
                   <ChangeOrderButton paramKey="sold" name="Sold" />
                 </TableHead>
                 <TableHead className="w-[100px]">Category</TableHead>
-                <TableHead>Description</TableHead>
+                <TableHead className="w-[200px]">Description</TableHead>
                 <TableHead className="text-center">Image</TableHead>
                 {ROLE === "ADMIN" && (
                   <TableHead className="text-center">Action</TableHead>
