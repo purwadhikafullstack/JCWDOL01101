@@ -4,23 +4,24 @@ import { useLocation } from "react-router-dom"
 import { DashboardLink } from "@/pages/dashboard/components/SidebarLink"
 import { useUser } from "@clerk/clerk-react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-
-const links = [
-  {
-    title: "Profile",
-    icon: <User className="w-4 h-4" />,
-    path: "/user",
-  },
-  {
-    title: "Address",
-    icon: <Home className="w-4 h-4" />,
-    path: "/user/address",
-  },
-]
+import { useTranslation } from "react-i18next"
 
 const UserSidebar = () => {
+  const { t } = useTranslation()
   const location = useLocation()
   const { user } = useUser()
+  const links = [
+    {
+      title: t("profileSettingsPage.sidebar.profile"),
+      icon: <User className="w-4 h-4" />,
+      path: "/user",
+    },
+    {
+      title: t("profileSettingsPage.sidebar.address"),
+      icon: <Home className="w-4 h-4" />,
+      path: "/user/address",
+    },
+  ]
   return (
     <div className="w-full p-4">
       <div className="flex items-center gap-2 mb-4">

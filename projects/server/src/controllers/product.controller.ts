@@ -5,13 +5,20 @@ import { ProductService } from '@/services/product.service';
 import { RequireAuthProp } from '@clerk/clerk-sdk-node';
 import { NextFunction, Request, Response } from 'express';
 import Container from 'typedi';
-
+export type ProductQuery = {
+  f: string;
+  page: number;
+  size: string;
+  pmax: string;
+  pmin: string;
+  category: string;
+};
 export class ProductController {
   product = Container.get(ProductService);
 
   public getProducts = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
-      const { page, s, order, filter, limit, warehouse } = req.query;
+      const { page, s, order, filter, limit, warehouse, category } = req.query;
 
       const { products, totalPages } = await this.product.getAllProduct({
         s: String(s),
@@ -21,6 +28,7 @@ export class ProductController {
         page: Number(page),
         warehouse: String(warehouse),
         externalId: req.auth.userId,
+        category: String(category),
       });
       res.status(200).json({
         data: {
@@ -34,12 +42,9 @@ export class ProductController {
     }
   };
 
-  public getProductsHomepage = async (req: Request, res: Response, next: NextFunction) => {
+  public getProductsHomepage = async (req: Request<{}, {}, {}, ProductQuery>, res: Response, next: NextFunction) => {
     try {
-      const page = Number(req.query.page);
-      const category = Number(req.query.category);
-      const f = req.query.f as string;
-      const products = await this.product.getAllProductOnHomepage({ page, f, category });
+      const products = await this.product.getAllProductOnHomepage({ ...req.query });
       res.status(200).json({
         data: products,
         message: 'get.products',
@@ -63,10 +68,26 @@ export class ProductController {
 
   public getHigestSellProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const products: Product[] = await this.product.getHighestSell();
+      const limit = Number(req.query.limit);
+      const products: Product[] = await this.product.getHighestSell(limit);
       res.status(200).json({
         data: products,
         message: 'get.highest',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+  public getProductsByCategory = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const categoryId = Number(req.params.categoryId);
+      const productId = Number(req.params.productId);
+      const limit = Number(req.query.limit);
+      const proudcts: Product[] = await this.product.getProductByCategory(productId, categoryId, limit);
+
+      res.status(200).json({
+        data: proudcts,
+        message: 'get.products',
       });
     } catch (err) {
       next(err);
@@ -76,7 +97,20 @@ export class ProductController {
   public getProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const slug = String(req.params.slug);
-      const proudct: Product = await this.product.getProduct(slug);
+      const { product, totalStock, totalSold } = await this.product.getProduct(slug);
+      res.status(200).json({
+        data: { product, totalStock, totalSold },
+        message: 'get.products',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public getProductByName = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const search = String(req.query.search);
+      const proudct: Product[] = await this.product.getProductByName(search);
       res.status(200).json({
         data: proudct,
         message: 'get.products',

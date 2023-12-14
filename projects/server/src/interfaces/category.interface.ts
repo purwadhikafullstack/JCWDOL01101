@@ -1,5 +1,7 @@
 export interface Category {
   id?: number;
   name: string;
-  color: string;
+  slug: string;
+  image: string;
+  deletedAt: Date | null;
 }

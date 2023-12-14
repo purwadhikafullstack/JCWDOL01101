@@ -16,6 +16,7 @@ import {
 import AddAddressForm from "./AddAddressForm";
 import toast from "react-hot-toast";
 import z from "zod";
+import { useTranslation } from "react-i18next";
 
 export const addressSchema = z.object({
   recepient: z.string().min(4, "required").max(50),
@@ -55,6 +56,7 @@ const AddNewAddressDialog = ({
   setAddDialog: (value: boolean) => void;
   handleToggleDialog: (main?: boolean, add?: boolean, edit?: boolean) => void;
 }) => {
+  const { t } = useTranslation();
   const [location, setLocation] = useState<Coordinates | null>(null);
   const { data: currentLocation } = useGetLocationOnGeo(location);
   const addressMutation = usePostAddress();
@@ -108,7 +110,7 @@ const AddNewAddressDialog = ({
       open={addressMutation.isPending || open}
       onOpenChange={(value) => setAddDialog(value)}
     >
-      <DialogContent className="sm:max-w-[712px]">
+      <DialogContent className="w-full lg:max-w-[712px]">
         <DialogClose
           disabled={addressMutation.isPending}
           onClick={() => {
@@ -131,14 +133,14 @@ const AddNewAddressDialog = ({
           <span className="sr-only">Close</span>
         </DialogClose>
         <DialogHeader>
-          <DialogTitle className="text-center text-3xl">
-            Add Address
+          <DialogTitle className="text-center lg:text-3xl">
+            {t("checkoutPage.addressModal.add.header")}
           </DialogTitle>
         </DialogHeader>
         <Separator />
         <div className="w-full max-h-[500px] overflow-y-auto pb-10 p-4">
           <h3 className="font-bold text-lg mb-10">
-            Complete the detailed address
+            {t("checkoutPage.addressModal.add.desc")}
           </h3>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">

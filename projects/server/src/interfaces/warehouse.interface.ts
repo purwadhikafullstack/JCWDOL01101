@@ -1,3 +1,4 @@
+import { Inventory } from './inventory.interface';
 import { WarehouseAddress } from './warehouseAddress.interface';
 
 export interface Warehouse {
@@ -8,4 +9,5 @@ export interface Warehouse {
   name: string;
   capacity: number;
   warehouseAddress?: WarehouseAddress;
+  inventories?: Inventory[];
 }

@@ -8,9 +8,11 @@ import {
 import { Input } from "@/components/ui/input";
 import React from "react";
 import { useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 const LIMIT = 15;
 
 const PhoneField = () => {
+  const { t } = useTranslation();
   const form = useFormContext();
   const formatPhoneNumber = (value: string) => {
     const numericValue = value.replace(/\D/g, "");
@@ -24,7 +26,7 @@ const PhoneField = () => {
       render={({ field }) => (
         <FormItem>
           <FormLabel className="font-bold" htmlFor="phone">
-            Phone Number
+            {t("checkoutPage.addressModal.add.phone")}
           </FormLabel>
           <FormControl>
             <div className="w-full flex flex-col gap-2">

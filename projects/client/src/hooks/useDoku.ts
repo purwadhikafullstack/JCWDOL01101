@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 type PaymentData = {
   cartId: number;
   payment: string;
+  shippingFee: number;
   totalPrice: number;
   warehouseId: number;
 };
@@ -21,6 +22,8 @@ export const useDokuPaymentIntent = () => {
     },
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
   });
 

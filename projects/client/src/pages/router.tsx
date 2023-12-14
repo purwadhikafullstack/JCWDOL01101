@@ -7,7 +7,6 @@ import Register from "./auth/Register"
 import Login from "./auth/Login"
 import SSOCallback from "./auth/SSOCallback"
 import Verification from "./auth/Verification"
-
 import DashboardLayout from "./dashboard/DashboardLayout"
 import NotFound from "./dashboard/NotFound"
 import Dashboard from "./dashboard/content/Dashboard"
@@ -15,8 +14,9 @@ import User from "./dashboard/content/User"
 import ManageAdmin from "./dashboard/content/Admin"
 import Product from "./dashboard/content/Product"
 import Warehouse from "./dashboard/content/Warehouse"
+import ManageMutation from "./dashboard/content/ManageMutation"
+import MutationForm from "./dashboard/content/MutationForm"
 import EditAdminForm from "./dashboard/components/EditAdminForm"
-import ProductDetail from "./homepage/content/ProductDetail"
 import Cart from "./homepage/content/Cart"
 import { ProtectedRoute, AdminRoute, DashboardRoute } from "./ProtectedRoute"
 import UserLayout from "./user/UserLayout"
@@ -28,8 +28,11 @@ import EditProductForm from "./dashboard/components/product/EditProductForm"
 import Order from "./homepage/content/Order"
 import ManageCategory from "./dashboard/content/Category"
 import ProductsPage from "./homepage/content/Products"
-import ManageMutation from "./dashboard/content/ManageMutation"
-import MutationForm from "./dashboard/content/MutationForm"
+import ProductDetail from "./homepage/content/ProductDetail"
+import ReviewForm from "./homepage/content/ReviewForm"
+import Reviews from "./homepage/content/Reviews"
+import Wishlist from "./homepage/content/Wishlist"
+import ProductReviews from "./dashboard/content/ProductReviews"
 
 const router = createBrowserRouter([
   {
@@ -66,6 +69,14 @@ const router = createBrowserRouter([
         element: <ProductDetail />,
       },
       {
+        path: "/product/:slug/reviews/new",
+        element: <ReviewForm />,
+      },
+      {
+        path: "/product/:slug/reviews",
+        element: <Reviews />,
+      },
+      {
         path: "cart",
         element: (
           <ProtectedRoute>
@@ -74,10 +85,18 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "order",
+        path: "transactions",
         element: (
           <ProtectedRoute>
             <Order />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "wishlist",
+        element: (
+          <ProtectedRoute>
+            <Wishlist />
           </ProtectedRoute>
         ),
       },
@@ -174,6 +193,10 @@ const router = createBrowserRouter([
       {
         path: "product/category",
         element: <ManageCategory />,
+      },
+      {
+        path: "product/reviews/:slug",
+        element: <ProductReviews />,
       },
       {
         path: "product/create",

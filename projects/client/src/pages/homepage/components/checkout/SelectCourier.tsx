@@ -16,6 +16,7 @@ import { formatToIDR } from "@/lib/utils";
 import { useBoundStore } from "@/store/client/useStore";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 type Service = {
   service: string;
   description: string;
@@ -37,6 +38,7 @@ const SelectCourier = ({
   quantity: number;
   address: Address | undefined;
 }) => {
+  const { t } = useTranslation();
   const addShippingFee = useBoundStore((state) => state.addShippingFee);
   const setLoading = useBoundStore((state) => state.setLoading);
   const getTotalShippingFee = useBoundStore(
@@ -72,13 +74,15 @@ const SelectCourier = ({
         <SelectCourierSkeleton />
       ) : (
         <>
-          <span className="font-bold text-sm">Choose Courier</span>
+          <span className="font-bold text-sm">
+            {t("checkoutPage.cartItem.courier")}
+          </span>
           <Select value={courier} onValueChange={setCourier}>
             <SelectTrigger
               disabled={isLoading}
               className={buttonVariants({
                 variant: "default",
-                className: `rounded-lg lg:justify-between py-6 font-semibold ${
+                className: `rounded-lg lg:justify-between lg:py-6 font-semibold ${
                   isLoading && "animate-pulse"
                 }`,
               })}

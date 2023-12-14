@@ -1,13 +1,13 @@
-import React from "react"
-import { Outlet } from "react-router-dom"
-import UserSidebar from "./components/UserSidebar"
-import UserHeader from "./components/UserHeader"
+import React from "react";
+import { Outlet } from "react-router-dom";
+import UserSidebar from "./components/UserSidebar";
+import UserHeader from "./components/UserHeader";
 
 const UserLayout = () => {
   return (
     <>
       <div className="w-full flex justify-start">
-        <aside className="w-[300px] border-r">
+        <aside className="w-[300px] hidden md:block border-r">
           <UserSidebar />
         </aside>
         <div className="flex flex-col w-full">
@@ -18,7 +18,7 @@ const UserLayout = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default UserLayout
+export default UserLayout;

@@ -1,0 +1,250 @@
+{
+  "navbar": {
+    "productBtn": "Semua Produk",
+    "address": "Dikirim ke",
+    "searchPlaceholder": "Cari product...",
+    "cart": {
+      "total": "Total",
+      "link": "Keranjang",
+      "empty": {
+        "header": "Keranjang kosong",
+        "desc": "Keranjang Anda saat ini kosong. Ini saat yang tepat untuk mulai menambahkan item favorit Anda. Selamat berbelanja!"
+      }
+    },
+    "profile": {
+      "setting": "Pengaturan",
+      "dashboard": "Dashboard Admin",
+      "logout": "Keluar"
+    }
+  },
+  "homepage": {
+    "title1": "kategori terpopuler",
+    "sub1": "lihat semua kategori",
+    "sub2": "lihat semua",
+    "title2": "terlaris bulan ini",
+    "title3": "coba product terbaru kami"
+  },
+  "profileSettingsPage": {
+    "sidebar": {
+      "profile": "Data diri",
+      "address": "Alamat"
+    }
+  },
+  "productsPage": {
+    "title": "Semua Produk",
+    "category": "Kategori",
+    "clear": "Bersihkan",
+    "price": {
+      "label": "Harga",
+      "pmin": "Harga Minimum",
+      "pmax": "Harga Maksimum"
+    },
+    "size": "Ukuran",
+    "activeFilter": "FILTER AKTIF",
+    "filter": {
+      "header": "Pilih Berdasarkan",
+      "sub": "Pilih berdasarkan",
+      "select1": "Produk Unggulan",
+      "select2": "Baru Tiba",
+      "select3": "Rendah ke Tinggi",
+      "select4": "Tinggi ke Rendah",
+      "select5": "Peringkat Tertinggi"
+    }
+  },
+  "productDetailPage": {
+    "product": {
+      "rating": "rating",
+      "size": "Ukuran",
+      "sold": "Terjual",
+      "desc": "Deskripsi",
+      "average": "Rating Rata-rata"
+    },
+    "options": {
+      "header": "Atur Jumlah",
+      "stock": "stok total",
+      "noStock": "stok habis",
+      "subTotal": "subtotal",
+      "addToCart": "Tambahkan Ke Keranjang",
+      "addToWishlist": "Tambahkan ke Wishlist",
+      "removeFromWishlist": "Hapus Dari Wishlist"
+    },
+    "misc": {
+      "title": "Produk lain dari kategori ini",
+      "sub": "Lihat Lebih Banyak",
+      "noProduct": "tidak ada produk kategori yang serupa",
+      "noProductLink": "cek produk lainnya dari kami"
+    }
+  },
+  "cartPage": {
+    "title": "Keranjang",
+    "selectAll": "Pilih Semua",
+    "remove": "Hapus",
+    "size": "Ukuran",
+    "subTotal": "SUBTOTAL",
+    "summary": {
+      "title": "Ringkasan Belanja",
+      "total": "Total Harga",
+      "grandTotal": "Total",
+      "buyBtn": "Beli"
+    },
+    "removeModal": {
+      "header": "Hapus item?",
+      "desc": "Item yang dipilih akan dihapus dari keranjang Anda",
+      "acceptBtn": "Hapus Item",
+      "cancelBtn": "Batal"
+    },
+    "empty": {
+      "title": "Keranjang Anda Kosong",
+      "desc": "Wujudkan impian Anda sekarang!",
+      "btn": "Lanjutkan Belanja"
+    },
+    "misc": {
+      "title": "Produk Rekomendasi"
+    }
+  },
+  "wishlistPage": {
+    "successRemoveModal": "Success! satu item telah dihapus dari daftar wishlist Anda",
+    "product": "Produk",
+    "emptyStock": "Kami akan mengisi ulang stok segera.",
+    "addBtn": "TAMBAH KE KERANJANG",
+    "noWishlist": {
+      "title": "Tidak ada produk di wishlist Anda.",
+      "desc": "Tekan hati untuk menambahkan produk ke wishlist Anda"
+    }
+  },
+  "reviewsPage": {
+    "backToProduct": "KEMBALI KE DETAIL PRODUK",
+    "review": "Ulasan",
+    "rating": "Peringkat",
+    "reviewSummary": "Ringkasan Ulasan",
+    "backToTop": "KEMBALI KE ATAS",
+    "load": {
+      "loading": "Memuat Lebih Banyak...",
+      "hasNextPage": "Muat Lebih Banyak"
+    },
+    "form": {
+      "writeReview": "TULIS ULASAN",
+      "required": "wajib",
+      "rating": "PERINGKAT",
+      "nickname": "NAMA PANGGILAN",
+      "nicknamePlaceholder": "silakan masukkan nama panggilan Anda",
+      "title": "JUDUL",
+      "titlePlaceholder": "ringkas ulasan Anda",
+      "comment": "KOMENTAR",
+      "commentDesc": "Anda harus menulis minimal 50 karakter di kolom ini.",
+      "note": {
+        "title": "MENULIS ULASAN",
+        "list1": "Komentar yang Anda berikan dapat digunakan untuk tujuan periklanan.",
+        "list2": "Kami tidak menerima permintaan untuk menempatkan iklan termasuk untuk merek lain, individu atau organisasi. Kami juga tidak dapat menyimpan stok atau ukuran.",
+        "tos": "Saya setuju dengan SYARAT PENGGUNAAN TOTEN"
+      },
+      "submit": "KIRIM",
+      "back": "KEMBALI KE DETAIL PRODUK"
+    },
+    "successModal": {
+      "title": "Ulasan Berhasil Dikirim!",
+      "desc": "Ulasan Anda telah berhasil diposting dan disimpan. Kami menghargai umpan balik Anda dan menghargai waktu yang Anda luangkan untuk berbagi pengalaman Anda. Anda dapat melihat ulasan Anda di bagian ulasan. Terima kasih telah membantu kami meningkatkan layanan kami.",
+      "post": "POSTING  ULASAN LAIN"
+    },
+    "allowReview": {
+      "btn": "TULIS ULASAN",
+      "title": "Ulasan Tidak Tersedia",
+      "desc": "Hanya pelanggan yang telah membeli produk ini yang dapat mengirimkan ulasan. Terima kasih atas pengertiannya."
+    }
+  },
+  "checkoutPage": {
+    "header": "Pembayaran",
+    "main": "Utama",
+    "shipping": "Alamat Pengiriman",
+    "addressBtn": "Pilih Alamat Lain",
+    "emptyAddressBtn": "Buat Alamat Baru",
+    "addressError": {
+      "header": "Ups, Anda tidak memiliki alamat?",
+      "sub": "Jangan khawatir, Anda bisa membuatnya!"
+    },
+    "cartItem": {
+      "title": "Pesanan",
+      "address": "kirim dari",
+      "subtotal": "Subtotal",
+      "courier": "Pilih Kurir",
+      "price": "Harga untuk {{total}} item",
+      "shippingFee": "Biaya Pengiriman"
+    },
+    "summary": {
+      "title": "Ringkasan Pengiriman",
+      "totalPrice": "Total harga ({{total}}) produk",
+      "totalShippingFee": "Total Biaya Pengiriman",
+      "shippingTotal": "Total Pengiriman",
+      "paymentBtn": "Pilih Pembayaran",
+      "loading": "menyiapkan stok Anda..."
+    },
+    "paymentModal": {
+      "header": "Pembayaran",
+      "sub": "Metode Pembayaran",
+      "summary": "Ringkasan",
+      "paymentMethod": "Metode Pembayaran",
+      "totalPrice": "Total Harga",
+      "shippingFee": "Biaya Pengiriman",
+      "purchased": "Item yang Dibeli",
+      "shippingCost": "Biaya Pengiriman",
+      "estimation": "Estimasi",
+      "shippingAddress": "Alamat Pengiriman",
+      "total": "Total",
+      "payBtn": "Bayar",
+      "loading": "menyiapkan tautan pembayaran...",
+      "outOfStockError": "Mohon maaf, barang ini sedang habis. Kami sedang berusaha untuk menambah stoknya segera.",
+      "outOfStockLink": "Pilih produk lain",
+      "exitModal": {
+        "header": "Keluar dari Halaman Pembayaran?",
+        "continueBtn": "Lanjutkan Pembayaran",
+        "exitBtn": "Keluar dari Halaman"
+      }
+    },
+    "exitModal": {
+      "header": "Kembali Ke Keranjang?",
+      "desc": "Buang semua perubahan dan kembali ke keranjang?",
+      "stayBtn": "Tetap Di Halaman Ini",
+      "leaveBtn": "Kembali Dan Buang Perubahan"
+    },
+    "addressModal": {
+      "main": {
+        "header": "Pilih Alamat Pengiriman",
+        "searchPlaceholder": "Cari penerima/ kota /label",
+        "addAddressBtn": "Tambah Alamat Baru",
+        "changeBtn": "Ubah Alamat",
+        "makeMainBtn": "Jadikan Alamat Utama",
+        "pickBtn": "Pilih Alamat",
+        "primaryBadge": "Utama"
+      },
+      "add": {
+        "header": "Tambah Alamat",
+        "desc": "Lengkapi alamat detail",
+        "recepient": "Nama penerima",
+        "phone": "Nomor Telepon",
+        "label": "Label Alamat",
+        "city": "kota",
+        "noCity": "tidak ada kota yang ditemukan",
+        "address": "Alamat",
+        "notes": "Catatan untuk kurir (opsional)",
+        "notesDesc": "Warna rumah, standar, pesan khusus, dll.",
+        "makeMain": "Jadikan alamat utama",
+        "tos": "Saya setuju dengan <1>Syarat & Ketentuan</1> dan <1>Kebijakan Privasi</1> pengaturan alamat di Toten.",
+        "submitBtn": "Kirim"
+      },
+      "modify": {
+        "header": "Ubah Alamat Anda",
+        "modifyBtn": "Ubah"
+      }
+    }
+  },
+  "footer": {
+    "about": "Tentang Toten",
+    "childAbout1": "Informasi",
+    "childAbout2": "Kebijakan Pribadi",
+    "contact": {
+      "head": "Hubungi Kami",
+      "child1": "Untuk Layanan Pengaduan Pelanggan Toten"
+    },
+    "social": "Akun Sosial Toten"
+  }
+}

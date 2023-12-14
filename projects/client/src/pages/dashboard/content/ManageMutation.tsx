@@ -2,14 +2,6 @@ import React from "react"
 import { buttonVariants } from "@/components/ui/button"
 import { SearchIcon, Plus, MapPin } from "lucide-react"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -20,14 +12,13 @@ import { Input } from "@/components/ui/input"
 import { Link, useSearchParams } from "react-router-dom"
 import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton"
 import { useDebounce } from "use-debounce"
-import { getDate } from "@/lib/utils"
 import TablePagination from "../components/TablePagination"
-import ChangeOrderButton from "../components/ChangeOrderButton"
 import { useUser } from "@clerk/clerk-react"
 import { useGetWarehouse } from "@/hooks/useWarehouse"
 import { useGetMutation } from "@/hooks/useMutation"
 import { useCurrentUser } from "@/hooks/useUser"
-import MutationAction from "../components/warehouse/MutationAction"
+import ManageMutationSend from "../components/warehouse/ManageMutationSend"
+import ManageMutationReceive from "../components/warehouse/ManageMutationReceive"
 
 function ManageMutation() {
   const { user, isSignedIn, isLoaded } = useUser()
@@ -139,96 +130,10 @@ function ManageMutation() {
       <div className="border rounded-md mt-2">
         {isLoading ? (
           <ProductsPageSkeleton />
+        ) : searchParams.get("manage") === "SEND" ? (
+          <ManageMutationSend data={data!} />
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[80px]">#</TableHead>
-                <TableHead className="text-center">
-                  <ChangeOrderButton paramKey="product" name="Product Name" />
-                </TableHead>
-                <TableHead className="text-center">
-                  <ChangeOrderButton paramKey="quantity" name="Quantity" />
-                </TableHead>
-                <TableHead className="text-center">
-                  <ChangeOrderButton
-                    paramKey="senderWarehouseId"
-                    name="From Warehouse"
-                  />
-                </TableHead>
-                <TableHead className="text-center">
-                  <ChangeOrderButton
-                    paramKey="receiverWarehouseId"
-                    name="To Warehouse"
-                  />
-                </TableHead>
-                <TableHead className="text-center">
-                  <ChangeOrderButton
-                    paramKey="senderNotes"
-                    name="Request Notes"
-                  />
-                </TableHead>
-                <TableHead className="text-center">
-                  <ChangeOrderButton
-                    paramKey="receiverNotes"
-                    name="Incomming Notes"
-                  />
-                </TableHead>
-                <TableHead className="text-center">
-                  <ChangeOrderButton paramKey="status" name="Status" />
-                </TableHead>
-                <TableHead className="text-center">
-                  <ChangeOrderButton paramKey="createdAt" name="Created At" />
-                </TableHead>
-                <TableHead className="text-center">Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data && data.mutations && data.mutations.length > 0 ? (
-                <>
-                  {data?.mutations!.map((mutation, i) => (
-                    <TableRow key={mutation.id}>
-                      <TableCell className="w-[80px]">{i + 1}</TableCell>
-                      <TableCell className="capitalize font-medium text-center">
-                        {mutation.productMutation.name}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {mutation.quantity}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {mutation.senderWarehouse.name}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {mutation.receiverWarehouse.name}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {mutation.senderNotes}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {mutation.receiverNotes || "No Notes"}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {mutation.status}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {getDate(mutation.createdAt!.toLocaleString())}
-                      </TableCell>
-                      <MutationAction
-                        mutationId={mutation.id!}
-                        manage={searchParams.get("manage") || "SEND"}
-                      />
-                    </TableRow>
-                  ))}
-                </>
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={10} className="text-center h-24">
-                    No Request
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+          <ManageMutationReceive data={data!} />
         )}
       </div>
       <div className="flex gap-2 items-center justify-end mt-4">

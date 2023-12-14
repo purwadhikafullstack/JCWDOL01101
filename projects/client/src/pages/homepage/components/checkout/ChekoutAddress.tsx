@@ -1,37 +1,40 @@
-import AddressModalSkeleton from "@/components/skeleton/AddressModalSkeleton";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { ModalAddress } from "@/hooks/useAddress";
-import { useToggleAddress } from "@/hooks/useAddressMutation";
-import { Check, Loader } from "lucide-react";
-import React, { useEffect } from "react";
-import toast from "react-hot-toast";
+import AddressModalSkeleton from "@/components/skeleton/AddressModalSkeleton"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
+import { ModalAddress } from "@/hooks/useAddress"
+import { useToggleAddress } from "@/hooks/useAddressMutation"
+import { cn } from "@/lib/utils"
+import { Check, Loader } from "lucide-react"
+import React, { useEffect } from "react"
+import toast from "react-hot-toast"
+import { useTranslation } from "react-i18next"
 
 const ChekoutAddress = ({
   add,
   getId,
   handleToggleDialog,
 }: {
-  userId: number;
-  add: ModalAddress;
-  getId: (id: number) => void;
-  handleToggleDialog: (main?: boolean, add?: boolean, edit?: boolean) => void;
+  userId: number
+  add: ModalAddress
+  getId: (id: number) => void
+  handleToggleDialog: (main?: boolean, add?: boolean, edit?: boolean) => void
 }) => {
-  const toggleActiveAddress = useToggleAddress(add.id!, "isActive");
-  const toggleMainAddress = useToggleAddress(add.id!, "isMain");
+  const { t } = useTranslation()
+  const toggleActiveAddress = useToggleAddress(add.id!, "isActive")
+  const toggleMainAddress = useToggleAddress(add.id!, "isMain")
 
   const handleToggleActiveAddress = () => {
-    toggleActiveAddress.mutate();
-  };
+    toggleActiveAddress.mutate()
+  }
 
   const handleToggleMainAddress = () => {
-    toggleMainAddress.mutate();
-  };
+    toggleMainAddress.mutate()
+  }
 
   useEffect(() => {
     if (toggleActiveAddress.isSuccess) {
-      handleToggleDialog();
+      handleToggleDialog()
 
       toast(
         () => (
@@ -44,15 +47,16 @@ const ChekoutAddress = ({
             background: "#000",
           },
         }
-      );
+      )
     }
-  }, [toggleActiveAddress.isSuccess]);
+  }, [toggleActiveAddress.isSuccess])
 
   return !toggleMainAddress.isPending ? (
     <div
-      className={`flex gap-2 ${
+      className={cn(
+        "flex flex-col lg:flex-row gap-2 rounded-md shadow-md",
         add.isActive && "bg-primary/[0.03] border border-primary"
-      }   rounded-md shadow-md`}
+      )}
     >
       <div className="flex-1 p-4 flex flex-col">
         <span className="font-semibold text-muted-foreground flex items-center gap-2">
@@ -62,7 +66,7 @@ const ChekoutAddress = ({
               className="rounded-sm font-normal border border-primary text-primary"
               variant="outline"
             >
-              Primary
+              {t("checkoutPage.addressModal.main.primaryBadge")}
             </Badge>
           ) : null}
         </span>
@@ -71,25 +75,25 @@ const ChekoutAddress = ({
         <p className="text-ellipsis overflow-hidden whitespace-nowrap text-sm lg:max-w-[400px]">
           {`${add.address}, ${add["city.cityName"]}, ${add["city.province"]}`}
         </p>
-        <div className="flex items-center gap-2 h-max">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center lg:gap-2">
           <Button
             onClick={() => {
-              getId(add.id!);
-              handleToggleDialog(false, false, true);
+              getId(add.id!)
+              handleToggleDialog(false, false, true)
             }}
             variant="ghost"
-            className="font-semibold text-primary/95 hover:bg-transparent hover:text-primary"
+            className="font-semibold text-primary/95 px-0 hover:bg-transparent hover:text-primary"
           >
-            Change Address
+            {t("checkoutPage.addressModal.main.changeBtn")}
           </Button>
           <Separator orientation="vertical" />
           {!add.isMain && (
             <Button
               onClick={handleToggleMainAddress}
               variant="ghost"
-              className="font-semibold text-primary/95 hover:bg-transparent hover:text-primary"
+              className="font-semibold text-primary/95 px-0 py-0 h-2 hover:bg-transparent hover:text-primary"
             >
-              Make Main Address
+              {t("checkoutPage.addressModal.main.makeMainBtn")}
             </Button>
           )}
         </div>
@@ -104,7 +108,7 @@ const ChekoutAddress = ({
             {toggleActiveAddress.isPending ? (
               <Loader className="animate-spin h-4 h4" />
             ) : (
-              "Pick Address"
+              t("checkoutPage.addressModal.main.pickBtn")
             )}
           </Button>
         </div>
@@ -112,7 +116,7 @@ const ChekoutAddress = ({
     </div>
   ) : (
     <AddressModalSkeleton />
-  );
-};
+  )
+}
 
-export default ChekoutAddress;
+export default ChekoutAddress

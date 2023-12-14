@@ -15,6 +15,7 @@ export const useCart = (userId: number, hasCart: boolean) => {
     },
     enabled: !!userId && hasCart,
     refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 
   return cart;
@@ -28,7 +29,6 @@ export const useCartProduct = (isCart: boolean, productId: number) => {
       return res.data.data;
     },
     enabled: !!productId && isCart,
-    refetchOnWindowFocus: true,
   });
 
   return cart;

@@ -64,8 +64,8 @@ const links = [
     path: "/dashboard/product",
     children: [
       {
-        title: "Product Category",
-        icon: <UserCog className="w-4 h-4" />,
+        title: "Category",
+        icon: <Shirt className="w-4 h-4" />,
         path: "/dashboard/product/category",
       },
     ],
@@ -121,7 +121,7 @@ const DashboardSidebar = () => {
         </ul>
       </div>
       <div className="flex flex-col gap-1 w-full">
-        <Link to="/user/profile" className="w-full">
+        <Link to="/user" className="w-full">
           <Button
             variant="ghost"
             className="text-muted-foreground w-full justify-start"

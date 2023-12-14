@@ -1,5 +1,6 @@
 import { CheckoutController } from '@/controllers/checkout.controller';
 import { Routes } from '@/interfaces/routes.interface';
+import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node';
 import { Router } from 'express';
 
 export class CheckoutRoute implements Routes {
@@ -14,5 +15,6 @@ export class CheckoutRoute implements Routes {
   private initializeRoutes() {
     this.router.get(`${this.path}/courier`, this.checkout.getCourierService);
     this.router.get(`${this.path}/cart/:cartId/products`, this.checkout.getAllSelectedCartProduct);
+    this.router.post(`${this.path}/find-closest-warehouse`, ClerkExpressRequireAuth(), this.checkout.getClosestWarehouseWithStock);
   }
 }

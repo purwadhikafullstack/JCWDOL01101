@@ -1,0 +1,18 @@
+export const id = [
+  'bansat',
+  'ngentot',
+  'asu',
+  'anjing',
+  'kontol',
+  'pelacur',
+  'goblok',
+  'bajingan',
+  'babi',
+  'kampret',
+  'sampah',
+  'sialan',
+  'tai',
+  'taik',
+  'banci',
+  'maho',
+];

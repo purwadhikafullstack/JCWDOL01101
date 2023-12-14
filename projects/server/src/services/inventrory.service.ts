@@ -1,12 +1,15 @@
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
 import { AddStock, Inventory } from '@/interfaces/inventory.interface';
-import { Service } from 'typedi';
-import { Op, Sequelize } from 'sequelize';
+import Container, { Service } from 'typedi';
+import { Op } from 'sequelize';
 import { WarehouseModel } from '@/models/warehouse.model';
+import { JurnalService } from './jurnal.service';
 
 @Service()
 export class InventoryService {
+  jurnal = Container.get(JurnalService);
+
   public async getWarehouseByInventoryProduct(productId: number, warehouseId: number): Promise<Inventory[]> {
     if (isNaN(productId) || isNaN(warehouseId)) {
       throw new HttpException(400, 'Invalid productId or warehouseId');
@@ -34,30 +37,31 @@ export class InventoryService {
     return findWarehouses;
   }
 
-  public async addStock({ productId, stock, senderWarehouseId, receiverWarehouseId }: AddStock) {
+  public async exchangeStock({ productId, stock, senderWarehouseId, receiverWarehouseId }: AddStock) {
     const transaction = await DB.sequelize.transaction();
     try {
-      const findSenderWarehouse = await DB.Inventories.findOne({ where: { warehouseId: senderWarehouseId, productId }, transaction });
-      const findReceiverWarehouse = await DB.Inventories.findOne({ where: { warehouseId: receiverWarehouseId, productId }, transaction });
-      if (!findSenderWarehouse && !findReceiverWarehouse) {
+      const findSenderInventory: Inventory = await DB.Inventories.findOne({ where: { warehouseId: senderWarehouseId, productId }, transaction });
+      const findReceiverInventory: Inventory = await DB.Inventories.findOne({ where: { warehouseId: receiverWarehouseId, productId }, transaction });
+      if (!findSenderInventory && !findReceiverInventory) {
         throw new HttpException(409, 'Warehouse Not Found');
       }
-      if (findReceiverWarehouse.stock - stock <= 20) {
-        throw new HttpException(409, 'When accepting stock, stock must be over 20');
+      if (findReceiverInventory.stock - stock <= 20) {
+        throw new HttpException(409, `When accepting stock, stock must be over 20, stock left : ${findReceiverInventory.stock}`);
       }
-      await DB.Inventories.update(
-        { stock: Sequelize.literal(`stock - ${stock}`) },
-        { where: { warehouseId: receiverWarehouseId, productId }, transaction },
-      );
-      await DB.Inventories.update(
-        { stock: Sequelize.literal(`stock + ${stock}`) },
-        { where: { warehouseId: senderWarehouseId, productId }, transaction },
-      );
+      const stockChangeSender = findSenderInventory.stock + stock;
+      const stockChangeReceiver = findReceiverInventory.stock - stock;
+      await DB.Inventories.update({ stock: stockChangeReceiver }, { where: { id: findReceiverInventory.id }, transaction });
+      await DB.Inventories.update({ stock: stockChangeSender }, { where: { id: findSenderInventory.id }, transaction });
+
+      const jurnalData = { findSenderInventory, findReceiverInventory, stock, stockChangeSender, stockChangeReceiver };
+      await this.jurnal.jurnalExchangeStock(jurnalData, transaction);
+
       await transaction.commit();
     } catch (err) {
       if (transaction) {
         await transaction.rollback();
       }
+      throw new HttpException(409, err.message);
     }
   }
 }

@@ -36,7 +36,6 @@ export interface cartProducts {
   selected: boolean
   product: Product
 }
-
 interface UserContextProps {
   user: User | undefined
 }

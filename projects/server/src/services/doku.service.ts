@@ -16,12 +16,14 @@ export class DokuService {
     totalPrice,
     externalId,
     warehouseId,
+    shippingFee,
     paymentMethod,
   }: {
     cartId: number;
     totalPrice: number;
     externalId: string;
     warehouseId: number;
+    shippingFee: number;
     paymentMethod: string;
   }) {
     const findUser: User = await DB.User.findOne({
@@ -71,7 +73,14 @@ export class DokuService {
         if (!findUserCart) throw new HttpException(409, "Cart doesn't exist");
         const cartProducts: CartProduct[] = await DB.CartProduct.findAll({ where: { cartId: findUserCart.id, status: 'ACTIVE' } });
         if (cartProducts.length > 0) {
-          const createOrder = await DB.Order.create({ warehouseId, invoice: InvoiceNumber, userId: findUser.id, status: 'PENDING' });
+          const createOrder = await DB.Order.create({
+            warehouseId,
+            totalPrice,
+            shippingFee,
+            invoice: InvoiceNumber,
+            userId: findUser.id,
+            status: 'PENDING',
+          });
           const orderDetailsData = cartProducts.map(product => ({
             orderId: createOrder.id,
             productId: product.productId,
@@ -79,7 +88,7 @@ export class DokuService {
             price: product.price,
           }));
           await DB.OrderDetails.bulkCreate(orderDetailsData);
-          await DB.Cart.update({ status: 'DELETED' }, { where: { id: findUserCart.id } });
+          await DB.CartProduct.update({ status: 'DELETED' }, { where: { cartId: findUserCart.id } });
         }
       }
       return data;
@@ -92,22 +101,30 @@ export class DokuService {
     if (transactionStatus !== 'SUCCESS') throw new HttpException(500, 'Something went wrong');
     const findOrder = await DB.Order.findOne({ where: { invoice } });
     if (!findOrder) throw new HttpException(409, "Order doesn't found");
-    await DB.Order.update({ status: 'PROCESS' }, { where: { invoice } });
+    await DB.Order.update({ status: 'WAITING' }, { where: { invoice } });
 
     const findOrderDetails: OrderDetails[] = await DB.OrderDetails.findAll({ where: { orderId: findOrder.id } });
-    for (const order of findOrderDetails) {
-      const inventory = await DB.Inventories.findOne({ where: { productId: order.productId } });
+
+    const updateInventoryAndCreateJournal = async (order: OrderDetails) => {
+      const inventory = await DB.Inventories.findOne({ where: { productId: order.productId, warehouseId: findOrder.warehouseId } });
+
       await inventory.decrement('stock', { by: order.quantity });
       await inventory.increment('sold', { by: order.quantity });
       await inventory.reload();
+
       await DB.Jurnal.create({
+        warehouseId: findOrder.warehouseId,
         inventoryId: inventory.id,
-        oldQty: inventory.stock,
+        oldQty: inventory.stock + order.quantity,
         qtyChange: order.quantity,
-        newQty: inventory.stock - order.quantity,
+        newQty: inventory.stock,
         type: 'STOCK OUT',
         date: new Date(),
       });
+    };
+
+    for (const order of findOrderDetails) {
+      await updateInventoryAndCreateJournal(order);
     }
   }
 

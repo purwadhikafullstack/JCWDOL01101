@@ -38,8 +38,8 @@ const RejectAction = ({ mutationId }: { mutationId: number }) => {
   useEffect(() => {
     if (rejectMutation.isSuccess) {
       toast({
-        title: "Mutation Canceled",
-        description: "Successfully cancel mutation request",
+        title: "Mutation Rejected",
+        description: "Successfully reject mutation request",
         duration: 3000,
       })
     }

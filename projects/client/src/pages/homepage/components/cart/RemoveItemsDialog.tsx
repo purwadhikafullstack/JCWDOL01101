@@ -12,8 +12,10 @@ import { useDeleteAllCartProduct } from "@/hooks/useCartMutation";
 import { Loader } from "lucide-react";
 import React, { useEffect } from "react";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 const RemoveItemsDialog = ({ cartId }: { cartId: number }) => {
+  const { t } = useTranslation();
   const deleteAllCart = useDeleteAllCartProduct(cartId);
   useEffect(() => {
     if (deleteAllCart.isSuccess) {
@@ -33,20 +35,21 @@ const RemoveItemsDialog = ({ cartId }: { cartId: number }) => {
   }, [deleteAllCart.isSuccess]);
   return (
     <Dialog>
-      <DialogTrigger
-        className={buttonVariants({
-          variant: "ghost",
-          className:
-            "text-primary font-semibold hover:text-primary/90 hover:bg-transparent",
-        })}
-      >
-        Remove
+      <DialogTrigger asChild>
+        <Button
+          className="text-primary px-0 font-semibold hover:text-primary/90 hover:bg-transparent uppercase"
+          variant="ghost"
+        >
+          {t("cartPage.remove")}
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-center">Remove item?</DialogTitle>
+          <DialogTitle className="text-center">
+            {t("cartPage.removeModal.header")}
+          </DialogTitle>
           <DialogDescription className="text-center">
-            The selected item(s) will be remove from your cart
+            {t("cartPage.removeModal.desc")}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex sm:flex-col gap-2">
@@ -54,18 +57,19 @@ const RemoveItemsDialog = ({ cartId }: { cartId: number }) => {
             <Button
               onClick={() => {
                 deleteAllCart.mutate();
+                deleteAllCart.mutate();
               }}
             >
               {deleteAllCart.isPending ? (
                 <Loader className="animate-spin h-4 w-4" />
               ) : (
-                "Remove Item"
+                t("cartPage.removeModal.acceptBtn")
               )}
             </Button>
           </DialogClose>
           <DialogClose asChild>
             <Button type="button" variant="secondary">
-              Cancel
+              {t("cartPage.removeModal.cancelBtn")}
             </Button>
           </DialogClose>
         </DialogFooter>

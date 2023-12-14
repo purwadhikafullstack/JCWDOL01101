@@ -7,8 +7,10 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import React from "react";
 import { useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 const MainCheckboxField = () => {
+  const { t } = useTranslation();
   const form = useFormContext();
   return (
     <FormField
@@ -22,7 +24,7 @@ const MainCheckboxField = () => {
                 checked={field.value}
                 onCheckedChange={field.onChange}
               />
-              <span>Make it main address</span>
+              <span>{t("checkoutPage.addressModal.add.makeMain")}</span>
             </div>
           </FormControl>
           <FormMessage />

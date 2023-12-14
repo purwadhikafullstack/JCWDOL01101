@@ -1,0 +1,250 @@
+{
+  "navbar": {
+    "productBtn": "すべての商品",
+    "address": "送信先",
+    "searchPlaceholder": "商品を検索...",
+    "cart": {
+      "total": "合計",
+      "link": "カート",
+      "empty": {
+        "header": "カートは空です",
+        "desc": "現在、カートは空です。お気に入りのアイテムを追加するのに最適な時間です。楽しいショッピングを！"
+      }
+    },
+    "profile": {
+      "setting": "設定",
+      "dashboard": "管理者ダッシュボード",
+      "logout": "ログアウト"
+    }
+  },
+  "homepage": {
+    "title1": "人気のカテゴリー",
+    "sub1": "すべてのカテゴリーを見る",
+    "sub2": "すべて見る",
+    "title2": "今月のトップセラー",
+    "title3": "最新の商品を試してみてください"
+  },
+  "profileSettingsPage": {
+    "sidebar": {
+      "profile": "Profile",
+      "address": "Address"
+    }
+  },
+  "productsPage": {
+    "title": "すべての製品",
+    "category": "カテゴリー",
+    "clear": "クリア",
+    "price": {
+      "label": "価格",
+      "pmin": "最低価格",
+      "pmax": "最高価格"
+    },
+    "size": "サイズ",
+    "activeFilter": "アクティブなフィルター",
+    "filter": {
+      "header": "選択",
+      "sub": "選択",
+      "select1": "注目の製品",
+      "select2": "新着",
+      "select3": "価格の低い順",
+      "select4": "価格の高い順",
+      "select5": "最高評価"
+    }
+  },
+  "productDetailPage": {
+    "product": {
+      "rating": "評価",
+      "size": "サイズ",
+      "sold": "販売済み",
+      "desc": "説明",
+      "average": "平均評価"
+    },
+    "options": {
+      "header": "数量を設定",
+      "stock": "在庫総数",
+      "noStock": "在庫切れ",
+      "subTotal": "小計",
+      "addToCart": "カートに追加",
+      "addToWishlist": "ウィッシュリストに追加",
+      "removeFromWishlist": "ウィッシュリストから削除"
+    },
+    "misc": {
+      "title": "このカテゴリーからの他の商品",
+      "sub": "もっと見る",
+      "noProduct": "類似カテゴリの製品はありません",
+      "noProductLink": "他の製品をチェックしてください"
+    }
+  },
+  "cartPage": {
+    "title": "カート",
+    "selectAll": "すべて選択",
+    "remove": "削除",
+    "size": "サイズ",
+    "subTotal": "小計",
+    "summary": {
+      "title": "ショッピングの概要",
+      "total": "合計価格",
+      "grandTotal": "総合計",
+      "buyBtn": "購入"
+    },
+    "removeModal": {
+      "header": "アイテムを削除しますか？",
+      "desc": "選択したアイテムはカートから削除されます",
+      "acceptBtn": "アイテムを削除",
+      "cancelBtn": "キャンセル"
+    },
+    "empty": {
+      "title": "カートは空です",
+      "desc": "今すぐあなたの夢を実現しましょう！",
+      "btn": "ショッピングを続ける"
+    },
+    "misc": {
+      "title": "おすすめ商品"
+    }
+  },
+  "wishlistPage": {
+    "successRemoveModal": "成功！ 1 つの商品がウィッシュリストから削除されました",
+    "product": "製品",
+    "emptyStock": "近日中に再入荷します。",
+    "addBtn": "カートに追加",
+    "noWishlist": {
+      "title": "ウィッシュリストに商品はありません。",
+      "desc": "ハートを押して商品をウィッシュリストに追加してください"
+    }
+  },
+  "reviewsPage": {
+    "backToProduct": "製品詳細に戻る",
+    "review": "レビュー",
+    "rating": "評価",
+    "reviewSummary": "レビューの概要",
+    "backToTop": "トップに戻る",
+    "load": {
+      "loading": "さらに読み込む...",
+      "hasNextPage": "さらに読み込む"
+    },
+    "form": {
+      "writeReview": "レビューを書く",
+      "required": "必須",
+      "rating": "評価",
+      "nickname": "ニックネーム",
+      "nicknamePlaceholder": "ニックネームを入力してください",
+      "title": "タイトル",
+      "titlePlaceholder": "レビューを要約する",
+      "comment": "コメント",
+      "commentDesc": "この欄には最低50文字を書く必要があります。",
+      "note": {
+        "title": "レビューを書く",
+        "list1": "提供したコメントは広告目的で使用される可能性があります。",
+        "list2": "他のブランド、個人、または組織を含む広告の掲載要求は受け付けておりません。また、在庫やサイズを保管することもできません。",
+        "tos": "TOTEN利用規約に同意する"
+      },
+      "submit": "送信",
+      "back": "製品詳細に戻る"
+    },
+    "successModal": {
+      "title": "レビューが正常に送信されました！",
+      "desc": "レビューは正常に投稿され、保存されました。フィードバックを大切にし、経験を共有していただいた時間に感謝します。レビューセクションでレビューを見ることができます。サービスの改善にご協力いただきありがとうございます。",
+      "post": "別のレビューを投稿する"
+    },
+    "allowReview": {
+      "btn": "レビューを書く",
+      "title": "レビューは利用できません",
+      "desc": "この商品をご購入いただいた方のみレビューを投稿していただけます。ご理解のほどよろしくお願いいたします。"
+    }
+  },
+  "checkoutPage": {
+    "header": "チェックアウト",
+    "main": "主要",
+    "shipping": "配送先住所",
+    "addressBtn": "他の住所を選択",
+    "emptyAddressBtn": "新しい住所を作成",
+    "addressError": {
+      "header": "おっと、住所がありませんか？",
+      "sub": "心配しないでください、作成することができます！"
+    },
+    "cartItem": {
+      "title": "注文",
+      "address": "送信元",
+      "subtotal": "小計",
+      "courier": "宅配便を選択",
+      "price": "{{total}} 個のアイテムの価格",
+      "shippingFee": "送料"
+    },
+    "summary": {
+      "title": "配送の概要",
+      "totalPrice": "合計価格 ({{total}}) 製品",
+      "totalShippingFee": "合計送料",
+      "shippingTotal": "配送合計",
+      "paymentBtn": "支払いを選択",
+      "loading": "在庫を準備中..."
+    },
+    "paymentModal": {
+      "header": "支払い",
+      "sub": "支払い方法",
+      "summary": "概要",
+      "paymentMethod": "支払い方法",
+      "totalPrice": "合計金額",
+      "shippingFee": "送料",
+      "purchased": "購入した商品",
+      "shippingCost": "配送料",
+      "estimation": "見積もり",
+      "shippingAddress": "配送先住所",
+      "total": "合計",
+      "payBtn": "支払う",
+      "loading": "支払いリンクを準備中...",
+      "outOfStockError": "申し訳ありませんが、この商品は在庫切れです。すぐに再入荷する予定です。",
+      "outOfStockLink": "他の商品を選ぶ",
+      "exitModal": {
+        "header": "支払いページを終了しますか？",
+        "continueBtn": "支払いを続ける",
+        "exitBtn": "ページを終了"
+      }
+    },
+    "exitModal": {
+      "header": "カートに戻りますか？",
+      "desc": "すべての変更を破棄してカートに戻りますか？",
+      "stayBtn": "このページにとどまる",
+      "leaveBtn": "戻ると変更を破棄"
+    },
+    "addressModal": {
+      "main": {
+        "header": "配送先住所を選択",
+        "searchPlaceholder": "受取人/市区町村/ラベルを検索",
+        "addAddressBtn": "新しい住所を追加",
+        "changeBtn": "住所を変更",
+        "makeMainBtn": "メインの住所にする",
+        "pickBtn": "住所を選択",
+        "primaryBadge": "プライマリ"
+      },
+      "add": {
+        "header": "住所を追加",
+        "desc": "詳細な住所を完成させる",
+        "recepient": "受取人の名前",
+        "phone": "電話番号",
+        "label": "住所ラベル",
+        "city": "市",
+        "noCity": "市区町村が見つかりません",
+        "address": "住所",
+        "notes": "宅配便への注意（任意）",
+        "notesDesc": "家の色、基準、特別なメッセージなど。",
+        "makeMain": "メインの住所にする",
+        "tos": "Totenの住所設定の<1>利用規約</1>および<1>プライバシーポリシー</1>に同意します。",
+        "submitBtn": "送信"
+      },
+      "modify": {
+        "header": "アドレスを編集",
+        "modifyBtn": "編集"
+      }
+    }
+  },
+  "footer": {
+    "about": "Totenについて",
+    "childAbout1": "情報",
+    "childAbout2": "プライバシーポリシー",
+    "contact": {
+      "head": "お問い合わせ",
+      "child1": "Toten顧客苦情サービス用"
+    },
+    "social": "Totenのソーシャルアカウント"
+  }
+}

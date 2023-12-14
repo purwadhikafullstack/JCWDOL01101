@@ -45,17 +45,15 @@ export class MutationService {
     try {
       const findMutation = await DB.Mutation.findOne({ where: { id: mutationId, status: 'ONGOING' } });
       if (!findMutation) throw new HttpException(409, 'Mutation has been canceled/completed');
-      const addStock = {
+      updatedStock = await this.inventory.exchangeStock({
         productId: findMutation.productId,
         stock: findMutation.quantity,
         senderWarehouseId: findMutation.senderWarehouseId,
         receiverWarehouseId: findMutation.receiverWarehouseId,
-      };
-      updatedStock = await this.inventory.addStock(addStock);
+      });
       await DB.Mutation.update({ status: 'COMPLETED', receiverNotes: notes || 'Approved', receiverName: name }, { where: { id: mutationId } });
-    } catch (error) {
-      await DB.Mutation.update({ status: 'REJECTED', receiverNotes: 'System error' }, { where: { id: mutationId } });
-      throw new HttpException(409, 'System Error');
+    } catch (err) {
+      throw new HttpException(409, err.message);
     }
     return updatedStock;
   }

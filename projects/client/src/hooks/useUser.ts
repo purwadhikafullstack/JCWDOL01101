@@ -47,6 +47,7 @@ export const useUsers = ({ page, s, r, filter, order }: UserOptions) => {
         },
         withCredentials: true,
       });
+      
       return res.data.data;
     },
     refetchOnWindowFocus: true,
