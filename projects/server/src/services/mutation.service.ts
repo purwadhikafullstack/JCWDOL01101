@@ -20,7 +20,6 @@ export class MutationService {
     if (!product) throw new HttpException(409, "Product doesn't exist");
 
     if (mutationData.quantity < 0) throw new HttpException(500, 'Quantity is empty');
-    console.log(mutationData);
     const productStock = await DB.Inventories.findOne({
       where: { warehouseId: mutationData.receiverWarehouseId, productId: mutationData.productId },
     });
