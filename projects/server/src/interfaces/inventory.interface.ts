@@ -6,3 +6,10 @@ export interface Inventory {
   sold: number;
   totalStock?: number;
 }
+
+export interface AddStock {
+  senderWarehouseId: number;
+  receiverWarehouseId: number;
+  productId: number;
+  stock: number;
+}

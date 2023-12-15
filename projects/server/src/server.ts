@@ -14,6 +14,8 @@ import { DokuRoute } from './routes/doku.route';
 import { ReviewRoute } from './routes/review.route';
 import { WishlistRoute } from './routes/wishlist.route';
 import { OrderRoute } from './routes/order.route';
+import { MutationRoute } from './routes/mutation.route';
+import { InventoryRoute } from './routes/inventory.route';
 
 ValidateEnv();
 
@@ -34,6 +36,8 @@ const app = new App([
   new CheckoutRoute(),
   new ReviewRoute(),
   new WishlistRoute(),
+  new MutationRoute(),
+  new InventoryRoute(),
 ]);
 
 app.listen();

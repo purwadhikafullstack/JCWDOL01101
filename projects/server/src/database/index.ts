@@ -20,6 +20,7 @@ import ImageModel from '@/models/image.model';
 import JurnalModel from '@/models/jurnal.model';
 import ReviewModel from '@/models/review.model';
 import WishlistModel from '@/models/wishlist.model';
+import MutationModel from '@/models/mutation.model';
 
 import associations from './associations';
 
@@ -66,6 +67,7 @@ export const DB = {
   Jurnal: JurnalModel(sequelize),
   Review: ReviewModel(sequelize),
   WishList: WishlistModel(sequelize),
+  Mutation: MutationModel(sequelize),
   sequelize,
   Sequelize,
 };
