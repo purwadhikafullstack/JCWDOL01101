@@ -21,7 +21,7 @@ export const productSchema = z.object({
   name: z.string().min(2, "Product name is empty").max(70),
   categoryId: z.string().min(1, "Category is empty"),
   formattedPrice: z.string().min(1, "Price is empty"),
-  size: z.string().min(1, "Size is empty"),
+  size: z.number().array().min(1, "Size is empty"),
   price: z.coerce.number().min(1),
   weight: z.coerce.number().min(1, "Weight is empty"),
   description: z.string().min(2, "Description is empty").max(2000),
@@ -31,7 +31,7 @@ const emptyValues = {
   name: "",
   categoryId: "",
   formattedPrice: "",
-  size: "",
+  size: [],
   price: 0,
   weight: 0,
   description: "",
@@ -59,7 +59,7 @@ const CreateProductForm = () => {
       return;
     }
     const formData = new FormData();
-    filterImage.forEach((file, i) => {
+    filterImage.forEach((file) => {
       if (file) {
         formData.append("images", file);
       }

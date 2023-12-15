@@ -13,6 +13,7 @@ import {
   PackageSearch,
   Settings,
   ArrowLeftFromLine,
+  Box,
 } from "lucide-react";
 import React from "react";
 import { useLocation, Link } from "react-router-dom";

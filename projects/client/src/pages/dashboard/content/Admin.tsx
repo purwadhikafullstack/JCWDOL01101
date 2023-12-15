@@ -45,20 +45,9 @@ const Admin = () => {
     });
   }, [data]);
 
-
   return (
     <div className="flex flex-col p-2 w-full">
-      <Dialog>
-        <DialogTrigger
-          className={buttonVariants({
-            variant: "default",
-            className: "self-end",
-          })}
-        >
-          <Plus className="w-4 h-4 mr-2" /> New Admin
-        </DialogTrigger>
-        <NewAdminFrom />
-      </Dialog>
+      <NewAdminFrom />
       <div className="relative w-[300px]">
         <SearchIcon className="absolute h-4 w-4 text-muted-foreground left-3 top-1/2 -translate-y-1/2" />
         <Input
@@ -130,10 +119,11 @@ const Admin = () => {
                             <DialogTrigger>
                               {warehouses[user.id] || "unAssigned"}
                             </DialogTrigger>
-                            {warehouses[user.id]
-                              ? <UnassignAdminForm userId={user.id as number} />
-                              : <AssignAdminForm userId={user.id as number} />
-                            }
+                            {warehouses[user.id] ? (
+                              <UnassignAdminForm userId={user.id as number} />
+                            ) : (
+                              <AssignAdminForm userId={user.id as number} />
+                            )}
                           </Dialog>
                         </Button>
                       </TableCell>

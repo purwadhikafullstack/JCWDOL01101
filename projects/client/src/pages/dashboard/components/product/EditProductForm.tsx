@@ -24,7 +24,7 @@ export const productSchema = z.object({
   name: z.string().min(2, "Product name is empty").max(70),
   categoryId: z.string().min(1, "Category is empty"),
   formattedPrice: z.string().min(1, "Price is empty"),
-  size: z.string().min(1, "Size is empty"),
+  size: z.number().array().min(1, "Size is empty"),
   price: z.coerce.number().min(1),
   stock: z.string().min(1, "Stock is empty"),
   weight: z.coerce.number().min(1, "Weight is empty"),
@@ -36,7 +36,7 @@ const emptyValues = {
   categoryId: "",
   formattedPrice: "",
   price: 0,
-  size: "",
+  size: [],
   stock: "",
   weight: 0,
   description: "",
@@ -97,7 +97,13 @@ const EditProductForm = () => {
       form.setValue("price", product.price);
       form.setValue("formattedPrice", formatToIDR(String(product.price)));
       form.setValue("stock", String(product.stock));
-      form.setValue("size", product.size);
+      const size = new Set<number>();
+      for (const inv of pd.product.inventory) {
+        if (!size.has(inv.sizeId)) {
+          size.add(inv.sizeId);
+        }
+      }
+      form.setValue("size", Array.from(size));
       form.setValue("weight", product.weight);
       form.setValue("description", product.description);
       product.productImage.forEach(({ image, id }, i) => {

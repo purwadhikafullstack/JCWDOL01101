@@ -20,6 +20,7 @@ import ImageModel from '@/models/image.model';
 import JurnalModel from '@/models/jurnal.model';
 import ReviewModel from '@/models/review.model';
 import WishlistModel from '@/models/wishlist.model';
+import SizeModel from '@/models/size.model';
 
 import associations from './associations';
 
@@ -51,6 +52,7 @@ export const DB = {
   User: UserModel(sequelize),
   Cart: CartModel(sequelize),
   CartProduct: CartProductModel(sequelize),
+  Size: SizeModel(sequelize),
   Product: ProductModel(sequelize),
   Order: OrderModel(sequelize),
   OrderDetails: OrderDetailsModel(sequelize),

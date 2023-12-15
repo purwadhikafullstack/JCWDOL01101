@@ -1,5 +1,7 @@
 import { ProductDto } from '@/dtos/product.dto';
+import { Status } from '@/interfaces';
 import { Image } from '@/interfaces/image.interface';
+import { Inventory } from '@/interfaces/inventory.interface';
 import { Product } from '@/interfaces/product.interface';
 import { ProductService } from '@/services/product.service';
 import { RequireAuthProp } from '@clerk/clerk-sdk-node';
@@ -18,15 +20,17 @@ export class ProductController {
 
   public getProducts = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
-      const { page, s, order, filter, limit, warehouse, category } = req.query;
+      const { page, s, size, order, status, filter, limit, warehouse, category } = req.query;
 
       const { products, totalPages } = await this.product.getAllProduct({
         s: String(s),
+        size: String(size),
         order: String(order),
         limit: Number(limit),
-        filter: String(filter),
         page: Number(page),
-        warehouse: String(warehouse),
+        status: String(status),
+        filter: String(filter),
+        warehouse: Number(warehouse),
         externalId: req.auth.userId,
         category: String(category),
       });
@@ -120,19 +124,6 @@ export class ProductController {
     }
   };
 
-  public getProductByName = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const search = String(req.query.search);
-      const proudct: Product[] = await this.product.getProductByName(search);
-      res.status(200).json({
-        data: proudct,
-        message: 'get.products',
-      });
-    } catch (err) {
-      next(err);
-    }
-  };
-
   public createProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { product } = req.body;
@@ -177,14 +168,34 @@ export class ProductController {
     }
   };
 
-  public deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
+  public changeProductStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const productId = Number(req.params.productId);
-      const deletedProduct: Product = await this.product.deleteProduct(productId);
+      const status = String(req.body.status) as Status;
+      const previousStatus = String(req.body.previousStatus) as Status;
+      const warehouseBody = Number(req.body.warehouseId);
+      const warehouseId = !Number.isNaN(warehouseBody) ? warehouseBody : undefined;
+      const deletedProduct: Product = await this.product.changeProductStatus(productId, warehouseId, status, previousStatus);
 
       res.status(200).json({
         data: deletedProduct,
         message: 'product.deleted',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public changeProductInventoryStatus = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const productId = Number(req.params.productId);
+      const warehouseId = Number(req.params.warehouseId);
+      const status = String(req.body.status) as Status;
+      const deletedInventory: Inventory = await this.product.changeProductInventoryStatus(productId, warehouseId, status);
+
+      res.status(200).json({
+        data: deletedInventory,
+        message: 'inventory.deleted',
       });
     } catch (err) {
       next(err);

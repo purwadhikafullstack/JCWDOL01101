@@ -47,6 +47,18 @@ export const useGetWarehouse = () => {
   return warehouse;
 };
 
+export const useGetWarehouseById = (warehouseId: number | undefined) => {
+  const warehouse = useQuery<Warehouse>({
+    queryKey: ["warehouse", warehouseId],
+    queryFn: async () => {
+      const response = await service.get(`/warehouses/${warehouseId}`);
+      return response.data.data;
+    },
+    enabled: !!warehouseId,
+  });
+  return warehouse;
+};
+
 export const useGetClosestWarehouse = ({
   lat,
   lng,
