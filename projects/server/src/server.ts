@@ -15,6 +15,7 @@ import { ReviewRoute } from './routes/review.route';
 import { WishlistRoute } from './routes/wishlist.route';
 import { OrderRoute } from './routes/order.route';
 import { InventoryRoute } from './routes/inventory.route';
+import { JurnalRoute } from './routes/jurnal.route';
 
 ValidateEnv();
 
@@ -36,6 +37,7 @@ const app = new App([
   new ReviewRoute(),
   new WishlistRoute(),
   new InventoryRoute(),
+  new JurnalRoute(),
 ]);
 
 app.listen();

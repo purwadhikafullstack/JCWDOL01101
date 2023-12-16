@@ -1,6 +1,5 @@
 export interface Jurnal {
   id?: number;
-  warehouseId?: number;
   inventoryId?: number;
   oldQty: number;
   qtyChange: number;

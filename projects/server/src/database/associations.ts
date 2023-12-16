@@ -48,8 +48,8 @@ export default function () {
   DB.WarehouseAddresses.hasOne(DB.Warehouses, { foreignKey: 'warehouseAddressId', as: 'warehouseAddress' });
   DB.Warehouses.belongsTo(DB.WarehouseAddresses, { foreignKey: 'warehouseAddressId', as: 'warehouseAddress' });
 
-  DB.Warehouses.hasOne(DB.Jurnal, { foreignKey: 'warehouseId', as: 'jurnal' });
-  DB.Jurnal.belongsTo(DB.Warehouses, { foreignKey: 'warehouseId', as: 'jurnal' });
+  DB.Inventories.hasOne(DB.Jurnal, { foreignKey: 'inventoryId', as: 'jurnal' });
+  DB.Jurnal.belongsTo(DB.Inventories, { foreignKey: 'inventoryId', as: 'jurnal' });
 
   DB.Product.belongsToMany(DB.Warehouses, { through: DB.Inventories, as: 'warehouse', foreignKey: 'productId', otherKey: 'warehouseId' });
   DB.Warehouses.belongsToMany(DB.Product, { through: DB.Inventories, as: 'products', foreignKey: 'warehouseId', otherKey: 'productId' });
