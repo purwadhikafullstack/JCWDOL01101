@@ -9,12 +9,20 @@ import {
 } from "./slice";
 import { ImageForm, createImageFormSlice } from "./imageSlice";
 import { LocationSlice, createLocationSlice } from "./geolocationSlice";
+import { FilterSizeSlice, createFilterSizeSlice } from "./filterSizeSlice";
+
 export const useBoundStore = create<
-  TotalPrice & QuantitySlice & ShippingFeeSlice & ImageForm & LocationSlice
+  TotalPrice &
+    QuantitySlice &
+    ShippingFeeSlice &
+    ImageForm &
+    LocationSlice &
+    FilterSizeSlice
 >()((...a) => ({
   ...createTotalPrice(...a),
   ...createQuantitySlice(...a),
   ...createShippingSlice(...a),
   ...createImageFormSlice(...a),
   ...createLocationSlice(...a),
+  ...createFilterSizeSlice(...a),
 }));

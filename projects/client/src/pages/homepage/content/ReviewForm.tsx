@@ -91,12 +91,7 @@ const ReviewForm = () => {
     pd.product && (
       <div>
         <AllowReviewModal slug={pd.product.slug} productId={pd.product.id} />
-        <Breadcrumbs
-          slug={pd.product.slug}
-          categoryId={pd.product.categoryId}
-          category={pd.product.productCategory}
-          productName={pd.product.name}
-        />
+        <Breadcrumbs />
         <div className="flex flex-col md:flex-row justify-between ">
           <div className="flex-1 order-2 lg:order-1 mt-4 lg:mt-0">
             <h3 className="text-2xl font-bold">{pd.product.name}</h3>

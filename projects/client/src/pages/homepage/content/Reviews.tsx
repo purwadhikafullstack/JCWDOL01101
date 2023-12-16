@@ -63,16 +63,7 @@ const Reviews = () => {
       {productLoading ? (
         <Skeleton className="rounded-none w-[35%] h-6 mb-4" />
       ) : (
-        <>
-          {pd && pd.product && slug && (
-            <Breadcrumbs
-              productName={pd.product.name}
-              categoryId={pd.product.categoryId}
-              category={pd.product.productCategory}
-              slug={slug}
-            />
-          )}
-        </>
+        <Breadcrumbs />
       )}
 
       <Link to={`/product/${slug}`} className="underline uppercase">

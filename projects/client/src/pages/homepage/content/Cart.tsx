@@ -88,16 +88,11 @@ const Cart = () => {
               </div>
 
               <div className="py-4 space-y-4">
-                {carts &&
-                  carts.map(({ product, quantity, id }, i) => (
-                    <React.Fragment key={product.id}>
-                      <CartItem
-                        cartProductId={id}
-                        hasCart={!!user?.userCart}
-                        cartId={cart?.cart.id!}
-                        product={product}
-                        quantity={quantity}
-                      />
+                {user &&
+                  carts &&
+                  carts.map((cp, i) => (
+                    <React.Fragment key={cp.id}>
+                      <CartItem cartProduct={cp} hasCart={!!user.userCart} />
                       <div
                         className={
                           i + 1 !== carts.length ? "border border-b-3" : ""

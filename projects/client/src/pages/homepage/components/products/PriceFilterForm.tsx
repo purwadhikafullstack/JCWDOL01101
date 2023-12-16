@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 type PriceFilterFormProps = {
@@ -7,11 +7,17 @@ type PriceFilterFormProps = {
 };
 
 const PriceFilterForm = ({ param, placeholder }: PriceFilterFormProps) => {
-  const [_, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [price, setPrice] = useState({
     value: "",
     formatted: "",
   });
+
+  useEffect(() => {
+    if (!searchParams.get(param)) {
+      setPrice({ ...price, formatted: "" });
+    }
+  }, [searchParams.get(param)]);
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();

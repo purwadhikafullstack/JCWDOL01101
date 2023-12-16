@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { Axios, AxiosError } from 'axios';
 import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import { Service } from 'typedi';
@@ -46,7 +46,7 @@ export class DokuService {
         info3: 'on our store',
       },
       customer: {
-        name: `${findUser.firstname || ''} ${findUser.lastname || ''}`.trim(),
+        name: `${findUser.firstname || ''} ${findUser.lastname || ''}`.trim() || findUser.email,
         email: findUser.email,
       },
     };
@@ -71,7 +71,7 @@ export class DokuService {
       if (data) {
         const findUserCart = await DB.Cart.findOne({ where: { id: cartId, status: 'ACTIVE' } });
         if (!findUserCart) throw new HttpException(409, "Cart doesn't exist");
-        const cartProducts: CartProduct[] = await DB.CartProduct.findAll({ where: { cartId: findUserCart.id, status: 'ACTIVE' } });
+        const cartProducts: CartProduct[] = await DB.CartProduct.findAll({ where: { cartId: findUserCart.id, selected: true, status: 'ACTIVE' } });
         if (cartProducts.length > 0) {
           const createOrder = await DB.Order.create({
             warehouseId,
@@ -81,14 +81,16 @@ export class DokuService {
             userId: findUser.id,
             status: 'PENDING',
           });
-          const orderDetailsData = cartProducts.map(product => ({
+          const orderDetailsData = cartProducts.map(cp => ({
             orderId: createOrder.id,
-            productId: product.productId,
-            quantity: product.quantity,
-            price: product.price,
+            productId: cp.productId,
+            quantity: cp.quantity,
+            price: cp.price,
+            sizeId: cp.sizeId,
           }));
+
           await DB.OrderDetails.bulkCreate(orderDetailsData);
-          await DB.CartProduct.update({ status: 'DELETED' }, { where: { cartId: findUserCart.id } });
+          await DB.CartProduct.update({ status: 'DELETED' }, { where: { cartId: findUserCart.id, selected: true, status: 'ACTIVE' } });
         }
       }
       return data;

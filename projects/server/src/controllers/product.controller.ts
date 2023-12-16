@@ -101,9 +101,9 @@ export class ProductController {
   public getProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const slug = String(req.params.slug);
-      const { product, totalStock, totalSold } = await this.product.getProduct(slug);
+      const { product, totalStock, totalSold, totalStockBySize } = await this.product.getProduct(slug);
       res.status(200).json({
-        data: { product, totalStock, totalSold },
+        data: { product, totalStock, totalSold, totalStockBySize },
         message: 'get.products',
       });
     } catch (err) {

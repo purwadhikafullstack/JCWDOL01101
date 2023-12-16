@@ -87,17 +87,20 @@ const Checkout = () => {
 
             <>
               {selectedCartProducts &&
-                selectedCartProducts.map(({ product, id, quantity }, i) => (
-                  <CheckoutItem
-                    key={id}
-                    index={i}
-                    length={cartProductsLength}
-                    product={product}
-                    quantity={quantity}
-                    warehouse={closestWarehouse}
-                    activeAddress={activeAddress}
-                  />
-                ))}
+                selectedCartProducts.map(
+                  ({ product, id, quantity, size }, i) => (
+                    <CheckoutItem
+                      key={id}
+                      index={i}
+                      size={size}
+                      length={cartProductsLength}
+                      product={product}
+                      quantity={quantity}
+                      warehouse={closestWarehouse}
+                      activeAddress={activeAddress}
+                    />
+                  )
+                )}
             </>
           </section>
           <div className="w-full lg:w-[420px] relative">

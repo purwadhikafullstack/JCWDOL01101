@@ -23,7 +23,7 @@ export class CartContoller {
   public getCartProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const productId = Number(req.params.productId);
-      const findCartProduct: CartProduct = await this.cart.getCartProduct(productId);
+      const findCartProduct: CartProduct[] = await this.cart.getCartProduct(productId);
       res.status(200).json({
         data: findCartProduct,
         message: 'get.cartProduct',
@@ -32,13 +32,29 @@ export class CartContoller {
       next(err);
     }
   };
+
+  public getCartProductOnSize = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const productId = Number(req.params.productId);
+      const sizeId = Number(req.params.sizeId);
+      const { cartProduct, stock } = await this.cart.getCartProductOnSize(productId, sizeId);
+      res.status(200).json({
+        data: { cartProduct, stock },
+        message: 'get.cartProduct',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   public changeQuantity = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const productId = Number(req.body.productId);
       const cartId = Number(req.body.cartId);
+      const sizeId = Number(req.body.sizeId);
       const quantity = Number(req.body.qty);
 
-      const cartProduct = await this.cart.changeQuantity({ productId, cartId, quantity });
+      const cartProduct = await this.cart.changeQuantity({ sizeId, productId, cartId, quantity });
       res.status(200).json({
         data: cartProduct,
         message: 'post.increment',
@@ -123,8 +139,9 @@ export class CartContoller {
     try {
       const productId = Number(req.body.productId);
       const quantity = Number(req.body.quantity);
+      const sizeId = Number(req.body.sizeId);
       const externalId = req.body.externalId as string;
-      const cart: Cart = await this.cart.createCart({ externalId, productId, quantity });
+      const cart: Cart = await this.cart.createCart({ externalId, productId, quantity, sizeId });
 
       res.status(200).json({
         data: cart,

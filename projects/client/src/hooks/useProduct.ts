@@ -206,12 +206,19 @@ export const useHighestSellProducts = (limit = 3) => {
   return products;
 };
 
+export type ProductData = {
+  product: Product;
+  totalStock: number;
+  totalSold: number;
+  totalStockBySize: {
+    sizeId: number;
+    total: number;
+    ["sizes.label"]: number;
+  }[];
+};
+
 export const useProduct = (slug: string) => {
-  const product = useQuery<{
-    product: Product;
-    totalStock: number;
-    totalSold: number;
-  }>({
+  const product = useQuery<ProductData>({
     queryKey: ["product", slug],
     queryFn: async () => {
       const res = await service.get(`/products/${slug}`, {

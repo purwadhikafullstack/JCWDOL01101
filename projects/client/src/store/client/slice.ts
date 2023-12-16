@@ -20,7 +20,7 @@ type Service = {
   }[];
 };
 
-interface Fee {
+export interface Fee {
   [productId: string]: Service;
 }
 

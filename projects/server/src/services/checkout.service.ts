@@ -10,6 +10,7 @@ import { CategoryModel } from '@/models/category.model';
 import { ImageModel } from '@/models/image.model';
 import { InventoryModel } from '@/models/inventory.model';
 import { ProductModel } from '@/models/product.model';
+import { SizeModel } from '@/models/size.model';
 import { Location, findClosestWarehouse } from '@/utils/closestWarehouse';
 import axios from 'axios';
 import { Service } from 'typedi';
@@ -50,6 +51,10 @@ export class CheckoutService {
     const findAllCartProduct = await DB.CartProduct.findAll({
       where: { cartId, selected: true, status: 'ACTIVE' },
       include: [
+        {
+          model: SizeModel,
+          as: 'size',
+        },
         {
           model: ProductModel,
           as: 'product',

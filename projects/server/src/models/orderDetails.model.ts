@@ -5,6 +5,7 @@ export class OrderDetailsModel extends Model<OrderDetails> implements OrderDetai
   public id?: number;
   public orderId?: number;
   public productId?: number;
+  public sizeId: number;
   public quantity: number;
   public price: number;
 }
@@ -21,6 +22,10 @@ export default function (sequelize: Sequelize): typeof OrderDetailsModel {
         allowNull: false,
         type: DataTypes.INTEGER,
       },
+      sizeId: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
       productId: {
         allowNull: false,
         type: DataTypes.INTEGER,
@@ -34,7 +39,7 @@ export default function (sequelize: Sequelize): typeof OrderDetailsModel {
         type: DataTypes.INTEGER,
       },
     },
-    { sequelize, tableName: 'order_details' },
+    { sequelize, tableName: 'order_details', indexes: [{ unique: true, fields: ['order_id', 'product_id', 'size_id'] }] },
   );
   return OrderDetailsModel;
 }

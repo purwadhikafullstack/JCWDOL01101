@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ProductCarousel from "../components/ProductCarousel";
 import ReviewStar from "../components/product-detail/ReviewStar";
 import ProductDescription from "../components/product-detail/ProductDescription";
@@ -20,7 +20,7 @@ const ProductDetail = () => {
   const { user } = useUser();
   const { slug } = useParams();
   const { data: pd } = useProduct(slug || "");
-  const { data: userIsOrderProduct } = useProductIsOrder(
+  const { data: isUserOrderProduct } = useProductIsOrder(
     user?.id,
     pd?.product.id
   );
@@ -29,22 +29,13 @@ const ProductDetail = () => {
     pd &&
     pd.product && (
       <div>
-        <Breadcrumbs
-          slug={pd.product.slug}
-          categoryId={pd.product.categoryId}
-          category={pd.product.productCategory}
-          productName={pd.product.name}
-        />
+        <Breadcrumbs />
         <div className="w-full flex flex-col lg:flex-row justify-between">
           <div className="flex-1 pt-2">
             <div className="lg:max-w-[655px]">
               <ProductCarousel images={pd.product.productImage || []} />
               <div className="lg:hidden">
-                <ProductDescription
-                  product={pd.product}
-                  totalStock={pd.totalStock}
-                  totalSold={pd.totalSold}
-                />
+                <ProductDescription productData={pd} />
               </div>
               {reviewData && (
                 <>
@@ -64,7 +55,7 @@ const ProductDetail = () => {
                   <OverallRating ratingCounts={reviewData.ratingCounts} />
                 </>
               )}
-              {userIsOrderProduct ? (
+              {isUserOrderProduct ? (
                 <Link to={`/product/${pd.product.slug}/reviews/new`}>
                   <Button
                     variant="outline"
@@ -81,11 +72,7 @@ const ProductDetail = () => {
             </div>
           </div>
           <div className="w-full hidden md:block order-1 lg:order-2 lg:w-[522px] relative">
-            <ProductDescription
-              product={pd.product}
-              totalStock={pd.totalStock}
-              totalSold={pd.totalSold}
-            />
+            <ProductDescription productData={pd} />
           </div>
         </div>
         <div>

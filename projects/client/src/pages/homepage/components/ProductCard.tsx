@@ -8,6 +8,7 @@ import { useReviewByProduct } from "@/hooks/useReview";
 import ReviewStar from "./product-detail/ReviewStar";
 import { useToggleWishlist } from "@/hooks/useWishlistMutation";
 import { motion } from "framer-motion";
+import { Size } from "@/hooks/useSize";
 
 interface ProductCardProps extends HTMLAttributes<HTMLDivElement> {
   product: Product;
@@ -16,11 +17,28 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
   ({ product, ...props }, ref: Ref<HTMLDivElement>) => {
     const { data: reviewData } = useReviewByProduct(product?.id);
     const wishlistMutation = useToggleWishlist();
+    const sizes = product.inventory.map((inv) => inv.sizes).flat() as Size[];
+
+    const { low, high } = sizes.reduce(
+      (acc, size) => {
+        if (size.value < acc.low.value) {
+          acc.low = size;
+        }
+        if (size.value > acc.high.value) {
+          acc.high = size;
+        }
+        return acc;
+      },
+      { low: sizes[0], high: sizes[0] }
+    );
+
+    let lowLabel = low.label;
+    let highLabel = high.label;
 
     const productContent = (
       <>
         <Link to={`/product/${product.slug}`}>
-          <div className=" shadow-sm overflow-hidden relative h-full dark:bg-secondary">
+          <div className="flex flex-col flex-auto shadow-sm overflow-hidden relative dark:bg-secondary">
             <motion.div
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}
@@ -49,10 +67,11 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
             />
             <div className="flex flex-col gap-2 text-sm p-2">
               <div className="flex justify-between text-xs items-center font-bold text-muted-foreground">
-                <span className="uppercase text-sm">
-                  {product.productCategory?.name}
-                </span>
-                <span>{product.size}</span>
+                {lowLabel === highLabel ? (
+                  <span>{sizes[0].label}</span>
+                ) : (
+                  <span>{`${lowLabel} - ${highLabel}`}</span>
+                )}
               </div>
               <p className="font-bold text-sm md:text-base">{product.name}</p>
               <span>

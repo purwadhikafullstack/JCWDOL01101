@@ -22,6 +22,14 @@ import { Status } from '@/interfaces';
 
 @Service()
 export class ProductService {
+  private queryStringToArray(str: string) {
+    const trimeedStr = str.trim();
+    if (trimeedStr.length === 0) {
+      return [];
+    }
+    return trimeedStr.split(',').map(Number).filter(Number.isInteger);
+  }
+
   public async getAllProduct({
     s,
     size,
@@ -53,20 +61,8 @@ export class ProductService {
 
     const LIMIT = Number(limit) || 10;
     const offset = (page - 1) * LIMIT;
-    const categories =
-      category.length > 0
-        ? category
-            .trim()
-            .split(',')
-            .map(c => +c)
-        : [];
-    const sizes =
-      size.length > 0
-        ? size
-            .trim()
-            .split(',')
-            .map(s => +s)
-        : [];
+    const categories = this.queryStringToArray(category);
+    const sizes = this.queryStringToArray(size);
     const options: FindOptions<Product> = {
       offset,
       limit: LIMIT,
@@ -142,9 +138,7 @@ export class ProductService {
       status: 'ACTIVE',
     };
 
-    if (size) {
-      where.size = size;
-    }
+    const sizes = this.queryStringToArray(size);
 
     if (pmin && !Number.isNaN(+pmin)) {
       where.price = where.price || {};
@@ -172,8 +166,19 @@ export class ProductService {
           model: InventoryModel,
           as: 'inventory',
           attributes: ['stock', 'sold'],
+          include: [
+            {
+              model: SizeModel,
+              as: 'sizes',
+            },
+          ],
           where: {
             status: 'ACTIVE',
+            ...(sizes.length > 0 && {
+              sizeId: {
+                [Op.in]: sizes,
+              },
+            }),
           },
         },
         {
@@ -238,6 +243,12 @@ export class ProductService {
         {
           model: InventoryModel,
           as: 'inventory',
+          include: [
+            {
+              model: SizeModel,
+              as: 'sizes',
+            },
+          ],
           attributes: ['stock', 'sold'],
           where: {
             status: 'ACTIVE',
@@ -272,6 +283,12 @@ export class ProductService {
           model: InventoryModel,
           as: 'inventory',
           attributes: ['stock', 'sold'],
+          include: [
+            {
+              model: SizeModel,
+              as: 'sizes',
+            },
+          ],
           where: {
             status: 'ACTIVE',
           },
@@ -302,6 +319,12 @@ export class ProductService {
         {
           model: InventoryModel,
           as: 'inventory',
+          include: [
+            {
+              model: SizeModel,
+              as: 'sizes',
+            },
+          ],
           attributes: ['stock', 'sold'],
           where: {
             status: 'ACTIVE',
@@ -332,6 +355,12 @@ export class ProductService {
         {
           model: InventoryModel,
           as: 'inventory',
+          include: [
+            {
+              model: SizeModel,
+              as: 'sizes',
+            },
+          ],
           attributes: ['stock', 'sold'],
           where: {
             status: 'ACTIVE',
@@ -350,7 +379,7 @@ export class ProductService {
     return findProducts;
   }
 
-  public async getProduct(slug: string): Promise<{ totalStock: number; totalSold: number; product: Product }> {
+  public async getProduct(slug: string): Promise<any> {
     const findProduct: Product = await DB.Product.findOne({
       where: { slug, status: 'ACTIVE' },
       include: [
@@ -367,6 +396,12 @@ export class ProductService {
           model: InventoryModel,
           as: 'inventory',
           attributes: ['stock', 'sold', 'sizeId'],
+          include: [
+            {
+              model: SizeModel,
+              as: 'sizes',
+            },
+          ],
           where: {
             status: 'ACTIVE',
           },
@@ -382,9 +417,22 @@ export class ProductService {
 
     const totalStock = await DB.Inventories.sum('stock', { where: { status: 'ACTIVE', productId: findProduct.id } });
     const totalSold = await DB.Inventories.sum('sold', { where: { status: 'ACTIVE', productId: findProduct.id } });
+    const totalStockBySize = await DB.Inventories.findAll({
+      where: { status: 'ACTIVE', productId: findProduct.id },
+      attributes: ['sizeId', [DB.sequelize.fn('sum', DB.sequelize.col('stock')), 'total']],
+      include: [
+        {
+          model: SizeModel,
+          as: 'sizes',
+          attributes: ['label'],
+        },
+      ],
+      group: ['sizeId'],
+      raw: true,
+    });
     if (!findProduct) throw new HttpException(409, "Product doesn't exist");
 
-    return { totalStock, totalSold, product: findProduct };
+    return { totalStock, totalSold, totalStockBySize, product: findProduct };
   }
 
   public async getProductByCategory(productId: number, categoryId: number, limit: number): Promise<Product[]> {
@@ -407,6 +455,12 @@ export class ProductService {
           model: InventoryModel,
           as: 'inventory',
           attributes: ['stock', 'sold'],
+          include: [
+            {
+              model: SizeModel,
+              as: 'sizes',
+            },
+          ],
           where: {
             status: 'ACTIVE',
           },

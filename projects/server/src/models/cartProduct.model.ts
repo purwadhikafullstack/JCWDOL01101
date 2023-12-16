@@ -2,11 +2,13 @@ import { CartProduct } from '@/interfaces/cartProduct.interface';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 import CartModel from './cart.model';
 import ProductModel from './product.model';
+import SizeModel from './size.model';
 import { Status } from '@/interfaces';
 
 export class CartProductModel extends Model<CartProduct> implements CartProduct {
   public id?: number;
   public cartId: number;
+  public sizeId: number;
   public productId: number;
   public quantity: number;
   public status: Status;
@@ -21,6 +23,14 @@ export default function (sequelize: Sequelize): typeof CartProductModel {
         primaryKey: true,
         autoIncrement: true,
         type: DataTypes.INTEGER,
+      },
+      sizeId: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+        references: {
+          model: SizeModel(sequelize),
+          key: 'id',
+        },
       },
       cartId: {
         allowNull: false,
@@ -58,7 +68,7 @@ export default function (sequelize: Sequelize): typeof CartProductModel {
       },
     },
 
-    { tableName: 'cart_product', sequelize, timestamps: false },
+    { tableName: 'cart_product', sequelize, timestamps: false, indexes: [{ unique: true, fields: ['cart_id', 'product_id', 'size_id'] }] },
   );
 
   return CartProductModel;

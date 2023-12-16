@@ -1,4 +1,5 @@
 import { Product } from "@/hooks/useProduct";
+import { Size } from "@/hooks/useSize";
 import React from "react";
 
 export interface User {
@@ -29,10 +30,12 @@ export interface Cart {
 export interface cartProducts {
   id: number;
   cartId: number;
+  sizeId: number;
   productId: number;
   quantity: number;
   selected: boolean;
   product: Product;
+  size: Size;
 }
 interface UserContextProps {
   user: User | undefined;

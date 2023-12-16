@@ -6,7 +6,6 @@ export class CartRoute implements Routes {
   public router = Router();
   public cart = new CartContoller();
   public path = '/v1/cart';
-  public path = '/v1/cart';
 
   constructor() {
     this.initializeRoutes();
@@ -14,6 +13,7 @@ export class CartRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`${this.path}/product/:productId`, this.cart.getCartProduct);
+    this.router.get(`${this.path}/product/:productId/size/:sizeId`, this.cart.getCartProductOnSize);
     this.router.get(`${this.path}/:userId`, this.cart.getCarts);
     this.router.post(`${this.path}`, this.cart.createCart);
     this.router.put(`${this.path}/quantity`, this.cart.changeQuantity);

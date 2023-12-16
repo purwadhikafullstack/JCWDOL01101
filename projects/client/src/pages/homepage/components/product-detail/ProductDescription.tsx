@@ -1,32 +1,31 @@
-import { Product } from "@/hooks/useProduct";
-import { formatToIDR } from "@/lib/utils";
+import { ProductData } from "@/hooks/useProduct";
+import { cn, formatToIDR } from "@/lib/utils";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ReviewStar from "./ReviewStar";
 import { Separator } from "@/components/ui/separator";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { Minus, Plus } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import UserContext from "@/context/UserContext";
 import { useCartProduct } from "@/hooks/useCart";
 import { useAddCart } from "@/hooks/useCartMutation";
 import { useReviewByProduct } from "@/hooks/useReview";
 import { useToggleWishlist } from "@/hooks/useWishlistMutation";
+import ProductSize from "./ProductSize";
+import QuantityButton from "./QuantityButton";
 
-type ProductDescriptionProps = {
-  product: Product;
-  totalStock: number;
-  totalSold: number;
+type Props = {
+  productData: ProductData;
 };
 
-const ProductDescription = ({
-  product,
-  totalSold,
-  totalStock,
-}: ProductDescriptionProps) => {
+const ProductDescription = ({ productData }: Props) => {
+  const {
+    product,
+    totalSold,
+    totalStock: totalAllStock,
+    totalStockBySize,
+  } = productData;
   const { t } = useTranslation();
-
   const navigate = useNavigate();
   const userContext = useContext(UserContext);
   if (!userContext) {
@@ -45,16 +44,27 @@ const ProductDescription = ({
     ) !== undefined;
   const { data: cartProduct } = useCartProduct(isProductInCart, product.id);
   const { data: reviewData } = useReviewByProduct(product?.id);
-  const cartMutation = useAddCart(cartProduct?.productId);
+  const cartMutation = useAddCart();
   const toggleWishlist = useToggleWishlist();
+  const [selectedProductSize, setSelectedProductSize] = useState<number | null>(
+    totalStockBySize.length > 0 ? totalStockBySize[0].sizeId : null
+  );
+  const currentSizeStock = totalStockBySize.find(
+    (size) => size.sizeId === selectedProductSize
+  );
+  const currentProductQtyInCart =
+    cartProduct &&
+    cartProduct.find((cart) => cart.sizeId === selectedProductSize)?.quantity;
+  const totalStock = currentSizeStock?.total || 0;
 
   const addToCart = () => {
     if (!user) {
       return navigate("/register");
     }
-    if (totalStock > 0) {
+    if (totalStock > 0 && selectedProductSize) {
       cartMutation.mutate({
         quantity,
+        sizeId: selectedProductSize,
         productId: product.id,
         externalId: user.externalId,
       });
@@ -63,8 +73,7 @@ const ProductDescription = ({
   };
 
   useEffect(() => {
-    const totalQuantity = (cartProduct?.quantity || 0) + quantity;
-
+    const totalQuantity = (currentProductQtyInCart || 0) + quantity;
     if (quantity <= 0) {
       setError("This product(s) minimum quantity is 1 item(s)");
     } else if (
@@ -73,7 +82,7 @@ const ProductDescription = ({
     ) {
       setError(`This product(s) maximum quantity is ${totalStock} item(s)`);
     }
-  }, [cartProduct?.quantity, quantity, totalStock]);
+  }, [currentProductQtyInCart, quantity, totalStock]);
 
   useEffect(() => {
     function handleClickOuside(event: MouseEvent) {
@@ -116,74 +125,34 @@ const ProductDescription = ({
         <p>{product?.description}</p>
         <Separator className="my-2 mt-6" />
         <div className="space-y-4">
-          <span className="uppercase font-semibold">
-            {t("productDetailPage.product.size")}: {product?.size}
-          </span>
           <div>
-            <p className={`${totalStock <= 0 && "text-primary"} uppercase`}>
+            <p className={cn("upercase", totalAllStock <= 0 && "text-primary")}>
               {totalStock > 0
-                ? `${t("productDetailPage.options.stock")} ${totalStock}`
+                ? `${t("productDetailPage.options.stock")} ${totalAllStock}`
                 : t("productDetailPage.options.noStock")}
             </p>
             <p className="uppercase text-muted-foreground text-sm">
               {t("productDetailPage.product.sold")}: {totalSold}
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <div className="flex gap-2">
-                <Button
-                  disabled={quantity <= 1}
-                  onClick={() => setQuantity(quantity - 1)}
-                  className="bg-black dark:border hover:bg-black/80 rounded-none"
-                >
-                  <Minus />
-                </Button>
-                <Input
-                  disabled={totalStock <= 0}
-                  ref={inputRef}
-                  value={quantity}
-                  onChange={(e) => {
-                    if (quantity >= 0) {
-                      const numericValue = e.target.value
-                        .trim()
-                        .replace(/\D/g, "");
-                      setQuantity(Number(numericValue));
-                    }
-                  }}
-                  className="rounded-none text-lg focus-visible:ring-black outline-none text-center"
-                />
-                <Button
-                  disabled={
-                    (cartProduct?.quantity || 0) >= totalStock ||
-                    totalStock <= 0
-                  }
-                  onClick={() => {
-                    if (quantity < totalStock) {
-                      setQuantity(quantity + 1);
-                    }
-                  }}
-                  className="bg-black dark:border hover:bg-black/80 rounded-none"
-                >
-                  <Plus />
-                </Button>
-              </div>
-              <p className="text-primary text-xs mt-2">{error}</p>
-            </div>
-            <div className="flex flex-col items-end">
-              <span className="capitalize">
-                {t("productDetailPage.options.subTotal")}
-              </span>
-              <p className="font-bold">
-                {formatToIDR(product.price * quantity || 0)}
-              </p>
-            </div>
-          </div>
+          <ProductSize
+            selectedProductSize={selectedProductSize}
+            setSelectedProductSize={setSelectedProductSize}
+          />
+          <QuantityButton
+            price={product?.price || 0}
+            totalStock={totalStock}
+            currentProductQtyInCart={currentProductQtyInCart}
+            error={error}
+            quantity={quantity}
+            setQuantity={setQuantity}
+            inputRef={inputRef}
+          />
           <Button
             disabled={
               totalStock <= 0 ||
               cartMutation.isPending ||
-              (cartProduct?.quantity || 0) + quantity > totalStock
+              (currentProductQtyInCart || 0) + quantity > totalStock
             }
             onClick={addToCart}
             className="rounded-none w-full uppercase font-semibold py-6"

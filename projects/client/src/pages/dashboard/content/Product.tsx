@@ -46,7 +46,7 @@ const Product = () => {
 
   const { data: warehouses } = useGetWarehouse();
   useEffect(() => {
-    if (warehouses) {
+    if (warehouses && warehouses.length > 0) {
       setSearchParams((params) => {
         params.set("warehouse", String(warehouses[0].id));
         return params;

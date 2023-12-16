@@ -6,7 +6,6 @@ import ProductCard from "@/pages/homepage/components/ProductCard";
 import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton";
 import Filter from "../components/products/Filter";
 import { useCategories } from "@/hooks/useCategory";
-
 import {
   Select,
   SelectContent,
@@ -17,9 +16,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-import SelectBy from "../components/products/SelectBy";
-import { X } from "lucide-react";
-import { formatToIDR } from "@/lib/utils";
+import ActiveFilter from "../components/products/ActiveFilter";
 
 const ProductsPage = () => {
   const { t } = useTranslation();
@@ -58,58 +55,9 @@ const ProductsPage = () => {
       <div className="product_banner">
         <img src="/carousel/ads.jpg" alt="ads banner" />
       </div>
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 md:gap-8 w-full product_filter">
-        <div className="flex items-center gap-2 ">
-          {(size || pmax || pmin) && (
-            <span>{t("productsPage.activeFilter")}:</span>
-          )}
-          {size && (
-            <div className="border p-2 flex items-center pr-1">
-              {size}
-              <X
-                onClick={() => {
-                  setSearchParams((params) => {
-                    params.delete("size");
-                    return params;
-                  });
-                }}
-                className="cursor-pointer w-4 h-4 ml-2 "
-              />
-            </div>
-          )}
-          {(pmax || pmin) && (
-            <div className="border p-2 flex items-center pr-1 text-sm">
-              {pmax && pmin
-                ? `${formatToIDR(pmin)} - ${formatToIDR(pmax)}`
-                : pmax
-                ? formatToIDR(pmax)
-                : pmin
-                ? formatToIDR(pmin)
-                : ""}
-              <X
-                onClick={() => {
-                  if (pmin) {
-                    setSearchParams((params) => {
-                      params.delete("pmin");
-                      return params;
-                    });
-                  }
-                  if (pmax) {
-                    setSearchParams((params) => {
-                      params.delete("pmax");
-                      return params;
-                    });
-                  }
-                }}
-                className="cursor-pointer w-4 h-4 ml-2 "
-              />
-            </div>
-          )}
-        </div>
-        <SelectBy />
-      </div>
+      <ActiveFilter />
       <div className="w-full lg:w-[280px] product_side">
-        <div className="sticky pt-2 lg:pt-10 md:pt-0 lg:top-[100px]">
+        <div className="sticky pt-2 lg:pt-2 md:pt-0 lg:top-[100px]">
           <div className="flex gap-2 items-center justify-between my-2">
             <Label className="uppercase tracking-wide">
               {t("productsPage.category")}
@@ -159,30 +107,25 @@ const ProductsPage = () => {
           <NewestProductSekeleton product={10} />
         ) : (
           <>
-            {isSuccess &&
-              data.pages.map((page, i) => {
-                return page.length > 0 ? (
-                  page.map((product: Product, i: number) => {
-                    return page.length === i + 1 ? (
-                      <ProductCard
-                        ref={ref}
-                        key={product.id}
-                        product={product}
-                      />
-                    ) : (
-                      <ProductCard key={product.id} product={product} />
-                    );
-                  })
-                ) : (
-                  <div key={i} className="col-span-6">
-                    <img
-                      className="w-[400px] mx-auto"
-                      src="ilus/empty-product.svg"
-                      alt="empty product"
-                    />
-                  </div>
-                );
-              })}
+            {isSuccess && data.pages.length > 0 ? (
+              data.pages.map((page, i) =>
+                page.map((product: Product, i: number) => {
+                  return page.length === i + 1 ? (
+                    <ProductCard ref={ref} key={product.id} product={product} />
+                  ) : (
+                    <ProductCard key={product.id} product={product} />
+                  );
+                })
+              )
+            ) : (
+              <div className="col-span-5">
+                <img
+                  className="w-[400px] mx-auto"
+                  src="ilus/empty-product.svg"
+                  alt="empty product"
+                />
+              </div>
+            )}
             {isFetchingNextPage && <NewestProductSekeleton product={5} />}
           </>
         )}
