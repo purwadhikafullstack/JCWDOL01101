@@ -205,7 +205,7 @@ const Product = () => {
                 <TableHead className="w-[100px]">Category</TableHead>
                 <TableHead className="w-[200px]">Description</TableHead>
                 <TableHead className="text-center">Image</TableHead>
-                {ROLE === "ADMIN" && (
+                {(ROLE === "ADMIN"||"WAREHOUSE ADMIN") && (
                   <TableHead className="text-center">Action</TableHead>
                 )}
               </TableRow>
@@ -213,7 +213,6 @@ const Product = () => {
             <TableBody>
               {data && data.products && data.products.length > 0 ? (
                 <ProductTableRow products={data.products} selectedWarehouse={selectedWarehouse} />
-
               ) : (
                 <TableRow>
                   <TableCell colSpan={10} className="text-center h-24">

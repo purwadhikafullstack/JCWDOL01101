@@ -117,7 +117,7 @@ const ProductTableRow = ({ products, selectedWarehouse }: ProductTableRowProps) 
               </span>
             )}
           </TableCell>
-          {user?.publicMetadata.role === "ADMIN" && (
+          {(user?.publicMetadata.role === "ADMIN" || "WAREHOUSE ADMIN") && (
             <TableCell className="text-center">
               <Dialog>
                 <DropdownMenu>
@@ -127,20 +127,24 @@ const ProductTableRow = ({ products, selectedWarehouse }: ProductTableRowProps) 
                     <DotsHorizontalIcon />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <Link to={`/dashboard/product/edit/${product.slug}`}>
-                      <DropdownMenuItem className="cursor-pointer">
-                        Edit
-                      </DropdownMenuItem>
-                    </Link>
-                    <DropdownMenuSeparator />
-                    <div onClick={handleDialogDelete} className="w-200">
-                      <DialogTrigger className="w-full" >
-                        <DropdownMenuItem className="w-full cursor-pointer">
-                          Delete
-                        </DropdownMenuItem>
-                      </DialogTrigger>
-                    </div>
-                    <DropdownMenuSeparator />
+                    {user?.publicMetadata.role === "ADMIN" && (
+                      <>
+                        <Link to={`/dashboard/product/edit/${product.slug}`}>
+                          <DropdownMenuItem className="cursor-pointer">
+                            Edit
+                          </DropdownMenuItem>
+                        </Link>
+                        <DropdownMenuSeparator />
+                        <div onClick={handleDialogDelete} className="w-200">
+                          <DialogTrigger className="w-full" >
+                            <DropdownMenuItem className="w-full cursor-pointer">
+                              Delete
+                            </DropdownMenuItem>
+                          </DialogTrigger>
+                        </div>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
                     <div onClick={handleDialogStock} >
                       <DialogTrigger className="w-full">
                         <DropdownMenuItem className="cursor-pointer">
