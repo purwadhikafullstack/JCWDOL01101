@@ -1,3 +1,5 @@
+import { Inventory } from './inventory.interface';
+
 export interface Jurnal {
   id?: number;
   inventoryId?: number;
@@ -7,4 +9,12 @@ export interface Jurnal {
   type: 'STOCK IN' | 'STOCK OUT';
   date: Date;
   notes?: string;
+}
+
+export interface JurnalData {
+  findSenderInventory: Inventory;
+  findReceiverInventory: Inventory;
+  stock: number;
+  stockChangeSender: number;
+  stockChangeReceiver: number;
 }

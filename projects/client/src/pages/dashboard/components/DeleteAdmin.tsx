@@ -41,6 +41,7 @@ const DeleteAdmin = ({ userId }: { userId: Number }) => {
           <Button
             type="submit"
             variant="destructive"
+            disabled={deleteProduct.isPending}
             className="cursor-pointer "
           >
             <Loader2

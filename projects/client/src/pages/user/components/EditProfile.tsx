@@ -73,6 +73,7 @@ function EditProfile() {
             <Button
               type="submit"
               variant="destructive"
+              disabled={userMutation.isPending}
               className="cursor-pointer "
             >
               <Loader2

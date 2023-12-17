@@ -53,6 +53,7 @@ const NewAdminFrom = () => {
           <Button
             type="submit"
             variant="destructive"
+            disabled={adminMutation.isPending}
             className="cursor-pointer "
           >
             <Loader2

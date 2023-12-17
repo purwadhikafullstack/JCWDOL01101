@@ -24,6 +24,12 @@
     "title2": "terlaris bulan ini",
     "title3": "coba product terbaru kami"
   },
+  "profileSettingsPage": {
+    "sidebar": {
+      "profile": "Data diri",
+      "address": "Alamat"
+    }
+  },
   "productsPage": {
     "title": "Semua Produk",
     "category": "Kategori",

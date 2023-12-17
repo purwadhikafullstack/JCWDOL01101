@@ -35,22 +35,22 @@ export class ProductService {
     const where =
       role === 'ADMIN'
         ? {
-            ...(warehouse && { name: { [Op.like]: `%${warehouse}%` } }),
-          }
+          ...(warehouse && { name: { [Op.like]: `%${warehouse}%` } }),
+        }
         : role === 'WAREHOUSE ADMIN'
-        ? {
+          ? {
             userId: findUser.id,
           }
-        : {};
+          : {};
 
     const LIMIT = Number(limit) || 10;
     const offset = (page - 1) * LIMIT;
     const categories =
       category.length > 0
         ? category
-            .trim()
-            .split(',')
-            .map(c => +c)
+          .trim()
+          .split(',')
+          .map(c => +c)
         : [];
     const options: FindOptions<Product> = {
       offset,

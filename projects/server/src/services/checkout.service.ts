@@ -2,6 +2,7 @@ import { RAJAONGKIR_API_KEY } from '@/config';
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
 import { CartProduct } from '@/interfaces/cartProduct.interface';
+import { Inventory } from '@/interfaces/inventory.interface';
 import { User } from '@/interfaces/user.interface';
 import { Warehouse } from '@/interfaces/warehouse.interface';
 import { CartModel } from '@/models/cart.model';
@@ -9,7 +10,7 @@ import { CategoryModel } from '@/models/category.model';
 import { ImageModel } from '@/models/image.model';
 import { InventoryModel } from '@/models/inventory.model';
 import { ProductModel } from '@/models/product.model';
-import { Location, findClosestWarehouse, findWarehousesAndDistributeStock } from '@/utils/closestWarehouse';
+import { Location, findClosestWarehouse } from '@/utils/closestWarehouse';
 import axios from 'axios';
 import { Service } from 'typedi';
 
@@ -75,54 +76,49 @@ export class CheckoutService {
     return findAllCartProduct;
   }
 
-  public async findClosestWarehouseWithStock(externalId: string, targetLocation: Location): Promise<Warehouse | null> {
-    const findUser: User = await DB.User.findOne({
-      where: { externalId },
-      include: [
-        {
-          model: CartModel,
-          as: 'userCart',
-          where: { status: 'ACTIVE' },
+  public async findClosestWarehouse(externalId: string, targetLocation: Location): Promise<Warehouse | null> {
+    return DB.sequelize.transaction(async t => {
+      const findUser: User = await DB.User.findOne({
+        where: { externalId },
+        include: [
+          {
+            model: CartModel,
+            as: 'userCart',
+            where: { status: 'ACTIVE' },
+          },
+        ],
+        transaction: t,
+      });
+
+      if (!findUser) throw new HttpException(409, "user doesn't exist");
+      const closestWarehouse: Warehouse = await findClosestWarehouse(targetLocation);
+      const cartProducts: CartProduct[] = await DB.CartProduct.findAll({
+        where: { cartId: findUser.userCart.id, status: 'ACTIVE' },
+        transaction: t,
+      });
+
+      const productIds = cartProducts.map(cp => cp.productId);
+      const productInventories: Inventory[] = await DB.Inventories.findAll({
+        where: {
+          productId: productIds,
         },
-      ],
-    });
+        attributes: ['productId', [DB.sequelize.fn('sum', DB.sequelize.col('stock')), 'totalStock']],
+        group: ['productId'],
+        raw: true,
+        transaction: t,
+      });
 
-    if (!findUser) throw new HttpException(409, "user doesn't exist");
-
-    const closestWarehouse: Warehouse = await findClosestWarehouse(targetLocation);
-    const cartProducts: CartProduct[] = await DB.CartProduct.findAll({ where: { cartId: findUser.userCart.id, status: 'ACTIVE' } });
-
-    const inventoryPromises = cartProducts.map(cp =>
-      DB.Inventories.findOne({ where: { warehouseId: closestWarehouse.id, productId: cp.productId } }),
-    );
-    const inventories = await Promise.all(inventoryPromises);
-
-    const canFulfill = cartProducts.every(cp => {
-      const inventory = inventories.find(inv => inv.productId === cp.productId);
-      return inventory && inventory.stock >= cp.quantity;
-    });
-
-    if (!canFulfill) {
-      const updatedCurrentWarehouse = await findWarehousesAndDistributeStock(cartProducts, closestWarehouse);
-
-      let canFulfillAfterUpdate = true;
-      for (let i = 0; i < cartProducts.length; i++) {
-        const cp = cartProducts[i];
-        const inventory = updatedCurrentWarehouse.inventories.find(inv => inv.productId === cp.productId);
-        if (!inventory || inventory.stock < cp.quantity) {
-          await DB.CartProduct.update({ status: 'DELETED' }, { where: { id: cp.id } });
-          canFulfillAfterUpdate = false;
-          break;
+      let canFulfill = true;
+      for (const inventory of productInventories) {
+        if (inventory.totalStock <= 0) {
+          canFulfill = false;
         }
       }
 
-      if (!canFulfillAfterUpdate) {
-        throw new HttpException(409, `Not enough stock for all products`);
+      if (!canFulfill) {
+        throw new HttpException(409, 'Not enough stock for the products');
       }
-
-      return updatedCurrentWarehouse;
-    }
-
-    return closestWarehouse;
+      return closestWarehouse;
+    });
   }
 }

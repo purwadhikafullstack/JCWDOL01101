@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { Loader2 } from "lucide-react"
-import { useUserById } from "@/hooks/useUser"
+import { useUser } from "@/hooks/useUser"
 import { useEditAdmin } from "@/hooks/useUserMutation"
 import UserSelectFormField from "./UserSelectFormField"
 import ProductFormField from "./ProductFormField"
@@ -33,7 +33,7 @@ const EditAdminForm = () => {
       navigate("/dashboard/manage-admin")
     }
   }, [userId, navigate])
-  const { data: user } = useUserById(Number(userId))
+  const { data: user } = useUser(Number(userId))
 
   const userMutation = useEditAdmin(Number(userId))
 
@@ -69,11 +69,11 @@ const EditAdminForm = () => {
   const [changePassword, setChangePassword] = useState(true)
   return (
     <div className="w-full">
-      <span className="flex text-sm ">
+      <span className="flex text-sm">
         <Link to="/dashboard/manage-admin" className="text-muted-foreground">
           manage-admin /
-        </Link>{" "}
-        <p className="text-primary">{userId}</p>
+        </Link>
+        <p className="text-primary ml-1">{`${user?.firstname} ${user?.lastname}`}</p>
       </span>
       <div className="w-[768px] mx-auto">
         <h2 className="text-xl mb-10">Edit Admin</h2>
@@ -108,6 +108,7 @@ const EditAdminForm = () => {
               <Button
                 type="submit"
                 variant="destructive"
+                disabled={userMutation.isPending}
                 className="cursor-pointer "
               >
                 <Loader2

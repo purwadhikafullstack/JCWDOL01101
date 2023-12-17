@@ -42,7 +42,7 @@ export class CheckoutController {
       const externalId = req.auth.userId;
       const lat = Number(req.body.lat);
       const lng = Number(req.body.lng);
-      const closestWarehouse = await this.checkout.findClosestWarehouseWithStock(externalId, { lat, lng });
+      const closestWarehouse = await this.checkout.findClosestWarehouse(externalId, { lat, lng });
 
       res.status(200).json({
         data: closestWarehouse,

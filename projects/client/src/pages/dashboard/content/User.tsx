@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { SearchIcon } from "lucide-react";
+import React, { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { SearchIcon } from "lucide-react"
 import {
   Table,
   TableBody,
@@ -8,22 +8,22 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import TablePagination from "../components/TablePagination";
+} from "@/components/ui/table"
+import TablePagination from "../components/TablePagination"
 
-import { Input } from "@/components/ui/input";
-import { useSearchParams } from "react-router-dom";
-import { useUsers } from "@/hooks/useUser";
-import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton";
-import { useDebounce } from "use-debounce";
-import { getDate } from "@/lib/utils";
-import ChangeOrderButton from "../components/ChangeOrderButton";
+import { Input } from "@/components/ui/input"
+import { useSearchParams } from "react-router-dom"
+import { useUsers } from "@/hooks/useUser"
+import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton"
+import { useDebounce } from "use-debounce"
+import { getDate } from "@/lib/utils"
+import ChangeOrderButton from "../components/ChangeOrderButton"
 
 const User = () => {
-  const [searchParams, setSearchParams] = useSearchParams({ page: "1" });
-  const currentPage = Number(searchParams.get("page"));
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debounceSearch] = useDebounce(searchTerm, 1000);
+  const [searchParams, setSearchParams] = useSearchParams({ page: "1" })
+  const currentPage = Number(searchParams.get("page"))
+  const [searchTerm, setSearchTerm] = useState("")
+  const [debounceSearch] = useDebounce(searchTerm, 1000)
 
   const { data, isLoading, isFetched } = useUsers({
     page: currentPage,
@@ -31,7 +31,7 @@ const User = () => {
     r: "CUSTOMER",
     filter: searchParams.get("filter") || "",
     order: searchParams.get("order") || "",
-  });
+  })
   return (
     <div className="flex flex-col p-2 w-full">
       <div className="relative w-[300px]">
@@ -40,10 +40,10 @@ const User = () => {
           value={searchTerm}
           onChange={(e) => {
             setSearchParams((params) => {
-              params.set("s", e.target.value);
-              return params;
-            });
-            setSearchTerm(e.target.value);
+              params.set("s", e.target.value)
+              return params
+            })
+            setSearchTerm(e.target.value)
           }}
           className=" w-full pl-10"
           placeholder="search product ..."
@@ -84,11 +84,9 @@ const User = () => {
                         {user.firstname} {user.lastname}
                       </TableCell>
                       <TableCell className="text-center">
-                        <Button>{user.status}</Button>
+                        {user.status}
                       </TableCell>
-                      <TableCell className="text-center">
-                        <Button>{user.role}</Button>
-                      </TableCell>
+                      <TableCell className="text-center">{user.role}</TableCell>
                       <TableCell className="text-center">
                         {getDate(user.createdAt.toLocaleString())}
                       </TableCell>
@@ -117,7 +115,7 @@ const User = () => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default User;
+export default User

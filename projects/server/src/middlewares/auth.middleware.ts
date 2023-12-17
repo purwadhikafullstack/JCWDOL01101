@@ -11,7 +11,6 @@ export class AuthMiddleware {
       const userId = req.auth.userId;
       const user = await this.user.findUserByExternalId(userId);
       if (user.role !== 'CUSTOMER') next();
-      next();
     } catch (error) {
       next(error);
     }
