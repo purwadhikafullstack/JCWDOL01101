@@ -20,7 +20,6 @@ export interface Product {
   productCategory: Category;
   productWishlist: Wishlist[];
   inventory: Inventory[];
-  warehouse: string; // tes
 }
 
 export interface Wishlist {

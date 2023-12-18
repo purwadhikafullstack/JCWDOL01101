@@ -207,11 +207,6 @@ const router = createBrowserRouter([
         path: "product/edit/:slug",
         element: <EditProductForm />,
       },
-      // {
-      //   path: "product/add-stock/:productId", // add path here
-      //   element: <AddStockForm />,
-      // },
-      
     ],
   },
 ])
