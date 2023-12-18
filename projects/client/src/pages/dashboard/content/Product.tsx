@@ -18,6 +18,7 @@ import ProductTableRow from "../components/ProductTableRow";
 import TablePagination from "../components/TablePagination";
 import ChangeOrderButton from "../components/ChangeOrderButton";
 import { useUser } from "@clerk/clerk-react";
+import { useCurrentUser, useUsers } from "@/hooks/useUser"
 import { useBoundStore } from "@/store/client/useStore";
 import {
   Select,
@@ -31,8 +32,9 @@ import { useCategories } from "@/hooks/useCategory";
 import ReviewStatusCombobox from "../components/ReviewStatusCombobox";
 
 const Product = () => {
-  const { user } = useUser();
+  const { user, isSignedIn, isLoaded } = useUser()
   const ROLE = user?.publicMetadata.role || "CUSTOMER";
+  const userId = user?.publicMetadata.id;
   const [searchParams, setSearchParams] = useSearchParams({
     page: "1",
   });
@@ -68,14 +70,35 @@ const Product = () => {
     clearImage();
   }, []);
 
+  const { data: userAdmin } = useCurrentUser({
+    externalId: user?.id!,
+    enabled: isLoaded && !!isSignedIn,
+  })
+
+  // useEffect(() => {
+  //   // Jika selectedWarehouse belum ditetapkan, atur ke ID gudang dengan ID terendah
+  //   if (!selectedWarehouse && warehouses && warehouses.length > 0) {
+  //     const defaultWarehouse = warehouses.reduce((min, warehouse) => warehouse.id < min.id ? warehouse : min, warehouses[0]);
+  //     setSelectedWarehouse(defaultWarehouse.id.toString());
+  //   }
+  // }, [warehouses, selectedWarehouse]);
+
   useEffect(() => {
-    // Jika selectedWarehouse belum ditetapkan, atur ke ID gudang dengan ID terendah
+    if (ROLE === "WAREHOUSE ADMIN" && warehouses && warehouses.length > 0 && user) {
+      const userWarehouse = warehouses.find(warehouse => warehouse.userId === Number(userAdmin?.id));
+      if (userWarehouse) {
+        setSelectedWarehouse(userWarehouse.id.toString());
+        setSearchParams((params) => {
+          params.set("warehouse", userWarehouse.id.toString());
+          return params;
+        });
+      }
+    } else  //untuk super admin agar ga N/A ketika belum milih warehouse
     if (!selectedWarehouse && warehouses && warehouses.length > 0) {
       const defaultWarehouse = warehouses.reduce((min, warehouse) => warehouse.id < min.id ? warehouse : min, warehouses[0]);
       setSelectedWarehouse(defaultWarehouse.id.toString());
     }
-  }, [warehouses, selectedWarehouse]);
-
+  }, [warehouses, selectedWarehouse, user, ROLE, setSearchParams]);
 
   return (
     <div className="flex flex-col p-2 w-full">
