@@ -3,8 +3,8 @@ import { Status } from '@/interfaces';
 import { Image } from '@/interfaces/image.interface';
 import { Inventory } from '@/interfaces/inventory.interface';
 import { Product } from '@/interfaces/product.interface';
-import { ProductService } from '@/services/product.service';
-import { RequireAuthProp } from '@clerk/clerk-sdk-node';
+import { ProductService } from '@/services/product/index.service';
+import { RequireAuthProp, WithAuthProp } from '@clerk/clerk-sdk-node';
 import { NextFunction, Request, Response } from 'express';
 import Container from 'typedi';
 export type ProductQuery = {
@@ -14,6 +14,7 @@ export type ProductQuery = {
   pmax: string;
   pmin: string;
   category: string;
+  externalId: string;
 };
 export class ProductController {
   product = Container.get(ProductService);
@@ -21,8 +22,7 @@ export class ProductController {
   public getProducts = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const { page, s, size, order, status, filter, limit, warehouse, category } = req.query;
-
-      const { products, totalPages } = await this.product.getAllProduct({
+      const { products, totalPages } = await this.product.getProducts({
         s: String(s),
         size: String(size),
         order: String(order),
@@ -46,9 +46,10 @@ export class ProductController {
     }
   };
 
-  public getProductsHomepage = async (req: Request<{}, {}, {}, ProductQuery>, res: Response, next: NextFunction) => {
+  public getHomepageProducts = async (req: WithAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
-      const products = await this.product.getAllProductOnHomepage({ ...req.query });
+      const query = req.query as unknown as ProductQuery;
+      const products = await this.product.getHomepageProducts({ ...query, externalId: req.auth.userId });
       res.status(200).json({
         data: products,
         message: 'get.products',
@@ -58,9 +59,9 @@ export class ProductController {
     }
   };
 
-  public getNewestProducts = async (req: Request, res: Response, next: NextFunction) => {
+  public getNewestProducts = async (req: WithAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
-      const products: Product[] = await this.product.getAllNewestProduct();
+      const products: Product[] = await this.product.getNewestProducts(req.auth.userId);
       res.status(200).json({
         data: products,
         message: 'get.products',
@@ -73,7 +74,7 @@ export class ProductController {
   public getHigestSellProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const limit = Number(req.query.limit);
-      const products: Product[] = await this.product.getHighestSell(limit);
+      const products: Product[] = await this.product.getHighestSoldProducts(limit);
       res.status(200).json({
         data: products,
         message: 'get.highest',
@@ -82,12 +83,12 @@ export class ProductController {
       next(err);
     }
   };
+
   public getProductsByCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const categoryId = Number(req.params.categoryId);
-      const productId = Number(req.params.productId);
       const limit = Number(req.query.limit);
-      const proudcts: Product[] = await this.product.getProductByCategory(productId, categoryId, limit);
+      const proudcts: Product[] = await this.product.getProductsByCategory(categoryId, limit);
 
       res.status(200).json({
         data: proudcts,
@@ -98,10 +99,10 @@ export class ProductController {
     }
   };
 
-  public getProduct = async (req: Request, res: Response, next: NextFunction) => {
+  public getProductBySlug = async (req: WithAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const slug = String(req.params.slug);
-      const { product, totalStock, totalSold, totalStockBySize } = await this.product.getProduct(slug);
+      const { product, totalStock, totalSold, totalStockBySize } = await this.product.getProductBySlug(slug, req.auth.userId);
       res.status(200).json({
         data: { product, totalStock, totalSold, totalStockBySize },
         message: 'get.products',
@@ -111,10 +112,10 @@ export class ProductController {
     }
   };
 
-  public getProductByName = async (req: Request, res: Response, next: NextFunction) => {
+  public getProductsByName = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const search = String(req.query.search);
-      const proudct: Product[] = await this.product.getProductByName(search);
+      const proudct: Product[] = await this.product.getProductsByName(search);
       res.status(200).json({
         data: proudct,
         message: 'get.products',
@@ -175,7 +176,7 @@ export class ProductController {
       const previousStatus = String(req.body.previousStatus) as Status;
       const warehouseBody = Number(req.body.warehouseId);
       const warehouseId = !Number.isNaN(warehouseBody) ? warehouseBody : undefined;
-      const deletedProduct: Product = await this.product.changeProductStatus(productId, warehouseId, status, previousStatus);
+      const deletedProduct: Product = await this.product.updateProductStatus(productId, warehouseId, status, previousStatus);
 
       res.status(200).json({
         data: deletedProduct,
@@ -191,7 +192,7 @@ export class ProductController {
       const productId = Number(req.params.productId);
       const warehouseId = Number(req.params.warehouseId);
       const status = String(req.body.status) as Status;
-      const deletedInventory: Inventory = await this.product.changeProductInventoryStatus(productId, warehouseId, status);
+      const deletedInventory: Inventory = await this.product.updateProductInvetoryStatus(productId, warehouseId, status);
 
       res.status(200).json({
         data: deletedInventory,

@@ -1,6 +1,7 @@
 import { Cart } from '@/interfaces/cart.interface';
 import { CartProduct } from '@/interfaces/cartProduct.interface';
 import { CartService } from '@/services/cart.service';
+import { WithAuthProp } from '@clerk/clerk-sdk-node';
 import { NextFunction, Request, Response } from 'express';
 import Container from 'typedi';
 
@@ -20,10 +21,10 @@ export class CartContoller {
     }
   };
 
-  public getCartProduct = async (req: Request, res: Response, next: NextFunction) => {
+  public getCartProduct = async (req: WithAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const productId = Number(req.params.productId);
-      const findCartProduct: CartProduct[] = await this.cart.getCartProduct(productId);
+      const findCartProduct: CartProduct[] = await this.cart.getCartProduct(productId, req.auth.userId);
       res.status(200).json({
         data: findCartProduct,
         message: 'get.cartProduct',
@@ -143,7 +144,7 @@ export class CartContoller {
       const externalId = req.body.externalId as string;
       const cart: Cart = await this.cart.createCart({ externalId, productId, quantity, sizeId });
 
-      res.status(200).json({
+      res.status(201).json({
         data: cart,
         messasge: 'cart.created',
       });

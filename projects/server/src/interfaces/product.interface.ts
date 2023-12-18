@@ -14,17 +14,5 @@ export interface Product {
   totalStock?: number;
   createdAt?: Date;
   updateAt?: Date;
-}
-
-export interface GetFilterProduct {
-  s: string;
-  size: string;
-  page: number;
-  status: string;
-  filter: string;
-  order: string;
-  limit: number;
-  externalId: string;
-  warehouse: number;
-  category: string;
+  averageRating?: number;
 }

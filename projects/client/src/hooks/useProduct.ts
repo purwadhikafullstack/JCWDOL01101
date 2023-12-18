@@ -2,6 +2,7 @@ import service from "@/service";
 import { useAuth } from "@clerk/clerk-react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Size } from "./useSize";
+import { Review } from "./useReview";
 
 export interface Product {
   id: number;
@@ -18,6 +19,7 @@ export interface Product {
   slug: string;
   primaryImage: string;
   productImage: Image[];
+  productReviews: Review[];
   productCategory: Category;
   productWishlist: Wishlist[];
   inventory: Inventory[];
@@ -77,17 +79,9 @@ export interface Inventory {
   warehouse: Warehouse;
 }
 
-export const useProducts = ({
-  s,
-  size,
-  page,
-  order,
-  limit,
-  status,
-  filter,
-  category,
-  warehouse,
-}: ProductOptions) => {
+export const useProducts = (params: ProductOptions) => {
+  const { s, size, page, order, limit, status, filter, warehouse, category } =
+    params;
   const { getToken } = useAuth();
   const { data, isLoading, isFetched } = useQuery<{
     products: Product[];
@@ -95,28 +89,19 @@ export const useProducts = ({
   }>({
     queryKey: [
       "products",
-      status,
-      page,
       s,
-      filter,
+      size,
+      page,
       order,
+      limit,
+      status,
+      filter,
       warehouse,
       category,
-      size,
     ],
     queryFn: async () => {
       const res = await service.get("/products", {
-        params: {
-          s,
-          size,
-          page,
-          order,
-          limit,
-          filter,
-          status,
-          category,
-          warehouse,
-        },
+        params,
         withCredentials: true,
         headers: { Authorization: `Bearer ${await getToken()}` },
       });
@@ -144,6 +129,7 @@ export const useProductInfinite = ({
   category,
   limit = 12,
 }: ProductParams) => {
+  const { getToken } = useAuth();
   const fetchProjects = async (page: number) => {
     const res = await service.get("/products/home", {
       params: {
@@ -155,39 +141,42 @@ export const useProductInfinite = ({
         limit,
         category,
       },
+      headers: {
+        Authorization: `Bearer ${await getToken()}`,
+      },
+      withCredentials: true,
     });
     return res.data.data;
   };
 
   const query = useInfiniteQuery({
-    queryKey: ["home/products", category, f, size, pmax, pmin],
+    queryKey: ["homepage", category, f, size, pmax, pmin],
     queryFn: ({ pageParam }) => fetchProjects(pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage, page) =>
-      lastPage.length === 12 ? page.length + 1 : undefined,
+      lastPage.length === limit ? page.length + 1 : undefined,
   });
 
   return query;
 };
 
-type ProductUrlOptions = {
-  key: string[];
-  url: string;
-};
-
-export const useProductUrl = ({ key, url }: ProductUrlOptions) => {
-  const { data, isLoading, isFetched } = useQuery<Product[]>({
-    queryKey: key,
+export const useNewestProducts = () => {
+  const { getToken } = useAuth();
+  const products = useQuery<Product[]>({
+    queryKey: ["products", "newest"],
     queryFn: async () => {
-      const res = await service.get(url, {
+      const res = await service.get("/products/new", {
         withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
       });
       return res.data.data;
     },
     refetchOnWindowFocus: true,
   });
 
-  return { data, isLoading, isFetched };
+  return products;
 };
 
 export const useHighestSellProducts = (limit = 3) => {
@@ -218,10 +207,14 @@ export type ProductData = {
 };
 
 export const useProduct = (slug: string) => {
+  const { getToken } = useAuth();
   const product = useQuery<ProductData>({
     queryKey: ["product", slug],
     queryFn: async () => {
       const res = await service.get(`/products/${slug}`, {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
         withCredentials: true,
       });
       return res.data.data;

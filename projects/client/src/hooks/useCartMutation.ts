@@ -52,6 +52,8 @@ export const useDeleteAllCartProduct = (cartId: number) => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });
       queryClient.invalidateQueries({ queryKey: ["product"] });
+      queryClient.refetchQueries({ queryKey: ["cart-product"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-product-on-size"] });
     },
   });
   return cartMutation;
@@ -67,6 +69,8 @@ export const useDeleteCartProduct = () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });
       queryClient.invalidateQueries({ queryKey: ["product"] });
+      queryClient.refetchQueries({ queryKey: ["cart-product"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-product-on-size"] });
     },
   });
   return cartMutation;
@@ -84,7 +88,9 @@ export const useToggleSelectedProduct = (
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       queryClient.invalidateQueries({ queryKey: ["cart"] });
-      queryClient.invalidateQueries({ queryKey: ["cart-product", productId] });
+      queryClient.invalidateQueries({ queryKey: ["product"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-product"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-product-on-size"] });
     },
   });
   return cartMutation;
@@ -113,6 +119,8 @@ export const useCancelCartProductDeletion = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["product"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-product"] });
     },
   });
   return cartMutation;

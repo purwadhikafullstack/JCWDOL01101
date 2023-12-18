@@ -13,6 +13,7 @@ import { useReviewByProduct } from "@/hooks/useReview";
 import { useToggleWishlist } from "@/hooks/useWishlistMutation";
 import ProductSize from "./ProductSize";
 import QuantityButton from "./QuantityButton";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   productData: ProductData;
@@ -31,6 +32,7 @@ const ProductDescription = ({ productData }: Props) => {
   if (!userContext) {
     throw new Error("useUser must be used within a UserProvider");
   }
+
   const { user } = userContext;
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -55,11 +57,11 @@ const ProductDescription = ({ productData }: Props) => {
   const currentProductQtyInCart =
     cartProduct &&
     cartProduct.find((cart) => cart.sizeId === selectedProductSize)?.quantity;
-  const totalStock = currentSizeStock?.total || 0;
+  const totalStock = (currentSizeStock && +currentSizeStock.total) || 0;
 
   const addToCart = () => {
     if (!user) {
-      return navigate("/register");
+      return navigate("/login");
     }
     if (totalStock > 0 && selectedProductSize) {
       cartMutation.mutate({
@@ -162,7 +164,12 @@ const ProductDescription = ({ productData }: Props) => {
 
           {product.productWishlist.length <= 0 ? (
             <Button
-              onClick={() => toggleWishlist.mutate({ productId: product.id })}
+              onClick={() => {
+                if (!user) {
+                  return navigate("/login");
+                }
+                toggleWishlist.mutate({ productId: product.id });
+              }}
               variant="outline"
               className="rounded-none border-black w-full uppercase font-semibold"
             >
@@ -170,7 +177,12 @@ const ProductDescription = ({ productData }: Props) => {
             </Button>
           ) : (
             <Button
-              onClick={() => toggleWishlist.mutate({ productId: product.id })}
+              onClick={() => {
+                if (!user) {
+                  return navigate("/login");
+                }
+                toggleWishlist.mutate({ productId: product.id });
+              }}
               variant="outline"
               className="rounded-none border-black w-full uppercase font-semibold"
             >

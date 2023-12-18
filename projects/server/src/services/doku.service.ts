@@ -1,4 +1,4 @@
-import axios, { Axios, AxiosError } from 'axios';
+import axios from 'axios';
 import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import { Service } from 'typedi';
@@ -7,7 +7,6 @@ import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
 import { DOKU_CLIENT_ID, DOKU_SECRET_KEY, DOKU_URL } from '@/config';
 import { CartProduct } from '@/interfaces/cartProduct.interface';
-import { OrderDetails } from '@/interfaces/orderDetails.interface';
 
 @Service()
 export class DokuService {

@@ -17,8 +17,8 @@ export const useToggleWishlist = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["wishlist"] });
-      queryClient.invalidateQueries({ queryKey: ["home/products"] });
-      queryClient.invalidateQueries({ queryKey: ["new-products"] });
+      queryClient.invalidateQueries({ queryKey: ["homepage"] });
+      queryClient.invalidateQueries({ queryKey: ["products", "newest"] });
       queryClient.invalidateQueries({ queryKey: ["highest-sell"] });
       queryClient.invalidateQueries({ queryKey: ["product"] });
     },
@@ -38,8 +38,8 @@ export const useDeleteWishlist = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["wishlist"] });
-      queryClient.invalidateQueries({ queryKey: ["home/products"] });
-      queryClient.invalidateQueries({ queryKey: ["new-products"] });
+      queryClient.invalidateQueries({ queryKey: ["homepage"] });
+      queryClient.invalidateQueries({ queryKey: ["products", "newest"] });
       queryClient.invalidateQueries({ queryKey: ["highest-sell"] });
       queryClient.invalidateQueries({ queryKey: ["product"] });
     },

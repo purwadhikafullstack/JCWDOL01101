@@ -1,14 +1,8 @@
 import { DB } from '@/database';
 import { CartDto, CartProductDto } from '@/dtos/cart.dto';
 import { HttpException } from '@/exceptions/HttpException';
-import { Cart } from '@/interfaces/cart.interface';
-import { CartProduct } from '@/interfaces/cartProduct.interface';
-import { User } from '@/interfaces/user.interface';
-import { CartProductModel } from '@/models/cartProduct.model';
-import { ImageModel } from '@/models/image.model';
-import { InventoryModel } from '@/models/inventory.model';
-import { ProductModel } from '@/models/product.model';
-import { SizeModel } from '@/models/size.model';
+import { User, Cart, CartProduct } from '@/interfaces';
+import { SizeModel, ProductModel, ImageModel, InventoryModel, CartProductModel } from '@/models';
 import { Service } from 'typedi';
 
 @Service()
@@ -49,7 +43,7 @@ export class CartService {
       ],
     });
 
-    if (!findCart) throw new HttpException(409, "Cart doesn't exist");
+    if (!findCart) throw new HttpException(404, "Cart doesn't exist");
     const totalQuantity = await CartProductModel.sum('quantity', {
       where: {
         cartId: findCart.id,
@@ -58,9 +52,7 @@ export class CartService {
     });
 
     const totalPrice: { total: number }[] = await DB.sequelize.query(
-      `SELECT SUM(price * quantity) as total 
-  FROM cart_product 
-  WHERE cart_id = :cartId AND status = 'ACTIVE'`,
+      `SELECT SUM(price * quantity) as total FROM cart_product WHERE cart_id = :cartId AND status = 'ACTIVE'`,
       {
         replacements: { cartId: findCart.id },
         type: DB.Sequelize.QueryTypes.SELECT,
@@ -70,9 +62,14 @@ export class CartService {
     return { cart: findCart, totalQuantity, totalPrice: totalPrice[0].total || 0 };
   }
 
-  public async getCartProduct(productId: number): Promise<CartProduct[]> {
+  public async getCartProduct(productId: number, externalId: string): Promise<CartProduct[]> {
+    const findUser: User = await DB.User.findOne({ where: { externalId, status: 'ACTIVE' } });
+    if (!findUser) throw new HttpException(409, "User doesn't exist");
+
+    const findCurrentUserCart: Cart = await DB.Cart.findOne({ where: { userId: findUser.id, status: 'ACTIVE' } });
+
     const findCartProduct: CartProduct[] = await DB.CartProduct.findAll({
-      where: { status: 'ACTIVE', productId },
+      where: { productId, cartId: findCurrentUserCart.id, status: 'ACTIVE' },
       include: [
         {
           model: SizeModel,
@@ -99,8 +96,7 @@ export class CartService {
       ],
     });
 
-    if (!findCartProduct || findCartProduct.length === 0) throw new HttpException(409, "Cart Product doesn't exists");
-    return findCartProduct;
+    return findCartProduct || [];
   }
 
   public async getCartProductOnSize(productId: number, sizeId: number): Promise<{ cartProduct: CartProduct; stock: number }> {
@@ -133,7 +129,6 @@ export class CartService {
       ],
     });
 
-    if (!findCartProduct) throw new HttpException(409, "Cart Product doesn't exists");
     const stock = await DB.Inventories.sum('stock', {
       where: {
         productId,
