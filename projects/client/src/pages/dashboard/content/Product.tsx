@@ -46,13 +46,13 @@ const Product = () => {
 
   const { data: warehouses } = useGetWarehouse();
   useEffect(() => {
-    if (warehouses && warehouses.length > 0) {
+    if (ROLE === "ADMIN" && warehouses && warehouses.length > 0) {
       setSearchParams((params) => {
         params.set("warehouse", String(warehouses[0].id));
         return params;
       });
     }
-  }, [warehouses]);
+  }, [warehouses, ROLE]);
   const { data, isLoading } = useProducts({
     page: currentPage,
     s: debounceSearch,
@@ -243,9 +243,7 @@ const Product = () => {
               <TableHead className="w-[100px]">Category</TableHead>
               <TableHead className="w-[200px]">Description</TableHead>
               <TableHead className="text-center">Image</TableHead>
-              {ROLE === "ADMIN" && (
-                <TableHead className="text-center">Action</TableHead>
-              )}
+              <TableHead className="text-center">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

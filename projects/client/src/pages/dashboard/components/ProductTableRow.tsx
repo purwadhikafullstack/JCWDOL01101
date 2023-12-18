@@ -63,11 +63,9 @@ const ProductTableRow = ({ products }: { products: Product[] }) => {
                 </span>
               )}
             </TableCell>
-            {user?.publicMetadata.role === "ADMIN" && (
-              <TableCell className="text-center">
-                <ProductDialog product={product} />
-              </TableCell>
-            )}
+            <TableCell className="text-center">
+              <ProductDialog product={product} />
+            </TableCell>
           </TableRow>
         );
       })}

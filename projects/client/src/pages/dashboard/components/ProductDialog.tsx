@@ -28,8 +28,11 @@ import {
   useChangeStatusInventory,
 } from "@/hooks/useProductMutation";
 import { STATUS } from "@/hooks/useReviewMutation";
+import { useUser } from "@clerk/clerk-react";
 
 const ProductDialog = ({ product }: { product: Product }) => {
+  const { user } = useUser();
+  const ROLE = user?.publicMetadata?.role;
   let isInventoryActive = false;
   for (const inv of product.inventory) {
     if (product.id === inv.productId && inv.status === "ACTIVE") {
@@ -71,12 +74,6 @@ const ProductDialog = ({ product }: { product: Product }) => {
           <>
             {isInventoryActive ? (
               <>
-                <Link to={`/dashboard/product/edit/${product.slug}`}>
-                  <DropdownMenuItem className="cursor-pointer">
-                    <Edit className="w-4 h-4 mr-2 text-muted-foreground" />
-                    Edit
-                  </DropdownMenuItem>
-                </Link>
                 <Link to={`/dashboard/product/reviews/${product.slug}`}>
                   <DropdownMenuItem className="cursor-pointer">
                     <MessagesSquare className="w-4 h-4 mr-2 text-muted-foreground" />
@@ -84,21 +81,31 @@ const ProductDialog = ({ product }: { product: Product }) => {
                   </DropdownMenuItem>
                 </Link>
                 <StockMutationModal product={product} />
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={handleDeactivatedProduct}
-                  className="w-full cursor-pointer text-muted-foreground"
-                >
-                  <ValueNoneIcon className="mr-2" />
-                  Deactivated
-                </DropdownMenuItem>
-                <DialogTrigger className="w-full">
-                  <DropdownMenuItem className="w-full cursor-pointer text-muted-foreground">
-                    <Delete className="w-4 h-4 mr-2" />
-                    Delete
-                  </DropdownMenuItem>
-                </DialogTrigger>
-                <DropdownMenuSeparator />
+                {ROLE === "ADMIN" && (
+                  <>
+                    <Link to={`/dashboard/product/edit/${product.slug}`}>
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Edit className="w-4 h-4 mr-2 text-muted-foreground" />
+                        Edit
+                      </DropdownMenuItem>
+                    </Link>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={handleDeactivatedProduct}
+                      className="w-full cursor-pointer text-muted-foreground"
+                    >
+                      <ValueNoneIcon className="mr-2" />
+                      Deactivated
+                    </DropdownMenuItem>
+                    <DialogTrigger className="w-full">
+                      <DropdownMenuItem className="w-full cursor-pointer text-muted-foreground">
+                        <Delete className="w-4 h-4 mr-2" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DialogTrigger>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
               </>
             ) : (
               <>
