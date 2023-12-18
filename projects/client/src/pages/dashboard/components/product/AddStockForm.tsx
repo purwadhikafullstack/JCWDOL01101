@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import service from '@/service';
 import { Button } from '@/components/ui/button';
-import z from "zod";
 import {
   DialogContent,
   DialogTitle,
@@ -18,19 +17,13 @@ interface StockProps {
   productName: string | undefined;
 }
 
-const formSchema = z.object({
-  notes: z.string().min(2).max(50),
-});
-
 const AddStockForm = ({ productId, selectedWarehouse, productName }: StockProps) => {
   const selectedProduct = productId;
   const [selectedInventory, setSelectedInventory] = useState('')
-
   const selectedWarehousee = selectedWarehouse
   const [stock, setStock] = useState('');
   const [notes, setNotes] = useState('');
   const [oldQty, setOldQty] = useState(0);
-
   const [currentStock, setCurrentStock] = useState(0);
 
   useEffect(() => {
@@ -58,7 +51,6 @@ const AddStockForm = ({ productId, selectedWarehouse, productName }: StockProps)
     if (confirmChange) {
       const qtyChange = Number(stock) - oldQty;
       const type = qtyChange >= 0 ? 'STOCK IN' : 'STOCK OUT';
-
       e.preventDefault();
       try {
         const response = await service.put(`/inventories/add-stock`, {
@@ -80,7 +72,6 @@ const AddStockForm = ({ productId, selectedWarehouse, productName }: StockProps)
         console.error(error);
       }
     }
-
   };
   return (
     <DialogContent className='w-[400px]'>
