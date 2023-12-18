@@ -11,6 +11,7 @@ import clerkClient from '@clerk/clerk-sdk-node';
 import { CLERK_SECRET_KEY } from '@/config';
 import axios from 'axios';
 import { ImageModel } from '@/models/image.model';
+import { WarehouseModel } from '@/models/warehouse.model';
 
 type UserOptions = {
   offset: number;
@@ -80,6 +81,10 @@ export class UserService {
               ],
             },
           ],
+        },
+        {
+          model: WarehouseModel,
+          as: 'userData',
         },
       ],
     });

@@ -36,6 +36,7 @@ function DeleteAddressDialog({ addressId }: { addressId: number }) {
           <Button
             type="submit"
             variant="destructive"
+            disabled={deleteAddress.isPending}
             className="cursor-pointer "
           >
             <Loader2

@@ -16,6 +16,7 @@ import { WishlistRoute } from './routes/wishlist.route';
 import { OrderRoute } from './routes/order.route';
 import { SizeRoute } from './routes/size.route';
 import { InventoryRoute } from './routes/inventory.route';
+import { MutationRoute } from './routes/mutation.route';
 
 ValidateEnv();
 
@@ -37,6 +38,7 @@ const app = new App([
   new CheckoutRoute(),
   new ReviewRoute(),
   new WishlistRoute(),
+  new MutationRoute(),
   new InventoryRoute(),
 ]);
 

@@ -7,49 +7,49 @@ import {
   DialogClose,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { useDeleteAdmin } from "@/hooks/useUserMutation"
+import { useCancelMutation } from "@/hooks/useMutation"
 import { Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 
-const DeleteAdmin = ({ userId }: { userId: Number }) => {
-  const deleteProduct = useDeleteAdmin(userId as number)
+function CancelAction({ mutationId }: { mutationId: number }) {
+  const cancelMutation = useCancelMutation(mutationId)
   const { toast } = useToast()
-  const onDeleteAdmin = (e: FormEvent<HTMLFormElement>) => {
+  const onCancelMutation = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    deleteProduct.mutate()
+    cancelMutation.mutate()
   }
 
   useEffect(() => {
-    if (deleteProduct.isSuccess) {
+    if (cancelMutation.isSuccess) {
       toast({
-        title: "Admin Deleted",
-        description: "Successfully delete admin warehouse",
+        title: "Mutation Canceled",
+        description: "Successfully cancel mutation request",
         duration: 3000,
       })
     }
-  }, [deleteProduct.isSuccess, toast])
+  }, [cancelMutation.isSuccess, toast])
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Delete This Admin</DialogTitle>
-        <DialogDescription>
-          You're about to delete this admin warehouse
-        </DialogDescription>
+        <DialogTitle>Cancel Mutation</DialogTitle>
+        <DialogDescription>You're about to cancel mutation</DialogDescription>
       </DialogHeader>
-      <form onSubmit={onDeleteAdmin}>
+      <form onSubmit={onCancelMutation}>
         <span className="flex justify-center gap-4 w-full">
           <Button
             type="submit"
             variant="destructive"
-            disabled={deleteProduct.isPending}
+            disabled={cancelMutation.isPending}
             className="cursor-pointer "
           >
             <Loader2
               className={
-                deleteProduct.isPending ? "animate-spin w-4 h-4 mr-2" : "hidden"
+                cancelMutation.isPending
+                  ? "animate-spin w-4 h-4 mr-2"
+                  : "hidden"
               }
             />
-            Yes, delete admin
+            Yes, cancel mutation
           </Button>
           <DialogClose asChild>
             <Button type="button" variant="secondary">
@@ -62,4 +62,4 @@ const DeleteAdmin = ({ userId }: { userId: Number }) => {
   )
 }
 
-export default DeleteAdmin
+export default CancelAction

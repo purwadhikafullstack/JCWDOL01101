@@ -133,7 +133,7 @@ function EditAddressDialog({ address }: { address: Address }) {
           </div>
           <div className="flex w-full justify-center">
             <Button
-              disabled={!tos}
+              disabled={!tos && addressMutation.isPending}
               type="submit"
               className="w-[60%] text-lg font-bold lg:py-6 mt-4"
             >

@@ -1,6 +1,8 @@
-import { Product } from "@/hooks/useProduct";
-import { Size } from "@/hooks/useSize";
 import React from "react";
+
+import { Size } from "@/hooks/useSize";
+import { Product } from "@/hooks/useProduct";
+import { Warehouse } from "@/hooks/useWarehouse";
 
 export interface User {
   id: number;
@@ -17,6 +19,7 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
   userCart: Cart;
+  userData: Warehouse;
 }
 
 export interface Cart {

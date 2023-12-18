@@ -36,9 +36,9 @@ const links = [
         path: "/dashboard/mutation-form",
       },
       {
-        title: "Incoming Mutation",
+        title: "Manage Mutation",
         icon: <PackageSearch className="w-4 h-4" />,
-        path: "/dashboard/incoming-mutation",
+        path: "/dashboard/manage-mutation",
       },
     ],
   },
@@ -122,7 +122,7 @@ const DashboardSidebar = () => {
         </ul>
       </div>
       <div className="flex flex-col gap-1 w-full">
-        <Link to="/user/profile" className="w-full">
+        <Link to="/user" className="w-full">
           <Button
             variant="ghost"
             className="text-muted-foreground w-full justify-start"

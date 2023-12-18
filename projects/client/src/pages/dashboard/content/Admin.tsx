@@ -72,7 +72,7 @@ const Admin = () => {
               <TableRow>
                 <TableHead className="w-[80px]">#</TableHead>
                 <TableHead className="text-center">
-                  <ChangeOrderButton paramKey="username" name="Name" />
+                  <ChangeOrderButton paramKey="firstName" name="Name" />
                 </TableHead>
                 <TableHead className="text-center">
                   <ChangeOrderButton paramKey="email" name="Email" />
@@ -102,22 +102,22 @@ const Admin = () => {
                     <TableRow key={user.id}>
                       <TableCell className="w-[80px]">{i + 1}</TableCell>
                       <TableCell className="capitalize font-medium text-center">
-                        {user.firstname ? user.firstname : user.username}
+                        {user.firstname
+                          ? `${user.firstname} ${user.lastname}`
+                          : user.username}
                       </TableCell>
                       <TableCell className="font-medium text-center">
                         {user.email}
                       </TableCell>
                       <TableCell className="text-center">
-                        <Button>{user.status}</Button>
+                        {user.status}
                       </TableCell>
-                      <TableCell className="text-center">
-                        <Button>{user.role}</Button>
-                      </TableCell>
+                      <TableCell className="text-center">{user.role}</TableCell>
                       <TableCell className="capitalize font-medium text-center">
                         <Button className="w-[140px]">
                           <Dialog>
                             <DialogTrigger>
-                              {warehouses[user.id] || "unAssigned"}
+                              {warehouses[user.id] || "Unassigned"}
                             </DialogTrigger>
                             {warehouses[user.id] ? (
                               <UnassignAdminForm userId={user.id as number} />

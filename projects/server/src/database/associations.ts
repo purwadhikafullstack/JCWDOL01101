@@ -1,10 +1,10 @@
 import { DB } from '.';
 
 export default function () {
-  DB.User.hasMany(DB.Address, { foreignKey: 'user_id', as: 'userAddress' });
+  DB.User.hasMany(DB.Address, { foreignKey: 'user_id', as: 'user' });
   DB.Address.belongsTo(DB.User, { foreignKey: 'user_id', as: 'user' });
 
-  DB.City.hasMany(DB.Address, { foreignKey: 'city_id', as: 'address' });
+  DB.City.hasMany(DB.Address, { foreignKey: 'city_id', as: 'city' });
   DB.Address.belongsTo(DB.City, { foreignKey: 'city_id', as: 'city' });
 
   DB.User.hasOne(DB.Cart, { foreignKey: 'user_id', as: 'userCart' });
@@ -48,8 +48,8 @@ export default function () {
   DB.WarehouseAddresses.hasOne(DB.Warehouses, { foreignKey: 'warehouseAddressId', as: 'warehouseAddress' });
   DB.Warehouses.belongsTo(DB.WarehouseAddresses, { foreignKey: 'warehouseAddressId', as: 'warehouseAddress' });
 
-  DB.Warehouses.hasOne(DB.Jurnal, { foreignKey: 'warehouseId', as: 'jurnal' });
-  DB.Jurnal.belongsTo(DB.Warehouses, { foreignKey: 'warehouseId', as: 'jurnal' });
+  DB.Inventories.hasOne(DB.Jurnal, { foreignKey: 'inventoryId', as: 'jurnal' });
+  DB.Jurnal.belongsTo(DB.Inventories, { foreignKey: 'inventoryId', as: 'jurnal' });
 
   DB.Warehouses.hasMany(DB.Inventories, { foreignKey: 'warehouse_id', as: 'inventories' });
   DB.Product.hasMany(DB.Inventories, { foreignKey: 'product_id', as: 'inventory' });
@@ -67,4 +67,11 @@ export default function () {
   DB.WishList.belongsTo(DB.User, { foreignKey: 'userId', as: 'userWishlist' });
   DB.Product.hasMany(DB.WishList, { foreignKey: 'productId', as: 'productWishlist' });
   DB.WishList.belongsTo(DB.Product, { foreignKey: 'productId', as: 'productWishlist' });
+
+  DB.Mutation.belongsTo(DB.Warehouses, { foreignKey: 'senderWarehouse_id', as: 'senderWarehouse' });
+  DB.Mutation.belongsTo(DB.Warehouses, { foreignKey: 'receiverWarehouse_id', as: 'receiverWarehouse' });
+  DB.Warehouses.hasMany(DB.Mutation, { foreignKey: 'senderWarehouse_id', as: 'senderWarehouse' });
+  DB.Warehouses.hasMany(DB.Mutation, { foreignKey: 'receiverWarehouse_id', as: 'receiverWarehouse' });
+  DB.Product.hasMany(DB.Mutation, { foreignKey: 'product_id', as: 'productMutation' });
+  DB.Mutation.belongsTo(DB.Product, { foreignKey: 'product_id', as: 'productMutation' });
 }

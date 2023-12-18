@@ -1,52 +1,26 @@
 import service from "@/service";
-import { useAuth } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
-import { Inventory, Product } from "./useProduct";
+import { Warehouse } from "./useWarehouse";
+export interface Inventory {
+  id?: number;
+  warehouseId?: number;
+  productId?: number;
+  stock: number;
+  sold: number;
+  warehouse: Warehouse;
+}
 
-type ProductOptions = {
-  page: number;
-  s: string;
-  filter: string;
-  order: string;
-  limit: number;
-  size: string;
-  warehouse: string;
-  category: string;
-};
-export const useInventory = ({
-  s,
-  page,
-  size,
-  filter,
-  order,
-  limit,
-  category,
-  warehouse,
-}: ProductOptions) => {
-  const { getToken } = useAuth();
-  const data = useQuery<{
-    inventories: Inventory[];
-    totalPages: number;
-  }>({
-    queryKey: ["inventory", page, s, filter, order, warehouse, category, size],
+export const useWarehouse = (productId: number, warehouseId: number) => {
+  const { data, isLoading } = useQuery<Inventory[]>({
+    queryKey: ["warehouse", productId, warehouseId],
     queryFn: async () => {
-      const res = await service.get("/inventory", {
-        params: {
-          s,
-          size,
-          page,
-          order,
-          limit,
-          filter,
-          category,
-          warehouse,
-        },
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${await getToken()}` },
+      const res = await service.get("/inventory/warehouse", {
+        params: { productId, warehouseId },
       });
       return res.data.data;
     },
+    enabled: productId > 0 && !!warehouseId,
   });
 
-  return data;
+  return { data, isLoading };
 };

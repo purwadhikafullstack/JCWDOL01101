@@ -1,5 +1,3 @@
-import { Status } from '.';
-
 export interface Inventory {
   id?: number;
   warehouseId?: number;
@@ -7,6 +5,12 @@ export interface Inventory {
   sizeId?: number;
   stock: number;
   sold: number;
-  status: Status;
   totalStock?: number;
+}
+
+export interface AddStock {
+  senderWarehouseId: number;
+  receiverWarehouseId: number;
+  productId: number;
+  stock: number;
 }

@@ -24,6 +24,12 @@
     "title2": "今月のトップセラー",
     "title3": "最新の商品を試してみてください"
   },
+  "profileSettingsPage": {
+    "sidebar": {
+      "profile": "Profile",
+      "address": "Address"
+    }
+  },
   "productsPage": {
     "title": "すべての製品",
     "category": "カテゴリー",

@@ -84,6 +84,13 @@ export class WarehouseService {
     return findWarehouse;
   }
 
+  public async findWarehouseByName(name: string): Promise<Warehouse> {
+    const findWarehouse: Warehouse = await DB.Warehouses.findOne({ where: { name } });
+    if (!findWarehouse) throw new HttpException(409, "Warehouse doesn't exist");
+
+    return findWarehouse;
+  }
+
   public async createWarehouse(warehouseData: Warehouse): Promise<Warehouse> {
     const findWarehouse: Warehouse = await DB.Warehouses.findOne({ where: { name: warehouseData.name } });
     if (findWarehouse) throw new HttpException(409, 'Warehouse already exist');
