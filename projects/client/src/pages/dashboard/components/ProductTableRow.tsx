@@ -49,19 +49,15 @@ const ProductTableRow = ({ products, selectedWarehouse }: ProductTableRowProps) 
             const response = await service.get(`inventories/${selectedWarehouse}/${product.id}`);
             const data = response.data.data;
             setCurrentStock(response.data.data.stock);
-
-
             if (response.status !== 200) {
               throw new Error(data.message || 'Could not fetch stock.');
             }
-
             newStocks[product.id] = data.stock;
           } catch (error) {
             console.error('Fetch stock error:', error);
           }
         }
       }
-
       setStocks(newStocks);
     };
 
@@ -70,13 +66,10 @@ const ProductTableRow = ({ products, selectedWarehouse }: ProductTableRowProps) 
 
   const handleDialogStock = () => {
     setDialog("manageStock")
-    console.log(dialog)
   }
 
   const handleDialogDelete = () => {
     setDialog("delete")
-    console.log(dialog)
-
   }
 
   return (
@@ -93,7 +86,6 @@ const ProductTableRow = ({ products, selectedWarehouse }: ProductTableRowProps) 
           <TableCell className="text-center">
             {product && product.id && stocks && stocks[product.id] ? stocks[product.id] : 'N/A'}
           </TableCell>
-
           <TableCell className="text-center">
             {product.inventory[0].sold}
           </TableCell>

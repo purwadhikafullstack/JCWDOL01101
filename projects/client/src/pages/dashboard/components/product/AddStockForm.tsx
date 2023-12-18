@@ -1,30 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useGetWarehouse } from '@/hooks/useWarehouse';
-import { Product } from "@/hooks/useProduct";
-import { useProducts } from '@/hooks/useProduct';
-import { Select } from '@/components/ui/select';
 import service from '@/service';
 import { Button } from '@/components/ui/button';
-import { useJurnalMutation } from '@/hooks/useJurnalMutation';
-import { Form } from '@/components/ui/form';
-import { useForm } from "react-hook-form";
 import z from "zod";
-import { zodResolver } from '@hookform/resolvers/zod';
-import { response } from 'express';
 import {
-  Dialog,
-  DialogTrigger,
   DialogContent,
   DialogTitle,
   DialogDescription,
   DialogClose,
-  DialogHeader,
   DialogFooter,
 } from "@/components/ui/dialog";
-// import { DialogHeader } from '@/components/ui/custom-dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
 
 interface StockProps {
   productId: number | undefined;
@@ -37,14 +23,6 @@ const formSchema = z.object({
 });
 
 const AddStockForm = ({ productId, selectedWarehouse, productName }: StockProps) => {
-  const formData = new FormData();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      notes: "",
-    },
-  });
-
   const selectedProduct = productId;
   const [selectedInventory, setSelectedInventory] = useState('')
 
@@ -74,29 +52,35 @@ const AddStockForm = ({ productId, selectedWarehouse, productName }: StockProps)
   }, [selectedProduct, selectedWarehouse]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    const qtyChange = Number(stock) - oldQty;
-    const type = qtyChange >= 0 ? 'STOCK IN' : 'STOCK OUT';
+    const confirmChange = window.confirm(
+      "Are you sure you want to change stock"
+    );
+    if (confirmChange) {
+      const qtyChange = Number(stock) - oldQty;
+      const type = qtyChange >= 0 ? 'STOCK IN' : 'STOCK OUT';
 
-    e.preventDefault();
-    try {
-      const response = await service.put(`/inventories/add-stock`, {
-        productId: selectedProduct,
-        warehouseId: selectedWarehousee,
-        stock: stock,
-      });
+      e.preventDefault();
+      try {
+        const response = await service.put(`/inventories/add-stock`, {
+          productId: selectedProduct,
+          warehouseId: selectedWarehousee,
+          stock: stock,
+        });
 
-      const jurnalResp = await service.post(`/jurnals`, {
-        inventoryId: selectedInventory,
-        notes: notes,
-        oldQty: oldQty,
-        newQty: stock,
-        qtyChange: Math.abs(qtyChange),
-        type: type,
-        date: new Date(),
-      });
-    } catch (error) {
-      console.error(error);
+        const jurnalResp = await service.post(`/jurnals`, {
+          inventoryId: selectedInventory,
+          notes: notes,
+          oldQty: oldQty,
+          newQty: stock,
+          qtyChange: Math.abs(qtyChange),
+          type: type,
+          date: new Date(),
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
+
   };
   return (
     <DialogContent className='w-[400px]'>
@@ -134,9 +118,6 @@ const AddStockForm = ({ productId, selectedWarehouse, productName }: StockProps)
         </DialogFooter>
       </form>
     </DialogContent>
-
-
-
   );
 };
 

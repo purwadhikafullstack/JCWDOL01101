@@ -44,9 +44,7 @@ const Product = () => {
   const orderParams = searchParams.get("order");
   const searchTerm = searchParams.get("s") || "";
   const [debounceSearch] = useDebounce(searchTerm, 1000);
-
   const [selectedWarehouse, setSelectedWarehouse] = useState('')
-
   const { data: warehouses } = useGetWarehouse();
   const { data, isLoading } = useProducts({
     page: currentPage,
@@ -75,14 +73,6 @@ const Product = () => {
     enabled: isLoaded && !!isSignedIn,
   })
 
-  // useEffect(() => {
-  //   // Jika selectedWarehouse belum ditetapkan, atur ke ID gudang dengan ID terendah
-  //   if (!selectedWarehouse && warehouses && warehouses.length > 0) {
-  //     const defaultWarehouse = warehouses.reduce((min, warehouse) => warehouse.id < min.id ? warehouse : min, warehouses[0]);
-  //     setSelectedWarehouse(defaultWarehouse.id.toString());
-  //   }
-  // }, [warehouses, selectedWarehouse]);
-
   useEffect(() => {
     if (ROLE === "WAREHOUSE ADMIN" && warehouses && warehouses.length > 0 && user) {
       const userWarehouse = warehouses.find(warehouse => warehouse.userId === Number(userAdmin?.id));
@@ -93,8 +83,7 @@ const Product = () => {
           return params;
         });
       }
-    } else  //untuk super admin agar ga N/A ketika belum milih warehouse
-    if (!selectedWarehouse && warehouses && warehouses.length > 0) {
+    } else if (!selectedWarehouse && warehouses && warehouses.length > 0) {
       const defaultWarehouse = warehouses.reduce((min, warehouse) => warehouse.id < min.id ? warehouse : min, warehouses[0]);
       setSelectedWarehouse(defaultWarehouse.id.toString());
     }

@@ -46,23 +46,15 @@ export class InventoryService {
     }
 
     public async addStock(productId: number, warehouseId: number, stock: number): Promise<Inventory> {
-        // Temukan entri inventory yang sesuai
         const inventory = await DB.Inventories.findOne({
           where: {
             productId: productId,
             warehouseId: warehouseId
           }
         });
-      
-        // klo ga ada
         if (!inventory) throw new HttpException(409, "Inventory doesn't exist");
-      
-        // Tambahkan stok ke entri inventaris yang ada
-        inventory.stock = stock; // klo mo increment pake +=
-      
-        // Simpan perubahan ke database
+        inventory.stock = stock;
         await inventory.save();
-      
         return inventory;
       };
 
