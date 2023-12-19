@@ -87,11 +87,28 @@ export class InventoryController {
     }
   };
 
+  public getInventoryByWarehouseId = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const hashids = new Hashids('TOTEN', 10);
+      const productId = Number(req.params.productId);
+      const decodeWarehouseId = String(req.params.warehouseId);
+      const warehouseId = Number(hashids.decode(decodeWarehouseId));
+      const findWarehouses = await this.inventory.getInventoryByWarehouseId(productId, warehouseId);
+
+      res.status(200).json({
+        message: 'get.warehouses',
+        data: findWarehouses,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
   public getWarehouseByInventory = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const productId = Number(req.query.productId);
-      const warehouseId = Number(req.query.warehouseId);
-      const findWarehouses = await this.inventory.getWarehouseByInventoryProduct(productId, warehouseId);
+      const productId = Number(req.params.productId);
+      const sizeId = Number(req.params.sizeId);
+      const warehouseId = Number(req.params.warehouseId);
+      const findWarehouses = await this.inventory.getWarehouseByInventoryProduct(sizeId, productId, warehouseId);
 
       res.status(200).json({
         message: 'get.warehouses',

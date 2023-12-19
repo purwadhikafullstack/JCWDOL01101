@@ -19,6 +19,7 @@ export class InventoryRoute implements Routes {
     this.router.delete(`${this.path}/:id(\\d+)`, this.inventory.deleteInventory);
     this.router.put(`${this.path}/modify-stock`, this.inventory.addStock);
     this.router.get(`${this.path}/:warehouseId/:productId`, this.inventory.getStockByWarehouseAndProduct);
-    this.router.get(`${this.path}/warehouse`, this.inventory.getWarehouseByInventory);
+    this.router.get(`${this.path}/warehouse/:warehouseId/product/:productId/size/:sizeId`, this.inventory.getWarehouseByInventory);
+    this.router.get(`${this.path}/warehouse/:warehouseId/product/:productId`, this.inventory.getInventoryByWarehouseId);
   }
 }

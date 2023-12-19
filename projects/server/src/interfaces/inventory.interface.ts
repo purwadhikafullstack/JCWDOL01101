@@ -11,6 +11,7 @@ export interface Inventory {
 }
 
 export interface AddStock {
+  sizeId: number;
   senderWarehouseId: number;
   receiverWarehouseId: number;
   productId: number;

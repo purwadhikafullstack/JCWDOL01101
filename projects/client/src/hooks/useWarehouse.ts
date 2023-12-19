@@ -26,7 +26,7 @@ type CityType = {
   cityName: string;
   provinceId: string;
   postal_code: number;
-  cityProvince?: ProvinceType;
+  cityProvince: ProvinceType;
 };
 
 type ProvinceType = {
@@ -36,18 +36,19 @@ type ProvinceType = {
 
 type mutationForm = { name: string; capacity: number };
 
-export const useGetWarehouse = () => {
+export const useGetWarehouse = (isSuperAdmin: boolean) => {
   const warehouse = useQuery<Warehouse[]>({
-    queryKey: ["warehouse"],
+    queryKey: ["warehouses"],
     queryFn: async () => {
       const response = await service.get("/warehouses");
       return response.data.data;
     },
+    enabled: isSuperAdmin,
   });
   return warehouse;
 };
 
-export const useGetWarehouseById = (warehouseId: number | undefined) => {
+export const useGetWarehouseById = (warehouseId: string | undefined) => {
   const warehouse = useQuery<Warehouse>({
     queryKey: ["warehouse", warehouseId],
     queryFn: async () => {

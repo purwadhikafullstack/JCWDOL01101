@@ -63,7 +63,7 @@ type STATUS = "ACTIVE" | "DEACTIVATED" | "DELETED";
 type ChangeStatusData = {
   productId: number;
   previousStatus?: STATUS;
-  warehouseId?: number | undefined;
+  warehouseId?: string | undefined;
   status: STATUS;
 };
 export const useChangeStatus = () => {
@@ -81,7 +81,7 @@ export const useChangeStatus = () => {
 
 type ChangeStatusInventoryData = {
   productId: number;
-  warehouseId: number;
+  warehouseId: string;
   status: "ACTIVE" | "DEACTIVATED" | "DELETED";
 };
 export const useChangeStatusInventory = () => {

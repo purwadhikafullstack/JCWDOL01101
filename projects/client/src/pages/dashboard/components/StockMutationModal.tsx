@@ -26,7 +26,7 @@ const StockMutationModal = ({ product }: StockMutationModalProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="px-2 text-sm">
+        <Button variant="ghost" className="px-2 text-sm font-normal">
           <Activity className="w-4 h-4 mr-2 text-muted-foreground" />
           Modify Stock
         </Button>

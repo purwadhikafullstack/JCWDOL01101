@@ -21,7 +21,13 @@ import { DotsHorizontalIcon, ValueNoneIcon } from "@radix-ui/react-icons";
 import { Link, useSearchParams } from "react-router-dom";
 import DeleteProduct from "./product/DeleteProduct";
 import { Product } from "@/hooks/useProduct";
-import { ArchiveRestore, Delete, Edit, MessagesSquare } from "lucide-react";
+import {
+  ArchiveRestore,
+  Delete,
+  Edit,
+  MessagesSquare,
+  Send,
+} from "lucide-react";
 import StockMutationModal from "./StockMutationModal";
 import {
   useChangeStatus,
@@ -41,12 +47,12 @@ const ProductDialog = ({ product }: { product: Product }) => {
   }
 
   const [params] = useSearchParams();
-  const warehouseId = Number(params.get("warehouse")) || undefined;
+  const warehouseId = params.get("warehouse") || undefined;
   const status = (String(params.get("status")) as STATUS) || "";
   const changeStatusMutation = useChangeStatus();
   const changeProductInventory = useChangeStatusInventory();
   const handleRestoreProduct = () => {
-    if (product.id && status) {
+    if (product.id && status && warehouseId) {
       changeStatusMutation.mutate({
         warehouseId,
         productId: product.id,
@@ -81,6 +87,14 @@ const ProductDialog = ({ product }: { product: Product }) => {
                   </DropdownMenuItem>
                 </Link>
                 <StockMutationModal product={product} />
+                <Link
+                  to={`/dashboard/mutation-form/${product.slug}?warehouse=${warehouseId}`}
+                >
+                  <DropdownMenuItem className="cursor-pointer">
+                    <Send className="w-4 h-4 mr-2 text-muted-foreground" />
+                    Request Stock
+                  </DropdownMenuItem>
+                </Link>
                 {ROLE === "ADMIN" && (
                   <>
                     <Link to={`/dashboard/product/edit/${product.slug}`}>
@@ -103,7 +117,6 @@ const ProductDialog = ({ product }: { product: Product }) => {
                         Delete
                       </DropdownMenuItem>
                     </DialogTrigger>
-                    <DropdownMenuSeparator />
                   </>
                 )}
               </>

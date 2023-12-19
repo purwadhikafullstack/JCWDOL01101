@@ -3,6 +3,7 @@ import { useAuth } from "@clerk/clerk-react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Size } from "./useSize";
 import { Review } from "./useReview";
+import { Warehouse } from "./useWarehouse";
 
 export interface Product {
   id: number;
@@ -29,11 +30,6 @@ export interface Wishlist {
   id: number;
   userId: number;
   productId: number;
-}
-
-export interface Warehouse {
-  capacity: number;
-  name: string;
 }
 
 export interface Category {
@@ -206,7 +202,7 @@ export type ProductData = {
   }[];
 };
 
-export const useProduct = (slug: string) => {
+export const useProduct = (slug: string | undefined) => {
   const { getToken } = useAuth();
   const product = useQuery<ProductData>({
     queryKey: ["product", slug],
@@ -219,6 +215,7 @@ export const useProduct = (slug: string) => {
       });
       return res.data.data;
     },
+    enabled: !!slug,
   });
 
   return product;

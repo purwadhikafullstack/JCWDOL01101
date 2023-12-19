@@ -5,19 +5,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import React from "react"
-import { useFormContext } from "react-hook-form"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import React from "react";
+import { useFormContext } from "react-hook-form";
 
 type QuantityInputProps = {
-  name: string
-  label: string
-  description?: string
-}
+  name: string;
+  label: string;
+  description?: string;
+};
 
 const QuantityInput = ({ name, label, description }: QuantityInputProps) => {
-  const { control } = useFormContext()
+  const { control } = useFormContext();
 
   return (
     <FormField
@@ -29,7 +29,7 @@ const QuantityInput = ({ name, label, description }: QuantityInputProps) => {
           <FormControl>
             <Input
               type="number"
-              placeholder="Warehouse stock must over 20"
+              placeholder="Requested Stock must over 20"
               {...field}
             />
           </FormControl>
@@ -38,7 +38,7 @@ const QuantityInput = ({ name, label, description }: QuantityInputProps) => {
         </FormItem>
       )}
     />
-  )
-}
+  );
+};
 
-export default QuantityInput
+export default QuantityInput;

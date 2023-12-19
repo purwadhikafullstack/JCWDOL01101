@@ -1,6 +1,7 @@
 import { Warehouse } from '@/interfaces/warehouse.interface';
 import { WarehouseService } from '@/services/warehouse.service';
 import { NextFunction, Request, Response } from 'express';
+import Hashids from 'hashids';
 import Container from 'typedi';
 
 export class WarehouseController {
@@ -30,8 +31,10 @@ export class WarehouseController {
 
   public getWarehouseById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const warehouseId = Number(req.params.id);
-      const findOneWarehouseData: Warehouse = await this.warehouse.findWarehouseById(warehouseId);
+      const hashids = new Hashids('TOTEN', 10);
+      const warehouseId = String(req.params.id);
+      const decodeWarehouseId = Number(hashids.decode(warehouseId));
+      const findOneWarehouseData: Warehouse = await this.warehouse.findWarehouseById(decodeWarehouseId);
 
       res.status(200).json({ data: findOneWarehouseData, message: 'find Warehouse By Id' });
     } catch (error) {

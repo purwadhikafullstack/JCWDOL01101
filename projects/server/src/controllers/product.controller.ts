@@ -174,11 +174,12 @@ export class ProductController {
 
   public changeProductStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const hashids = new Hashids('TOTEN', 10);
       const productId = Number(req.params.productId);
       const status = String(req.body.status) as Status;
       const previousStatus = String(req.body.previousStatus) as Status;
-      const warehouseBody = Number(req.body.warehouseId);
-      const warehouseId = !Number.isNaN(warehouseBody) ? warehouseBody : undefined;
+      const warehouseBody = String(req.body.warehouseId);
+      const warehouseId = Number(hashids.decode(warehouseBody));
       const deletedProduct: Product = await this.product.updateProductStatus(productId, warehouseId, status, previousStatus);
 
       res.status(200).json({
@@ -192,8 +193,10 @@ export class ProductController {
 
   public changeProductInventoryStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const hashids = new Hashids('TOTEN', 10);
       const productId = Number(req.params.productId);
-      const warehouseId = Number(req.params.warehouseId);
+      const warehouseBody = String(req.body.warehouseId);
+      const warehouseId = Number(hashids.decode(warehouseBody));
       const status = String(req.body.status) as Status;
       const deletedInventory: Inventory = await this.product.updateProductInvetoryStatus(productId, warehouseId, status);
 

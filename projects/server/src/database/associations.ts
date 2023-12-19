@@ -74,4 +74,6 @@ export default function () {
   DB.Warehouses.hasMany(DB.Mutation, { foreignKey: 'receiverWarehouse_id', as: 'receiverWarehouse' });
   DB.Product.hasMany(DB.Mutation, { foreignKey: 'product_id', as: 'productMutation' });
   DB.Mutation.belongsTo(DB.Product, { foreignKey: 'product_id', as: 'productMutation' });
+  DB.Size.hasMany(DB.Mutation, { foreignKey: 'size_id', as: 'sizeMutation' });
+  DB.Mutation.belongsTo(DB.Size, { foreignKey: 'size_id', as: 'sizeMutation' });
 }

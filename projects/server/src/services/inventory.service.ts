@@ -5,6 +5,7 @@ import Container, { Service } from 'typedi';
 import { Op } from 'sequelize';
 import { WarehouseModel } from '@/models/warehouse.model';
 import { JurnalService } from './jurnal.service';
+import { InventoryModel, SizeModel } from '@/models';
 
 @Service()
 export class InventoryService {
@@ -74,16 +75,32 @@ export class InventoryService {
     return inventoryItem;
   }
 
-  public async getWarehouseByInventoryProduct(productId: number, warehouseId: number): Promise<Inventory[]> {
+  public async getInventoryByWarehouseId(productId: number, warehouseId: number): Promise<Inventory[]> {
     if (isNaN(productId) || isNaN(warehouseId)) {
       throw new HttpException(400, 'Invalid productId or warehouseId');
     }
 
-    const warehouse = await DB.Inventories.findAll({ where: { productId } });
-    if (!warehouse) throw new HttpException(409, 'No Stock Available');
+    const findInventories = await DB.Inventories.findAll({
+      where: { productId, warehouseId },
+      include: [
+        {
+          model: SizeModel,
+          as: 'sizes',
+        },
+      ],
+    });
+    if (!findInventories || findInventories.length === 0) throw new HttpException(409, 'No Inventories');
+    return findInventories;
+  }
 
-    const findWarehouses = await DB.Inventories.findAll({
+  public async getWarehouseByInventoryProduct(sizeId: number, productId: number, warehouseId: number): Promise<Inventory[]> {
+    if (isNaN(productId) || isNaN(warehouseId) || isNaN(sizeId)) {
+      throw new HttpException(400, 'Invalid productId or warehouseId');
+    }
+
+    const findInventories = await DB.Inventories.findAll({
       where: {
+        sizeId,
         productId,
         warehouseId: {
           [Op.ne]: warehouseId,
@@ -98,7 +115,7 @@ export class InventoryService {
         as: 'warehouse',
       },
     });
-    return findWarehouses;
+    return findInventories;
   }
 
   public async exchangeStock({ productId, stock, senderWarehouseId, receiverWarehouseId }: AddStock) {

@@ -6,11 +6,13 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { AlertTriangle } from "lucide-react";
 import ProductDialog from "./ProductDialog";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Props {
   products: Product[];
@@ -29,26 +31,24 @@ const ProductTableRow = ({ products }: Props) => {
               </p>
             </TableCell>
             <TableCell>
-              <TooltipProvider delayDuration={100}>
-                <Tooltip>
-                  <TooltipTrigger className="w-[100px] overflow-hidden whitespace-nowrap text-ellipsis text-start">
-                    {product.inventory.map((inv) => inv.sizes.label).join(", ")}
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    {product.inventory.map((inv) => (
-                      <div
-                        key={inv.id}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="mr-2">{inv.sizes.label}</div>
-                        <div className="text-muted-foreground">
-                          ({inv.stock})
-                        </div>
-                      </div>
-                    ))}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="w-[100px] text-ellipsis overflow-hidden  whitespace-nowrap">
+                  {product.inventory.map((inv) => inv.sizes.label).join(", ")}
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {product.inventory.map((inv) => (
+                    <DropdownMenuItem
+                      key={inv.id}
+                      className="flex justify-between items-center"
+                    >
+                      <p>{inv.sizes.label} </p>
+                      <p className="text-xs text-muted-foreground">
+                        {inv.stock} items
+                      </p>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </TableCell>
             <TableCell>{formatToIDR(String(product.price))}</TableCell>
             <TableCell className="text-center">

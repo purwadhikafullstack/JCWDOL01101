@@ -10,7 +10,7 @@ import { useSearchParams } from "react-router-dom";
 
 const DeleteProduct = ({ productId }: { productId: number }) => {
   const [params] = useSearchParams();
-  const warehouseId = Number(params.get("warehouse")) || undefined;
+  const warehouseId = params.get("warehouse") || undefined;
   const { data: warehouse } = useGetWarehouseById(warehouseId);
 
   const deleteProduct = useChangeStatus();
@@ -23,7 +23,7 @@ const DeleteProduct = ({ productId }: { productId: number }) => {
   };
 
   const onDeleteProductInventory = () => {
-    if (warehouseId && !Number.isNaN(+warehouseId)) {
+    if (warehouseId) {
       deleteProductInventory.mutate({
         productId,
         warehouseId,

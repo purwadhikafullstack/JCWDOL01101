@@ -17,9 +17,10 @@ export interface Mutation {
   status: string;
   createdAt?: Date;
   updatedAt?: Date;
-  productMutation: { name: string }
-  senderWarehouse: { name: string }
-  receiverWarehouse: { name: string }
+  productMutation: { name: string };
+  senderWarehouse: { name: string };
+  receiverWarehouse: { name: string };
+  sizeMutation: { label: string };
 }
 export interface postMutation {
   senderWarehouseId: number;
@@ -122,13 +123,13 @@ export const useCancelMutation = (mutationId: number) => {
   });
 
   return editMutation;
-}
+};
 
 export const useAcceptMutation = (mutationId: number) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const editMutation = useMutation({
-    mutationFn: async (data: { name: string, notes?: string }) => {
+    mutationFn: async (data: { name: string; notes?: string }) => {
       await service.patch(`/mutations/accept/${mutationId}`, data);
     },
     onSuccess: () => {
@@ -146,13 +147,13 @@ export const useAcceptMutation = (mutationId: number) => {
   });
 
   return editMutation;
-}
+};
 
 export const useRejectMutation = (mutationId: number) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const editMutation = useMutation({
-    mutationFn: async (data: { name: string, notes?: string }) => {
+    mutationFn: async (data: { name: string; notes?: string }) => {
       await service.patch(`/mutations/reject/${mutationId}`, data);
     },
     onSuccess: () => {
@@ -170,4 +171,4 @@ export const useRejectMutation = (mutationId: number) => {
   });
 
   return editMutation;
-}
+};

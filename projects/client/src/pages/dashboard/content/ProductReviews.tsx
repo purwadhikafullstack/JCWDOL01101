@@ -20,7 +20,7 @@ import ReviewTableOptions from "../components/review/ReviewTableOptions";
 
 const ProductReviews = () => {
   const { slug } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams({
+  const [searchParams] = useSearchParams({
     page: "1",
   });
   const currentPage = Number(searchParams.get("page"));
