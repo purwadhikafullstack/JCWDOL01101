@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { useHighestSellProducts } from "@/hooks/useProduct";
 import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton";
 import ProductCard from "../components/ProductCard";
+import { Helmet } from "react-helmet";
 
 const Cart = () => {
   const { t } = useTranslation();
@@ -54,6 +55,9 @@ const Cart = () => {
   }, [carts]);
   return (
     <>
+      <Helmet>
+        <title>{t("cartPage.title")} | TOTEN</title>
+      </Helmet>
       <div className="flex flex-col md:flex md:flex-row w-full gap-8">
         <div className="flex flex-col  flex-1">
           {carts.length > 0 ? (

@@ -19,6 +19,7 @@ import { formatToIDR } from "@/lib/utils";
 import EditImageForm from "./EditImageForm";
 import { baseURL } from "@/service";
 import ProductSizeField from "./ProductSizeField";
+import { Helmet } from "react-helmet";
 
 export const productSchema = z.object({
   name: z.string().min(2, "Product name is empty").max(70),
@@ -136,61 +137,70 @@ const EditProductForm = () => {
   }, [editMutation.status]);
 
   return (
-    <div className="container space-y-4 mb-24">
-      <span className="text-sm">
-        <Link to="/dashboard/product" className="text-muted-foreground">
-          products /
-        </Link>{" "}
-        <Link to="/dashboard/product/create" className=" text-primary">
-          edit product
-        </Link>
-      </span>
-      <div className="flex items-center justify-between">
-        <h3 className="text-xl font-bold">Edit Product</h3>
-      </div>
-      <div className="border rounded-lg p-4">
-        <Form {...form}>
-          <form
-            id="product"
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4"
+    <>
+      <Helmet>
+        <title>Dashboard | Edit Product</title>
+      </Helmet>
+      <div className="container space-y-4 mb-24">
+        <span className="text-sm">
+          <Link to="/dashboard/product" className="text-muted-foreground">
+            products /
+          </Link>{" "}
+          <Link to="/dashboard/product/create" className=" text-primary">
+            edit product
+          </Link>
+        </span>
+        <div className="flex items-center justify-between">
+          <h3 className="text-xl font-bold">Edit Product</h3>
+        </div>
+        <div className="border rounded-lg p-4">
+          <Form {...form}>
+            <form
+              id="product"
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4"
+            >
+              <ProductNameField
+                name="name"
+                label="Product Name"
+                description=""
+              />
+              <SelectFormField />
+              <EditImageForm error={error} />
+              <ProductSizeField
+                edit={true}
+                mutationStatus={editMutation.isSuccess}
+              />
+              <ProductFormTextarea />
+              <PriceFormField />
+              <WeightFormField />
+            </form>
+          </Form>
+        </div>
+        <div className="w-full flex justify-end items-center gap-2">
+          <Button
+            onClick={() => {
+              clearImage();
+              navigate(-1);
+            }}
+            variant="outline"
           >
-            <ProductNameField name="name" label="Product Name" description="" />
-            <SelectFormField />
-            <EditImageForm error={error} />
-            <ProductSizeField
-              edit={true}
-              mutationStatus={editMutation.isSuccess}
-            />
-            <ProductFormTextarea />
-            <PriceFormField />
-            <WeightFormField />
-          </form>
-        </Form>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => setButton("save")}
+            form="product"
+            type="submit"
+            className="px-8"
+          >
+            {editMutation.isPending && (
+              <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+            )}
+            Edit
+          </Button>
+        </div>
       </div>
-      <div className="w-full flex justify-end items-center gap-2">
-        <Button
-          onClick={() => {
-            clearImage();
-            navigate(-1);
-          }}
-          variant="outline"
-        >
-          Cancel
-        </Button>
-        <Button
-          onClick={() => setButton("save")}
-          form="product"
-          type="submit"
-          className="px-8"
-        >
-          {editMutation.isPending && (
-            <Loader2 className="mr-2 w-4 h-4 animate-spin" />
-          )}
-          Edit
-        </Button>
-      </div>
-    </div>
+    </>
   );
 };
 

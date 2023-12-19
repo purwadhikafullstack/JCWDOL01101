@@ -16,6 +16,7 @@ import { useSelectedItem } from "@/hooks/useCheckout";
 import { Button } from "@/components/ui/button";
 import SelectAddressDialog from "@/components/SelectAddressDialog";
 import { Trans, useTranslation } from "react-i18next";
+import { Helmet } from "react-helmet";
 
 export type Dialog = {
   main: boolean;
@@ -57,6 +58,9 @@ const Checkout = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Chekout | TOTEN</title>
+      </Helmet>
       <div className="py-4  border-b">
         <div className="w-full container">
           <BackToCartDialog>

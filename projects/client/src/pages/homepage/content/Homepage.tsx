@@ -10,6 +10,7 @@ import HighestSellSkeleton from "@/components/skeleton/HighestSellSkeleton";
 import { useCategories } from "@/hooks/useCategory";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
+import { Helmet } from "react-helmet";
 
 const Homepage = () => {
   const { t } = useTranslation();
@@ -19,6 +20,10 @@ const Homepage = () => {
     useHighestSellProducts();
   return (
     <>
+      <Helmet>
+        <title>{t("homepage.title")}</title>
+        <meta name="description" content={t("homepage.description")} />
+      </Helmet>
       <MainCarousel />
       <div className="mt-2 flex flex-col">
         <span className="flex items-center justify-between mt-8 my-2">
