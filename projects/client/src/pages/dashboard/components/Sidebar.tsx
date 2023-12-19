@@ -78,8 +78,8 @@ const links = [
 const DashboardSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useUser();
   const { signOut } = useClerk();
+  const { user } = useUser();
   const ROLE = user?.publicMetadata?.role;
   return (
     <div className="p-4 flex h-full flex-col justify-between items-start">

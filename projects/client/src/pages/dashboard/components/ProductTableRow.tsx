@@ -32,10 +32,12 @@ const ProductTableRow = ({ products }: Props) => {
             </TableCell>
             <TableCell>
               <DropdownMenu>
-                <DropdownMenuTrigger className="w-[100px] text-ellipsis overflow-hidden  whitespace-nowrap">
+                <DropdownMenuTrigger className="w-[100px] text-start text-ellipsis overflow-hidden whitespace-nowrap">
                   {product.inventory.map((inv) => inv.sizes.label).join(", ")}
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
+                <DropdownMenuContent align="start">
+                  <DropdownMenuLabel>Available Size</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
                   {product.inventory.map((inv) => (
                     <DropdownMenuItem
                       key={inv.id}
@@ -43,7 +45,7 @@ const ProductTableRow = ({ products }: Props) => {
                     >
                       <p>{inv.sizes.label} </p>
                       <p className="text-xs text-muted-foreground">
-                        {inv.stock} items
+                        {inv.stock} {inv.stock > 1 ? "pcs" : "pc"}
                       </p>
                     </DropdownMenuItem>
                   ))}
