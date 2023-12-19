@@ -45,8 +45,8 @@ const NavCart = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
                 </div>
                 <Separator className="mb-2" />
                 <div className="space-y-2">
-                  {cartProducts.map(({ product, quantity }, i) => (
-                    <div key={product.id} className="py-1">
+                  {cartProducts.map(({ id, product, quantity }, i) => (
+                    <div key={id} className="py-1">
                       <div className="w-full flex justify-between items-center">
                         <img
                           src={`${baseURL}/images/${product.productImage[0].image}`}

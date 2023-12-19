@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard,
   LogOut,
@@ -9,14 +9,14 @@ import {
   UserCheck,
   ClipboardList,
   Package,
-  PackagePlus,
-  PackageSearch,
   Settings,
   ArrowLeftFromLine,
-} from "lucide-react"
-import React from "react"
-import { useLocation, Link } from "react-router-dom"
-import { DashboardLink, DropdownLink } from "./SidebarLink"
+  FileText,
+} from "lucide-react";
+import React from "react";
+import { useLocation, Link, useNavigate } from "react-router-dom";
+import { DashboardLink, DropdownLink } from "./SidebarLink";
+import { useClerk, useUser } from "@clerk/clerk-react";
 
 const links = [
   {
@@ -28,18 +28,11 @@ const links = [
     title: "Warehouse",
     icon: <Warehouse className="w-4 h-4" />,
     path: "/dashboard/warehouse",
-    children: [
-      {
-        title: "Mutation Form",
-        icon: <PackagePlus className="w-4 h-4" />,
-        path: "/dashboard/mutation-form",
-      },
-      {
-        title: "Manage Mutation",
-        icon: <PackageSearch className="w-4 h-4" />,
-        path: "/dashboard/manage-mutation",
-      },
-    ],
+  },
+  {
+    title: "Mutation",
+    icon: <FileText className="w-4 h-4" />,
+    path: "/dashboard/manage-mutation",
   },
   {
     title: "User",
@@ -80,10 +73,14 @@ const links = [
     icon: <ClipboardList className="w-4 h-4" />,
     path: "/dashboard/report",
   },
-]
+];
 
 const DashboardSidebar = () => {
-  const location = useLocation()
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { signOut } = useClerk();
+  const { user } = useUser();
+  const ROLE = user?.publicMetadata?.role;
   return (
     <div className="p-4 flex h-full flex-col justify-between items-start">
       <div className="w-full">
@@ -98,8 +95,14 @@ const DashboardSidebar = () => {
           </div>
         </Link>
         <ul className="my-4 space-y-1 w-full">
-          {links.map((link) =>
-            link.children ? (
+          {links.map((link) => {
+            if (
+              ROLE !== "ADMIN" &&
+              (link.title === "User" || link.title === "Warehouse")
+            ) {
+              return null;
+            }
+            return link.children ? (
               <DropdownLink
                 key={link.title}
                 title={link.title}
@@ -116,8 +119,8 @@ const DashboardSidebar = () => {
                 path={link.path}
                 state={location.pathname === link.path}
               />
-            )
-          )}
+            );
+          })}
         </ul>
       </div>
       <div className="flex flex-col gap-1 w-full">
@@ -140,6 +143,7 @@ const DashboardSidebar = () => {
           </Button>
         </Link>
         <Button
+          onClick={() => signOut(() => navigate("/login"))}
           variant="ghost"
           className="text-muted-foreground w-full justify-start"
         >
@@ -147,7 +151,7 @@ const DashboardSidebar = () => {
         </Button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardSidebar
+export default DashboardSidebar;

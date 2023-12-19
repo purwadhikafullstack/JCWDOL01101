@@ -1,3 +1,4 @@
+import { useUser } from "@clerk/clerk-react";
 import { ChevronDown } from "lucide-react";
 import React from "react";
 import { useState } from "react";
@@ -60,6 +61,8 @@ export const DropdownLink = ({
 }) => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useUser();
+  const ROLE = user?.publicMetadata?.role;
 
   return (
     <>
@@ -78,28 +81,32 @@ export const DropdownLink = ({
             <div>{icon}</div>
             <div>{title}</div>
           </span>
-          <span className={state ? "text-primary" : "text-muted-foreground"}>
-            <ChevronDown
-              className={`w-5 h-5 transform ${
-                isOpen && "-rotate-180"
-              } transition-all duration-300`}
-            />
-          </span>
+          {ROLE === "ADMIN" && (
+            <span className={state ? "text-primary" : "text-muted-foreground"}>
+              <ChevronDown
+                className={`w-5 h-5 transform ${
+                  isOpen && "-rotate-180"
+                } transition-all duration-300`}
+              />
+            </span>
+          )}
         </li>
       </Link>
-      <div className={`${isOpen ? "flex" : "hidden"}`}>
-        <ul className="flex-col flex-grow ml-3 my-1 border-l-2 p-1 border-gray-300">
-          {children.map((link) => (
-            <DashboardLink
-              key={link.title}
-              title={link.title}
-              icon={link.icon}
-              path={link.path}
-              state={location.pathname === link.path}
-            />
-          ))}
-        </ul>
-      </div>
+      {ROLE === "ADMIN" && (
+        <div className={`${isOpen ? "flex" : "hidden"}`}>
+          <ul className="flex-col flex-grow ml-3 my-1 border-l-2 p-1 border-gray-300">
+            {children.map((link) => (
+              <DashboardLink
+                key={link.title}
+                title={link.title}
+                icon={link.icon}
+                path={link.path}
+                state={location.pathname === link.path}
+              />
+            ))}
+          </ul>
+        </div>
+      )}
     </>
   );
 };

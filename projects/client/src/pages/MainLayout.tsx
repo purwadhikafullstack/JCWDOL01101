@@ -14,7 +14,7 @@ import { Outlet } from "react-router-dom";
 const MainLayout = () => {
   const { user, isSignedIn, isLoaded } = useUser();
   const { data: userBackend } = useCurrentUser({
-    externalId: user?.id!,
+    externalId: user?.id,
     enabled: isLoaded && !!isSignedIn,
   });
 

@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { useHighestSellProducts } from "@/hooks/useProduct";
 import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton";
 import ProductCard from "../components/ProductCard";
+import { Helmet } from "react-helmet";
 
 const Cart = () => {
   const { t } = useTranslation();
@@ -54,6 +55,9 @@ const Cart = () => {
   }, [carts]);
   return (
     <>
+      <Helmet>
+        <title>{t("cartPage.title")} | TOTEN</title>
+      </Helmet>
       <div className="flex flex-col md:flex md:flex-row w-full gap-8">
         <div className="flex flex-col  flex-1">
           {carts.length > 0 ? (
@@ -88,16 +92,11 @@ const Cart = () => {
               </div>
 
               <div className="py-4 space-y-4">
-                {carts &&
-                  carts.map(({ product, quantity, id }, i) => (
-                    <React.Fragment key={product.id}>
-                      <CartItem
-                        cartProductId={id}
-                        hasCart={!!user?.userCart}
-                        cartId={cart?.cart.id!}
-                        product={product}
-                        quantity={quantity}
-                      />
+                {user &&
+                  carts &&
+                  carts.map((cp, i) => (
+                    <React.Fragment key={cp.id}>
+                      <CartItem cartProduct={cp} hasCart={!!user.userCart} />
                       <div
                         className={
                           i + 1 !== carts.length ? "border border-b-3" : ""

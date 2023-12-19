@@ -4,6 +4,11 @@ export class CartDto {
   @IsNumber()
   @IsNotEmpty()
   public productId: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  public sizeId: number;
+
   @IsNumber()
   @IsNotEmpty()
   public quantity: number;
@@ -17,6 +22,11 @@ export class CartProductDto {
   @IsNumber()
   @IsNotEmpty()
   public productId: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  public sizeId: number;
+
   @IsNumber()
   @IsNotEmpty()
   public quantity: number;

@@ -5,6 +5,7 @@ export interface Mutation {
   senderName: string;
   receiverName?: string;
   productId?: number;
+  sizeId: number;
   quantity: number;
   senderNotes?: string;
   receiverNotes?: string;

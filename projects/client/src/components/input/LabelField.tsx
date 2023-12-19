@@ -12,7 +12,7 @@ import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 const labels = ["Rumah", "Apartemen", "Kantor", "Kos"];
-const LIMIT = 30;
+const LIMIT = 15;
 
 const LabelField = () => {
   const { t } = useTranslation();
@@ -50,6 +50,7 @@ const LabelField = () => {
                 }}
                 onClick={() => setShow(true)}
               />
+              <FormMessage />
               <span className="self-end text-xs text-muted-foreground">{`${
                 form.getValues("label").length
               }/${LIMIT}`}</span>
@@ -70,7 +71,6 @@ const LabelField = () => {
               </div>
             </div>
           </FormControl>
-          <FormMessage />
         </FormItem>
       )}
     />

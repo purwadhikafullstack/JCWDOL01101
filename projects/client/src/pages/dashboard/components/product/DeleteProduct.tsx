@@ -1,25 +1,73 @@
 import { Button } from "@/components/ui/button";
-import { useDeleteProduct } from "@/hooks/useProductMutation";
-import { Loader2 } from "lucide-react";
-import React, { FormEvent } from "react";
+import {
+  useChangeStatus,
+  useChangeStatusInventory,
+} from "@/hooks/useProductMutation";
+import { useGetWarehouseById } from "@/hooks/useWarehouse";
+import { Loader2, MapPin } from "lucide-react";
+import React from "react";
+import { useSearchParams } from "react-router-dom";
 
 const DeleteProduct = ({ productId }: { productId: number }) => {
-  const deleteProduct = useDeleteProduct(productId);
-  const onDeleteProduct = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    deleteProduct.mutate();
+  const [params] = useSearchParams();
+  const warehouseId = params.get("warehouse") || undefined;
+  const { data: warehouse } = useGetWarehouseById(warehouseId);
+
+  const deleteProduct = useChangeStatus();
+  const deleteProductInventory = useChangeStatusInventory();
+  const onDeleteProduct = () => {
+    deleteProduct.mutate({
+      productId,
+      status: "DELETED",
+    });
+  };
+
+  const onDeleteProductInventory = () => {
+    if (warehouseId) {
+      deleteProductInventory.mutate({
+        productId,
+        warehouseId,
+        status: "DELETED",
+      });
+    }
   };
   return (
-    <form onSubmit={onDeleteProduct}>
-      <Button type="submit" variant="destructive" className="cursor-pointer ">
+    <div className="flex gap-2 w-full">
+      <Button
+        onClick={onDeleteProduct}
+        variant="destructive"
+        className="cursor-pointer w-full"
+      >
         <Loader2
           className={
             deleteProduct.isPending ? "animate-spin w-4 h-4 mr-2" : "hidden"
           }
         />
-        Yes, delete product
+        Yes, delete on all warehouse
       </Button>
-    </form>
+      <div className="space-y-2">
+        <Button
+          onClick={onDeleteProductInventory}
+          variant="destructive"
+          className="cursor-pointer w-full"
+        >
+          <Loader2
+            className={
+              deleteProductInventory.isPending
+                ? "animate-spin w-4 h-4 mr-2"
+                : "hidden"
+            }
+          />
+          <div>
+            <p>Yes, delete on ({warehouse?.name})</p>
+          </div>
+        </Button>
+        <span className="flex gap-2 text-sm text-muted-foreground">
+          <MapPin className="w-4 h-4 mr-2" />{" "}
+          {warehouse?.warehouseAddress?.cityWarehouse?.cityName}
+        </span>
+      </div>
+    </div>
   );
 };
 

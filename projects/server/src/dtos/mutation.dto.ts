@@ -15,6 +15,10 @@ export class MutationDto {
 
   @IsNotEmpty()
   @IsNumber()
+  public sizeId: number;
+
+  @IsNotEmpty()
+  @IsNumber()
   public productId: number;
 
   @IsNotEmpty()

@@ -14,6 +14,7 @@ import { DokuRoute } from './routes/doku.route';
 import { ReviewRoute } from './routes/review.route';
 import { WishlistRoute } from './routes/wishlist.route';
 import { OrderRoute } from './routes/order.route';
+import { SizeRoute } from './routes/size.route';
 import { InventoryRoute } from './routes/inventory.route';
 import { JurnalRoute } from './routes/jurnal.route';
 import { MutationRoute } from './routes/mutation.route';
@@ -23,6 +24,7 @@ ValidateEnv();
 const app = new App([
   new UserRoute(),
   new ProductRoute(),
+  new SizeRoute(),
   new WarehouseRoute(),
   new CategoryRoute(),
   new CityRoute(),

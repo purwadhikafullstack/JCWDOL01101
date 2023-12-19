@@ -19,7 +19,7 @@ export class ProductDto {
 
   @IsNotEmpty()
   @IsString()
-  public size: string;
+  public size: number[];
 
   @IsString()
   public description: string;

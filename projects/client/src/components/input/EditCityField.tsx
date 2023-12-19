@@ -6,10 +6,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useCity, useGetLocationOnGeo } from "@/hooks/useAddress";
+import { useCity } from "@/hooks/useAddress";
 import useOutsideClick from "@/hooks/useClickOutside";
-import { Loader2, MapPin } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import { Loader2 } from "lucide-react";
+import React, { useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { useDebounce } from "use-debounce";
 export type Coordinates = {
@@ -17,14 +17,7 @@ export type Coordinates = {
   langitude: number;
 };
 
-const EditCityField = ({
-  location,
-  handleGetGeolocation,
-}: {
-  location: Coordinates | null;
-  handleGetGeolocation: () => void;
-}) => {
-  const { isLoading } = useGetLocationOnGeo(location);
+const EditCityField = () => {
   const ref = useRef<HTMLDivElement | null>(null);
   const [show, setShow] = useState(false);
   const form = useFormContext();
@@ -47,16 +40,6 @@ const EditCityField = ({
           <FormControl>
             <div ref={ref}>
               <div className="flex gap-2 items-center">
-                <div
-                  className="p-2 border rounded-md hover:bg-muted cursor-pointer transition-all duration-100"
-                  onClick={handleGetGeolocation}
-                >
-                  {isLoading ? (
-                    <Loader2 className="animate-spin" />
-                  ) : (
-                    <MapPin />
-                  )}
-                </div>
                 <Input
                   id="city"
                   {...field}
@@ -68,8 +51,8 @@ const EditCityField = ({
                 />
               </div>
               {show && cities && (
-                <div className="pl-12 mt-2">
-                  <div className="cursor-pointer w-ful border overflow-auto transition-all duration-200 max-h-[150px] flex flex-col  items-start rounded-md text-sm">
+                <div className="mt-2">
+                  <div className="cursor-pointer w-full border overflow-auto transition-all duration-200 max-h-[150px] flex flex-col  items-start rounded-md text-sm">
                     {citiesLoading ? (
                       <div className="text-center">
                         <Loader2 className="animate-spin " />

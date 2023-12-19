@@ -16,6 +16,7 @@ import { useSelectedItem } from "@/hooks/useCheckout";
 import { Button } from "@/components/ui/button";
 import SelectAddressDialog from "@/components/SelectAddressDialog";
 import { Trans, useTranslation } from "react-i18next";
+import { Helmet } from "react-helmet";
 
 export type Dialog = {
   main: boolean;
@@ -57,6 +58,9 @@ const Checkout = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Checkout | TOTEN</title>
+      </Helmet>
       <div className="py-4  border-b">
         <div className="w-full container">
           <BackToCartDialog>
@@ -87,17 +91,20 @@ const Checkout = () => {
 
             <>
               {selectedCartProducts &&
-                selectedCartProducts.map(({ product, id, quantity }, i) => (
-                  <CheckoutItem
-                    key={id}
-                    index={i}
-                    length={cartProductsLength}
-                    product={product}
-                    quantity={quantity}
-                    warehouse={closestWarehouse}
-                    activeAddress={activeAddress}
-                  />
-                ))}
+                selectedCartProducts.map(
+                  ({ product, id, quantity, size }, i) => (
+                    <CheckoutItem
+                      key={id}
+                      index={i}
+                      size={size}
+                      length={cartProductsLength}
+                      product={product}
+                      quantity={quantity}
+                      warehouse={closestWarehouse}
+                      activeAddress={activeAddress}
+                    />
+                  )
+                )}
             </>
           </section>
           <div className="w-full lg:w-[420px] relative">

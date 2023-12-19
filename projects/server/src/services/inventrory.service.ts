@@ -37,11 +37,17 @@ export class InventoryService {
     return findWarehouses;
   }
 
-  public async exchangeStock({ productId, stock, senderWarehouseId, receiverWarehouseId }: AddStock) {
+  public async exchangeStock({ sizeId, productId, stock, senderWarehouseId, receiverWarehouseId }: AddStock) {
     const transaction = await DB.sequelize.transaction();
     try {
-      const findSenderInventory: Inventory = await DB.Inventories.findOne({ where: { warehouseId: senderWarehouseId, productId }, transaction });
-      const findReceiverInventory: Inventory = await DB.Inventories.findOne({ where: { warehouseId: receiverWarehouseId, productId }, transaction });
+      const findSenderInventory: Inventory = await DB.Inventories.findOne({
+        where: { warehouseId: senderWarehouseId, productId, sizeId },
+        transaction,
+      });
+      const findReceiverInventory: Inventory = await DB.Inventories.findOne({
+        where: { warehouseId: receiverWarehouseId, productId, sizeId },
+        transaction,
+      });
       if (!findSenderInventory && !findReceiverInventory) {
         throw new HttpException(409, 'Warehouse Not Found');
       }
