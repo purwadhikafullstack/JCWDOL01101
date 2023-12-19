@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { Loader2, Plus, X } from "lucide-react";
 import {
@@ -16,6 +16,7 @@ import ProductTableRow from "../components/ProductTableRow";
 import TablePagination from "../components/TablePagination";
 import ChangeOrderButton from "../components/ChangeOrderButton";
 import { useUser } from "@clerk/clerk-react";
+import { useCurrentUser, useUsers } from "@/hooks/useUser";
 import { useBoundStore } from "@/store/client/useStore";
 import {
   Select,
@@ -29,8 +30,9 @@ import ProductTableOptions from "../components/product/ProductTableOptions";
 import { Helmet } from "react-helmet";
 
 const Product = () => {
-  const { user } = useUser();
+  const { user, isSignedIn, isLoaded } = useUser();
   const ROLE = user?.publicMetadata.role || "CUSTOMER";
+  const userId = user?.publicMetadata.id;
   const [searchParams, setSearchParams] = useSearchParams({
     page: "1",
   });
@@ -39,7 +41,7 @@ const Product = () => {
   const orderParams = searchParams.get("order");
   const searchTerm = searchParams.get("s") || "";
   const [debounceSearch] = useDebounce(searchTerm, 1000);
-
+  const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const { data: warehouses } = useGetWarehouse();
   useEffect(() => {
     if (ROLE === "ADMIN" && warehouses && warehouses.length > 0) {
@@ -65,6 +67,37 @@ const Product = () => {
   useEffect(() => {
     clearImage();
   }, []);
+
+  const { data: userAdmin } = useCurrentUser({
+    externalId: user?.id!,
+    enabled: isLoaded && !!isSignedIn,
+  });
+
+  useEffect(() => {
+    if (
+      ROLE === "WAREHOUSE ADMIN" &&
+      warehouses &&
+      warehouses.length > 0 &&
+      user
+    ) {
+      const userWarehouse = warehouses.find(
+        (warehouse) => warehouse.userId === Number(userAdmin?.id)
+      );
+      if (userWarehouse) {
+        setSelectedWarehouse(userWarehouse.id.toString());
+        setSearchParams((params) => {
+          params.set("warehouse", userWarehouse.id.toString());
+          return params;
+        });
+      }
+    } else if (!selectedWarehouse && warehouses && warehouses.length > 0) {
+      const defaultWarehouse = warehouses.reduce(
+        (min, warehouse) => (warehouse.id < min.id ? warehouse : min),
+        warehouses[0]
+      );
+      setSelectedWarehouse(defaultWarehouse.id.toString());
+    }
+  }, [warehouses, selectedWarehouse, user, ROLE, setSearchParams]);
 
   return (
     <>
@@ -108,7 +141,9 @@ const Product = () => {
                 <TableHead className="w-[100px]">Category</TableHead>
                 <TableHead className="w-[200px]">Description</TableHead>
                 <TableHead className="text-center">Image</TableHead>
-                <TableHead className="text-center">Action</TableHead>
+                {(ROLE === "ADMIN" || "WAREHOUSE ADMIN") && (
+                  <TableHead className="text-center">Action</TableHead>
+                )}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -121,7 +156,10 @@ const Product = () => {
               ) : (
                 <>
                   {data && data.products && data.products.length > 0 ? (
-                    <ProductTableRow products={data.products} />
+                    <ProductTableRow
+                      products={data.products}
+                      selectedWarehouse={selectedWarehouse}
+                    />
                   ) : (
                     <TableRow>
                       <TableCell colSpan={11} className="text-center h-24">

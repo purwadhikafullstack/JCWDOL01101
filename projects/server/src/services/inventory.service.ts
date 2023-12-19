@@ -1,134 +1,128 @@
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
-import { Inventory } from '@/interfaces/inventory.interface';
-import { Product } from '@/interfaces/product.interface';
-import { User } from '@/interfaces/user.interface';
-import { CategoryModel } from '@/models/category.model';
-import { ImageModel } from '@/models/image.model';
-import { ProductModel } from '@/models/product.model';
-import { SizeModel } from '@/models/size.model';
+import { AddStock, Inventory } from '@/interfaces/inventory.interface';
+import Container, { Service } from 'typedi';
+import { Op } from 'sequelize';
 import { WarehouseModel } from '@/models/warehouse.model';
-import { WishlistModel } from '@/models/wishlist.model';
-import { Op, FindOptions } from 'sequelize';
-import { Service } from 'typedi';
+import { JurnalService } from './jurnal.service';
 
-export interface GetFilterProduct {
-  s: string;
-  size: string;
-  page: number;
-  filter: string;
-  order: string;
-  limit: number;
-  externalId: string;
-  warehouse: string;
-  category: string;
-}
 @Service()
 export class InventoryService {
-  public async findInventories({
-    s,
-    page,
-    size,
-    order,
-    limit,
-    filter,
-    category,
-    warehouse,
-    externalId,
-  }: GetFilterProduct): Promise<{ inventories: Inventory[]; totalPages: number }> {
-    page = page || 1;
-    const findUser: User = await DB.User.findOne({ where: { externalId } });
-    if (!findUser) throw new HttpException(409, "user doesn't exist");
-    const role = findUser.role;
-    const where =
-      role === 'ADMIN'
-        ? {
-            ...(warehouse && { name: { [Op.like]: `%${warehouse}%` } }),
-          }
-        : role === 'WAREHOUSE ADMIN'
-        ? {
-            userId: findUser.id,
-          }
-        : {};
+  jurnal = Container.get(JurnalService);
 
-    const LIMIT = Number(limit) || 10;
-    const offset = (page - 1) * LIMIT;
-    const categories =
-      category.length > 0
-        ? category
-            .trim()
-            .split(',')
-            .map(c => +c)
-        : [];
-    const sizes =
-      size.length > 0
-        ? size
-            .trim()
-            .split(',')
-            .map(s => +s)
-        : [];
-    const options: FindOptions<Product> = {
-      offset,
-      limit: LIMIT,
+  public async findAllInventory(): Promise<Inventory[]> {
+    const allInventory: Inventory[] = await DB.Inventories.findAll();
+    return allInventory;
+  }
+
+  public async findInventoryById(inventoryId: number): Promise<Inventory> {
+    const findInventory: Inventory = await DB.Inventories.findByPk(inventoryId);
+    if (!findInventory) throw new HttpException(409, "Inventory doesn't exist");
+
+    return findInventory;
+  }
+
+  public async createInventory(inventoryData: Inventory): Promise<Inventory> {
+    const createInventoryData: Inventory = await DB.Inventories.create({ ...inventoryData });
+    return createInventoryData;
+  }
+
+  public async updateInventory(inventoryId: number, inventoryData: Inventory): Promise<Inventory> {
+    const findInventory: Inventory = await DB.Inventories.findByPk(inventoryId);
+    if (!findInventory) throw new HttpException(409, "Inventory doesn't exist");
+
+    await DB.Inventories.update({ ...inventoryData }, { where: { id: inventoryId } });
+    const updateInventory: Inventory = await DB.Inventories.findByPk(inventoryId);
+    return updateInventory;
+  }
+
+  public async deleteInventory(inventoryId: number): Promise<Inventory> {
+    const findInventory: Inventory = await DB.Inventories.findByPk(inventoryId);
+    if (!findInventory) throw new HttpException(409, "Inventory doesn't exist");
+
+    await DB.Inventories.destroy({ where: { id: inventoryId } });
+
+    return findInventory;
+  }
+
+  public async addStock(productId: number, warehouseId: number, stock: number): Promise<Inventory> {
+    const inventory = await DB.Inventories.findOne({
       where: {
-        ...(sizes.length > 0 && {
-          sizeId: {
-            [Op.in]: sizes,
-          },
-        }),
+        productId: productId,
+        warehouseId: warehouseId,
       },
-      order: [['createdAt', 'DESC']],
-      include: [
-        {
-          where,
-          model: WarehouseModel,
-          as: 'warehouse',
+    });
+    if (!inventory) throw new HttpException(409, "Inventory doesn't exist");
+    inventory.stock = stock;
+    await inventory.save();
+    return inventory;
+  }
+
+  public async getStockByWarehouseAndProduct(warehouseId: number, productId: number): Promise<Inventory> {
+    const inventoryItem = await DB.Inventories.findOne({
+      where: {
+        warehouseId: warehouseId,
+        productId: productId,
+      },
+    });
+
+    if (!inventoryItem) throw new HttpException(404, 'Inventory item not found');
+
+    return inventoryItem;
+  }
+
+  public async getWarehouseByInventoryProduct(productId: number, warehouseId: number): Promise<Inventory[]> {
+    if (isNaN(productId) || isNaN(warehouseId)) {
+      throw new HttpException(400, 'Invalid productId or warehouseId');
+    }
+
+    const warehouse = await DB.Inventories.findAll({ where: { productId } });
+    if (!warehouse) throw new HttpException(409, 'No Stock Available');
+
+    const findWarehouses = await DB.Inventories.findAll({
+      where: {
+        productId,
+        warehouseId: {
+          [Op.ne]: warehouseId,
         },
-        {
-          model: SizeModel,
-          as: 'sizes',
+        stock: {
+          [Op.gte]: 20,
         },
-        {
-          model: ProductModel,
-          as: 'product',
-          where: {
-            ...(s && { name: { [Op.like]: `%${s}%` } }),
-            ...(categories.length > 0 && {
-              categoryId: {
-                [Op.in]: categories,
-              },
-            }),
-          },
+      },
+      order: [['stock', 'DESC']],
+      include: {
+        model: WarehouseModel,
+        as: 'warehouse',
+      },
+    });
+    return findWarehouses;
+  }
 
-          include: [
-            {
-              model: ImageModel,
-              as: 'productImage',
-            },
-            {
-              model: CategoryModel,
-              as: 'productCategory',
-              paranoid: true,
-            },
-            {
-              model: WishlistModel,
-              as: 'productWishlist',
-              paranoid: true,
-              limit: 1,
-            },
-          ],
-        },
-      ],
-    };
+  public async exchangeStock({ productId, stock, senderWarehouseId, receiverWarehouseId }: AddStock) {
+    const transaction = await DB.sequelize.transaction();
+    try {
+      const findSenderInventory: Inventory = await DB.Inventories.findOne({ where: { warehouseId: senderWarehouseId, productId }, transaction });
+      const findReceiverInventory: Inventory = await DB.Inventories.findOne({ where: { warehouseId: receiverWarehouseId, productId }, transaction });
+      if (!findSenderInventory && !findReceiverInventory) {
+        throw new HttpException(409, 'Warehouse Not Found');
+      }
+      if (findReceiverInventory.stock - stock <= 20) {
+        throw new HttpException(409, `When accepting stock, stock must be over 20, stock left : ${findReceiverInventory.stock}`);
+      }
+      const stockChangeSender = findSenderInventory.stock + stock;
+      const stockChangeReceiver = findReceiverInventory.stock - stock;
+      await DB.Inventories.update({ stock: stockChangeReceiver }, { where: { id: findReceiverInventory.id }, transaction });
+      await DB.Inventories.update({ stock: stockChangeSender }, { where: { id: findSenderInventory.id }, transaction });
 
-    // if (order) {
-    //   options.order = filter === 'stock' || filter === 'sold' ? [[{ model: InventoryModel, as: 'inventory' }, filter, order]] : [[filter, order]];
-    // }
+      const jurnalData = { findSenderInventory, findReceiverInventory, stock, stockChangeSender, stockChangeReceiver };
+      await this.jurnal.jurnalExchangeStock(jurnalData, transaction);
 
-    const warehouseProducts = await DB.Inventories.findAll(options);
-    const totalCount = await DB.Inventories.count({ where: options.where });
-    const totalPages = Math.ceil(totalCount / LIMIT);
-
-    return { totalPages: totalPages, inventories: warehouseProducts };
+      await transaction.commit();
+    } catch (err) {
+      if (transaction) {
+        await transaction.rollback();
+      }
+      throw new HttpException(409, err.message);
+    }
   }
 }

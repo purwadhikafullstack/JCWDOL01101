@@ -96,7 +96,7 @@ export default function ManageCategory() {
                             </DialogTitle>
                             <DialogDescription>
                               This action cannot be undone. This will
-                              permanently delete your product and remove your
+                              permanently delete your category and remove your
                               data from our servers.
                             </DialogDescription>
                           </DialogHeader>
