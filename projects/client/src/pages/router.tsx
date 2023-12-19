@@ -33,6 +33,7 @@ import ReviewForm from "./homepage/content/ReviewForm"
 import Reviews from "./homepage/content/Reviews"
 import Wishlist from "./homepage/content/Wishlist"
 import ProductReviews from "./dashboard/content/ProductReviews"
+import AddStockForm from "./dashboard/components/product/AddStockForm"
 
 const router = createBrowserRouter([
   {

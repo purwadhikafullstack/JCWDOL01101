@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { MapPin, Plus, SearchIcon, X } from "lucide-react";
 import {
@@ -18,6 +18,7 @@ import ProductTableRow from "../components/ProductTableRow";
 import TablePagination from "../components/TablePagination";
 import ChangeOrderButton from "../components/ChangeOrderButton";
 import { useUser } from "@clerk/clerk-react";
+import { useCurrentUser, useUsers } from "@/hooks/useUser"
 import { useBoundStore } from "@/store/client/useStore";
 import {
   Select,
@@ -31,8 +32,9 @@ import { useCategories } from "@/hooks/useCategory";
 import ReviewStatusCombobox from "../components/ReviewStatusCombobox";
 
 const Product = () => {
-  const { user } = useUser();
+  const { user, isSignedIn, isLoaded } = useUser()
   const ROLE = user?.publicMetadata.role || "CUSTOMER";
+  const userId = user?.publicMetadata.id;
   const [searchParams, setSearchParams] = useSearchParams({
     page: "1",
   });
@@ -42,7 +44,7 @@ const Product = () => {
   const orderParams = searchParams.get("order");
   const searchTerm = searchParams.get("s") || "";
   const [debounceSearch] = useDebounce(searchTerm, 1000);
-
+  const [selectedWarehouse, setSelectedWarehouse] = useState('')
   const { data: warehouses } = useGetWarehouse();
   const { data, isLoading } = useProducts({
     page: currentPage,
@@ -65,6 +67,27 @@ const Product = () => {
   useEffect(() => {
     clearImage();
   }, []);
+
+  const { data: userAdmin } = useCurrentUser({
+    externalId: user?.id!,
+    enabled: isLoaded && !!isSignedIn,
+  })
+
+  useEffect(() => {
+    if (ROLE === "WAREHOUSE ADMIN" && warehouses && warehouses.length > 0 && user) {
+      const userWarehouse = warehouses.find(warehouse => warehouse.userId === Number(userAdmin?.id));
+      if (userWarehouse) {
+        setSelectedWarehouse(userWarehouse.id.toString());
+        setSearchParams((params) => {
+          params.set("warehouse", userWarehouse.id.toString());
+          return params;
+        });
+      }
+    } else if (!selectedWarehouse && warehouses && warehouses.length > 0) {
+      const defaultWarehouse = warehouses.reduce((min, warehouse) => warehouse.id < min.id ? warehouse : min, warehouses[0]);
+      setSelectedWarehouse(defaultWarehouse.id.toString());
+    }
+  }, [warehouses, selectedWarehouse, user, ROLE, setSearchParams]);
 
   return (
     <div className="flex flex-col p-2 w-full">
@@ -135,20 +158,22 @@ const Product = () => {
           <div className="flex gap-2 items-center">
             {warehouses && warehouses.length > 0 && (
               <Select
-                defaultValue={warehouses ? warehouses[0].name : ""}
+                defaultValue={warehouses ? warehouses[0].id.toString() : ""}
                 onValueChange={(value) => {
                   setSearchParams((params) => {
                     params.set("warehouse", value);
                     return params;
                   });
-                }}
+                  setSelectedWarehouse(value);
+                }
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Warehouse" />
                 </SelectTrigger>
                 <SelectContent>
                   {warehouses.map((warehouse) => (
-                    <SelectItem key={warehouse.id} value={warehouse.name}>
+                    <SelectItem key={warehouse.id.toString()} value={warehouse.id.toString()}>
                       <div className="flex items-center w-[300px] justify-between">
                         <span className="font-bold w-full self-start">
                           {warehouse.name}
@@ -192,14 +217,14 @@ const Product = () => {
                 <TableHead className="w-[100px]">Category</TableHead>
                 <TableHead className="w-[200px]">Description</TableHead>
                 <TableHead className="text-center">Image</TableHead>
-                {ROLE === "ADMIN" && (
+                {(ROLE === "ADMIN"||"WAREHOUSE ADMIN") && (
                   <TableHead className="text-center">Action</TableHead>
                 )}
               </TableRow>
             </TableHeader>
             <TableBody>
               {data && data.products && data.products.length > 0 ? (
-                <ProductTableRow products={data.products} />
+                <ProductTableRow products={data.products} selectedWarehouse={selectedWarehouse} />
               ) : (
                 <TableRow>
                   <TableCell colSpan={10} className="text-center h-24">
