@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, X } from "lucide-react";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { useGetLocationOnGeo } from "@/hooks/useAddress";
 import { usePostAddress } from "@/hooks/useAddressMutation";
 import {
   Dialog,
@@ -14,7 +13,6 @@ import {
   DialogTitle,
 } from "@/components/ui/custom-dialog";
 import AddAddressForm from "./AddAddressForm";
-import toast from "react-hot-toast";
 import z from "zod";
 import { useTranslation } from "react-i18next";
 
@@ -22,8 +20,8 @@ export const addressSchema = z.object({
   recepient: z.string().min(4, "required").max(50),
   phone: z.string().min(9, "required").max(15),
   formatPhone: z.string().min(9, "required").max(15),
-  label: z.string().min(3, "required").max(30),
-  cityId: z.string().min(3, "required"),
+  label: z.string().min(3, "required").max(15, "max label length is 15"),
+  cityId: z.string().min(1, "required"),
   cityName: z.string().min(3, "required"),
   address: z.string().min(3, "required"),
   notes: z.string().optional(),
@@ -57,21 +55,11 @@ const AddNewAddressDialog = ({
   handleToggleDialog: (main?: boolean, add?: boolean, edit?: boolean) => void;
 }) => {
   const { t } = useTranslation();
-  const [location, setLocation] = useState<Coordinates | null>(null);
-  const { data: currentLocation } = useGetLocationOnGeo(location);
   const addressMutation = usePostAddress();
   const form = useForm<z.infer<typeof addressSchema>>({
     resolver: zodResolver(addressSchema),
     defaultValues: emptyValues,
   });
-
-  useEffect(() => {
-    if (currentLocation) {
-      const loc = currentLocation.components;
-      form.setValue("cityId", loc.city_code);
-      form.setValue("cityName", loc.city);
-    }
-  }, [currentLocation]);
 
   const onSubmit = (values: z.infer<typeof addressSchema>) => {
     addressMutation.mutate({ userId, ...values });
@@ -83,27 +71,6 @@ const AddNewAddressDialog = ({
       handleToggleDialog(true);
     }
   }, [addressMutation.isSuccess]);
-
-  const handleGetGeolocation = () => {
-    if (currentLocation) {
-      const loc = currentLocation.components;
-      form.setValue("cityId", loc.city_code);
-      form.setValue("cityName", loc.city);
-    }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setLocation({
-          latitude: pos.coords.latitude,
-          langitude: pos.coords.longitude,
-        });
-      },
-      (err) => {
-        toast.error(
-          "Location not detected. Please activate location via Settings on your device."
-        );
-      }
-    );
-  };
 
   return (
     <Dialog
@@ -144,11 +111,7 @@ const AddNewAddressDialog = ({
           </h3>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-              <AddAddressForm
-                isPending={addressMutation.isPending}
-                location={location}
-                handleGetGeolocation={handleGetGeolocation}
-              />
+              <AddAddressForm isPending={addressMutation.isPending} />
             </form>
           </Form>
         </div>

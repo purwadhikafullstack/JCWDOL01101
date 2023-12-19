@@ -1,8 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import React from "react";
-import CityField from "@/components/input/CityField";
-import { Coordinates } from "./AddAddressForm";
 import LabelField from "@/components/input/LabelField";
 import AddressField from "@/components/input/AddressField";
 import MainCheckboxField from "@/components/input/MainCheckboxField";
@@ -14,24 +12,15 @@ import { useTranslation } from "react-i18next";
 
 type AddAddressForm = {
   isPending: boolean;
-  location: Coordinates | null;
-  handleGetGeolocation: () => void;
 };
-const EditForm = ({
-  isPending,
-  location,
-  handleGetGeolocation,
-}: AddAddressForm) => {
+const EditForm = ({ isPending }: AddAddressForm) => {
   const { t } = useTranslation();
   return (
     <>
       <RecepientField />
       <PhoneField />
       <LabelField />
-      <EditCityField
-        location={location}
-        handleGetGeolocation={handleGetGeolocation}
-      />
+      <EditCityField />
       <AddressField />
       <NotesField />
       <MainCheckboxField />

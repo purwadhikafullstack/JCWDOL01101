@@ -52,12 +52,12 @@ export class ProductService {
     return readNewestProducts(externalId);
   }
 
-  public async getHighestSoldProducts(limit: number): Promise<Product[]> {
-    return readHighestSoldProducts(limit);
+  public async getHighestSoldProducts(limit: number, externalId: string | undefined): Promise<Product[]> {
+    return readHighestSoldProducts(limit, externalId);
   }
 
-  public async getProductsByCategory(categoryId: number, limit: number): Promise<Product[]> {
-    return readProductsByCategory(categoryId, limit);
+  public async getProductsByCategory(productId: number, categoryId: number, externalId: string, limit: number): Promise<Product[]> {
+    return readProductsByCategory(productId, categoryId, externalId, limit);
   }
 
   public async getProductBySlug(slug: string, externalId: string): Promise<ProductBySlug> {

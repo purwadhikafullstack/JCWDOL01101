@@ -112,29 +112,30 @@ const ProductsPage = () => {
             <NewestProductSekeleton product={10} />
           ) : (
             <>
-              {isSuccess && data.pages.length > 0 ? (
-                data.pages.map((page, i) =>
-                  page.map((product: Product, i: number) => {
-                    return page.length === i + 1 ? (
-                      <ProductCard
-                        ref={ref}
-                        key={product.id}
-                        product={product}
+              {isSuccess &&
+                data.pages.map((page) => {
+                  return page.length > 0 ? (
+                    page.map((product: Product, i: number) => {
+                      return page.length === i + 1 ? (
+                        <ProductCard
+                          ref={ref}
+                          key={product.id}
+                          product={product}
+                        />
+                      ) : (
+                        <ProductCard key={product.id} product={product} />
+                      );
+                    })
+                  ) : (
+                    <div key={0} className="col-span-5">
+                      <img
+                        className="w-[400px] mx-auto"
+                        src="ilus/empty-product.svg"
+                        alt="empty product"
                       />
-                    ) : (
-                      <ProductCard key={product.id} product={product} />
-                    );
-                  })
-                )
-              ) : (
-                <div className="col-span-5">
-                  <img
-                    className="w-[400px] mx-auto"
-                    src="ilus/empty-product.svg"
-                    alt="empty product"
-                  />
-                </div>
-              )}
+                    </div>
+                  );
+                })}
               {isFetchingNextPage && <NewestProductSekeleton product={5} />}
             </>
           )}

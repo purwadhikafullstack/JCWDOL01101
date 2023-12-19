@@ -2,11 +2,6 @@ import service from "@/service";
 import { useAuth } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
 
-type Coordinates = {
-  latitude: number;
-  langitude: number;
-};
-
 export type OpenCageResults = {
   formatted: string;
   components: {
@@ -64,22 +59,6 @@ export interface City {
   postalCode: string;
   type: string;
 }
-
-export const useGetLocationOnGeo = (coordinates: Coordinates | null) => {
-  const coords = useQuery<OpenCageResults>({
-    queryKey: ["location", coordinates?.latitude, coordinates?.langitude],
-    queryFn: async () => {
-      const res = await service.get(
-        `/address/current/${coordinates?.latitude}/${coordinates?.langitude}`
-      );
-
-      return res.data.data;
-    },
-    enabled: !!coordinates?.latitude && !!coordinates?.langitude,
-  });
-
-  return coords;
-};
 
 export const useAddress = (search: string) => {
   const { getToken } = useAuth();

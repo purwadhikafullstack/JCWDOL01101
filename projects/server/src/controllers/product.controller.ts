@@ -74,10 +74,10 @@ export class ProductController {
     }
   };
 
-  public getHigestSellProducts = async (req: Request, res: Response, next: NextFunction) => {
+  public getHigestSellProducts = async (req: WithAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const limit = Number(req.query.limit);
-      const products: Product[] = await this.product.getHighestSoldProducts(limit);
+      const products: Product[] = await this.product.getHighestSoldProducts(limit, req.auth.userId);
       res.status(200).json({
         data: products,
         message: 'get.highest',
@@ -87,11 +87,12 @@ export class ProductController {
     }
   };
 
-  public getProductsByCategory = async (req: Request, res: Response, next: NextFunction) => {
+  public getProductsByCategory = async (req: WithAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const categoryId = Number(req.params.categoryId);
+      const productId = Number(req.params.productId);
       const limit = Number(req.query.limit);
-      const proudcts: Product[] = await this.product.getProductsByCategory(categoryId, limit);
+      const proudcts: Product[] = await this.product.getProductsByCategory(productId, categoryId, req.auth.userId, limit);
 
       res.status(200).json({
         data: proudcts,

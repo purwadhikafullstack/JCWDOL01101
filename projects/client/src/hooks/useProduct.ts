@@ -176,12 +176,16 @@ export const useNewestProducts = () => {
 };
 
 export const useHighestSellProducts = (limit = 3) => {
+  const { getToken } = useAuth();
   const products = useQuery<Product[]>({
     queryKey: ["highest-sell", limit],
     queryFn: async () => {
       const res = await service.get(`/products/highest-sell`, {
         params: {
           limit,
+        },
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
         },
       });
       return res.data.data;
@@ -241,6 +245,7 @@ export const useProductByCategory = (
   categoryId: number | undefined,
   limit = 10
 ) => {
+  const { getToken } = useAuth();
   const { data, isLoading } = useQuery<Product[]>({
     queryKey: ["product", categoryId, productId],
     queryFn: async () => {
@@ -249,6 +254,9 @@ export const useProductByCategory = (
         {
           params: {
             limit,
+          },
+          headers: {
+            Authorization: `Bearer ${await getToken()}`,
           },
         }
       );

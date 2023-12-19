@@ -1,9 +1,13 @@
 import { Op } from 'sequelize';
 import { DB } from '@/database';
-import { Product } from '@/interfaces';
+import { Product, User } from '@/interfaces';
 import { ImageModel, InventoryModel, ReviewModel, SizeModel, WishlistModel } from '@/models';
 
-export async function readHighestSoldProducts(limit: number): Promise<Product[]> {
+export async function readHighestSoldProducts(limit: number, externalId: string | undefined): Promise<Product[]> {
+  let findUser: User | null = null;
+  if (externalId) {
+    findUser = await DB.User.findOne({ where: { externalId, status: 'ACTIVE' } });
+  }
   limit = limit || 3;
   const date = new Date();
   const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -44,6 +48,9 @@ export async function readHighestSoldProducts(limit: number): Promise<Product[]>
       {
         model: WishlistModel,
         as: 'productWishlist',
+        where: {
+          userId: findUser ? findUser.id : null,
+        },
         paranoid: true,
         limit: 1,
       },

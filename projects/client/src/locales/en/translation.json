@@ -154,7 +154,7 @@
     }
   },
   "checkoutPage": {
-    "header": "Chekout",
+    "header": "Checkout",
     "main": "Main",
     "shipping": "Shipping Address",
     "addressBtn": "Choose Other Address",

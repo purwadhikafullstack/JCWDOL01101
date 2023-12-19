@@ -59,7 +59,7 @@ const Checkout = () => {
   return (
     <>
       <Helmet>
-        <title>Chekout | TOTEN</title>
+        <title>Checkout | TOTEN</title>
       </Helmet>
       <div className="py-4  border-b">
         <div className="w-full container">

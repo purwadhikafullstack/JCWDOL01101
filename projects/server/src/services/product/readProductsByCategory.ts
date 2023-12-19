@@ -1,13 +1,18 @@
 import { DB } from '@/database';
-import { Product } from '@/interfaces';
+import { Product, User } from '@/interfaces';
 import { ImageModel, InventoryModel, ReviewModel, SizeModel, WishlistModel } from '@/models';
 import { HttpException } from '@/exceptions/HttpException';
+import { Op } from 'sequelize';
 
-export async function readProductsByCategory(categoryId: number, limit: number): Promise<Product[]> {
+export async function readProductsByCategory(productId: number, categoryId: number, externalId: string, limit: number): Promise<Product[]> {
+  let findUser: User | null = null;
+  if (externalId) {
+    findUser = await DB.User.findOne({ where: { externalId, status: 'ACTIVE' } });
+  }
   limit = limit || 12;
   const findProducts: Product[] = await DB.Product.findAll({
     limit,
-    where: { categoryId, status: 'ACTIVE' },
+    where: { categoryId, id: { [Op.ne]: productId }, status: 'ACTIVE' },
     include: [
       {
         model: ReviewModel,
@@ -35,12 +40,14 @@ export async function readProductsByCategory(categoryId: number, limit: number):
       {
         model: WishlistModel,
         as: 'productWishlist',
+        where: {
+          userId: findUser ? findUser.id : null,
+        },
         paranoid: true,
         limit: 1,
       },
     ],
   });
-  if (!findProducts || findProducts.length === 0) throw new HttpException(409, "Products doesn't exist");
 
   return findProducts;
 }
