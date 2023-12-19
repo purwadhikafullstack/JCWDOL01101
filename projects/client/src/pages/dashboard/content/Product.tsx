@@ -16,23 +16,16 @@ import ProductTableRow from "../components/ProductTableRow";
 import TablePagination from "../components/TablePagination";
 import ChangeOrderButton from "../components/ChangeOrderButton";
 import { useUser } from "@clerk/clerk-react";
-import { useCurrentUser, useUsers } from "@/hooks/useUser";
 import { useBoundStore } from "@/store/client/useStore";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useGetWarehouse } from "@/hooks/useWarehouse";
 import ProductTableOptions from "../components/product/ProductTableOptions";
 import { Helmet } from "react-helmet";
+import Hashids from "hashids";
 
 const Product = () => {
-  const { user, isSignedIn, isLoaded } = useUser();
+  const { user } = useUser();
+  const hashids = new Hashids("TOTEN", 10);
   const ROLE = user?.publicMetadata.role || "CUSTOMER";
-  const userId = user?.publicMetadata.id;
   const [searchParams, setSearchParams] = useSearchParams({
     page: "1",
   });
@@ -41,16 +34,17 @@ const Product = () => {
   const orderParams = searchParams.get("order");
   const searchTerm = searchParams.get("s") || "";
   const [debounceSearch] = useDebounce(searchTerm, 1000);
-  const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const { data: warehouses } = useGetWarehouse();
   useEffect(() => {
     if (ROLE === "ADMIN" && warehouses && warehouses.length > 0) {
       setSearchParams((params) => {
-        params.set("warehouse", String(warehouses[0].id));
+        const hashId = hashids.encode(warehouses[0].id);
+        params.set("warehouse", hashId);
         return params;
       });
     }
   }, [warehouses, ROLE]);
+
   const { data, isLoading } = useProducts({
     page: currentPage,
     s: debounceSearch,
@@ -67,37 +61,6 @@ const Product = () => {
   useEffect(() => {
     clearImage();
   }, []);
-
-  const { data: userAdmin } = useCurrentUser({
-    externalId: user?.id!,
-    enabled: isLoaded && !!isSignedIn,
-  });
-
-  useEffect(() => {
-    if (
-      ROLE === "WAREHOUSE ADMIN" &&
-      warehouses &&
-      warehouses.length > 0 &&
-      user
-    ) {
-      const userWarehouse = warehouses.find(
-        (warehouse) => warehouse.userId === Number(userAdmin?.id)
-      );
-      if (userWarehouse) {
-        setSelectedWarehouse(userWarehouse.id.toString());
-        setSearchParams((params) => {
-          params.set("warehouse", userWarehouse.id.toString());
-          return params;
-        });
-      }
-    } else if (!selectedWarehouse && warehouses && warehouses.length > 0) {
-      const defaultWarehouse = warehouses.reduce(
-        (min, warehouse) => (warehouse.id < min.id ? warehouse : min),
-        warehouses[0]
-      );
-      setSelectedWarehouse(defaultWarehouse.id.toString());
-    }
-  }, [warehouses, selectedWarehouse, user, ROLE, setSearchParams]);
 
   return (
     <>
@@ -125,7 +88,9 @@ const Product = () => {
                 <TableHead>
                   <ChangeOrderButton paramKey="name" name="Name" />
                 </TableHead>
-                <TableHead>Available Size</TableHead>
+                <TableHead className="w-[100px] text-start">
+                  Available Size
+                </TableHead>
                 <TableHead className="w-[150px]">
                   <ChangeOrderButton paramKey="price" name="Price" />
                 </TableHead>
@@ -133,10 +98,10 @@ const Product = () => {
                   <ChangeOrderButton paramKey="weight" name="Weight (grams)" />
                 </TableHead>
                 <TableHead className="w-[150px] text-center">
-                  <ChangeOrderButton paramKey="stock" name="Stock" />
+                  <ChangeOrderButton paramKey="stock" name="Total Stock" />
                 </TableHead>
                 <TableHead className="w-[150px] text-center">
-                  <ChangeOrderButton paramKey="sold" name="Sold" />
+                  <ChangeOrderButton paramKey="sold" name="Total Sold" />
                 </TableHead>
                 <TableHead className="w-[100px]">Category</TableHead>
                 <TableHead className="w-[200px]">Description</TableHead>
@@ -156,10 +121,7 @@ const Product = () => {
               ) : (
                 <>
                   {data && data.products && data.products.length > 0 ? (
-                    <ProductTableRow
-                      products={data.products}
-                      selectedWarehouse={selectedWarehouse}
-                    />
+                    <ProductTableRow products={data.products} />
                   ) : (
                     <TableRow>
                       <TableCell colSpan={11} className="text-center h-24">

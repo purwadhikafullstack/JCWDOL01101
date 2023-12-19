@@ -6,6 +6,7 @@ import { Product } from '@/interfaces/product.interface';
 import { ProductService } from '@/services/product/index.service';
 import { RequireAuthProp, WithAuthProp } from '@clerk/clerk-sdk-node';
 import { NextFunction, Request, Response } from 'express';
+import Hashids from 'hashids';
 import Container from 'typedi';
 export type ProductQuery = {
   f: string;
@@ -21,7 +22,9 @@ export class ProductController {
 
   public getProducts = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
+      const hashids = new Hashids('TOTEN', 10);
       const { page, s, size, order, status, filter, limit, warehouse, category } = req.query;
+      const warehouseId = hashids.decode(warehouse as string);
       const { products, totalPages } = await this.product.getProducts({
         s: String(s),
         size: String(size),
@@ -30,7 +33,7 @@ export class ProductController {
         page: Number(page),
         status: String(status),
         filter: String(filter),
-        warehouse: Number(warehouse),
+        warehouse: Number(warehouseId),
         externalId: req.auth.userId,
         category: String(category),
       });

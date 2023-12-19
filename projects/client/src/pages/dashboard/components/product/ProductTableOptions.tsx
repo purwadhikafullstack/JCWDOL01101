@@ -15,12 +15,14 @@ import { useCategories } from "@/hooks/useCategory";
 import { useSize } from "@/hooks/useSize";
 import { useUser } from "@clerk/clerk-react";
 import { Warehouse } from "@/hooks/useWarehouse";
+import Hashids from "hashids";
 
 type Props = {
   warehouses?: Warehouse[];
 };
 const ProductTableOptions = ({ warehouses }: Props) => {
   const { user } = useUser();
+  const hashids = new Hashids("TOTEN", 10);
   const ROLE = user?.publicMetadata.role || "CUSTOMER";
   const [searchParams, setSearchParams] = useSearchParams();
   const searchTerm = searchParams.get("s") || "";
@@ -121,27 +123,27 @@ const ProductTableOptions = ({ warehouses }: Props) => {
                   <SelectValue placeholder="Select Warehouse" />
                 </SelectTrigger>
                 <SelectContent>
-                  {warehouses.map((warehouse) => (
-                    <SelectItem
-                      key={warehouse.id}
-                      value={warehouse.id.toString()}
-                    >
-                      <div className="flex items-center w-[300px] justify-between">
-                        <span className="font-bold w-full self-start">
-                          {warehouse.name}
-                        </span>
-                        <span className="flex items-center gap-2 text-center justify-end text-muted-foreground w-full">
-                          <p className="overflow-hidden whitespace-nowrap text-ellipsis w-[100px]">
-                            {
-                              warehouse.warehouseAddress?.cityWarehouse
-                                ?.cityName
-                            }
-                          </p>
-                          <MapPin className="w-3 h-3 mr-2" />
-                        </span>
-                      </div>
-                    </SelectItem>
-                  ))}
+                  {warehouses.map((warehouse) => {
+                    const hashId = hashids.encode(Number(warehouse.id));
+                    return (
+                      <SelectItem key={warehouse.id} value={hashId}>
+                        <div className="flex items-center w-[300px] justify-between">
+                          <span className="font-bold w-full self-start">
+                            {warehouse.name}
+                          </span>
+                          <span className="flex items-center gap-2 text-center justify-end text-muted-foreground w-full">
+                            <p className="overflow-hidden whitespace-nowrap text-ellipsis w-[100px]">
+                              {
+                                warehouse.warehouseAddress?.cityWarehouse
+                                  ?.cityName
+                              }
+                            </p>
+                            <MapPin className="w-3 h-3 mr-2" />
+                          </span>
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             )}

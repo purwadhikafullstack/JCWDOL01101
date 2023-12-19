@@ -45,16 +45,19 @@ export class InventoryService {
     return findInventory;
   }
 
-  public async addStock(productId: number, warehouseId: number, stock: number): Promise<Inventory> {
+  public async addStock(productId: number, sizeId: number, warehouseId: number, stock: number, notes: string): Promise<Inventory> {
     const inventory = await DB.Inventories.findOne({
       where: {
-        productId: productId,
-        warehouseId: warehouseId,
+        sizeId,
+        productId,
+        warehouseId,
       },
     });
     if (!inventory) throw new HttpException(409, "Inventory doesn't exist");
-    inventory.stock = stock;
-    await inventory.save();
+    const isInventoryUpdate = await DB.Inventories.update({ stock: stock }, { where: { id: inventory.id } });
+    if (isInventoryUpdate) {
+      await DB.Jurnal.create({ inventoryId: inventory.id, oldQty: inventory.stock, qtyChange: stock, newQty: stock, notes, type: '1' });
+    }
     return inventory;
   }
 
