@@ -125,6 +125,4 @@ export class InventoryService {
           throw new HttpException(409, err.message);
         }
       }
-      
-      
 }
