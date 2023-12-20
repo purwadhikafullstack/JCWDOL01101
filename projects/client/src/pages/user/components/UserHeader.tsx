@@ -14,7 +14,7 @@ const UserHeader = () => {
   }, [location.pathname])
 
   return (
-    <div className="flex justify-start items-center bg-white p-6 border-b">
+    <div className="flex justify-start items-center bg-inherit p-6 border-b">
       <h2 className="capitalize text-2xl font-medium">{site}</h2>
     </div>
   )

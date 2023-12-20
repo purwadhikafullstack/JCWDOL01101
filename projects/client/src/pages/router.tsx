@@ -33,6 +33,7 @@ import ReviewForm from "./homepage/content/ReviewForm"
 import Reviews from "./homepage/content/Reviews"
 import Wishlist from "./homepage/content/Wishlist"
 import ProductReviews from "./dashboard/content/ProductReviews"
+import DashboardOrder from "./dashboard/content/DashboardOrder"
 
 const router = createBrowserRouter([
   {
@@ -205,6 +206,10 @@ const router = createBrowserRouter([
       {
         path: "product/edit/:slug",
         element: <EditProductForm />,
+      },
+      {
+        path: "order",
+        element: <DashboardOrder />,
       },
     ],
   },

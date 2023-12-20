@@ -18,6 +18,32 @@ export class OrderController {
     }
   };
 
+  public getOrders = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
+    try {
+      const { page, s, order, filter, limit, warehouse, status } = req.query;
+
+      const { orders, totalPages } = await this.order.getAllOrder({
+        s: String(s),
+        order: String(order),
+        limit: Number(limit),
+        filter: String(filter),
+        page: Number(page),
+        warehouse: String(warehouse),
+        externalId: req.auth.userId,
+        status: String(status),
+      });
+      res.status(200).json({
+        data: {
+          orders,
+          totalPages,
+        },
+        message: 'get.orders',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   public getAllowOrders = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const externalId = req.auth.userId;

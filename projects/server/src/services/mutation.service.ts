@@ -12,7 +12,6 @@ import { InventoryService } from './inventrory.service';
 
 @Service()
 export class MutationService {
-  warehouse = Container.get(WarehouseService);
   inventory = Container.get(InventoryService);
 
   public async createMutation(mutationData: MutationDto): Promise<Mutation> {
@@ -84,7 +83,7 @@ export class MutationService {
     } else if (manage === 'RECEIVE') {
       action = 'receiverWarehouseId';
     }
-    const findWarehouse = await this.warehouse.findWarehouseByName(warehouse);
+    const findWarehouse = await DB.Warehouses.findOne({ where: { name: warehouse } });
     if (!findWarehouse) throw new HttpException(409, "warehouse doesn't exist");
     const LIMIT = Number(limit) || 10;
     const offset = (page - 1) * LIMIT;
