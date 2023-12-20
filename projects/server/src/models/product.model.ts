@@ -11,7 +11,6 @@ export class ProductModel extends Model<Product> implements Product {
   public description: string;
   public status: Status;
   public primaryImage: string;
-  public size: string;
   public slug: string;
 
   public readonly createdAt!: Date;
@@ -50,10 +49,6 @@ export default function (sequelize: Sequelize): typeof ProductModel {
       description: {
         allowNull: false,
         type: DataTypes.TEXT,
-      },
-      size: {
-        allowNull: false,
-        type: DataTypes.STRING(10),
       },
       weight: {
         allowNull: false,

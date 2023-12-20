@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react"
-import { Button, buttonVariants } from "@/components/ui/button"
-import { SearchIcon, Plus } from "lucide-react"
+import React, { useState, useEffect } from "react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { SearchIcon, Plus } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -8,26 +8,26 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { useSearchParams } from "react-router-dom"
-import { useUsers } from "@/hooks/useUser"
-import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton"
-import { useDebounce } from "use-debounce"
-import { getDate, getWarehouse } from "@/lib/utils"
-import TablePagination from "../components/TablePagination"
-import NewAdminFrom from "../components/NewAdminForm"
-import AdminAction from "../components/AdminAction"
-import ChangeOrderButton from "../components/ChangeOrderButton"
-import AssignAdminForm from "../components/AssignAdminForm"
-import UnassignAdminForm from "../components/UnassignAdminForm"
+} from "@/components/ui/table";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useSearchParams } from "react-router-dom";
+import { useUsers } from "@/hooks/useUser";
+import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton";
+import { useDebounce } from "use-debounce";
+import { getDate, getWarehouse } from "@/lib/utils";
+import TablePagination from "../components/TablePagination";
+import NewAdminFrom from "../components/NewAdminForm";
+import AdminAction from "../components/AdminAction";
+import ChangeOrderButton from "../components/ChangeOrderButton";
+import AssignAdminForm from "../components/AssignAdminForm";
+import UnassignAdminForm from "../components/UnassignAdminForm";
 
 const Admin = () => {
-  const [searchParams, setSearchParams] = useSearchParams({ page: "1" })
-  const currentPage = Number(searchParams.get("page"))
-  const [searchTerm, setSearchTerm] = useState("")
-  const [debounceSearch] = useDebounce(searchTerm, 1000)
+  const [searchParams, setSearchParams] = useSearchParams({ page: "1" });
+  const currentPage = Number(searchParams.get("page"));
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debounceSearch] = useDebounce(searchTerm, 1000);
 
   const { data, isLoading, isFetched } = useUsers({
     page: currentPage,
@@ -35,39 +35,29 @@ const Admin = () => {
     r: "WAREHOUSE ADMIN",
     filter: searchParams.get("filter") || "",
     order: searchParams.get("order") || "",
-  })
+  });
 
-  const [warehouses, setWarehouses] = useState<{ [key: number]: string }>({})
+  const [warehouses, setWarehouses] = useState<{ [key: number]: string }>({});
 
   useEffect(() => {
     data?.users!.forEach((user) => {
-      getWarehouse(Number(user.id), setWarehouses)
-    })
-  }, [data])
+      getWarehouse(Number(user.id), setWarehouses);
+    });
+  }, [data]);
 
   return (
     <div className="flex flex-col p-2 w-full">
-      <Dialog>
-        <DialogTrigger
-          className={buttonVariants({
-            variant: "default",
-            className: "self-end",
-          })}
-        >
-          <Plus className="w-4 h-4 mr-2" /> New Admin
-        </DialogTrigger>
-        <NewAdminFrom />
-      </Dialog>
+      <NewAdminFrom />
       <div className="relative w-[300px]">
         <SearchIcon className="absolute h-4 w-4 text-muted-foreground left-3 top-1/2 -translate-y-1/2" />
         <Input
           value={searchTerm}
           onChange={(e) => {
             setSearchParams((params) => {
-              params.set("s", e.target.value)
-              return params
-            })
-            setSearchTerm(e.target.value)
+              params.set("s", e.target.value);
+              return params;
+            });
+            setSearchTerm(e.target.value);
           }}
           className=" w-full pl-10"
           placeholder="search product ..."
@@ -166,7 +156,7 @@ const Admin = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Admin
+export default Admin;

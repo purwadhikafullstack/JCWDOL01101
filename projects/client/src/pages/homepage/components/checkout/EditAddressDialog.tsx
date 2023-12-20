@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import {
   Dialog,
   DialogClose,
@@ -8,11 +9,9 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, X } from "lucide-react";
-import React, { useEffect, useState } from "react";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { useAddressById, useGetLocationOnGeo } from "@/hooks/useAddress";
+import { useAddressById } from "@/hooks/useAddress";
 import { usePutAddress } from "@/hooks/useAddressMutation";
 import EditForm from "./EditForm";
 import z from "zod";
@@ -40,10 +39,6 @@ const emptyValues = {
   isMain: false,
 };
 
-type Coordinates = {
-  latitude: number;
-  langitude: number;
-};
 const EditAddressDialog = ({
   userId,
   open,
@@ -58,8 +53,6 @@ const EditAddressDialog = ({
   handleToggleDialog: (main?: boolean, add?: boolean, edit?: boolean) => void;
 }) => {
   const { t } = useTranslation();
-  const [location, setLocation] = useState<Coordinates | null>(null);
-  const { data: currentLocation } = useGetLocationOnGeo(location);
   const { data: currentAddress } = useAddressById(addressId!);
   const updateAddress = usePutAddress(addressId!);
 
@@ -82,14 +75,6 @@ const EditAddressDialog = ({
     }
   }, [currentAddress]);
 
-  useEffect(() => {
-    if (currentLocation) {
-      const loc = currentLocation.components;
-      form.setValue("cityName", loc.city);
-      form.setValue("cityId", loc.city_code);
-    }
-  }, [currentLocation]);
-
   const onSubmit = (values: z.infer<typeof editAddressSchema>) => {
     updateAddress.mutate({ userId, ...values });
   };
@@ -99,27 +84,6 @@ const EditAddressDialog = ({
       handleToggleDialog(true);
     }
   }, [updateAddress.isSuccess]);
-
-  const handleGetGeolocation = () => {
-    if (currentLocation) {
-      const loc = currentLocation.components;
-      form.setValue("cityId", loc.city_code);
-      form.setValue("cityName", loc.city);
-    }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setLocation({
-          latitude: pos.coords.latitude,
-          langitude: pos.coords.longitude,
-        });
-      },
-      (err) => {
-        toast.error(
-          "Location not detected. Please activate location via Settings on your device."
-        );
-      }
-    );
-  };
 
   return (
     <Dialog open={open} onOpenChange={(value) => setEditDialog(value)}>
@@ -152,11 +116,7 @@ const EditAddressDialog = ({
         <div className="w-full h-[500px] overflow-y-auto pb-10 p-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <EditForm
-                handleGetGeolocation={handleGetGeolocation}
-                isPending={updateAddress.isPending}
-                location={location}
-              />
+              <EditForm isPending={updateAddress.isPending} />
             </form>
           </Form>
         </div>

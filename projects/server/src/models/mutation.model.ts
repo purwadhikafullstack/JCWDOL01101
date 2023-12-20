@@ -8,6 +8,7 @@ export class MutationModel extends Model<Mutation> implements Mutation {
   public senderName: string;
   public receiverName?: string;
   public productId?: number;
+  public sizeId: number;
   public quantity: number;
   public senderNotes?: string;
   public receiverNotes?: string;
@@ -43,6 +44,10 @@ export default function (sequelize: Sequelize): typeof MutationModel {
         type: DataTypes.INTEGER,
       },
       quantity: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
+      sizeId: {
         allowNull: false,
         type: DataTypes.INTEGER,
       },

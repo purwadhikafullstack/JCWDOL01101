@@ -18,6 +18,7 @@
     }
   },
   "homepage": {
+    "title": "Homepage | TOTEN",
     "title1": "popular category",
     "sub1": "see all category",
     "sub2": "see all",
@@ -153,7 +154,7 @@
     }
   },
   "checkoutPage": {
-    "header": "Chekout",
+    "header": "Checkout",
     "main": "Main",
     "shipping": "Shipping Address",
     "addressBtn": "Choose Other Address",

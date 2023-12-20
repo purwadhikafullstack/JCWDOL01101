@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useCartProduct } from "@/hooks/useCart";
-import { Product } from "@/hooks/useProduct";
+import { useCartProductOnSize } from "@/hooks/useCart";
 import { formatToIDR } from "@/lib/utils";
 import { baseURL } from "@/service";
 import { Minus, Plus, X } from "lucide-react";
@@ -16,37 +15,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { debounce } from "lodash";
+import { cartProducts } from "@/context/UserContext";
 
 type CartItemProps = {
-  cartId: number;
-  product: Product;
   hasCart: boolean;
-  quantity: number;
-  cartProductId: number;
+  cartProduct: cartProducts;
 };
 
-const CartItem = ({
-  cartId,
-  hasCart,
-  product,
-  quantity,
-  cartProductId,
-}: CartItemProps) => {
+const CartItem = ({ hasCart, cartProduct }: CartItemProps) => {
+  const { product, cartId, id, quantity, selected, size, sizeId } = cartProduct;
   const { t } = useTranslation();
-  const { data: cartProduct } = useCartProduct(hasCart, product.id!);
-  const stock = cartProduct
-    ? cartProduct?.product?.inventory.reduce(
-        (prev, curr) => prev + curr.stock,
-        0
-      )
-    : 0;
+  const { data: cp } = useCartProductOnSize(hasCart, product.id, sizeId);
+  const stock = cp?.stock || 0;
 
-  const deleteMutation = useDeleteCartProduct(cartProductId);
-  const cancelDeleteMutation = useCancelCartProductDeletion(cartProductId);
-  const toggleSelectedCart = useToggleSelectedProduct(
-    cartProductId,
-    product.id!
-  );
+  const deleteMutation = useDeleteCartProduct();
+  const cancelDeleteMutation = useCancelCartProductDeletion();
+  const toggleSelectedCart = useToggleSelectedProduct(id, product.id!);
   const [quantityChange, setQuantityChange] = useState(0);
   const quantityChangeRef = useRef(quantityChange);
   const qtyMutation = useChageQty();
@@ -64,6 +48,7 @@ const CartItem = ({
         );
         qtyMutation.mutate({
           cartId,
+          sizeId: size.id,
           productId: product.id,
           qty: newQuantity,
         });
@@ -81,7 +66,7 @@ const CartItem = ({
   };
 
   const deleteCart = () => {
-    deleteMutation.mutate();
+    deleteMutation.mutate(id);
   };
 
   useEffect(() => {
@@ -93,7 +78,7 @@ const CartItem = ({
             <button
               onClick={() => {
                 toast.dismiss(t.id);
-                cancelDeleteMutation.mutate();
+                cancelDeleteMutation.mutate(id);
               }}
               className="ml-2 bg-slate-900 px-2 py-1 rounded-md"
             >
@@ -113,18 +98,16 @@ const CartItem = ({
   }, [deleteMutation.isSuccess]);
   return (
     <>
-      <div key={product.id} className="w-full space-y-2">
+      <div className="w-full space-y-2">
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-center">
-            {cartProduct && (
-              <Checkbox
-                checked={cartProduct.selected}
-                onCheckedChange={(value) => {
-                  toggleSelectedCart.mutate({ value: !!value });
-                }}
-                className="rounded-none"
-              />
-            )}
+            <Checkbox
+              checked={selected}
+              onCheckedChange={(value) => {
+                toggleSelectedCart.mutate({ value: !!value });
+              }}
+              className="rounded-none"
+            />
             <div>
               <h3 className="font-bold">Toten Offical</h3>
             </div>
@@ -148,7 +131,7 @@ const CartItem = ({
                 {product.name}
               </Link>
               <p className="text-muted-foreground">
-                {t("cartPage.size")} : {product.size}
+                {t("cartPage.size")} : {size.label}
               </p>
               <p className="font-bold">
                 {formatToIDR(product.price.toString())}
@@ -179,8 +162,7 @@ const CartItem = ({
               </Button>
             </div>
             <span className="text-sm lg:text-base font-bold uppercase">
-              {t("cartPage.subTotal")}:{" "}
-              {formatToIDR((product.price * quantity).toString())}
+              {t("cartPage.subTotal")}: {formatToIDR(product.price * quantity)}
             </span>
           </div>
         </div>

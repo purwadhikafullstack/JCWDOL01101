@@ -11,19 +11,8 @@ export interface Product {
   primaryImage: string;
   status: Status;
   slug: string;
-  size: string;
   totalStock?: number;
   createdAt?: Date;
   updateAt?: Date;
-}
-
-export interface GetFilterProduct {
-  page: number;
-  s: string;
-  filter: string;
-  order: string;
-  limit: number;
-  externalId: string;
-  warehouse: string;
-  category: string;
+  averageRating?: number;
 }

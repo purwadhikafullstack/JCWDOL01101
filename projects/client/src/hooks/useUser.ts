@@ -14,7 +14,7 @@ export const useCurrentUser = ({
   externalId,
   enabled,
 }: {
-  externalId: string;
+  externalId: string | undefined;
   enabled: boolean;
 }) => {
   const user = useQuery<User>({
@@ -23,7 +23,7 @@ export const useCurrentUser = ({
       const res = await service.get(`/users/${externalId}`);
       return res.data.data;
     },
-    enabled,
+    enabled: !!externalId && enabled,
     refetchOnWindowFocus: true,
   });
 
@@ -47,7 +47,7 @@ export const useUsers = ({ page, s, r, filter, order }: UserOptions) => {
         },
         withCredentials: true,
       });
-      
+
       return res.data.data;
     },
     refetchOnWindowFocus: true,

@@ -9,8 +9,10 @@ import { Address } from "@/hooks/useAddress";
 import { useBoundStore } from "@/store/client/useStore";
 import { Warehouse } from "@/hooks/useWarehouse";
 import { Trans, useTranslation } from "react-i18next";
+import { Size } from "@/hooks/useSize";
 
 const CheckoutItem = ({
+  size,
   index,
   length,
   product,
@@ -18,6 +20,7 @@ const CheckoutItem = ({
   activeAddress,
   warehouse,
 }: {
+  size: Size;
   index: number;
   length: number;
   product: Product;
@@ -56,9 +59,8 @@ const CheckoutItem = ({
               />
               <div className="flex flex-col gap-2">
                 <span>{product.name}</span>
-                <span className="font-bold">
-                  {formatToIDR(product.price.toString())}
-                </span>
+                <span>Size: {size.label}</span>
+                <span className="font-bold">{formatToIDR(product.price)}</span>
               </div>
             </div>
           </div>

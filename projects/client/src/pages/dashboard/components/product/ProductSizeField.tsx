@@ -8,6 +8,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import React, { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
+import { useSize } from "@/hooks/useSize";
+import { Button } from "@/components/ui/button";
 
 const ProductSizeField = ({
   mutationStatus,
@@ -17,24 +19,20 @@ const ProductSizeField = ({
   mutationStatus: boolean;
 }) => {
   const form = useFormContext();
-  const sizeValue: string = form.getValues("size");
-  const [selectedSize, setSelectedSize] = useState("");
+  const sizeValue: number[] = form.getValues("size");
+  const [selectedSize, setSelectedSize] = useState<number[]>([]);
+  const { data: sizes } = useSize();
+  const sizeSet = new Set(selectedSize);
 
   useEffect(() => {
-    if (edit && sizeValue) {
+    if (edit && sizeValue.length > 0) {
       setSelectedSize(sizeValue);
     }
   }, [edit, sizeValue]);
 
   useEffect(() => {
-    if (selectedSize) {
-      form.setValue("size", selectedSize);
-    }
-  }, [selectedSize]);
-
-  useEffect(() => {
     if (mutationStatus) {
-      setSelectedSize("");
+      setSelectedSize([]);
     }
   }, [mutationStatus]);
 
@@ -59,17 +57,43 @@ const ProductSizeField = ({
             <div className="col-span-2">
               <FormControl>
                 <div className="w-full flex gap-1 select-none">
-                  {["XS", "S", "M", "L", "XL", "XXL", "3XL"].map((size) => (
-                    <div
-                      onClick={() => setSelectedSize(size)}
-                      key={size}
-                      className={`${
-                        selectedSize === size && "border-primary shadow-sm"
-                      } w-10 h-10 border text-sm hover:border-primary/60 cursor-pointer grid place-content-center`}
+                  {sizes && (
+                    <>
+                      {sizes.map((size) => {
+                        const isSelected = sizeSet.has(size.id);
+                        return (
+                          <div
+                            onClick={() => {
+                              if (isSelected) {
+                                sizeSet.delete(size.id);
+                              } else {
+                                sizeSet.add(size.id);
+                              }
+                              const filterValues = Array.from(sizeSet);
+                              setSelectedSize(filterValues);
+                              form.setValue("size", filterValues);
+                            }}
+                            key={size.id}
+                            className={`${
+                              isSelected && "border-primary shadow-sm"
+                            } w-10 h-10 border text-sm bg-background hover:border-primary/60 cursor-pointer grid place-content-center`}
+                          >
+                            {size.label}
+                          </div>
+                        );
+                      })}
+                    </>
+                  )}
+                  {sizeSet.size > 0 && (
+                    <Button
+                      type="button"
+                      onClick={() => setSelectedSize([])}
+                      variant="ghost"
+                      className="font-bold"
                     >
-                      {size}
-                    </div>
-                  ))}
+                      CLEAR
+                    </Button>
+                  )}
                 </div>
               </FormControl>
               <FormMessage />
