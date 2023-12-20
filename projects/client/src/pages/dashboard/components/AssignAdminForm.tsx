@@ -27,7 +27,7 @@ const AssignAdminForm = ({ userId }: { userId: Number }) => {
     });
   }, []);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e:FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     await service.put(`/warehouses/${selectedWarehouse}/assign/${userId}`);
   };
@@ -40,7 +40,7 @@ const AssignAdminForm = ({ userId }: { userId: Number }) => {
           You're about to assign this admin to a warehouse
         </DialogDescription>
       </DialogHeader>
-      <form onSubmit={e => handleSubmit(e)}>
+      <form onSubmit={e=>handleSubmit(e)}>
         <div className="w-[180px]">
           <select value={selectedWarehouse} onChange={(e) => setSelectedWarehouse(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
             <option value="">Select a Warehouse</option>
@@ -53,9 +53,8 @@ const AssignAdminForm = ({ userId }: { userId: Number }) => {
             ))}
           </select>
         </div>
-        <DialogClose>
-          <Button type="submit" className="mt-5">Submit</Button>
-        </DialogClose>
+        <DialogClose></DialogClose>
+        <Button type="submit" className="mt-5">Submit</Button>
       </form>
     </DialogContent>
   );
