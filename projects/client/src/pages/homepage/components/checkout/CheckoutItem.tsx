@@ -25,7 +25,6 @@ const CheckoutItem = ({
 }) => {
   const { t } = useTranslation();
   const fee = useBoundStore((state) => state.fee);
-  console.log(fee);
   const [show, setShow] = useState(false);
   const shippingCost = fee[cp.id] ? fee[cp.id].cost[0].value : 0;
   const total = cp.product.price * cp.quantity + shippingCost;

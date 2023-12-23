@@ -127,6 +127,7 @@ const Cart = () => {
         </div>
         {carts.length > 0 && (
           <ShoppingSummary
+            cartId={cart?.cart.id}
             someTrue={selected.someTrue}
             totalPrice={totalPrice}
             totalQuantity={totalQuantity}

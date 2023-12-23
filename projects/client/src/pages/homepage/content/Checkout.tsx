@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import SelectAddressDialog from "@/components/SelectAddressDialog";
 import { Trans, useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
+import { Toaster } from "react-hot-toast";
 
 export type Dialog = {
   main: boolean;
@@ -46,6 +47,11 @@ const Checkout = () => {
     lng: activeAddress?.lng,
   });
   const { data: selectedCartProducts } = useSelectedItem(cart?.cart.id!);
+  useEffect(() => {
+    if (selectedCartProducts && selectedCartProducts.length === 0) {
+      return navigate("/cart");
+    }
+  }, [selectedCartProducts]);
   const cartProductsLength = selectedCartProducts?.length || 0;
   const totalPrice = selectedCartProducts
     ? selectedCartProducts.reduce(
@@ -151,6 +157,7 @@ const Checkout = () => {
           </div>
         </div>
       </div>
+      <Toaster />
     </>
   );
 };

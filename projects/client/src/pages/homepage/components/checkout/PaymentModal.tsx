@@ -71,7 +71,8 @@ const PaymentModal = ({
   }, [show]);
 
   useEffect(() => {
-    if (checkClosestWarehouse.isSuccess) {
+    const invoice = localStorage.getItem("invoice");
+    if (checkClosestWarehouse.isSuccess || invoice) {
       setShow(true);
     }
   }, [checkClosestWarehouse.isSuccess]);

@@ -5,7 +5,7 @@ import Container, { Service } from 'typedi';
 import { Op } from 'sequelize';
 import { WarehouseModel } from '@/models/warehouse.model';
 import { JurnalService } from './jurnal.service';
-import { InventoryModel, SizeModel } from '@/models';
+import { SizeModel } from '@/models';
 
 @Service()
 export class InventoryService {
