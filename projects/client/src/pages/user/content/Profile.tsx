@@ -1,10 +1,9 @@
 import UserContext from "@/context/UserContext";
 import React, { useContext } from "react";
 import ProfileAvatar from "../components/ProfileAvatar";
-import { Edit, User } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { User } from "lucide-react";
 import EditProfile from "../components/EditProfile";
+import { useUser } from "@/hooks/useUser";
 
 const Profile = () => {
   const userContext = useContext(UserContext);
@@ -26,12 +25,7 @@ const Profile = () => {
           <LabelName label="Username" data={user?.username || "no data"} />
           <LabelName label="Email" data={user?.email || "no data"} />
           <LabelName label="Status" data={user?.status || "no data"} />
-          <Dialog>
-            <DialogTrigger className={buttonVariants({ variant: "outline" })}>
-              <Edit className="mr-2" /> Edit
-            </DialogTrigger>
-            <EditProfile />
-          </Dialog>
+          <EditProfile />
         </div>
       </div>
     </>

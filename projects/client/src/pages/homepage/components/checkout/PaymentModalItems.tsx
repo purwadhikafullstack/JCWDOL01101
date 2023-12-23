@@ -1,5 +1,4 @@
 import { Separator } from "@/components/ui/separator";
-import { useCartProduct } from "@/hooks/useCart";
 import { useSelectedItem } from "@/hooks/useCheckout";
 import { formatToIDR } from "@/lib/utils";
 import { useBoundStore } from "@/store/client/useStore";
@@ -7,11 +6,6 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import CartProducts from "./CartProducts";
 
-interface PaymentMethod {
-  img: string;
-  method: string;
-  id: string;
-}
 type Props = {
   paymentMethod: string;
   totalPrice: number;
@@ -27,7 +21,6 @@ const PaymentModalItems = ({
   address,
 }: Props) => {
   const { t } = useTranslation();
-  const shipping = useBoundStore((state) => state.fee);
   const { data: cartProducts } = useSelectedItem(cartId);
   return (
     <div className="mb-8 p-4 space-y-4">
@@ -54,7 +47,7 @@ const PaymentModalItems = ({
         <b className="text-sm">{t("checkoutPage.paymentModal.purchased")}</b>
         <Separator className="my-2" />
         {cartProducts && cartProducts.length > 0 && (
-          <CartProducts cartProducts={cartProducts} shipping={shipping} />
+          <CartProducts cartProducts={cartProducts} />
         )}
         <Separator className="my-2" />
       </div>

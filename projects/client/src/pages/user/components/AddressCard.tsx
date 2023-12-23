@@ -1,9 +1,10 @@
-import React from "react"
-import { Address } from "@/hooks/useAddress"
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
-import SetMainDialog from "./SetMainDialog"
-import DeleteAddressDialog from "./DeleteAddressDialog"
-import EditAddressDialog from "./EditAddressDialog"
+import React from "react";
+import { Address } from "@/hooks/useAddress";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import SetMainDialog from "./SetMainDialog";
+import DeleteAddressDialog from "./DeleteAddressDialog";
+import EditAddressDialog from "./EditAddressDialog";
+import { cn } from "@/lib/utils";
 
 const AddressCard = ({ address }: { address: Address }) => {
   return (
@@ -36,14 +37,19 @@ const AddressCard = ({ address }: { address: Address }) => {
           </Dialog>
           <Dialog>
             <DialogTrigger>
-              <p className={`${address.isMain && "hidden"} border-l pl-4`}>
+              <p
+                className={cn(
+                  address.isMain && "hidden",
+                  "block border-l pl-4"
+                )}
+              >
                 Set main address
               </p>
             </DialogTrigger>
             <SetMainDialog addressId={Number(address.id)} />
           </Dialog>
         </div>
-        <div className={`${address.isMain && "hidden"}`}>
+        <div className={cn(address.isMain && "hidden", "block")}>
           <Dialog>
             <DialogTrigger>
               <p>delete</p>
@@ -53,7 +59,7 @@ const AddressCard = ({ address }: { address: Address }) => {
         </div>
       </span>
     </div>
-  )
-}
+  );
+};
 
-export default AddressCard
+export default AddressCard;

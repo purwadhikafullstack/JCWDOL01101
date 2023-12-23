@@ -1,5 +1,4 @@
 import { Separator } from "@/components/ui/separator";
-import { Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import { baseURL } from "@/service";
 import { ChevronUp, Verified } from "lucide-react";
@@ -9,30 +8,27 @@ import { Address } from "@/hooks/useAddress";
 import { useBoundStore } from "@/store/client/useStore";
 import { Warehouse } from "@/hooks/useWarehouse";
 import { Trans, useTranslation } from "react-i18next";
-import { Size } from "@/hooks/useSize";
+import { cartProducts } from "@/context/UserContext";
 
 const CheckoutItem = ({
-  size,
+  cp,
   index,
   length,
-  product,
-  quantity,
   activeAddress,
   warehouse,
 }: {
-  size: Size;
   index: number;
   length: number;
-  product: Product;
-  quantity: number;
+  cp: cartProducts;
   warehouse: Warehouse | undefined;
   activeAddress: Address | undefined;
 }) => {
   const { t } = useTranslation();
   const fee = useBoundStore((state) => state.fee);
+  console.log(fee);
   const [show, setShow] = useState(false);
-  const shippingCost = fee[product.id!] ? fee[product.id!].cost[0].value : 0;
-  const total = product.price * quantity + shippingCost;
+  const shippingCost = fee[cp.id] ? fee[cp.id].cost[0].value : 0;
+  const total = cp.product.price * cp.quantity + shippingCost;
 
   return (
     <div className="my-4">
@@ -54,13 +50,15 @@ const CheckoutItem = ({
             </span>
             <div className="flex gap-2 items-start text-sm mt-2">
               <img
-                src={`${baseURL}/images/${product.primaryImage}`}
+                src={`${baseURL}/images/${cp.product.primaryImage}`}
                 className="w-[80px] h-[80px] object-contain"
               />
               <div className="flex flex-col gap-2">
-                <span>{product.name}</span>
-                <span>Size: {size.label}</span>
-                <span className="font-bold">{formatToIDR(product.price)}</span>
+                <span>{cp.product.name}</span>
+                <span>Size: {cp.size.label}</span>
+                <span className="font-bold">
+                  {formatToIDR(cp.product.price)}
+                </span>
               </div>
             </div>
           </div>
@@ -68,10 +66,11 @@ const CheckoutItem = ({
         </div>
         {warehouse?.warehouseAddress && (
           <SelectCourier
-            quantity={quantity}
-            product={product}
+            quantity={cp.quantity}
+            product={cp.product}
             address={activeAddress}
             origin={warehouse.warehouseAddress.cityId}
+            cartProductId={cp.id}
           />
         )}
       </div>
@@ -96,12 +95,12 @@ const CheckoutItem = ({
             <p className="text-muted-foreground">
               <Trans
                 i18nKey="checkoutPage.cartItem.price"
-                values={{ total: quantity }}
+                values={{ total: cp.quantity }}
               >
-                Price ({quantity} item)
+                Price ({cp.quantity} item)
               </Trans>
             </p>
-            <b>{formatToIDR(product.price.toString())}</b>
+            <b>{formatToIDR(cp.product.price.toString())}</b>
           </div>
           <div className="w-full flex justify-between items-center text-sm">
             <p className="text-muted-foreground">
