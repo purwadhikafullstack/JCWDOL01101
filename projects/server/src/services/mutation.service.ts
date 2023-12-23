@@ -6,9 +6,9 @@ import { User } from '@/interfaces/user.interface';
 import { ProductModel } from '@/models/product.model';
 import { FindOptions, Op } from 'sequelize';
 import Container, { Service } from 'typedi';
-import { WarehouseService } from './warehouse.service';
 import { WarehouseModel } from '@/models/warehouse.model';
-import { InventoryService } from './inventrory.service';
+import { InventoryService } from './inventory.service';
+import { SizeModel } from '@/models';
 
 @Service()
 export class MutationService {
@@ -20,10 +20,10 @@ export class MutationService {
 
     if (mutationData.quantity < 0) throw new HttpException(500, 'Quantity is empty');
     const productStock = await DB.Inventories.findOne({
-      where: { warehouseId: mutationData.receiverWarehouseId, productId: mutationData.productId },
+      where: { warehouseId: mutationData.receiverWarehouseId, productId: mutationData.productId, sizeId: mutationData.sizeId },
     });
     if (!productStock) throw new HttpException(409, 'No stock available');
-    if (productStock.stock <= 20) throw new HttpException(409, 'Product stock not meet requirement');
+    if (productStock.stock <= 20) throw new HttpException(409, 'Product stock not meet requirement [warehouse]');
     if (productStock.stock - mutationData.quantity <= 20) throw new HttpException(409, 'Product stock not meet requirement');
     const mutation = await DB.Mutation.create({ ...mutationData, senderNotes: mutationData.notes, status: 'ONGOING' });
     return mutation;
@@ -44,6 +44,7 @@ export class MutationService {
       const findMutation = await DB.Mutation.findOne({ where: { id: mutationId, status: 'ONGOING' } });
       if (!findMutation) throw new HttpException(409, 'Mutation has been canceled/completed');
       updatedStock = await this.inventory.exchangeStock({
+        sizeId: findMutation.sizeId,
         productId: findMutation.productId,
         stock: findMutation.quantity,
         senderWarehouseId: findMutation.senderWarehouseId,
@@ -83,15 +84,18 @@ export class MutationService {
     } else if (manage === 'RECEIVE') {
       action = 'receiverWarehouseId';
     }
-    const findWarehouse = await DB.Warehouses.findOne({ where: { name: warehouse } });
-    if (!findWarehouse) throw new HttpException(409, "warehouse doesn't exist");
+    let findWarehouse;
+    if (warehouse !== 'All') {
+      findWarehouse = await DB.Warehouses.findOne({ where: { name: warehouse } });
+      if (!findWarehouse) throw new HttpException(409, "warehouse doesn't exist");
+    }
     const LIMIT = Number(limit) || 10;
     const offset = (page - 1) * LIMIT;
     const options: FindOptions<Mutation> = {
       offset,
       limit: LIMIT,
       where: {
-        [action]: findWarehouse.id,
+        ...(warehouse !== 'All' && { [action]: findWarehouse.id }),
         ...(s && { name: { [Op.like]: `%${s}%` } }),
         ...(manage === 'RECEIVE' && { status: { [Op.not]: 'CANCELED' } }),
       },
@@ -113,6 +117,12 @@ export class MutationService {
           model: WarehouseModel,
           as: 'receiverWarehouse',
           attributes: ['name'],
+        },
+
+        {
+          model: SizeModel,
+          as: 'sizeMutation',
+          attributes: ['label'],
         },
       ],
     };

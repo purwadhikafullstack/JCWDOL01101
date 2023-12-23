@@ -25,13 +25,20 @@ function ManageMutationSend({
           <TableHead className="text-center">
             <ChangeOrderButton paramKey="product" name="Product Name" />
           </TableHead>
+          <TableHead className="text-center">Size</TableHead>
           <TableHead className="text-center">
             <ChangeOrderButton paramKey="quantity" name="Quantity" />
           </TableHead>
           <TableHead className="text-center">
             <ChangeOrderButton
+              paramKey="senderWarehouseId"
+              name="From Warehouse"
+            />
+          </TableHead>
+          <TableHead className="text-center">
+            <ChangeOrderButton
               paramKey="receiverWarehouseId"
-              name="Selected Warehouse"
+              name="Appointed Warehouse"
             />
           </TableHead>
           <TableHead className="text-center">
@@ -61,8 +68,12 @@ function ManageMutationSend({
                 <TableCell className="capitalize font-medium text-center">
                   {mutation.productMutation.name}
                 </TableCell>
+                <TableCell>{mutation.sizeMutation.label}</TableCell>
                 <TableCell className="text-center">
                   {mutation.quantity}
+                </TableCell>
+                <TableCell className="text-center">
+                  {mutation.senderWarehouse.name}
                 </TableCell>
                 <TableCell className="text-center">
                   {mutation.receiverWarehouse.name}

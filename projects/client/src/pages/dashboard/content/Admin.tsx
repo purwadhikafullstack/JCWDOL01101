@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { Button, buttonVariants } from "@/components/ui/button"
-import { SearchIcon, Plus } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { SearchIcon } from "lucide-react"
 import {
   Table,
   TableBody,
@@ -47,31 +47,23 @@ const Admin = () => {
 
   return (
     <div className="flex flex-col p-2 w-full">
-      <Dialog>
-        <DialogTrigger
-          className={buttonVariants({
-            variant: "default",
-            className: "self-end",
-          })}
-        >
-          <Plus className="w-4 h-4 mr-2" /> New Admin
-        </DialogTrigger>
+      <div className="flex justify-between mb-2">
+        <div className="relative w-[300px]">
+          <SearchIcon className="absolute h-4 w-4 text-muted-foreground left-3 top-1/2 -translate-y-1/2" />
+          <Input
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchParams((params) => {
+                params.set("s", e.target.value)
+                return params
+              })
+              setSearchTerm(e.target.value)
+            }}
+            className=" w-full pl-10"
+            placeholder="search admin ..."
+          />
+        </div>
         <NewAdminFrom />
-      </Dialog>
-      <div className="relative w-[300px]">
-        <SearchIcon className="absolute h-4 w-4 text-muted-foreground left-3 top-1/2 -translate-y-1/2" />
-        <Input
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchParams((params) => {
-              params.set("s", e.target.value)
-              return params
-            })
-            setSearchTerm(e.target.value)
-          }}
-          className=" w-full pl-10"
-          placeholder="search product ..."
-        />
       </div>
       <div className="border rounded-md mt-2">
         {isLoading ? (

@@ -2,12 +2,13 @@ import service from "@/service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type CartData = {
+  sizeId: number;
   externalId: string;
   productId: number;
   quantity: number;
 };
 
-export const useAddCart = (productId: number | undefined) => {
+export const useAddCart = () => {
   const queryClient = useQueryClient();
   const cartMutation = useMutation({
     mutationFn: async (cartData: CartData) => {
@@ -16,7 +17,7 @@ export const useAddCart = (productId: number | undefined) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       queryClient.invalidateQueries({ queryKey: ["cart"] });
-      queryClient.invalidateQueries({ queryKey: ["cart-product", productId] });
+      queryClient.invalidateQueries({ queryKey: ["cart-product"] });
       queryClient.invalidateQueries({ queryKey: ["product"] });
     },
   });
@@ -24,6 +25,7 @@ export const useAddCart = (productId: number | undefined) => {
 };
 
 type qtyData = {
+  sizeId: number;
   productId: number;
   cartId: number;
   qty?: number;
@@ -50,21 +52,25 @@ export const useDeleteAllCartProduct = (cartId: number) => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });
       queryClient.invalidateQueries({ queryKey: ["product"] });
+      queryClient.refetchQueries({ queryKey: ["cart-product"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-product-on-size"] });
     },
   });
   return cartMutation;
 };
 
-export const useDeleteCartProduct = (cartProductId: number) => {
+export const useDeleteCartProduct = () => {
   const queryClient = useQueryClient();
   const cartMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (cartProductId: number) => {
       await service.patch(`/cart/product/${cartProductId}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });
       queryClient.invalidateQueries({ queryKey: ["product"] });
+      queryClient.refetchQueries({ queryKey: ["cart-product"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-product-on-size"] });
     },
   });
   return cartMutation;
@@ -82,7 +88,9 @@ export const useToggleSelectedProduct = (
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       queryClient.invalidateQueries({ queryKey: ["cart"] });
-      queryClient.invalidateQueries({ queryKey: ["cart-product", productId] });
+      queryClient.invalidateQueries({ queryKey: ["product"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-product"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-product-on-size"] });
     },
   });
   return cartMutation;
@@ -102,15 +110,17 @@ export const useToggleAllSelectProduct = () => {
   return cartMutation;
 };
 
-export const useCancelCartProductDeletion = (cartProductId: number) => {
+export const useCancelCartProductDeletion = () => {
   const queryClient = useQueryClient();
   const cartMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (cartProductId: number) => {
       await service.patch(`/cart/product/${cartProductId}/cancel`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["product"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-product"] });
     },
   });
   return cartMutation;

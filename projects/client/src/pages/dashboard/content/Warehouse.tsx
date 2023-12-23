@@ -18,6 +18,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import service from "@/service";
+import { Input } from "@/components/ui/input";
 
 type WarehouseAddressType = {
   id: number;
@@ -256,21 +257,21 @@ const Warehouse = () => {
         <DialogContent>
           <div className="p-4">
             <h2 className="text-lg font-bold mb-2">Add New Warehouse</h2>
-            <form>
-              <label className=" mb-2 flex justify-between">
-                Name:
-                <input
+            <form className="space-y-2">
+              <div className="grid grid-cols-2">
+                <label className=" mb-2 flex justify-between">Name:</label>
+                <Input
                   type="text"
                   name="name"
                   value={newWarehouse.name}
                   onChange={handleInputChange}
                   required
-                  className="mt-1 p-2 border rounded"
+                  className=""
                 />
-              </label>
-              <label className="mb-2 flex justify-between">
-                Capacity:
-                <input
+              </div>
+              <div className="grid grid-cols-2">
+                <label className="mb-2 flex justify-between">Capacity:</label>
+                <Input
                   type="number"
                   name="capacity"
                   value={newWarehouse.capacity}
@@ -281,30 +282,28 @@ const Warehouse = () => {
                     })
                   }
                   required
-                  className="mt-1 p-2 border rounded"
                 />
-              </label>
-
-              <label className=" mb-2 flex justify-between">
-                Address Detail:
-                <input
+              </div>
+              <div className="grid grid-cols-2">
+                <label className=" mb-2 flex justify-between">
+                  Address Detail:
+                </label>
+                <Input
                   type="text"
                   name="addressDetail"
                   value={newWarehouse.addressDetail}
                   onChange={handleInputChange}
                   required
-                  className="mt-1 p-2 border rounded"
                 />
-              </label>
-
-              <label className="mb-2 flex justify-between">
-                City:
+              </div>
+              <div className="grid grid-cols-2">
+                <label className="mb-2 flex justify-between">City:</label>
                 <select
                   name="cityName"
                   value={selectedCity?.cityId || ""}
                   onChange={handleCityChange}
                   required
-                  className="mt-1 p-2 border rounded"
+                  className="mt-1 p-2 border rounded bg-background"
                 >
                   <option value="">Select a city</option>
                   {cities.map((city) => (
@@ -313,28 +312,22 @@ const Warehouse = () => {
                     </option>
                   ))}
                 </select>
-              </label>
-
-              <label className=" mb-2 flex justify-between">
-                Province:
-                <input
+              </div>
+              <div className="grid grid-cols-2">
+                <label className=" mb-2 flex justify-between">Province:</label>
+                <Input
                   type="text"
                   value={selectedProvince?.province || ""}
                   readOnly
                   className="mt-1 p-2 border rounded"
                 />
-              </label>
+              </div>
             </form>
-            <div className="mt-4 flex justify-end">
+            <div className="mt-4 flex gap-2 items-center justify-start">
+              <Button onClick={handleAddWarehouse}>Save Changes</Button>
               <DialogClose asChild>
-                <Button className="mr-2">Close</Button>
-              </DialogClose>
-              <DialogClose asChild>
-                <Button
-                  onClick={handleAddWarehouse}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                >
-                  Save Changes
+                <Button variant="secondary" className="mr-2">
+                  Close
                 </Button>
               </DialogClose>
             </div>
@@ -348,14 +341,14 @@ const Warehouse = () => {
             <h2 className="text-lg font-bold mb-2">Edit Warehouse</h2>
             <label className=" flex justify-between">
               Name:
-              <input
+              <Input
                 type="text"
                 name="name"
                 value={editWarehouse.name}
                 onChange={(e) =>
                   setEditWarehouse({ ...editWarehouse, name: e.target.value })
                 }
-                className=" p-2 border rounded"
+                className="bg-background"
               />
             </label>
             <label className=" flex justify-between">

@@ -54,7 +54,7 @@ const NavProfile = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
           <Button
             variant="ghost"
             className="w-full justify-start"
-            onClick={() => signOut(() => navigate("/register"))}
+            onClick={() => signOut(() => navigate("/login"))}
           >
             <LogOut className="w-4 h-4 mr-2" /> {t("navbar.profile.logout")}
           </Button>

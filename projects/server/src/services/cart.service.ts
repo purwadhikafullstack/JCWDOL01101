@@ -1,13 +1,8 @@
 import { DB } from '@/database';
 import { CartDto, CartProductDto } from '@/dtos/cart.dto';
 import { HttpException } from '@/exceptions/HttpException';
-import { Cart } from '@/interfaces/cart.interface';
-import { CartProduct } from '@/interfaces/cartProduct.interface';
-import { User } from '@/interfaces/user.interface';
-import { CartProductModel } from '@/models/cartProduct.model';
-import { ImageModel } from '@/models/image.model';
-import { InventoryModel } from '@/models/inventory.model';
-import { ProductModel } from '@/models/product.model';
+import { User, Cart, CartProduct } from '@/interfaces';
+import { SizeModel, ProductModel, ImageModel, InventoryModel, CartProductModel } from '@/models';
 import { Service } from 'typedi';
 
 @Service()
@@ -25,6 +20,10 @@ export class CartService {
           },
           required: false,
           include: [
+            {
+              model: SizeModel,
+              as: 'size',
+            },
             {
               model: ProductModel,
               as: 'product',
@@ -44,7 +43,7 @@ export class CartService {
       ],
     });
 
-    if (!findCart) throw new HttpException(409, "Cart doesn't exist");
+    if (!findCart) throw new HttpException(404, "Cart doesn't exist");
     const totalQuantity = await CartProductModel.sum('quantity', {
       where: {
         cartId: findCart.id,
@@ -53,9 +52,7 @@ export class CartService {
     });
 
     const totalPrice: { total: number }[] = await DB.sequelize.query(
-      `SELECT SUM(price * quantity) as total 
-  FROM cart_product 
-  WHERE cart_id = :cartId AND status = 'ACTIVE'`,
+      `SELECT SUM(price * quantity) as total FROM cart_product WHERE cart_id = :cartId AND status = 'ACTIVE'`,
       {
         replacements: { cartId: findCart.id },
         type: DB.Sequelize.QueryTypes.SELECT,
@@ -65,48 +62,88 @@ export class CartService {
     return { cart: findCart, totalQuantity, totalPrice: totalPrice[0].total || 0 };
   }
 
-  public async getCartProduct(productId: number): Promise<CartProduct> {
-    const findCartProduct = await DB.CartProduct.findOne({
-      where: { status: 'ACTIVE', productId },
-      include: {
-        model: ProductModel,
-        as: 'product',
-        include: [
-          {
-            model: ImageModel,
-            as: 'productImage',
-          },
-          {
-            model: InventoryModel,
-            as: 'inventory',
-            attributes: ['stock', 'sold'],
-          },
-        ],
-        where: {
-          status: 'ACTIVE',
+  public async getCartProduct(productId: number, externalId: string): Promise<CartProduct[]> {
+    const findUser: User = await DB.User.findOne({ where: { externalId, status: 'ACTIVE' } });
+    if (!findUser) throw new HttpException(409, "User doesn't exist");
+
+    const findCurrentUserCart: Cart = await DB.Cart.findOne({ where: { userId: findUser.id, status: 'ACTIVE' } });
+
+    const findCartProduct: CartProduct[] = await DB.CartProduct.findAll({
+      where: { productId, cartId: findCurrentUserCart.id, status: 'ACTIVE' },
+      include: [
+        {
+          model: SizeModel,
+          as: 'size',
         },
-      },
+        {
+          model: ProductModel,
+          as: 'product',
+          include: [
+            {
+              model: ImageModel,
+              as: 'productImage',
+            },
+            {
+              model: InventoryModel,
+              as: 'inventory',
+              attributes: ['stock', 'sold'],
+            },
+          ],
+          where: {
+            status: 'ACTIVE',
+          },
+        },
+      ],
     });
 
-    if (!findCartProduct) throw new HttpException(409, "Cart Product doesn't exists");
+    return findCartProduct || [];
+  }
 
-    return findCartProduct;
+  public async getCartProductOnSize(productId: number, sizeId: number): Promise<{ cartProduct: CartProduct; stock: number }> {
+    const findCartProduct: CartProduct = await DB.CartProduct.findOne({
+      where: { status: 'ACTIVE', productId, sizeId },
+      attributes: ['quantity', 'sizeId'],
+      include: [
+        {
+          model: SizeModel,
+          as: 'size',
+        },
+        {
+          model: ProductModel,
+          as: 'product',
+          include: [
+            {
+              model: ImageModel,
+              as: 'productImage',
+            },
+            {
+              model: InventoryModel,
+              as: 'inventory',
+              attributes: ['stock', 'sold'],
+            },
+          ],
+          where: {
+            status: 'ACTIVE',
+          },
+        },
+      ],
+    });
+
+    const stock = await DB.Inventories.sum('stock', {
+      where: {
+        productId,
+        sizeId,
+      },
+    });
+    return { cartProduct: findCartProduct, stock };
   }
 
   public async changeQuantity(cartProductData: CartProductDto): Promise<CartProduct> {
-    const { productId, cartId, quantity } = cartProductData;
+    const { productId, cartId, quantity, sizeId } = cartProductData;
     const findCartProduct = await DB.CartProduct.findOne({ where: { productId, cartId } });
     if (!findCartProduct) throw new HttpException(409, `Couldn't find items with ID ${productId}`);
 
-    await DB.CartProduct.update({ quantity }, { where: { productId, cartId } });
-
-    // if (quantity > 0) {
-    //   await findCartProduct.increment('quantity', { by: quantity });
-    //   await findCartProduct.reload();
-    // } else if (quantity < 0) {
-    //   await findCartProduct.decrement('quantity');
-    //   await findCartProduct.reload();
-    // }
+    await DB.CartProduct.update({ quantity }, { where: { productId, cartId, sizeId } });
     return findCartProduct;
   }
 
@@ -124,12 +161,15 @@ export class CartService {
     const findProduct = await DB.Product.findByPk(productId);
     if (!findProduct) throw new HttpException(409, "Product doesn't exist");
 
-    let findCartProduct = await DB.CartProduct.findOne({ where: { productId, cartId: findCart.id, status: 'ACTIVE' } });
+    const findSize = await DB.Size.findByPk(cartData.sizeId);
+    if (!findSize) throw new HttpException(409, "Size doesn't exist");
+
+    let findCartProduct = await DB.CartProduct.findOne({ where: { productId, cartId: findCart.id, sizeId: findSize.id, status: 'ACTIVE' } });
     if (findCartProduct) {
       await findCartProduct.increment('quantity', { by: quantity });
       await findCartProduct.reload();
     } else {
-      findCartProduct = await DB.CartProduct.findOne({ where: { productId, cartId: findCart.id, status: 'DELETED' } });
+      findCartProduct = await DB.CartProduct.findOne({ where: { productId, cartId: findCart.id, sizeId: findSize.id, status: 'DELETED' } });
       if (findCartProduct) {
         await DB.CartProduct.update(
           {
@@ -145,6 +185,7 @@ export class CartService {
           productId,
           selected: true,
           cartId: findCart.id,
+          sizeId: findSize.id,
           price: findProduct.price,
         });
       }

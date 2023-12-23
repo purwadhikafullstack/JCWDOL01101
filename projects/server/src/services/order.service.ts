@@ -60,16 +60,18 @@ export class OrderService {
   }: GetFilterOrder): Promise<{ orders: Order[]; totalPages: number }> {
     const findUser: User = await DB.User.findOne({ where: { externalId } });
     if (!findUser) throw new HttpException(409, "user doesn't exist");
-
-    const findWarehouse = await DB.Warehouses.findOne({ where: { name: warehouse } });
-    if (!findWarehouse) throw new HttpException(409, "warehouse doesn't exist");
+    let findWarehouse;
+    if (warehouse !== 'All') {
+      findWarehouse = await DB.Warehouses.findOne({ where: { name: warehouse } });
+      if (!findWarehouse) throw new HttpException(409, "warehouse doesn't exist");
+    }
     const LIMIT = Number(limit) || 10;
     const offset = (page - 1) * LIMIT;
     const options: FindOptions<Order> = {
       offset,
       limit: LIMIT,
       where: {
-        warehouseId: findWarehouse.id,
+        ...(warehouse !== 'All' && { warehouseId: findWarehouse.id }),
         ...(status && { status }),
       },
       ...(order && {

@@ -9,4 +9,5 @@ export interface Review {
   title: string;
   status: Status;
   comment: string;
+  averageRating?: number;
 }

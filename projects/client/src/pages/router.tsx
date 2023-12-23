@@ -15,7 +15,6 @@ import ManageAdmin from "./dashboard/content/Admin"
 import Product from "./dashboard/content/Product"
 import Warehouse from "./dashboard/content/Warehouse"
 import ManageMutation from "./dashboard/content/ManageMutation"
-import MutationForm from "./dashboard/content/MutationForm"
 import EditAdminForm from "./dashboard/components/EditAdminForm"
 import Cart from "./homepage/content/Cart"
 import { ProtectedRoute, AdminRoute, DashboardRoute } from "./ProtectedRoute"
@@ -33,6 +32,7 @@ import ReviewForm from "./homepage/content/ReviewForm"
 import Reviews from "./homepage/content/Reviews"
 import Wishlist from "./homepage/content/Wishlist"
 import ProductReviews from "./dashboard/content/ProductReviews"
+import MutationForm from "./dashboard/content/MutationForm"
 import DashboardOrder from "./dashboard/content/DashboardOrder"
 
 const router = createBrowserRouter([
@@ -156,7 +156,7 @@ const router = createBrowserRouter([
         element: <Warehouse />,
       },
       {
-        path: "mutation-form",
+        path: "mutation-form/:slug",
         element: <MutationForm />,
       },
       {

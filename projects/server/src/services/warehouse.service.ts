@@ -49,7 +49,29 @@ export class WarehouseService {
   }
 
   public async findWarehouseById(warehouseId: number): Promise<Warehouse> {
-    const findWarehouse: Warehouse = await DB.Warehouses.findByPk(warehouseId);
+    const findWarehouse: Warehouse = await DB.Warehouses.findByPk(warehouseId, {
+      include: [
+        {
+          model: DB.WarehouseAddresses,
+          as: 'warehouseAddress',
+          attributes: ['addressDetail'],
+          include: [
+            {
+              model: DB.City,
+              as: 'cityWarehouse',
+              attributes: ['cityName'],
+              include: [
+                {
+                  model: DB.Province,
+                  as: 'cityProvince',
+                  attributes: ['province'],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
     if (!findWarehouse) throw new HttpException(409, "Warehouse doesn't exist");
 
     return findWarehouse;
@@ -74,14 +96,26 @@ export class WarehouseService {
     if (findWarehouse) throw new HttpException(409, 'Warehouse already exist');
 
     const createWarehouseData: Warehouse = await DB.Warehouses.create({ ...warehouseData });
-    const products: Product[] = await DB.Product.findAll({
+    const findProduct: Product[] = await DB.Product.findAll({
       where: {
         status: 'ACTIVE',
       },
     });
-    if (products.length > 0) {
-      const product = products.map(product => ({ warehouseId: createWarehouseData.id, productId: product.id }));
-      await DB.Inventories.bulkCreate(product);
+
+    if (findProduct && findProduct.length > 0) {
+      const productIds = findProduct.map(p => p.id);
+      const inventory = await DB.Inventories.findAll({ where: { productId: productIds } });
+      const uniqueSizeIds = new Set();
+
+      const uniqueInventory = inventory.filter(inv => {
+        if (!uniqueSizeIds.has(inv.sizeId)) {
+          uniqueSizeIds.add(inv.sizeId);
+          return true;
+        }
+        return false;
+      });
+      const inventoryData = uniqueInventory.map(inv => ({ warehouseId: createWarehouseData.id, productId: inv.productId, sizeId: inv.sizeId }));
+      await DB.Inventories.bulkCreate(inventoryData);
     }
     return createWarehouseData;
   }

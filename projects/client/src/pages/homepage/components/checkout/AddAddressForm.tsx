@@ -10,21 +10,11 @@ import NotesField from "@/components/input/NotesField";
 import MainCheckboxField from "@/components/input/MainCheckboxField";
 import PhoneField from "@/components/input/PhoneField";
 import { Trans, useTranslation } from "react-i18next";
-export type Coordinates = {
-  latitude: number;
-  langitude: number;
-};
 
 type AddAddressForm = {
   isPending: boolean;
-  location: Coordinates | null;
-  handleGetGeolocation: () => void;
 };
-const AddAddressForm = ({
-  isPending,
-  location,
-  handleGetGeolocation,
-}: AddAddressForm) => {
+const AddAddressForm = ({ isPending }: AddAddressForm) => {
   const { t } = useTranslation();
   const [tos, setTos] = useState(false);
 
@@ -33,10 +23,7 @@ const AddAddressForm = ({
       <RecepientField />
       <PhoneField />
       <LabelField />
-      <CityField
-        location={location}
-        handleGetGeolocation={handleGetGeolocation}
-      />
+      <CityField />
       <AddressField />
       <NotesField />
       <MainCheckboxField />

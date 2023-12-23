@@ -6,8 +6,7 @@ export interface Jurnal {
   oldQty: number;
   qtyChange: number;
   newQty: number;
-  type: 'STOCK IN' | 'STOCK OUT';
-  date: Date;
+  type: '1' | '0';
   notes?: string;
 }
 

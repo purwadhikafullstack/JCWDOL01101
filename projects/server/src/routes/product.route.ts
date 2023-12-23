@@ -2,6 +2,7 @@ import { ProductController } from '@/controllers/product.controller';
 import { Routes } from '@/interfaces/routes.interface';
 import { AuthMiddleware } from '@/middlewares/auth.middleware';
 import { upload } from '@/services/multer.service';
+import { ClerkExpressWithAuth } from '@clerk/clerk-sdk-node';
 import { Router } from 'express';
 
 export class ProductRoute implements Routes {
@@ -16,15 +17,16 @@ export class ProductRoute implements Routes {
 
   private initializeMiddleware() {
     this.router.get(`${this.path}`, this.auth.ClerkAuth, this.product.getProducts);
-    this.router.get(`${this.path}/home`, this.product.getProductsHomepage);
-    this.router.get(`${this.path}/:productId/category/:categoryId`, this.product.getProductsByCategory);
-    this.router.get(`${this.path}/new`, this.product.getNewestProducts);
-    this.router.get(`${this.path}/highest-sell`, this.product.getHigestSellProducts);
-    this.router.get(`${this.path}/:slug`, this.product.getProduct);
-    this.router.get(`${this.path}/search/q`, this.product.getProductByName);
+    this.router.get(`${this.path}/home`, ClerkExpressWithAuth(), this.product.getHomepageProducts);
+    this.router.get(`${this.path}/:productId/category/:categoryId`, ClerkExpressWithAuth(), this.product.getProductsByCategory);
+    this.router.get(`${this.path}/new`, ClerkExpressWithAuth(), this.product.getNewestProducts);
+    this.router.get(`${this.path}/highest-sell`, ClerkExpressWithAuth(), this.product.getHigestSellProducts);
+    this.router.get(`${this.path}/:slug`, ClerkExpressWithAuth(), this.product.getProductBySlug);
+    this.router.get(`${this.path}/search/q`, this.product.getProductsByName);
     this.router.delete(`${this.path}/images/:imageId`, this.product.deleteProductImage);
     this.router.post(`${this.path}`, upload.array('images', 5), this.product.createProduct);
     this.router.put(`${this.path}/:slug`, upload.array('images', 5), this.product.updateProduct);
-    this.router.patch(`${this.path}/delete/:productId`, this.product.deleteProduct);
+    this.router.patch(`${this.path}/delete/:productId`, this.product.changeProductStatus);
+    this.router.patch(`${this.path}/delete/:productId/:warehouseId`, this.product.changeProductInventoryStatus);
   }
 }

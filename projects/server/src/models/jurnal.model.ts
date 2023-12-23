@@ -7,8 +7,7 @@ export class JurnalModel extends Model<Jurnal> implements Jurnal {
   public oldQty: number;
   public qtyChange: number;
   public newQty: number;
-  public type: 'STOCK IN' | 'STOCK OUT';
-  public date: Date;
+  public type: '1' | '0';
   public notes?: string;
 }
 
@@ -39,11 +38,7 @@ export default function (sequelize: Sequelize): typeof JurnalModel {
       type: {
         allowNull: false,
         type: DataTypes.ENUM,
-        values: ['STOCK IN', 'STOCK OUT'],
-      },
-      date: {
-        allowNull: false,
-        type: DataTypes.DATE,
+        values: ['1', '0'],
       },
       notes: {
         allowNull: true,

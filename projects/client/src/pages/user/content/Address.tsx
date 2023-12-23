@@ -1,8 +1,4 @@
-import { buttonVariants } from "@/components/ui/button"
 import React, { useContext } from "react"
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
-import { Plus } from "lucide-react"
-
 import AddressCard from "../components/AddressCard"
 import NewAddressDialog from "../components/NewAddressDialog"
 import UserContext from "@/context/UserContext"
@@ -20,17 +16,10 @@ const Address = () => {
   return (
     <>
       <div className="flex flex-col p-2 space-y-4">
-        <Dialog>
-          <DialogTrigger
-            className={buttonVariants({
-              variant: "default",
-              className: "self-end",
-            })}
-          >
-            <Plus className="w-4 h-4 mr-2" /> New Address
-          </DialogTrigger>
-          <NewAddressDialog name={user?.firstname || ""} userId={user?.id!} />
-        </Dialog>
+        <NewAddressDialog
+          name={`${user?.firstname} ${user?.lastname}` || ""}
+          userId={user?.id!}
+        />
         {!isLoading ? (
           <>
             {addresses && addresses?.length > 0 ? (
