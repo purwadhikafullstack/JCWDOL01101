@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
   Dialog,
+  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import UserContext from "@/context/UserContext";
 import z from "zod";
@@ -13,8 +13,8 @@ import ProductFormField from "@/pages/dashboard/components/ProductFormField";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Edit, Loader2 } from "lucide-react";
 import { useEditUser } from "@/hooks/useUserMutation";
 
 const EditProfileSchema = z.object({
@@ -29,6 +29,7 @@ let emptyValues = {
 };
 
 function EditProfile() {
+  const [open, setOpen] = useState(false);
   const userContext = useContext(UserContext);
   if (!userContext) {
     throw new Error("useUser must be used within a UserProvider");
@@ -51,7 +52,6 @@ function EditProfile() {
       setOpen(false);
     }
   }, [userMutation.isSuccess, toast]);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -63,8 +63,8 @@ function EditProfile() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>Edit Profile</Button>
+      <DialogTrigger className={buttonVariants({ variant: "outline" })}>
+        <Edit className="mr-2" /> Edit
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

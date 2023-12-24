@@ -31,8 +31,14 @@ function ManageMutationSend({
           </TableHead>
           <TableHead className="text-center">
             <ChangeOrderButton
+              paramKey="senderWarehouseId"
+              name="From Warehouse"
+            />
+          </TableHead>
+          <TableHead className="text-center">
+            <ChangeOrderButton
               paramKey="receiverWarehouseId"
-              name="Selected Warehouse"
+              name="Appointed Warehouse"
             />
           </TableHead>
           <TableHead className="text-center">
@@ -65,6 +71,9 @@ function ManageMutationSend({
                 <TableCell>{mutation.sizeMutation.label}</TableCell>
                 <TableCell className="text-center">
                   {mutation.quantity}
+                </TableCell>
+                <TableCell className="text-center">
+                  {mutation.senderWarehouse.name}
                 </TableCell>
                 <TableCell className="text-center">
                   {mutation.receiverWarehouse.name}

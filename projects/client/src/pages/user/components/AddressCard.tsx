@@ -5,59 +5,40 @@ import SetMainDialog from "./SetMainDialog";
 import DeleteAddressDialog from "./DeleteAddressDialog";
 import EditAddressDialog from "./EditAddressDialog";
 import { cn } from "@/lib/utils";
+import { Badge } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const AddressCard = ({ address }: { address: Address }) => {
+  const { t } = useTranslation();
   return (
-    <div className="w-full bg-zinc-50 rounded-md border shadow-sm overflow-hidden py-4 px-6 capitalize">
-      <div className="mb-1 -space-y-0.5">
+    <div className="w-full bg-inherit rounded-md border shadow-sm overflow-hidden py-4 px-6 capitalize">
+      <div className="mb-1 space-y-0.5">
         <span className="flex items-end gap-2 ">
           <h3 className="text-lg font-bold text-red-500">{address.label}</h3>
-          {address.isMain && (
-            <p className="text-white rounded-md bg-red-500 text-xs px-2 py-1 font-semibold">
-              primary
-            </p>
-          )}
+          <Badge
+            className={cn(
+              !address.isMain && "hidden",
+              "rounded-lg bg-red-500 text-xs p-1 text-white font-semibold"
+            )}
+          >
+            {t("checkoutPage.addressModal.main.primaryBadge")}
+          </Badge>
         </span>
         <p className="text-2xl font-bold">{address.recepient}</p>
         <p className="text-lg">{address.phone}</p>
       </div>
-      <span className="flex items-end gap-2">
-        <p className="capitalize text-md">
-          {address.city.province}, {address.city.cityName}, {address.address},{" "}
-          {address.city.postalCode}
-        </p>
-      </span>
-      <span className="text-primary flex justify-between mt-4">
+      <p className="items-end capitalize text-md">
+        {`${address.city.province}, ${address.city.cityName}, ${address.address}, ${address.city.postalCode}`}
+      </p>
+      <div className="text-primary flex justify-between mt-4">
         <div className="flex">
-          <Dialog>
-            <DialogTrigger>
-              <p className="mr-4">edit</p>
-            </DialogTrigger>
-            <EditAddressDialog address={address} />
-          </Dialog>
-          <Dialog>
-            <DialogTrigger>
-              <p
-                className={cn(
-                  address.isMain && "hidden",
-                  "block border-l pl-4"
-                )}
-              >
-                Set main address
-              </p>
-            </DialogTrigger>
-            <SetMainDialog addressId={Number(address.id)} />
-          </Dialog>
+          <EditAddressDialog address={address} />
+          <SetMainDialog addressId={Number(address.id)} />
         </div>
         <div className={cn(address.isMain && "hidden", "block")}>
-          <Dialog>
-            <DialogTrigger>
-              <p>delete</p>
-            </DialogTrigger>
-            <DeleteAddressDialog addressId={Number(address.id)} />
-          </Dialog>
+          <DeleteAddressDialog addressId={Number(address.id)} />
         </div>
-      </span>
+      </div>
     </div>
   );
 };

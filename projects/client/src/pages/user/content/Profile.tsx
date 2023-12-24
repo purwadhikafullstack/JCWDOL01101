@@ -3,7 +3,6 @@ import React, { useContext } from "react";
 import ProfileAvatar from "../components/ProfileAvatar";
 import { User } from "lucide-react";
 import EditProfile from "../components/EditProfile";
-import { useUser } from "@/hooks/useUser";
 
 const Profile = () => {
   const userContext = useContext(UserContext);
@@ -18,7 +17,7 @@ const Profile = () => {
         <div className="py-2 flex flex-col space-y-4 mt-10 md:mt-0">
           <span className="flex items-center gap-1 mb-4">
             <User />
-            <h2 className="text-2xl">Account</h2>
+            <h2 className="text-2xl ml-1">Account</h2>
           </span>
           <LabelName label="First Name" data={user?.firstname || "no data"} />
           <LabelName label="Last Name" data={user?.lastname || "no data"} />

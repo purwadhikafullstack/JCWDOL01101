@@ -6,7 +6,6 @@ import {
   Users,
   Warehouse,
   UserCog,
-  UserCheck,
   ClipboardList,
   Package,
   Settings,
@@ -35,6 +34,7 @@ const links = [
     path: "/dashboard/manage-mutation",
   },
   {
+    display: "ADMIN",
     title: "User",
     icon: <Users className="w-4 h-4" />,
     path: "/dashboard/user",
@@ -43,11 +43,6 @@ const links = [
         title: "Manage Admin",
         icon: <UserCog className="w-4 h-4" />,
         path: "/dashboard/manage-admin",
-      },
-      {
-        title: "Payment Confirmation",
-        icon: <UserCheck className="w-4 h-4" />,
-        path: "/dashboard/user-payment",
       },
     ],
   },
@@ -110,6 +105,7 @@ const DashboardSidebar = () => {
                 path={link.path}
                 children={link.children}
                 state={location.pathname === link.path}
+                display={link.display}
               />
             ) : (
               <DashboardLink
@@ -118,6 +114,7 @@ const DashboardSidebar = () => {
                 icon={link.icon}
                 path={link.path}
                 state={location.pathname === link.path}
+                display={link.display}
               />
             );
           })}

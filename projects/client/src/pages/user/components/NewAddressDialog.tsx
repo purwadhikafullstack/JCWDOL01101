@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
+  Dialog,
+  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -7,8 +9,8 @@ import {
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Loader2, Plus } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form } from "@/components/ui/form";
 import LabelField from "@/components/input/LabelField";
@@ -21,7 +23,7 @@ import PhoneField from "@/components/input/PhoneField";
 import toast from "react-hot-toast";
 import { usePostAddress } from "@/hooks/useAddressMutation";
 import { addressSchema } from "@/pages/homepage/components/checkout/AddNewAddressDialog";
-
+import { useTranslation } from "react-i18next";
 const emptyValues = {
   recepient: "",
   phone: "",
@@ -31,11 +33,11 @@ const emptyValues = {
   notes: "",
   isMain: false,
 };
-
 export type Coordinates = {
   latitude: number;
   langitude: number;
 };
+
 const NewAddressDialog = ({
   name,
   userId,
@@ -43,6 +45,8 @@ const NewAddressDialog = ({
   userId: number;
   name: string;
 }) => {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
   const [tos, setTos] = useState(false);
   const addressMutation = usePostAddress();
   const form = useForm<z.infer<typeof addressSchema>>({
@@ -64,50 +68,59 @@ const NewAddressDialog = ({
     if (addressMutation.isSuccess) {
       form.reset(emptyValues);
       toast.success("Successfully create a new address");
+      setOpen(false);
     }
   }, [addressMutation.isSuccess]);
 
   return (
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>New Address</DialogTitle>
-      </DialogHeader>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-          <RecepientField />
-          <div className="grid grid-cols-2 gap-2">
-            <LabelField />
-            <PhoneField />
-          </div>
-          <CityField />
-          <AddressField />
-          <NotesField />
-          <MainCheckboxField />
-          <div className="flex items-center gap-2 text-xs">
-            <Checkbox
-              checked={tos}
-              onCheckedChange={(state) => setTos(!!state)}
-            />
-            <label>
-              I agree to the <b>Terms & Conditions</b> and <b>Privacy Policy</b>{" "}
-              address settings in Toten.
-            </label>
-          </div>
-          <div className="flex w-full justify-center">
-            <Button
-              disabled={!tos && addressMutation.isPending}
-              type="submit"
-              className="w-[60%] text-lg font-bold lg:py-6 mt-4"
-            >
-              {addressMutation.isPending && (
-                <Loader2 className="animate-spin w-4 h-4 mr-2" />
-              )}
-              Submit
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </DialogContent>
+    <Dialog open={addressMutation.isPending || open} onOpenChange={setOpen}>
+      <DialogTrigger
+        className={buttonVariants({
+          variant: "default",
+          className: "self-end",
+        })}
+      >
+        <Plus className="w-4 h-4 mr-2" />{" "}
+        {t("checkoutPage.addressModal.add.header")}
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t("checkoutPage.addressModal.add.header")}</DialogTitle>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+            <RecepientField />
+            <div className="grid grid-cols-2 gap-2">
+              <LabelField />
+              <PhoneField />
+            </div>
+            <CityField />
+            <AddressField />
+            <NotesField />
+            <MainCheckboxField />
+            <div className="flex items-center gap-2 text-xs">
+              <Checkbox
+                checked={tos}
+                onCheckedChange={(state) => setTos(!!state)}
+              />
+              <label>{t("checkoutPage.addressModal.add.tos")}</label>
+            </div>
+            <div className="flex w-full justify-center">
+              <Button
+                disabled={!tos && addressMutation.isPending}
+                type="submit"
+                className="w-[60%] text-lg font-bold lg:py-6 mt-4"
+              >
+                {addressMutation.isPending && (
+                  <Loader2 className="animate-spin w-4 h-4 mr-2" />
+                )}
+                {t("checkoutPage.addressModal.add.submitBtn")}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 };
 

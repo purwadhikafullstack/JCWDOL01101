@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import { Button } from "@/components/ui/button"
 import { SearchIcon } from "lucide-react"
 import {
   Table,
@@ -46,7 +45,7 @@ const User = () => {
             setSearchTerm(e.target.value)
           }}
           className=" w-full pl-10"
-          placeholder="search product ..."
+          placeholder="search user ..."
         />
       </div>
       <div className="border rounded-md mt-2">
