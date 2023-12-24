@@ -13,7 +13,7 @@
     },
     "profile": {
       "setting": "Settings",
-      "dashboard": "Admin Dashboard",
+      "dashboard": "Dashboard",
       "logout": "Log Out"
     }
   },
@@ -223,7 +223,7 @@
         "recepient": "Recepient name",
         "phone": "Phone Number",
         "label": "Label Address",
-        "city": "city",
+        "city": "City",
         "noCity": "no city found",
         "address": "Address",
         "notes": "Notes for courier (optional)",

@@ -9,7 +9,10 @@ export interface Order {
   userId: number;
   invoice: string;
   status: string;
+  createdAt: Date;
   deletedAt: Date;
+  warehouseOrder: { name: string };
+  userOrder: { firstname: string, lastname: string; }
 }
 
 export const useOrders = (userId: number | undefined) => {
@@ -26,6 +29,51 @@ export const useOrders = (userId: number | undefined) => {
   });
 
   return query;
+};
+
+type orderOptions = {
+  page: number;
+  s: string;
+  filter: string;
+  order: string;
+  limit: number;
+  warehouse: string;
+  status: string;
+};
+export const getAllOrders = ({
+  page,
+  s,
+  filter,
+  order,
+  limit,
+  warehouse,
+  status,
+}: orderOptions) => {
+  const { getToken } = useAuth();
+  const { data, isLoading, isFetched } = useQuery<{
+    orders: Order[];
+    totalPages: number;
+  }>({
+    queryKey: ["orders", page, s, filter, order, warehouse, status],
+    queryFn: async () => {
+      const res = await service.get("/orders", {
+        params: {
+          s,
+          page,
+          order,
+          limit,
+          filter,
+          warehouse,
+          status,
+        },
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+      return res.data.data;
+    },
+  });
+
+  return { data, isLoading, isFetched };
 };
 
 export const useProductIsOrder = (

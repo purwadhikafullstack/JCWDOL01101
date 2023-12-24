@@ -13,7 +13,7 @@
     },
     "profile": {
       "setting": "Pengaturan",
-      "dashboard": "Dashboard Admin",
+      "dashboard": "Dashboard",
       "logout": "Keluar"
     }
   },
@@ -222,7 +222,7 @@
         "recepient": "Nama penerima",
         "phone": "Nomor Telepon",
         "label": "Label Alamat",
-        "city": "kota",
+        "city": "Kota",
         "noCity": "tidak ada kota yang ditemukan",
         "address": "Alamat",
         "notes": "Catatan untuk kurir (opsional)",

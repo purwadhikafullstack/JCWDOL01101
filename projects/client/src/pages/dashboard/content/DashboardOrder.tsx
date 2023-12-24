@@ -14,13 +14,12 @@ import { useDebounce } from "use-debounce"
 import TablePagination from "../components/TablePagination"
 import { useUser } from "@clerk/clerk-react"
 import { useGetWarehouse } from "@/hooks/useWarehouse"
-import { useGetMutation } from "@/hooks/useMutation"
 import { useCurrentUser } from "@/hooks/useUser"
-import ManageMutationSend from "../components/warehouse/ManageMutationSend"
-import ManageMutationReceive from "../components/warehouse/ManageMutationReceive"
+import { getAllOrders } from "@/hooks/useOrder"
+import OrderTable from "../components/OrderTable"
 import { cn } from "@/lib/utils"
 
-function ManageMutation() {
+const DashboardOrder = () => {
   const { user, isSignedIn, isLoaded } = useUser()
   const { data: userAdmin } = useCurrentUser({
     externalId: user?.id!,
@@ -35,7 +34,7 @@ function ManageMutation() {
   const [debounceSearch] = useDebounce(searchTerm, 1000)
 
   const { data: warehouses } = useGetWarehouse(ROLE === "ADMIN")
-  const { data, isLoading } = useGetMutation({
+  const { data, isLoading } = getAllOrders({
     page: currentPage,
     s: debounceSearch,
     filter: searchParams.get("filter") || "",
@@ -44,8 +43,9 @@ function ManageMutation() {
     warehouse:
       userAdmin?.userData?.name ||
       searchParams.get("warehouse") ||
-      (warehouses && warehouses[0].name)!,
-    manage: searchParams.get("manage") || "SEND",
+      (warehouses && warehouses[0].name) ||
+      "",
+    status: searchParams.get("status") || "",
   })
   return (
     <div className="flex flex-col p-2 w-full">
@@ -62,30 +62,37 @@ function ManageMutation() {
                 })
               }}
               className=" w-full pl-10"
-              placeholder="search product ..."
+              placeholder="search order..."
             />
           </div>
           <div className="w-[100px]">
             <Select
-              defaultValue={"SEND"}
               onValueChange={(value) => {
                 setSearchParams((params) => {
-                  params.set("manage", value)
+                  params.set("status", value)
                   return params
                 })
               }}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select Mutation Type" />
+                <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="SEND">Send</SelectItem>
-                <SelectItem value="RECEIVE">receive</SelectItem>
+                <SelectItem value="WAITING">waiting</SelectItem>
+                <SelectItem value="PROCESS">process</SelectItem>
+                <SelectItem value="DELIVERED">delivered</SelectItem>
+                <SelectItem value="SHIPPED">shipped</SelectItem>
+                <SelectItem value="FAILED">failed</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
-        <div className={cn(ROLE !== "ADMIN" && "hidden", "block self-end")}>
+        <div
+          className={cn(
+            ROLE !== "ADMIN" && "hidden",
+            "flex gap-2 items-center"
+          )}
+        >
           {warehouses && warehouses.length > 0 && (
             <Select
               defaultValue="All"
@@ -128,18 +135,12 @@ function ManageMutation() {
         </div>
       </div>
       <div className="border rounded-md mt-2">
-        {isLoading ? (
-          <ProductsPageSkeleton />
-        ) : searchParams.get("manage") === "SEND" ? (
-          <ManageMutationSend data={data!} />
-        ) : (
-          <ManageMutationReceive data={data!} />
-        )}
+        {isLoading ? <ProductsPageSkeleton /> : <OrderTable data={data!} />}
       </div>
       <div className="flex gap-2 items-center justify-end mt-4">
         <TablePagination
           currentPage={currentPage}
-          dataLength={data?.mutations.length!}
+          dataLength={data?.orders.length!}
           totalPages={data?.totalPages!}
         />
       </div>
@@ -147,4 +148,4 @@ function ManageMutation() {
   )
 }
 
-export default ManageMutation
+export default DashboardOrder

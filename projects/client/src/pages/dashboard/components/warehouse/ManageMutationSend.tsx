@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   Table,
   TableBody,
@@ -6,16 +6,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import MutationAction from "./MutationAction";
-import { getDate } from "@/lib/utils";
-import ChangeOrderButton from "../ChangeOrderButton";
-import { Mutation } from "@/hooks/useMutation";
+} from "@/components/ui/table"
+import MutationAction from "./MutationAction"
+import { getDate } from "@/lib/utils"
+import ChangeOrderButton from "../ChangeOrderButton"
+import { Mutation } from "@/hooks/useMutation"
 
 function ManageMutationSend({
   data,
 }: {
-  data: { mutations: Mutation[]; totalPages: number };
+  data: { mutations: Mutation[]; totalPages: number }
 }) {
   return (
     <Table>
@@ -31,8 +31,14 @@ function ManageMutationSend({
           </TableHead>
           <TableHead className="text-center">
             <ChangeOrderButton
+              paramKey="senderWarehouseId"
+              name="From Warehouse"
+            />
+          </TableHead>
+          <TableHead className="text-center">
+            <ChangeOrderButton
               paramKey="receiverWarehouseId"
-              name="Selected Warehouse"
+              name="Appointed Warehouse"
             />
           </TableHead>
           <TableHead className="text-center">
@@ -67,6 +73,9 @@ function ManageMutationSend({
                   {mutation.quantity}
                 </TableCell>
                 <TableCell className="text-center">
+                  {mutation.senderWarehouse.name}
+                </TableCell>
+                <TableCell className="text-center">
                   {mutation.receiverWarehouse.name}
                 </TableCell>
                 <TableCell className="text-center">
@@ -92,7 +101,7 @@ function ManageMutationSend({
         )}
       </TableBody>
     </Table>
-  );
+  )
 }
 
-export default ManageMutationSend;
+export default ManageMutationSend

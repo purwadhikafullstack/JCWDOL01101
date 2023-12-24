@@ -4,38 +4,38 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useCity } from "@/hooks/useAddress";
-import useOutsideClick from "@/hooks/useClickOutside";
-import { Loader2 } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
-import { useFormContext } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { useDebounce } from "use-debounce";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { useCity } from "@/hooks/useAddress"
+import useOutsideClick from "@/hooks/useClickOutside"
+import { Loader2 } from "lucide-react"
+import React, { useEffect, useRef, useState } from "react"
+import { useFormContext } from "react-hook-form"
+import { useTranslation } from "react-i18next"
+import { useDebounce } from "use-debounce"
 export type Coordinates = {
-  latitude: number;
-  langitude: number;
-};
+  latitude: number
+  langitude: number
+}
 
 const CityField = () => {
-  const { t } = useTranslation();
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [show, setShow] = useState(false);
-  const form = useFormContext();
-  const cityName = form.getValues("cityName");
-  const [search, setSearch] = useState(cityName || "");
-  const [debounceSearch] = useDebounce(search, 500);
-  const { data: cities, isLoading: citiesLoading } = useCity(debounceSearch);
+  const { t } = useTranslation()
+  const ref = useRef<HTMLDivElement | null>(null)
+  const [show, setShow] = useState(false)
+  const form = useFormContext()
+  const cityName = form.getValues("cityName")
+  const [search, setSearch] = useState(cityName || "")
+  const [debounceSearch] = useDebounce(search, 500)
+  const { data: cities, isLoading: citiesLoading } = useCity(debounceSearch)
   useEffect(() => {
     if (cityName) {
-      setSearch(cityName);
+      setSearch(cityName)
     }
-  }, [cityName]);
+  }, [cityName])
 
   useOutsideClick(ref, () => {
-    setShow(false);
-  });
+    setShow(false)
+  })
   return (
     <FormField
       control={form.control}
@@ -53,13 +53,13 @@ const CityField = () => {
                   {...field}
                   value={search}
                   onChange={(e) => {
-                    setShow(true);
-                    setSearch(e.target.value);
+                    setShow(true)
+                    setSearch(e.target.value)
                   }}
                 />
                 {show && cities && (
-                  <div className=" mt-2 w-full absolute top-full left-0 z-10">
-                    <div className="cursor-pointer w-full bg-white border overflow-auto transition-all duration-200 max-h-[150px] flex flex-col  items-start rounded-md text-sm">
+                  <div className="mt-2 w-full absolute top-full left-0 z-10">
+                    <div className="cursor-pointer w-full bg-white border overflow-auto transition-all duration-200 max-h-[150px] flex flex-col items-start rounded-md text-sm">
                       {citiesLoading ? (
                         <div className="text-center">
                           <Loader2 className="animate-spin " />
@@ -71,10 +71,10 @@ const CityField = () => {
                               {cities.map((city) => (
                                 <div
                                   onClick={() => {
-                                    setSearch(city.cityName);
-                                    setShow(false);
-                                    form.setValue("cityId", city.cityId);
-                                    form.setValue("cityName", city.cityName);
+                                    setSearch(city.cityName)
+                                    setShow(false)
+                                    form.setValue("cityId", city.cityId)
+                                    form.setValue("cityName", city.cityName)
                                   }}
                                   key={city.cityId}
                                   className="w-full p-2 rounded-md hover:bg-muted"
@@ -100,7 +100,7 @@ const CityField = () => {
         </FormItem>
       )}
     />
-  );
-};
+  )
+}
 
-export default CityField;
+export default CityField

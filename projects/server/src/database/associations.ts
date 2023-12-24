@@ -32,6 +32,8 @@ export default function () {
 
   DB.User.hasOne(DB.Order, { foreignKey: 'user_id', as: 'userOrder' });
   DB.Order.belongsTo(DB.User, { foreignKey: 'user_id', as: 'userOrder' });
+  DB.Warehouses.hasOne(DB.Order, { foreignKey: 'warehouse_id', as: 'warehouseOrder' });
+  DB.Order.belongsTo(DB.Warehouses, { foreignKey: 'warehouse_id', as: 'warehouseOrder' });
 
   DB.City.hasOne(DB.WarehouseAddresses, { foreignKey: 'cityId', as: 'cityWarehouse' });
   DB.WarehouseAddresses.belongsTo(DB.City, { foreignKey: 'cityId', as: 'cityWarehouse' });
