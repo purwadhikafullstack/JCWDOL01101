@@ -24,7 +24,6 @@ export const useCurrentUser = ({
       return res.data.data;
     },
     enabled: !!externalId && enabled,
-    refetchOnWindowFocus: true,
   });
 
   return user;
@@ -50,15 +49,14 @@ export const useUsers = ({ page, s, r, filter, order }: UserOptions) => {
 
       return res.data.data;
     },
-    refetchOnWindowFocus: true,
   });
 
   return { data, isLoading, isFetched };
 };
 
-export const useUser = (userId: number) => {
+export const useUser = (userId: number | undefined) => {
   const { data, isLoading } = useQuery<User>({
-    queryKey: ["user", userId],
+    queryKey: ["user-by-id", userId],
     queryFn: async () => {
       const res = await service.get(`/dashboard/user/${userId}`, {
         withCredentials: true,

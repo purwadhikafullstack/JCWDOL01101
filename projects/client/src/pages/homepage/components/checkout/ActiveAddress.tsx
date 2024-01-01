@@ -16,19 +16,19 @@ const ActiveAddress = ({
         <>
           <div className="py-2">
             <div className="flex text-sm gap-2 items-center">
-              <b>{activeAddress?.recepient}</b>
-              <span>({activeAddress?.label})</span>
-              {activeAddress?.isMain && (
-                <Badge variant="default" className="rounded-md">
+              <b>{activeAddress.recepient}</b>
+              <span>({activeAddress.label})</span>
+              {activeAddress.isMain && (
+                <Badge className="rounded-[1rem]">
                   {t("checkoutPage.main")}
                 </Badge>
               )}
             </div>
             <div className="flex flex-col text-sm text-muted-foreground">
-              <span>{activeAddress?.phone}</span>
-              <span>{activeAddress?.address}</span>
+              <span>{activeAddress.phone}</span>
+              <span>{activeAddress.address}</span>
               <span>
-                {`${activeAddress?.city.cityName}, ${activeAddress.city.province}`}
+                {`${activeAddress.city.cityName}, ${activeAddress.city.province}`}
               </span>
             </div>
           </div>

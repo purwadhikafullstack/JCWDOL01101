@@ -45,7 +45,7 @@ export const useCourier = ({
   return query;
 };
 
-export const useSelectedItem = (cartId: number) => {
+export const useSelectedItem = (cartId: number | undefined) => {
   const cartProducts = useQuery<cartProducts[]>({
     queryKey: ["selected-cart", cartId],
     queryFn: async () => {

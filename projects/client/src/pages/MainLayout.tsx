@@ -3,11 +3,10 @@ import MobileNav from "@/components/MobileNav";
 import Navbar from "@/components/Navbar";
 import ScrollToTop from "@/components/ScrollToTop";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import UserContext from "@/context/UserContext";
+import { UserContext } from "@/context/UserContext";
 import { useCurrentUser } from "@/hooks/useUser";
-import { useBoundStore } from "@/store/client/useStore";
 import { useUser } from "@clerk/clerk-react";
-import React, { useEffect } from "react";
+import React from "react";
 import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router-dom";
 
@@ -18,16 +17,6 @@ const MainLayout = () => {
     enabled: isLoaded && !!isSignedIn,
   });
 
-  const setLocation = useBoundStore((state) => state.setLocation);
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition((pos) => {
-      setLocation({
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
-      });
-    });
-  }, []);
   return (
     isLoaded && (
       <UserContext.Provider value={{ user: userBackend }}>

@@ -52,7 +52,7 @@ const PaymentModal = ({
     setPaymentPending(state);
   };
 
-  const onSubmit = () => {
+  const onCheckClosestWarehouse = () => {
     if (address) {
       checkClosestWarehouse.mutate({ lat: address.lat, lng: address.lng });
     }
@@ -71,7 +71,8 @@ const PaymentModal = ({
   }, [show]);
 
   useEffect(() => {
-    if (checkClosestWarehouse.isSuccess) {
+    const invoice = localStorage.getItem("invoice");
+    if (checkClosestWarehouse.isSuccess || invoice) {
       setShow(true);
     }
   }, [checkClosestWarehouse.isSuccess]);
@@ -80,7 +81,7 @@ const PaymentModal = ({
     <>
       <Button
         disabled={isLoading || checkClosestWarehouse.isError}
-        onClick={onSubmit}
+        onClick={onCheckClosestWarehouse}
         className="font-bold w-full lg:py-6 text-base lg:text-lg rounded-lg"
       >
         {checkClosestWarehouse.isPending ? (
@@ -107,7 +108,7 @@ const PaymentModal = ({
       )}
       <>
         {show && (
-          <div className="top-0  m-0 left-0 z-30 w-full h-screen fixed bg-black/80">
+          <div className="top-0 m-0 left-0 z-50 w-full h-screen fixed bg-black/80">
             <div className="w-full flex justify-center items-center h-full">
               <div className="w-[95%] lg:w-[500px] overflow-hidden  transition-all duration-200 relative">
                 <PaymentModalExit

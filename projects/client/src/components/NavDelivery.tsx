@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import NavDropdown from "./NavDropdown";
 import { Car, Clock, RefreshCcw, MapPin, ScrollText } from "lucide-react";
 import { Link } from "react-router-dom";
-import UserContext from "@/context/UserContext";
 import { Order, useOrders } from "@/hooks/useOrder";
+import { useUserContext } from "@/context/UserContext";
 
 const process = [
   {
@@ -29,11 +29,7 @@ const process = [
 ];
 
 const NavDelivery = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
-  const userContext = useContext(UserContext);
-  if (!userContext) {
-    throw new Error("User must be used within a UserProvider");
-  }
-  const { user } = userContext;
+  const { user } = useUserContext();
   const { data: userOrders, isLoading } = useOrders(user?.id);
   const waitingPayment = userOrders
     ? userOrders.filter((order) => order.status === "PENDING").length

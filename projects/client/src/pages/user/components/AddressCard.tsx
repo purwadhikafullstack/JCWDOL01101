@@ -1,14 +1,15 @@
-import React from "react"
-import { Address } from "@/hooks/useAddress"
-import SetMainDialog from "./SetMainDialog"
-import DeleteAddressDialog from "./DeleteAddressDialog"
-import EditAddressDialog from "./EditAddressDialog"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
-import { useTranslation } from "react-i18next"
+import React from "react";
+import { Address } from "@/hooks/useAddress";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import SetMainDialog from "./SetMainDialog";
+import DeleteAddressDialog from "./DeleteAddressDialog";
+import EditAddressDialog from "./EditAddressDialog";
+import { cn } from "@/lib/utils";
+import { Badge } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const AddressCard = ({ address }: { address: Address }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <div className="w-full bg-inherit rounded-md border shadow-sm overflow-hidden py-4 px-6 capitalize">
       <div className="mb-1 space-y-0.5">
@@ -29,20 +30,17 @@ const AddressCard = ({ address }: { address: Address }) => {
       <p className="items-end capitalize text-md">
         {`${address.city.province}, ${address.city.cityName}, ${address.address}, ${address.city.postalCode}`}
       </p>
-      <span className="text-primary flex justify-between mt-4">
+      <div className="text-primary flex justify-between mt-4">
         <div className="flex">
           <EditAddressDialog address={address} />
-          <p className={cn(address.isMain && "hidden", "mx-2")}>|</p>
-          <div className={cn(address.isMain && "hidden")}>
-            <SetMainDialog addressId={Number(address.id)} />
-          </div>
+          <SetMainDialog addressId={Number(address.id)} />
         </div>
-        <div className={cn(address.isMain && "hidden")}>
+        <div className={cn(address.isMain && "hidden", "block")}>
           <DeleteAddressDialog addressId={Number(address.id)} />
         </div>
-      </span>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default AddressCard
+export default AddressCard;

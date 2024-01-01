@@ -1,5 +1,5 @@
 import { ProductDto } from '@/dtos/product.dto';
-import { Status } from '@/interfaces';
+import { Order, OrderDetails, Status } from '@/interfaces';
 import { Image } from '@/interfaces/image.interface';
 import { Inventory } from '@/interfaces/inventory.interface';
 import { Product } from '@/interfaces/product.interface';
@@ -77,7 +77,7 @@ export class ProductController {
   public getHigestSellProducts = async (req: WithAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const limit = Number(req.query.limit);
-      const products: Product[] = await this.product.getHighestSoldProducts(limit, req.auth.userId);
+      const products: OrderDetails[] = await this.product.getHighestSoldProducts(limit, req.auth.userId);
       res.status(200).json({
         data: products,
         message: 'get.highest',

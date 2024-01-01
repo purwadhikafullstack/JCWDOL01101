@@ -8,6 +8,9 @@ export class OrderDetailsModel extends Model<OrderDetails> implements OrderDetai
   public sizeId: number;
   public quantity: number;
   public price: number;
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
 
 export default function (sequelize: Sequelize): typeof OrderDetailsModel {

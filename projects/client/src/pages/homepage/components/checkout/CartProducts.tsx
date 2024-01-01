@@ -1,15 +1,15 @@
 import { cartProducts } from "@/context/UserContext";
 import { formatToIDR } from "@/lib/utils";
-import { Fee } from "@/store/client/slice";
+import { useBoundStore } from "@/store/client/useStore";
 import { t } from "i18next";
 import React from "react";
 
 type Props = {
   cartProducts: cartProducts[];
-  shipping: Fee;
 };
 
-const CartProducts = ({ cartProducts, shipping }: Props) => {
+const CartProducts = ({ cartProducts }: Props) => {
+  const shipping = useBoundStore((state) => state.fee);
   return (
     <div className="space-y-3">
       {cartProducts &&
@@ -28,14 +28,12 @@ const CartProducts = ({ cartProducts, shipping }: Props) => {
             </div>
             <div className="flex justify-between items-center ">
               <p>{t("checkoutPage.paymentModal.shippingCost")}</p>
-              <p>
-                {formatToIDR(String(shipping[product.id!]?.cost[0].value || 0))}
-              </p>
+              <p>{formatToIDR(String(shipping[id]?.cost[0].value || 0))}</p>
             </div>
-            <b>{shipping[product.id!]?.service}</b>
+            <b>{shipping[id]?.service}</b>
             <p>
               {t("checkoutPage.paymentModal.estimation")}{" "}
-              {shipping[product.id!]?.cost[0].etd}
+              {shipping[id]?.cost[0].etd}
             </p>
           </div>
         ))}

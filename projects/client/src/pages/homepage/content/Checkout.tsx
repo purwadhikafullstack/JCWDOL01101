@@ -1,7 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import UserContext from "@/context/UserContext";
+import { useUserContext } from "@/context/UserContext";
 import { useActiveAddress } from "@/hooks/useAddress";
 import { useCart } from "@/hooks/useCart";
 import { formatToIDR } from "@/lib/utils";
@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import SelectAddressDialog from "@/components/SelectAddressDialog";
 import { Trans, useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
+import { Toaster } from "react-hot-toast";
 
 export type Dialog = {
   main: boolean;
@@ -26,11 +27,7 @@ export type Dialog = {
 
 const Checkout = () => {
   const { t } = useTranslation();
-  const userContext = useContext(UserContext);
-  if (!userContext) {
-    throw new Error("useUser must be used within a UserProvider");
-  }
-  const { user } = userContext;
+  const { user } = useUserContext();
   const { data: cart } = useCart(user?.id!, !!user?.userCart);
 
   const navigate = useNavigate();
@@ -46,6 +43,11 @@ const Checkout = () => {
     lng: activeAddress?.lng,
   });
   const { data: selectedCartProducts } = useSelectedItem(cart?.cart.id!);
+  useEffect(() => {
+    if (selectedCartProducts && selectedCartProducts.length === 0) {
+      return navigate("/cart");
+    }
+  }, [selectedCartProducts]);
   const cartProductsLength = selectedCartProducts?.length || 0;
   const totalPrice = selectedCartProducts
     ? selectedCartProducts.reduce(
@@ -61,7 +63,7 @@ const Checkout = () => {
       <Helmet>
         <title>Checkout | TOTEN</title>
       </Helmet>
-      <div className="py-4  border-b">
+      <div className="py-4  border-b fixed inset-0 bg-white h-max">
         <div className="w-full container">
           <BackToCartDialog>
             <span className="text-lg font-bold text-primary flex gap-2 items-center cursor-pointer">
@@ -70,7 +72,7 @@ const Checkout = () => {
           </BackToCartDialog>
         </div>
       </div>
-      <div className="container mb-24">
+      <div className="container my-16">
         <div className="flex flex-col lg:flex lg:flex-row w-full gap-8">
           <section className="flex-1">
             <h3 className="font-bold text-xl pt-4">
@@ -91,24 +93,20 @@ const Checkout = () => {
 
             <>
               {selectedCartProducts &&
-                selectedCartProducts.map(
-                  ({ product, id, quantity, size }, i) => (
-                    <CheckoutItem
-                      key={id}
-                      index={i}
-                      size={size}
-                      length={cartProductsLength}
-                      product={product}
-                      quantity={quantity}
-                      warehouse={closestWarehouse}
-                      activeAddress={activeAddress}
-                    />
-                  )
-                )}
+                selectedCartProducts.map((cp, i) => (
+                  <CheckoutItem
+                    key={cp.id}
+                    cp={cp}
+                    index={i}
+                    length={cartProductsLength}
+                    warehouse={closestWarehouse}
+                    activeAddress={activeAddress}
+                  />
+                ))}
             </>
           </section>
           <div className="w-full lg:w-[420px] relative">
-            <div className="w-ful lg:sticky lg:top-[100px]">
+            <div className="w-ful lg:sticky lg:top-[170px]">
               <div className="w-full h-full px-4 py-6 lg:mt-[100px] border rounded-lg">
                 <div className="space-y-3 mb-5">
                   <b className="font-bold">{t("checkoutPage.summary.title")}</b>
@@ -126,20 +124,20 @@ const Checkout = () => {
                           )
                         </Trans>
                       </span>
-                      <p>{formatToIDR(totalPrice.toString())}</p>
+                      <p>{formatToIDR(totalPrice)}</p>
                     </div>
                     <div className="flex gap-2 justify-between items-center">
                       <span className="flex gap-2 items-center">
                         {t("checkoutPage.summary.totalShippingFee")}
                       </span>
-                      <p>{formatToIDR(shippingFee.toString())}</p>
+                      <p>{formatToIDR(shippingFee)}</p>
                     </div>
                   </div>
                   <Separator />
                   <div className="flex gap-2 justify-between items-center">
                     <b>{t("checkoutPage.summary.shippingTotal")}</b>
                     <span className="font-bold text-lg">
-                      {formatToIDR(shippingTotal.toString())}
+                      {formatToIDR(shippingTotal)}
                     </span>
                   </div>
                 </div>
@@ -155,6 +153,7 @@ const Checkout = () => {
           </div>
         </div>
       </div>
+      <Toaster />
     </>
   );
 };
