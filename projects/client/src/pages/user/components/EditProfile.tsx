@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTrigger,
@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import UserContext from "@/context/UserContext";
+import { useUserContext } from "@/context/UserContext";
 import z from "zod";
 import { Form } from "@/components/ui/form";
 import ProductFormField from "@/pages/dashboard/components/ProductFormField";
@@ -30,12 +30,7 @@ let emptyValues = {
 
 function EditProfile() {
   const [open, setOpen] = useState(false);
-  const userContext = useContext(UserContext);
-  if (!userContext) {
-    throw new Error("useUser must be used within a UserProvider");
-  }
-  const { user } = userContext;
-
+  const { user } = useUserContext();
   const userMutation = useEditUser(Number(user?.id));
 
   const form = useForm<z.infer<typeof EditProfileSchema>>({

@@ -1,15 +1,11 @@
-import UserContext from "@/context/UserContext";
-import React, { useContext } from "react";
+import { useUserContext } from "@/context/UserContext";
+import React from "react";
 import ProfileAvatar from "../components/ProfileAvatar";
 import { User } from "lucide-react";
 import EditProfile from "../components/EditProfile";
 
 const Profile = () => {
-  const userContext = useContext(UserContext);
-  if (!userContext) {
-    throw new Error("useUser must be used within a UserProvider");
-  }
-  const { user } = userContext;
+  const { user } = useUserContext();
   return (
     <>
       <div className="md:p-6 flex flex-col md:flex-row md:gap-8">

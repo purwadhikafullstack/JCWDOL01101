@@ -1,19 +1,18 @@
 import { ProductData } from "@/hooks/useProduct";
 import { cn, formatToIDR } from "@/lib/utils";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ReviewStar from "./ReviewStar";
 import { Separator } from "@/components/ui/separator";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import UserContext from "@/context/UserContext";
 import { useCartProduct } from "@/hooks/useCart";
 import { useAddCart } from "@/hooks/useCartMutation";
 import { useReviewByProduct } from "@/hooks/useReview";
 import { useToggleWishlist } from "@/hooks/useWishlistMutation";
 import ProductSize from "./ProductSize";
 import QuantityButton from "./QuantityButton";
-import { useQueryClient } from "@tanstack/react-query";
+import { useUserContext } from "@/context/UserContext";
 
 type Props = {
   productData: ProductData;
@@ -26,37 +25,25 @@ const ProductDescription = ({ productData }: Props) => {
     totalStock: totalAllStock,
     totalStockBySize,
   } = productData;
+  const { user } = useUserContext();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const userContext = useContext(UserContext);
-  if (!userContext) {
-    throw new Error("useUser must be used within a UserProvider");
-  }
-
-  const { user } = userContext;
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState("");
-  const isUserCartProducts =
-    (user?.userCart && user?.userCart.cartProducts.length > 0) || false;
-  const isProductInCart =
-    isUserCartProducts &&
-    user?.userCart.cartProducts.find(
-      (cartProduct) => cartProduct.productId === product.id
-    ) !== undefined;
-  const { data: cartProduct } = useCartProduct(isProductInCart, product.id);
+  const { data: cartProduct } = useCartProduct(product.id);
   const { data: reviewData } = useReviewByProduct(product?.id);
   const cartMutation = useAddCart();
   const toggleWishlist = useToggleWishlist();
   const [selectedProductSize, setSelectedProductSize] = useState<number | null>(
-    totalStockBySize.length > 0 ? totalStockBySize[0].sizeId : null
+    totalStockBySize[0].sizeId ?? null
   );
   const currentSizeStock = totalStockBySize.find(
     (size) => size.sizeId === selectedProductSize
   );
-  const currentProductQtyInCart =
-    cartProduct &&
-    cartProduct.find((cart) => cart.sizeId === selectedProductSize)?.quantity;
+  const currentProductQtyInCart = cartProduct?.find(
+    (cart) => cart.sizeId === selectedProductSize
+  )?.quantity;
   const totalStock = (currentSizeStock && +currentSizeStock.total) || 0;
 
   const addToCart = () => {

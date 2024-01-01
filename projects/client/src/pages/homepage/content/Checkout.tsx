@@ -1,7 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import UserContext from "@/context/UserContext";
+import { useUserContext } from "@/context/UserContext";
 import { useActiveAddress } from "@/hooks/useAddress";
 import { useCart } from "@/hooks/useCart";
 import { formatToIDR } from "@/lib/utils";
@@ -27,11 +27,7 @@ export type Dialog = {
 
 const Checkout = () => {
   const { t } = useTranslation();
-  const userContext = useContext(UserContext);
-  if (!userContext) {
-    throw new Error("useUser must be used within a UserProvider");
-  }
-  const { user } = userContext;
+  const { user } = useUserContext();
   const { data: cart } = useCart(user?.id!, !!user?.userCart);
 
   const navigate = useNavigate();

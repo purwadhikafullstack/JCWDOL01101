@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import NavDropdown from "./NavDropdown";
 import { ShoppingCart, ShoppingCartIcon } from "lucide-react";
-import UserContext from "@/context/UserContext";
+import { useUserContext } from "@/context/UserContext";
 import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "./ui/separator";
 import { baseURL } from "@/service";
@@ -13,11 +13,7 @@ import { Button } from "./ui/button";
 const NavCart = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const userContext = useContext(UserContext);
-  if (!userContext) {
-    throw new Error("useUser must be used within a UserProvider");
-  }
-  const { user } = userContext;
+  const { user } = useUserContext();
   const { data: carts } = useCart(user?.id!, !!user?.userCart);
 
   const totalProducts: number = carts?.totalQuantity || 0;

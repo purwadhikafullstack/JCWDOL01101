@@ -4,6 +4,7 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Size } from "./useSize";
 import { Review } from "./useReview";
 import { Warehouse } from "./useWarehouse";
+import { OrderDetails } from "./interfaces/Order";
 
 export interface Product {
   id: number;
@@ -12,7 +13,6 @@ export interface Product {
   price: number;
   stock: number;
   sold: number;
-  image: string;
   weight: number;
   description: string;
   status: string;
@@ -177,7 +177,7 @@ export const useNewestProducts = () => {
 
 export const useHighestSellProducts = (limit = 3) => {
   const { getToken } = useAuth();
-  const products = useQuery<Product[]>({
+  const products = useQuery<OrderDetails[]>({
     queryKey: ["highest-sell", limit],
     queryFn: async () => {
       const res = await service.get(`/products/highest-sell`, {

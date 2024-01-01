@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import UserContext from "@/context/UserContext";
+import { useUserContext } from "@/context/UserContext";
 import { useCart } from "@/hooks/useCart";
 import CartItem from "../components/cart/CartItem";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,7 @@ import RemoveItemsDialog from "../components/cart/RemoveItemsDialog";
 import ShoppingSummary from "../components/cart/ShoppingSummary";
 import { useToggleAllSelectProduct } from "@/hooks/useCartMutation";
 import { useTranslation } from "react-i18next";
-import { useHighestSellProducts } from "@/hooks/useProduct";
+import { useNewestProducts } from "@/hooks/useProduct";
 import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton";
 import ProductCard from "../components/ProductCard";
 import { Helmet } from "react-helmet";
@@ -18,11 +18,7 @@ import { Helmet } from "react-helmet";
 const Cart = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const userContext = useContext(UserContext);
-  if (!userContext) {
-    throw new Error("useUser must be used within a UserProvider");
-  }
-  const { user } = userContext;
+  const { user } = useUserContext();
 
   const clearCheckout = useBoundStore((state) => state.clear);
   useEffect(() => {
@@ -30,8 +26,8 @@ const Cart = () => {
   }, []);
 
   const { data: cart } = useCart(user?.id!, !!user?.userCart);
-  const { data: highestSell, isLoading: highestSellLoading } =
-    useHighestSellProducts(12);
+  const { data: newestProducts, isLoading: newestProductLoading } =
+    useNewestProducts();
   const carts = cart?.cart.cartProducts || [];
 
   const totalQuantity = cart?.totalQuantity || 0;
@@ -135,15 +131,17 @@ const Cart = () => {
         )}
       </div>
       <div>
-        <p className="font-bold my-4">{t("cartPage.misc.title")}</p>
+        <h3 className="font-bold my-2 mt-8 pt-4 uppercase">
+          {t("cartPage.misc.title")}
+        </h3>
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-          {highestSellLoading ? (
+          {newestProductLoading ? (
             <NewestProductSekeleton product={12} />
           ) : (
             <>
-              {highestSell && (
+              {newestProducts && (
                 <>
-                  {highestSell.map((product) => (
+                  {newestProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
                 </>

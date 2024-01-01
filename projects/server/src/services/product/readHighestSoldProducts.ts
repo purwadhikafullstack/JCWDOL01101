@@ -1,62 +1,38 @@
 import { Op } from 'sequelize';
 import { DB } from '@/database';
-import { Product, User } from '@/interfaces';
-import { ImageModel, InventoryModel, ReviewModel, SizeModel, WishlistModel } from '@/models';
+import { OrderDetails } from '@/interfaces';
+import { InventoryModel, OrderModel, ProductModel } from '@/models';
 
-export async function readHighestSoldProducts(limit: number, externalId: string | undefined): Promise<Product[]> {
-  let findUser: User | null = null;
-  if (externalId) {
-    findUser = await DB.User.findOne({ where: { externalId, status: 'ACTIVE' } });
-  }
+export async function readHighestSoldProducts(limit: number, externalId: string | undefined): Promise<OrderDetails[]> {
   limit = limit || 3;
   const date = new Date();
   const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
   const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-  const highestSellForThisMonth: Product[] = await DB.Product.findAll({
-    limit,
+
+  const highestSoldProduct: OrderDetails[] = await DB.OrderDetails.findAll({
+    attributes: ['productId', [DB.sequelize.fn('SUM', DB.sequelize.col('quantity')), 'totalQuantity']],
     where: {
-      status: 'ACTIVE',
       createdAt: {
-        [Op.gte]: firstDayOfMonth,
-        [Op.lte]: lastDayOfMonth,
+        [Op.between]: [firstDayOfMonth, lastDayOfMonth],
       },
     },
     include: [
       {
-        model: ReviewModel,
-        as: 'productReviews',
-        attributes: ['rating'],
+        model: ProductModel,
+        as: 'product',
       },
       {
-        model: ImageModel,
-        as: 'productImage',
-      },
-      {
-        model: InventoryModel,
-        as: 'inventory',
-        include: [
-          {
-            model: SizeModel,
-            as: 'sizes',
-          },
-        ],
-        attributes: ['stock', 'sold'],
+        model: OrderModel,
+        as: 'order',
         where: {
-          status: 'ACTIVE',
+          status: 'DELIVERED',
         },
-      },
-      {
-        model: WishlistModel,
-        as: 'productWishlist',
-        where: {
-          userId: findUser ? findUser.id : null,
-        },
-        paranoid: true,
-        limit: 1,
+        attributes: [],
       },
     ],
-    order: [[{ model: InventoryModel, as: 'inventory' }, 'sold', 'DESC']],
+    group: ['productId', 'product.id'],
+    order: [[DB.sequelize.literal('totalQuantity'), 'DESC']],
   });
 
-  return highestSellForThisMonth;
+  return highestSoldProduct;
 }
