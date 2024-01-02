@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import DashboardNavbar from "./components/Navbar";
 import { Outlet } from "react-router-dom";
 import DashboardSidebar from "./components/Sidebar";
@@ -11,14 +11,21 @@ import {
 } from "@/components/ui/resizable";
 import { ImperativePanelHandle } from "react-resizable-panels";
 import { useBoundStore } from "@/store/client/useStore";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { UserContext } from "@/context/UserContext";
+import { useUser } from "@clerk/clerk-react";
+import { useCurrentUser } from "@/hooks/useUser";
 
 const DashboardLayout = () => {
+  const { user, isSignedIn, isLoaded } = useUser();
+  const { data: userBackend } = useCurrentUser({
+    externalId: user?.id,
+    enabled: isLoaded && !!isSignedIn,
+  });
   const setIsResizing = useBoundStore((state) => state.setIsResizing);
   const isResizing = useBoundStore((state) => state.isResizing);
   const panelRef = React.useRef<ImperativePanelHandle>(null);
-  const [size, setSize] = React.useState("w-[15%]");
+
   const onCollapse = () => {
     setIsResizing(true);
   };
@@ -27,62 +34,44 @@ const DashboardLayout = () => {
     setIsResizing(false);
   };
 
-  useEffect(() => {
-    if (panelRef.current) {
-      setSize(`w-[${panelRef.current.getSize()}%]`);
-    }
-  }, [isResizing, panelRef.current]);
+  if (!isLoaded) {
+    return null;
+  }
 
-  const handleToggle = () => {
-    if (panelRef.current) {
-      if (isResizing) {
-        panelRef.current.expand();
-      } else {
-        panelRef.current.collapse();
-      }
-    }
-  };
   return (
-    <ThemeProvider>
-      <ResizablePanelGroup autoSaveId="persistence" direction="horizontal">
-        <ResizablePanel
-          ref={panelRef}
-          collapsible
-          collapsedSize={6}
-          minSize={15}
-          defaultSize={15}
-          maxSize={15}
-          onCollapse={onCollapse}
-          onExpand={onExpand}
-          className="relative"
-        >
-          <div className={`fixed ${size} h-full`}>
-            <DashboardSidebar />
-          </div>
-          <Button
-            onClick={handleToggle}
-            variant="outline"
-            className=" rounded-full shadow z-50 absolute translate-x-1/2 right-0 top-4"
-          >
-            {!isResizing ? (
-              <ChevronLeft className="w-4 h-4 transform -translate-x-2" />
-            ) : (
-              <ChevronRight className="w-4 h-4 transform -translate-x-2" />
+    <UserContext.Provider value={{ user: userBackend }}>
+      <ThemeProvider>
+        <ResizablePanelGroup autoSaveId="persistence" direction="horizontal">
+          <ResizablePanel
+            ref={panelRef}
+            collapsible
+            collapsedSize={4}
+            minSize={15}
+            defaultSize={15}
+            maxSize={20}
+            onCollapse={onCollapse}
+            onExpand={onExpand}
+            className={cn(
+              "relative",
+              isResizing &&
+                "min-w-[50px] transition-all duration-200 ease-in-out"
             )}
-          </Button>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel>
-          <div className="h-screen overflow-y-auto">
-            <DashboardNavbar />
-            <main className="p-6">
-              <Outlet />
-            </main>
-          </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-      <Toaster />
-    </ThemeProvider>
+          >
+            <DashboardSidebar />
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel>
+            <div className="h-screen overflow-y-auto">
+              <DashboardNavbar />
+              <main className="p-6">
+                <Outlet />
+              </main>
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+        <Toaster />
+      </ThemeProvider>
+    </UserContext.Provider>
   );
 };
 

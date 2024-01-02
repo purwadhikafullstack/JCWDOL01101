@@ -1,9 +1,8 @@
-import { useCurrentUser } from "@/hooks/useUser";
+import React from "react";
 import { cn } from "@/lib/utils";
 import { useBoundStore } from "@/store/client/useStore";
 import { useUser } from "@clerk/clerk-react";
 import { ChevronDown, LucideIcon } from "lucide-react";
-import React from "react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -29,31 +28,33 @@ export const DashboardLink = ({
 }: SidebarLink) => {
   const isResizing = useBoundStore((state) => state.isResizing);
   return (
-    <div>
-      <Link to={path}>
-        <li
-          className={`flex w-full items-center gap-2 cursor-pointer py-2 hover:bg-muted/80 rounded-md ${
-            state && "text-primary font-bold bg-muted"
-          }`}
+    <Link to={path}>
+      <div
+        className={cn(
+          "flex w-full items-center gap-2 cursor-pointer py-2 hover:bg-muted/80 rounded-[.3rem]",
+          state && "text-primary font-bold bg-muted",
+          isResizing && "justify-center"
+        )}
+      >
+        <span
+          className={cn(
+            "ml-2 w-4 text-muted-foreground",
+            state && "text-primary",
+            isResizing && "ml-0"
+          )}
         >
-          <span
-            className={`ml-2 w-4 ${
-              state ? "text-primary" : "text-muted-foreground"
-            }`}
-          >
-            <Icon className={cn("w-4 h-4", isResizing && "h-5 w-5")} />
-          </span>
-          <span
-            className={cn(
-              state ? "text-primary" : "text-muted-foreground",
-              isResizing && "hidden"
-            )}
-          >
-            {title}
-          </span>
-        </li>
-      </Link>
-    </div>
+          <Icon className={cn("w-4 h-4", isResizing && "h-5 w-5")} />
+        </span>
+        <span
+          className={cn(
+            state ? "text-primary" : "text-muted-foreground",
+            isResizing && "hidden"
+          )}
+        >
+          {title}
+        </span>
+      </div>
+    </Link>
   );
 };
 
@@ -74,14 +75,16 @@ export const DropdownLink = ({
       <Link to={path}>
         <li
           onClick={() => setIsOpen(!isOpen)}
-          className={`${
+          className={cn(
+            "flex gap-2 justify-between items-center cursor-pointer p-2 hover:bg-muted/80 capitalize select-none",
             state && "text-primary font-bold bg-muted"
-          } flex gap-2 justify-between items-center cursor-pointer p-2 hover:bg-muted/80 capitalize select-none`}
+          )}
         >
           <span
-            className={`flex gap-2 items-center w-4 ${
-              state ? "text-primary" : "text-muted-foreground"
-            }`}
+            className={cn(
+              "flex gap-2 items-center w-4 text-muted-foreground",
+              state && "text-primary"
+            )}
           >
             <div>
               <Icon className={cn("w-4 h-4", isResizing && "h-5 w-5")} />
@@ -91,9 +94,10 @@ export const DropdownLink = ({
           {ROLE === "ADMIN" && (
             <span className={state ? "text-primary" : "text-muted-foreground"}>
               <ChevronDown
-                className={`w-5 h-5 transform ${
+                className={cn(
+                  "w-5 h-5 transform transition-all duration-300",
                   isOpen && "-rotate-180"
-                } transition-all duration-300`}
+                )}
               />
             </span>
           )}

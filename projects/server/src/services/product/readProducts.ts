@@ -95,7 +95,8 @@ export async function readProducts({
   };
 
   if (order) {
-    options.order = filter === 'stock' || filter === 'sold' ? [[{ model: InventoryModel, as: 'inventory' }, filter, order]] : [[filter, order]];
+    // options.order = filter === 'stock' || filter === 'sold' ? [[{ model: InventoryModel, as: 'inventory' }, filter, order]] : [[filter, order]];
+    options.order = [[filter, order]];
   }
 
   const [warehouseProducts, totalCount] = await Promise.all([DB.Product.findAll(options), DB.Product.count({ where: options.where })]);

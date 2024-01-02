@@ -26,9 +26,7 @@ const ProductTableRow = ({ products }: Props) => {
           <TableRow key={i}>
             <TableCell className="w-[80px]">{i + 1}</TableCell>
             <TableCell>
-              <p className="overflow-hidden whitespace-nowrap text-ellipsis w-[200px]">
-                {product.name}
-              </p>
+              <p className="line-clamp-2 w-[200px]">{product.name}</p>
             </TableCell>
             <TableCell>
               <DropdownMenu>
@@ -68,10 +66,8 @@ const ProductTableRow = ({ products }: Props) => {
                 {product.productCategory ? product.productCategory.name : "-"}
               </p>
             </TableCell>
-            <TableCell className="w-[150px]">
-              <p className="overflow-hidden whitespace-nowrap text-ellipsis w-[150px]">
-                {product.description}
-              </p>
+            <TableCell className="w-[200px]">
+              <p className="line-clamp-2">{product.description}</p>
             </TableCell>
             <TableCell className="text-center">
               {product.productImage.length > 0 ? (

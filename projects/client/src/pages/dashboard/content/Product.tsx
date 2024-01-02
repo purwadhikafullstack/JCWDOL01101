@@ -121,13 +121,15 @@ const Product = () => {
                 <TableHead className="w-[150px] text-center">
                   <ChangeOrderButton paramKey="weight" name="Weight (grams)" />
                 </TableHead>
-                <TableHead className="w-[150px] text-center">
-                  <ChangeOrderButton paramKey="stock" name="Total Stock" />
+                <TableHead className="w-[120px] text-center">
+                  Total Stock
                 </TableHead>
-                <TableHead className="w-[150px] text-center">
-                  <ChangeOrderButton paramKey="sold" name="Total Sold" />
+                <TableHead className="w-[100px] text-center">
+                  Total Sold
                 </TableHead>
-                <TableHead className="w-[100px]">Category</TableHead>
+                <TableHead className="w-[100px] text-center">
+                  Category
+                </TableHead>
                 <TableHead className="w-[200px]">Description</TableHead>
                 <TableHead className="text-center">Image</TableHead>
                 {(ROLE === "ADMIN" || ROLE === "WAREHOUSE ADMIN") && (
