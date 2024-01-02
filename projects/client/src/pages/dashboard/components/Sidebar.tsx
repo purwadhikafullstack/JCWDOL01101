@@ -8,89 +8,109 @@ import {
   UserCog,
   ClipboardList,
   Package,
-  Settings,
-  ArrowLeftFromLine,
   FileText,
+  LucideIcon,
+  Home,
+  ChevronLeft,
 } from "lucide-react";
 import React from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { DashboardLink, DropdownLink } from "./SidebarLink";
 import { useClerk, useUser } from "@clerk/clerk-react";
+import { useBoundStore } from "@/store/client/useStore";
+import { cn } from "@/lib/utils";
+
+type Link = {
+  title: string;
+  Icon: LucideIcon;
+  path: string;
+  children?: Link[];
+};
 
 const links = [
   {
     title: "Overview",
-    icon: <LayoutDashboard className="w-4 h-4" />,
+    Icon: LayoutDashboard,
     path: "/dashboard",
   },
   {
     title: "Warehouse",
-    icon: <Warehouse className="w-4 h-4" />,
+    Icon: Warehouse,
     path: "/dashboard/warehouse",
   },
   {
     title: "Mutation",
-    icon: <FileText className="w-4 h-4" />,
+    Icon: FileText,
     path: "/dashboard/manage-mutation",
   },
   {
-    display: "ADMIN",
     title: "User",
-    icon: <Users className="w-4 h-4" />,
+    Icon: Users,
     path: "/dashboard/user",
     children: [
       {
         title: "Manage Admin",
-        icon: <UserCog className="w-4 h-4" />,
+        Icon: UserCog,
         path: "/dashboard/manage-admin",
       },
     ],
   },
   {
     title: "Product",
-    icon: <Shirt className="w-4 h-4" />,
+    Icon: Shirt,
     path: "/dashboard/product",
     children: [
       {
         title: "Category",
-        icon: <Shirt className="w-4 h-4" />,
+        Icon: Shirt,
         path: "/dashboard/product/category",
       },
     ],
   },
   {
     title: "Order",
-    icon: <Package className="w-4 h-4" />,
+    Icon: Package,
     path: "/dashboard/order",
   },
   {
     title: "Report",
-    icon: <ClipboardList className="w-4 h-4" />,
+    Icon: ClipboardList,
     path: "/dashboard/report",
   },
 ];
 
 const DashboardSidebar = () => {
+  const isResizing = useBoundStore((state) => state.isResizing);
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut } = useClerk();
   const { user } = useUser();
   const ROLE = user?.publicMetadata?.role;
   return (
-    <div className="p-4 flex h-full flex-col justify-between items-start">
+    <div className="p-4 flex w-full h-full flex-col justify-between items-start relative">
       <div className="w-full">
         <Link to="/dashboard">
-          <div className="w-max mb-4">
-            <span className="font-bold text-3xl text-primary">
-              当店 | Toten
+          <div className="mb-4 flex flex-col shrink-0">
+            <span
+              className={cn(
+                "font-bold text-3xl text-primary flex shrink-0 items-center",
+                isResizing && "text-lg text-center"
+              )}
+            >
+              {!isResizing ? "当店 | Toten" : "当店"}
             </span>
-            <p className="text-base text-muted-foreground tracking-widest">
+            <p
+              className={cn(
+                "text-base text-muted-foreground tracking-widest ",
+                isResizing && "hidden"
+              )}
+            >
               Dashboard
             </p>
           </div>
         </Link>
-        <ul className="my-4 space-y-1 w-full">
-          {links.map((link) => {
+        <div className="my-4 space-y-1 w-full">
+          {links.map((link, i) => {
             if (
               ROLE !== "ADMIN" &&
               (link.title === "User" || link.title === "Warehouse")
@@ -101,42 +121,31 @@ const DashboardSidebar = () => {
               <DropdownLink
                 key={link.title}
                 title={link.title}
-                icon={link.icon}
+                Icon={link.Icon}
                 path={link.path}
                 children={link.children}
                 state={location.pathname === link.path}
-                display={link.display}
               />
             ) : (
               <DashboardLink
                 key={link.title}
                 title={link.title}
-                icon={link.icon}
+                Icon={link.Icon}
                 path={link.path}
                 state={location.pathname === link.path}
-                display={link.display}
               />
             );
           })}
-        </ul>
+        </div>
       </div>
       <div className="flex flex-col gap-1 w-full">
-        <Link to="/user" className="w-full">
-          <Button
-            variant="ghost"
-            className="text-muted-foreground w-full justify-start"
-          >
-            <Settings className="w-4 h-4 mr-4 group-hover:translate-x-1" />
-            Setting
-          </Button>
-        </Link>
         <Link to="/" className="w-full">
           <Button
             variant="ghost"
             className="text-muted-foreground w-full justify-start"
           >
-            <ArrowLeftFromLine className="w-4 h-4 mr-4 group-hover:translate-x-1" />
-            Main page
+            <Home className={cn("w-4 h-4", !isResizing && "mr-2")} />
+            {!isResizing && "Main page"}
           </Button>
         </Link>
         <Button
@@ -144,7 +153,8 @@ const DashboardSidebar = () => {
           variant="ghost"
           className="text-muted-foreground w-full justify-start"
         >
-          <LogOut className="w-4 h-4 mr-4 group-hover:translate-x-1" /> Log out
+          <LogOut className={cn("w-4 h-4", !isResizing && "mr-2")} />
+          {!isResizing && "Log Out"}
         </Button>
       </div>
     </div>

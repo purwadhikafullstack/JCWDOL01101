@@ -1,6 +1,8 @@
 import { useCurrentUser } from "@/hooks/useUser";
+import { cn } from "@/lib/utils";
+import { useBoundStore } from "@/store/client/useStore";
 import { useUser } from "@clerk/clerk-react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, LucideIcon } from "lucide-react";
 import React from "react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -8,34 +10,26 @@ import { Link, useLocation } from "react-router-dom";
 type SidebarLink = {
   title: string;
   path: string;
-  icon: React.ReactElement;
+  Icon: LucideIcon;
   state?: boolean;
-  display?: string;
 };
 
 type Children = {
   title: string;
   path: string;
-  icon: React.ReactElement;
+  Icon: LucideIcon;
   state?: boolean;
 };
 
 export const DashboardLink = ({
   title,
-  icon,
+  Icon,
   state = false,
   path,
-  display,
 }: SidebarLink) => {
-  const { user, isSignedIn, isLoaded } = useUser();
-  const { data: userAdmin } = useCurrentUser({
-    externalId: user?.id,
-    enabled: isLoaded && !!isSignedIn,
-  });
+  const isResizing = useBoundStore((state) => state.isResizing);
   return (
-    <div
-      className={display ? `${display !== userAdmin?.role && "hidden"}` : ""}
-    >
+    <div>
       <Link to={path}>
         <li
           className={`flex w-full items-center gap-2 cursor-pointer py-2 hover:bg-muted/80 rounded-md ${
@@ -47,9 +41,14 @@ export const DashboardLink = ({
               state ? "text-primary" : "text-muted-foreground"
             }`}
           >
-            {icon}
+            <Icon className={cn("w-4 h-4", isResizing && "h-5 w-5")} />
           </span>
-          <span className={state ? "text-primary" : "text-muted-foreground"}>
+          <span
+            className={cn(
+              state ? "text-primary" : "text-muted-foreground",
+              isResizing && "hidden"
+            )}
+          >
             {title}
           </span>
         </li>
@@ -60,26 +59,16 @@ export const DashboardLink = ({
 
 export const DropdownLink = ({
   title,
-  icon,
+  Icon,
   state = false,
   children,
   path,
-  display,
-}: {
-  title: string;
-  path: string;
-  icon: React.ReactElement;
-  children: Children[];
-  state?: boolean;
-  display?: string;
-}) => {
+}: SidebarLink & { children: Children[] }) => {
+  const isResizing = useBoundStore((state) => state.isResizing);
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-  const { user, isSignedIn, isLoaded } = useUser();
-  const { data: userAdmin } = useCurrentUser({
-    externalId: user?.id!,
-    enabled: isLoaded && !!isSignedIn,
-  });
+  const { user } = useUser();
+  const ROLE = user?.publicMetadata?.role;
   return (
     <>
       <Link to={path}>
@@ -94,37 +83,37 @@ export const DropdownLink = ({
               state ? "text-primary" : "text-muted-foreground"
             }`}
           >
-            <div>{icon}</div>
-            <div>{title}</div>
+            <div>
+              <Icon className={cn("w-4 h-4", isResizing && "h-5 w-5")} />
+            </div>
+            <div className={isResizing ? "hidden" : ""}>{title}</div>
           </span>
-          <span className={state ? "text-primary" : "text-muted-foreground"}>
-            <ChevronDown
-              className={`w-5 h-5 transform ${
-                isOpen && "-rotate-180"
-              } transition-all duration-300`}
-            />
-          </span>
+          {ROLE === "ADMIN" && (
+            <span className={state ? "text-primary" : "text-muted-foreground"}>
+              <ChevronDown
+                className={`w-5 h-5 transform ${
+                  isOpen && "-rotate-180"
+                } transition-all duration-300`}
+              />
+            </span>
+          )}
         </li>
       </Link>
-      <div className={`${isOpen ? "flex" : "hidden"}`}>
-        <ul className="flex-col flex-grow ml-3 my-1 border-l-2 p-1 border-gray-300">
-          {children.map((link) => (
-            <div
-              className={
-                display ? `${display !== userAdmin?.role && "hidden"}` : ""
-              }
-            >
+      {ROLE === "ADMIN" && (
+        <div className={`${isOpen ? "flex" : "hidden"}`}>
+          <div className="flex-col flex-grow ml-3 my-1 border-l-2 p-1 border-gray-300">
+            {children.map((link, i) => (
               <DashboardLink
-                key={link.title}
+                key={link.title + i}
                 title={link.title}
-                icon={link.icon}
+                Icon={link.Icon}
                 path={link.path}
                 state={location.pathname === link.path}
               />
-            </div>
-          ))}
-        </ul>
-      </div>
+            ))}
+          </div>
+        </div>
+      )}
     </>
   );
 };
