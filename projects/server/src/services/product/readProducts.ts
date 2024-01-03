@@ -1,6 +1,6 @@
 import { DB } from '@/database';
 import { GetFilterProduct, Product, User } from '@/interfaces';
-import { CategoryModel, ImageModel, InventoryModel, SizeModel, WarehouseModel, WishlistModel } from '@/models';
+import { CategoryModel, ImageModel, InventoryModel, ProductModel, SizeModel, WarehouseModel, WishlistModel } from '@/models';
 import { HttpException } from '@/exceptions/HttpException';
 import { FindOptions, Op } from 'sequelize';
 import { queryStringToArray } from './queryStringToArray';
@@ -81,6 +81,18 @@ export async function readProducts({
         required: false,
         include: [
           {
+            model: ProductModel,
+            as: 'product',
+            include: [
+              {
+                model: CategoryModel,
+                as: 'productCategory',
+                attributes: ['name'],
+                paranoid: true,
+              },
+            ],
+          },
+          {
             where,
             model: WarehouseModel,
             as: 'warehouse',
@@ -95,7 +107,6 @@ export async function readProducts({
   };
 
   if (order) {
-    // options.order = filter === 'stock' || filter === 'sold' ? [[{ model: InventoryModel, as: 'inventory' }, filter, order]] : [[filter, order]];
     options.order = [[filter, order]];
   }
 

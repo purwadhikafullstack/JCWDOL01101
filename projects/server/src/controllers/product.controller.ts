@@ -20,6 +20,18 @@ export type ProductQuery = {
 export class ProductController {
   product = Container.get(ProductService);
 
+  public getProductsDashboard = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const products: Product[] = await this.product.getProductsDashboard();
+      res.status(200).json({
+        data: products,
+        message: 'get.warehouseProducts',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   public getProducts = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const hashids = new Hashids('TOTEN', 10);

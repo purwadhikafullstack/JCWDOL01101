@@ -21,7 +21,7 @@ const SidebarHeader = () => {
               <Link to="/dashboard">
                 <img
                   src="/t10logo.png"
-                  className="w-6 h-6 mx-auto cursor-pointer mb-6"
+                  className="w-6 mx-auto cursor-pointer mb-6"
                 />
               </Link>
             </TooltipTrigger>

@@ -86,6 +86,11 @@ const Product = () => {
     clearImage();
   }, []);
 
+  const [collapseId, setCollapseId] = React.useState<null | number>(null);
+  const handleCollapse = (id: number | null) => {
+    setCollapseId(id === collapseId ? null : id);
+  };
+
   return (
     <>
       <Helmet>
@@ -109,29 +114,23 @@ const Product = () => {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[80px]">#</TableHead>
-                <TableHead>
+                <TableHead className="text-center">Image</TableHead>
+                <TableHead className="w-[200px]">
                   <ChangeOrderButton paramKey="name" name="Name" />
                 </TableHead>
-                <TableHead className="w-[100px] text-start">
-                  Available Size
-                </TableHead>
-                <TableHead className="w-[150px]">
+                <TableHead className="w-[150px] text-center">Sizes</TableHead>
+                <TableHead className="w-[150px] text-end">
                   <ChangeOrderButton paramKey="price" name="Price" />
                 </TableHead>
                 <TableHead className="w-[150px] text-center">
                   <ChangeOrderButton paramKey="weight" name="Weight (grams)" />
                 </TableHead>
-                <TableHead className="w-[120px] text-center">
-                  Total Stock
-                </TableHead>
-                <TableHead className="w-[100px] text-center">
-                  Total Sold
-                </TableHead>
+                <TableHead className="w-[120px] text-center">Stock</TableHead>
+                <TableHead className="w-[100px] text-center">Sold</TableHead>
                 <TableHead className="w-[100px] text-center">
                   Category
                 </TableHead>
                 <TableHead className="w-[200px]">Description</TableHead>
-                <TableHead className="text-center">Image</TableHead>
                 {(ROLE === "ADMIN" || ROLE === "WAREHOUSE ADMIN") && (
                   <TableHead className="text-center">Action</TableHead>
                 )}
@@ -147,7 +146,17 @@ const Product = () => {
               ) : (
                 <>
                   {data && data.products && data.products.length > 0 ? (
-                    <ProductTableRow products={data.products} />
+                    <>
+                      {data.products.map((product, index) => (
+                        <ProductTableRow
+                          collapseId={collapseId}
+                          handleCollapse={handleCollapse}
+                          key={index}
+                          product={product}
+                          index={index}
+                        />
+                      ))}
+                    </>
                   ) : (
                     <TableRow>
                       <TableCell colSpan={11} className="text-center h-24">
