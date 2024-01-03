@@ -5,13 +5,13 @@ import { baseURL } from "@/service";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { AlertTriangle, ChevronUp } from "lucide-react";
 import ProductDialog from "./ProductDialog";
+import useOutsideClick from "@/hooks/useClickOutside";
+import ProductTableRowChild from "./ProductTableRowChild";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import ProductTableRowChild from "./ProductTableRowChild";
-import useOutsideClick from "@/hooks/useClickOutside";
 
 interface Props {
   product: Product;

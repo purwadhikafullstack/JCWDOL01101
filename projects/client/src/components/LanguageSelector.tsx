@@ -55,8 +55,8 @@ const LanguageSelector = ({
     <DropdownMenu>
       <DropdownMenuTrigger>
         <div className="flex gap-2 items-center">
-          <img src={`/lang/${lang}.png`} className="w-6 h-6" />
           <span>{availableLang[lang!].label}</span>
+          <img src={`/lang/${lang}.png`} className="w-5 h-5" />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align={align}>
@@ -65,12 +65,12 @@ const LanguageSelector = ({
             onClick={() => i18n.changeLanguage(availableLang[key].id)}
             key={key}
           >
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-2 items-center justify-end w-full">
+              <span>{availableLang[key].label}</span>
               <img
                 src={`/lang/${availableLang[key].id}.png`}
-                className="w-6 h-6"
+                className="w-5 h-5"
               />
-              <span>{availableLang[key].label}</span>
             </div>
           </DropdownMenuItem>
         ))}

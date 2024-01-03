@@ -1,5 +1,4 @@
 import React from "react";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatToIDR } from "@/lib/utils";
@@ -27,7 +26,7 @@ const QuantityButton = ({
 }: Props) => {
   const { t } = useTranslation();
   return (
-    <div className="grid grid-cols-2 gap-2">
+    <div className="grid lg:grid-cols-2 gap-2">
       <div>
         <div className="flex gap-2">
           <Button

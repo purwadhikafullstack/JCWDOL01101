@@ -1,4 +1,4 @@
-import React, { MouseEvent, useContext, useEffect } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
@@ -20,11 +20,10 @@ type WishlistItemProps = {
 
 const WishlistItem = ({ product }: WishlistItemProps) => {
   const { t } = useTranslation();
-
   const wishlistMutation = useDeleteWishlist();
   const toggleWishlist = useToggleWishlist();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (wishlistMutation.isSuccess) {
       toast(
         (to) => (
@@ -58,8 +57,15 @@ const WishlistItem = ({ product }: WishlistItemProps) => {
     <Link to={`/product/${product.slug}`}>
       <div className="flex flex-col md:flex-row items-start justify-between">
         <div className="flex gap-6 order-2 lg:order-1">
-          <div className="w-[150px] h-[150px] lg:w-[200px] lg:h-[200px] relative">
-            <span className="absolute top-0 right-0 p-2">
+          <div className="w-[100px] h-[100px] lg:w-[150px] lg:h-[150px] relative flex-shrink-0">
+            <span
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                wishlistMutation.mutate({ productId: product.id });
+              }}
+              className="absolute top-0 right-0 p-1 md:p-2"
+            >
               <Heart fill="#e11d48" className="text-primary" />
             </span>
             <LazyLoadImage
@@ -67,12 +73,11 @@ const WishlistItem = ({ product }: WishlistItemProps) => {
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="space-y-2">
-            <p className="font-bold">{product.name}</p>
+          <div className="space-y-1">
+            <p className="md:font-bold line-clamp-2">{product.name}</p>
             <p className="max-w-[50%] text-muted-foreground text-sm hidden lg:block">
               {product.description}
             </p>
-            <p className="hidden lg:block">Size: {product.size}</p>
             <p className="font-bold text-lg">{formatToIDR(product.price)}</p>
           </div>
         </div>
@@ -83,7 +88,7 @@ const WishlistItem = ({ product }: WishlistItemProps) => {
             wishlistMutation.mutate({ productId: product.id });
           }}
           variant="outline"
-          className="border-black rounded-none h-6 px-0 self-end lg:self-start mb-2 lg:mb-0 order-1 lg:order-2"
+          className="border-black hidden md:block rounded-none h-6 px-0 self-end lg:self-start mb-2 lg:mb-0 order-1 lg:order-2"
         >
           <X />
         </Button>

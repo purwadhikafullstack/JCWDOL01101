@@ -12,7 +12,6 @@ import { readProductsByCategory } from './readProductsByCategory';
 import { ProductBySlug, readProductBySlug } from './readProductBySlug';
 import { readProductsByName } from './readProductByName';
 import { updateProduct, updateProductInventoryStatus, updateProductStatus } from './updateProduct';
-import { readProductDashboard } from './readProductDashboard';
 
 @Service()
 export class ProductService {
@@ -43,10 +42,6 @@ export class ProductService {
 
   public async getProducts(params: GetFilterProduct): Promise<{ products: Product[]; totalPages: number }> {
     return readProducts({ ...params });
-  }
-
-  public async getProductsDashboard(): Promise<Product[]> {
-    return readProductDashboard();
   }
 
   public async getHomepageProducts(params: ProductQuery): Promise<Product[]> {

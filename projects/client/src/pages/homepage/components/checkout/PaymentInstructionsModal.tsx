@@ -9,7 +9,6 @@ import { useQuery } from "@tanstack/react-query";
 import service from "@/service";
 import { Button } from "@/components/ui/button";
 import { cn, formatToIDR } from "@/lib/utils";
-import PaymentCountdownTimer from "./PaymentCountdownTimer";
 import { CheckCircle, Copy } from "lucide-react";
 import toast from "react-hot-toast";
 import {
@@ -20,7 +19,6 @@ import {
 } from "@/components/ui/accordion";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { useBoundStore } from "@/store/client/useStore";
 
 type Props = {
   isOpen: boolean;
@@ -73,13 +71,9 @@ const PaymentInstructionsModal = ({ isOpen, paymentLink }: Props) => {
             <DialogTitle className="text-lg py-2 font-bold">
               Toten Checkout
             </DialogTitle>
-            {paymentData &&
-              paymentData.virtual_account_info.status === "OPEN" && (
-                <PaymentCountdownTimer
-                  createdDate={paymentData.virtual_account_info.created_date}
-                  expiredDate={paymentData.virtual_account_info.expired_date}
-                />
-              )}
+            <div className="w-full bg-orange-200 text-orange-500  py-4 px-4">
+              Complete Payment in {paymentData.virtual_account_info.expired_in}
+            </div>
           </DialogHeader>
           {paymentData.virtual_account_info.status === "OPEN" ? (
             <>
