@@ -16,5 +16,7 @@ export class OrderRoute implements Routes {
     this.router.get(`${this.path}/:userId`, ClerkExpressRequireAuth(), this.order.getOrder);
     this.router.get(`${this.path}/allow-review/:productId`, ClerkExpressRequireAuth(), this.order.getAllowOrders);
     this.router.get(`${this.path}`, ClerkExpressRequireAuth(), this.order.getOrders);
+    this.router.get(`${this.path}/user/current-user`, ClerkExpressRequireAuth(), this.order.getCurrentUserOrders);
+    
   }
 }

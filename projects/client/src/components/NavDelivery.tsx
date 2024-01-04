@@ -40,7 +40,7 @@ const NavDelivery = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
     : 0;
   return (
     <NavDropdown
-      path="/transactions"
+      path="/order"
       icon={<ScrollText />}
       title="Orders"
       setIsDim={setIsDim}

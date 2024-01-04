@@ -1,6 +1,7 @@
 import service from "@/service";
 import { useAuth } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
+import { Product } from "./useProduct";
 export interface Order {
   id: number;
   warehouseId: number;
@@ -13,7 +14,50 @@ export interface Order {
   deletedAt: Date;
   warehouseOrder: { name: string };
   userOrder: { firstname: string, lastname: string; }
+  orderDetails : OrderDetails[]
 }
+
+export interface OrderDetails {
+  id: number;
+  orderId: number;
+  sizeId: number;
+  productId: number;
+  quantity: number;
+  price: number;
+  product:Product;
+}
+
+type Params = {
+  status: string;
+  page: string;
+  q: string;
+  limit?: number;
+  from:string;
+  to:string;
+}
+
+export const useCurrentUserOrders = ({status,page, q, limit,from, to}:Params) => {
+  const { getToken } = useAuth();
+  const query = useQuery<{orders: Order[], totalPages: number}>({
+    queryKey: ['orders/current-user', status, page, q, limit,from, to],
+    queryFn: async () => {
+      const res = await service.get('/orders/user/current-user', {
+        params: {
+          q,
+          page,
+          status,
+          limit,
+          from,
+          to,
+        },
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+      return res.data.data;
+    },
+  });
+
+  return query;
+};
 
 export const useOrders = (userId: number | undefined) => {
   const { getToken } = useAuth();

@@ -18,6 +18,30 @@ export class OrderController {
     }
   };
 
+  public getCurrentUserOrders = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
+    try {
+      const externalId = req.auth.userId;
+      const status = String(req.query.status);
+      const page = Number(req.query.page);
+      const q = String(req.query.q);
+      const limit = Number(req.query.limit);
+      const from = String(req.query.from)
+      const to = String(req.query.to)
+
+      const { orders, totalPages } = await this.order.findCurrentUserOrder({ externalId, status, page, q, limit, from, to });
+
+      res.status(200).json({
+        data: {
+          orders,
+          totalPages,
+        },
+        message: 'get Current User Order',
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   public getOrders = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const { page, s, order, filter, limit, warehouse, status } = req.query;
