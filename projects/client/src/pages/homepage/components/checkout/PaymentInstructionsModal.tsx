@@ -58,25 +58,27 @@ const PaymentInstructionsModal = ({ isOpen, paymentLink }: Props) => {
     enabled: !!paymentLink,
   });
 
+  const paymentStatus = paymentData && paymentData.virtual_account_info.status;
   return (
     paymentData && (
       <Dialog open={isOpen}>
         <DialogContent
           className={cn(
             "overflow-y-auto",
-            paymentData.virtual_account_info.status === "OPEN" && "h-[600px]"
+            paymentStatus === "OPEN" && "h-[600px]"
           )}
         >
-          <DialogHeader>
-            <DialogTitle className="text-lg py-2 font-bold">
-              Toten Checkout
-            </DialogTitle>
-            <div className="w-full bg-orange-200 text-orange-500  py-4 px-4">
-              Complete Payment in {paymentData.virtual_account_info.expired_in}
-            </div>
-          </DialogHeader>
-          {paymentData.virtual_account_info.status === "OPEN" ? (
+          {paymentStatus === "OPEN" && (
             <>
+              <DialogHeader>
+                <DialogTitle className="text-lg py-2 font-bold">
+                  Toten Checkout
+                </DialogTitle>
+                <div className="w-full bg-orange-200 text-orange-500  py-4 px-4">
+                  Complete Payment in{" "}
+                  {paymentData.virtual_account_info.expired_in}
+                </div>
+              </DialogHeader>
               {paymentData && (
                 <div className="flex flex-col space-y-4 border shadow-sm p-4">
                   <div>
@@ -92,7 +94,7 @@ const PaymentInstructionsModal = ({ isOpen, paymentLink }: Props) => {
                       Payment Status
                     </p>
                     <Badge>
-                      {paymentData.virtual_account_info.status === "OPEN"
+                      {paymentStatus === "OPEN"
                         ? "Waiting for payment"
                         : "PAID"}
                     </Badge>
@@ -140,12 +142,13 @@ const PaymentInstructionsModal = ({ isOpen, paymentLink }: Props) => {
                 </Accordion>
               </div>
             </>
-          ) : paymentData.virtual_account_info.status === "PAID" ? (
+          )}
+          {paymentStatus === "PAID" && (
             <div className="flex flex-col items-center">
               <CheckCircle className="w-16 h-16 text-primary" />
               <p className="text-primary">Payment has been received</p>
             </div>
-          ) : null}
+          )}
 
           <div className="space-y-2">
             <Button

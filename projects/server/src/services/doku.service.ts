@@ -56,6 +56,7 @@ export class DokuService {
     const digest = this.generateDigest(JSON.stringify(payload));
     const signature = this.generateSignature(DOKU_CLIENT_ID, requestId, timestamp, targetUrl, digest, DOKU_SECRET_KEY);
 
+    const transaction = await DB.sequelize.transaction();
     try {
       const res = await axios.post(`${DOKU_URL}${targetUrl}`, payload, {
         headers: {
@@ -68,18 +69,24 @@ export class DokuService {
       });
       const data = await res.data;
       if (data) {
-        const findUserCart = await DB.Cart.findOne({ where: { id: cartId, status: 'ACTIVE' } });
+        const findUserCart = await DB.Cart.findOne({ where: { id: cartId, status: 'ACTIVE' }, transaction });
         if (!findUserCart) throw new HttpException(409, "Cart doesn't exist");
-        const cartProducts: CartProduct[] = await DB.CartProduct.findAll({ where: { cartId: findUserCart.id, selected: true, status: 'ACTIVE' } });
+        const cartProducts: CartProduct[] = await DB.CartProduct.findAll({
+          where: { cartId: findUserCart.id, selected: true, status: 'ACTIVE' },
+          transaction,
+        });
         if (cartProducts.length > 0) {
-          const createOrder = await DB.Order.create({
-            warehouseId,
-            totalPrice,
-            shippingFee,
-            invoice: InvoiceNumber,
-            userId: findUser.id,
-            status: 'PENDING',
-          });
+          const createOrder = await DB.Order.create(
+            {
+              warehouseId,
+              totalPrice,
+              shippingFee,
+              invoice: InvoiceNumber,
+              userId: findUser.id,
+              status: 'PENDING',
+            },
+            { transaction },
+          );
           const orderDetailsData = cartProducts.map(cp => ({
             orderId: createOrder.id,
             productId: cp.productId,
@@ -88,12 +95,26 @@ export class DokuService {
             sizeId: cp.sizeId,
           }));
 
-          await DB.OrderDetails.bulkCreate(orderDetailsData);
-          await DB.CartProduct.update({ status: 'DELETED' }, { where: { cartId: findUserCart.id, selected: true, status: 'ACTIVE' } });
+          await DB.PaymentDetails.create(
+            {
+              orderId: createOrder.id,
+              method: `${paymentMethod}-va`.toUpperCase(),
+              paymentDate: new Date(data.virtual_account_info.created_date_utc),
+              virtualAccount: data.virtual_account_info.virtual_account_number,
+              status: 'WAITING',
+            },
+            { transaction },
+          );
+
+          await DB.OrderDetails.bulkCreate(orderDetailsData, { transaction });
+          await DB.CartProduct.update({ status: 'DELETED' }, { where: { cartId: findUserCart.id, selected: true, status: 'ACTIVE' }, transaction });
         }
       }
+      await transaction.commit();
       return data;
     } catch (err) {
+      console.log(err);
+      transaction.rollback();
       throw new HttpException(500, 'Something went wrong');
     }
   }
@@ -102,7 +123,9 @@ export class DokuService {
     if (transactionStatus !== 'SUCCESS') throw new HttpException(500, 'Something went wrong');
     const findOrder = await DB.Order.findOne({ where: { invoice } });
     if (!findOrder) throw new HttpException(409, "Order doesn't found");
+
     await DB.Order.update({ status: 'WAITING' }, { where: { invoice } });
+    await DB.PaymentDetails.update({ status: 'SUCCESS' }, { where: { orderId: findOrder.id } });
   }
 
   private generateDigest(jsonBody: string) {

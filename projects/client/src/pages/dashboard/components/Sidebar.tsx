@@ -13,6 +13,7 @@ import {
   HelpCircle,
   Settings,
   Tag,
+  Home,
 } from "lucide-react";
 import { useUser } from "@clerk/clerk-react";
 import { Separator } from "@/components/ui/separator";
@@ -121,6 +122,12 @@ const DashboardSidebar = () => {
         <Separator />
         <Nav
           links={[
+            {
+              title: "Go To Homepage",
+              icon: Home,
+              link: "/",
+              variant: "ghost",
+            },
             {
               title: "Get Help",
               icon: HelpCircle,
