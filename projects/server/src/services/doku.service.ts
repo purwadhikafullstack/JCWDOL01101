@@ -113,7 +113,6 @@ export class DokuService {
       await transaction.commit();
       return data;
     } catch (err) {
-      console.log(err);
       transaction.rollback();
       throw new HttpException(500, 'Something went wrong');
     }
