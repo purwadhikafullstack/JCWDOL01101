@@ -1,102 +1,118 @@
 import { DB } from '@/database';
 import { CartDto, CartProductDto } from '@/dtos/cart.dto';
 import { HttpException } from '@/exceptions/HttpException';
-import { User, Cart, CartProduct } from '@/interfaces';
-import { SizeModel, ProductModel, ImageModel, InventoryModel, CartProductModel } from '@/models';
+import { User, Cart, CartProduct, Product } from '@/interfaces';
+import { SizeModel, ProductModel, ImageModel, InventoryModel, CartProductModel, CartModel } from '@/models';
 import { Service } from 'typedi';
 
 @Service()
 export class CartService {
   public async getCart(userId: number): Promise<{ cart: Cart; totalQuantity: number; totalPrice: number }> {
-    const findCart: Cart = await DB.Cart.findOne({
-      where: { status: 'ACTIVE', userId },
-      attributes: ['id'],
-      include: [
-        {
-          model: CartProductModel,
-          as: 'cartProducts',
-          where: {
-            status: 'ACTIVE',
-          },
-          required: false,
-          include: [
-            {
-              model: SizeModel,
-              as: 'size',
+    const transaction = await DB.sequelize.transaction();
+    try {
+      const findCart: Cart = await DB.Cart.findOne({
+        where: { status: 'ACTIVE', userId },
+        attributes: ['id'],
+        include: [
+          {
+            model: CartProductModel,
+            as: 'cartProducts',
+            where: {
+              status: 'ACTIVE',
             },
-            {
-              model: ProductModel,
-              as: 'product',
-              include: [
-                {
-                  model: ImageModel,
-                  as: 'productImage',
-                },
-              ],
-              where: {
-                status: 'ACTIVE',
+            required: false,
+            include: [
+              {
+                model: SizeModel,
+                as: 'size',
               },
-              required: false,
-            },
-          ],
+              {
+                model: ProductModel,
+                as: 'product',
+                include: [
+                  {
+                    model: ImageModel,
+                    as: 'productImage',
+                  },
+                ],
+                where: {
+                  status: 'ACTIVE',
+                },
+                required: false,
+              },
+            ],
+          },
+        ],
+        transaction,
+      });
+
+      if (!findCart) throw new HttpException(404, "Cart doesn't exist");
+
+      const totalQuantity = await CartProductModel.sum('quantity', {
+        where: {
+          cartId: findCart.id,
+          status: 'ACTIVE',
         },
-      ],
-    });
+        transaction,
+      });
+      const totalPrice = await CartProductModel.sum('price', {
+        where: {
+          cartId: findCart.id,
+          status: 'ACTIVE',
+        },
+        transaction,
+      });
 
-    if (!findCart) throw new HttpException(404, "Cart doesn't exist");
-    const totalQuantity = await CartProductModel.sum('quantity', {
-      where: {
-        cartId: findCart.id,
-        status: 'ACTIVE',
-      },
-    });
-
-    const totalPrice: { total: number }[] = await DB.sequelize.query(
-      `SELECT SUM(price * quantity) as total FROM cart_product WHERE cart_id = :cartId AND status = 'ACTIVE'`,
-      {
-        replacements: { cartId: findCart.id },
-        type: DB.Sequelize.QueryTypes.SELECT,
-      },
-    );
-
-    return { cart: findCart, totalQuantity, totalPrice: totalPrice[0].total || 0 };
+      await transaction.commit();
+      return { cart: findCart, totalQuantity, totalPrice };
+    } catch (err) {
+      await transaction.rollback();
+      throw new HttpException(500, 'Failed to get cart');
+    }
   }
 
   public async getCartProduct(productId: number, externalId: string): Promise<CartProduct[]> {
-    const findUser: User = await DB.User.findOne({ where: { externalId, status: 'ACTIVE' } });
-    if (!findUser) throw new HttpException(409, "User doesn't exist");
+    const transaction = await DB.sequelize.transaction();
+    try {
+      const findUser: User = await DB.User.findOne({ where: { externalId, status: 'ACTIVE' }, transaction });
+      if (!findUser) throw new HttpException(409, "User doesn't exist");
 
-    const findCurrentUserCart: Cart = await DB.Cart.findOne({ where: { userId: findUser.id, status: 'ACTIVE' } });
-
-    const findCartProduct: CartProduct[] = await DB.CartProduct.findAll({
-      where: { productId, cartId: findCurrentUserCart.id, status: 'ACTIVE' },
-      include: [
-        {
-          model: SizeModel,
-          as: 'size',
-        },
-        {
-          model: ProductModel,
-          as: 'product',
-          include: [
-            {
-              model: ImageModel,
-              as: 'productImage',
-            },
-            {
-              model: InventoryModel,
-              as: 'inventory',
-              attributes: ['stock', 'sold'],
-            },
-          ],
-          where: {
-            status: 'ACTIVE',
+      const findCurrentUserCart: Cart = await DB.Cart.findOne({ where: { userId: findUser.id, status: 'ACTIVE' }, transaction });
+      const findCartProduct: CartProduct[] = await DB.CartProduct.findAll({
+        where: { productId, cartId: findCurrentUserCart.id, status: 'ACTIVE' },
+        include: [
+          {
+            model: SizeModel,
+            as: 'size',
           },
-        },
-      ],
-    });
+          {
+            model: ProductModel,
+            as: 'product',
+            include: [
+              {
+                model: ImageModel,
+                as: 'productImage',
+              },
+              {
+                model: InventoryModel,
+                as: 'inventory',
+                attributes: ['stock', 'sold'],
+              },
+            ],
+            where: {
+              status: 'ACTIVE',
+            },
+          },
+        ],
+        transaction,
+      });
 
-    return findCartProduct || [];
+      await transaction.commit();
+      return findCartProduct || [];
+    } catch (err) {
+      await transaction.rollback();
+      throw new HttpException(500, 'Failed to get cart product');
+    }
   }
 
   public async getCartProductOnSize(productId: number, sizeId: number): Promise<{ cartProduct: CartProduct; stock: number }> {

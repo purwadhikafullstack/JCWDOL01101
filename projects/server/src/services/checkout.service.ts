@@ -1,16 +1,8 @@
 import { RAJAONGKIR_API_KEY } from '@/config';
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
-import { CartProduct } from '@/interfaces/cartProduct.interface';
-import { Inventory } from '@/interfaces/inventory.interface';
-import { User } from '@/interfaces/user.interface';
-import { Warehouse } from '@/interfaces/warehouse.interface';
-import { CartModel } from '@/models/cart.model';
-import { CategoryModel } from '@/models/category.model';
-import { ImageModel } from '@/models/image.model';
-import { InventoryModel } from '@/models/inventory.model';
-import { ProductModel } from '@/models/product.model';
-import { SizeModel } from '@/models/size.model';
+import { CartProduct, Inventory, Warehouse, User } from '@/interfaces';
+import { CartModel, CategoryModel, ImageModel, InventoryModel, ProductModel, SizeModel } from '@/models';
 import { Location, findClosestWarehouse } from '@/utils/closestWarehouse';
 import axios from 'axios';
 import { Service } from 'typedi';
@@ -76,7 +68,6 @@ export class CheckoutService {
         },
       ],
     });
-    if (!findAllCartProduct || findAllCartProduct.length === 0) throw new HttpException(409, 'No Selected Item(s)');
 
     return findAllCartProduct;
   }

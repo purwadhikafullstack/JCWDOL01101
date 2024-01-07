@@ -8,6 +8,7 @@ export interface Inventory {
   stock: number;
   sold: number;
   status: Status;
+  totalStock?: number;
 }
 
 export interface AddStock {

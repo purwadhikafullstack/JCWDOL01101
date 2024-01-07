@@ -28,7 +28,7 @@ export interface ShippingFeeSlice {
   fee: Fee;
   isLoading: boolean;
   totalShipping: number;
-  addShippingFee: (productId: number, fee: Service) => void;
+  addShippingFee: (cartProductId: number, fee: Service) => void;
   getTotalShippingFee: () => void;
   clear: () => void;
   setLoading: (state: boolean) => void;
@@ -70,8 +70,10 @@ export const createShippingSlice: StateCreator<
         0
       ),
     })),
-  addShippingFee: (productId: number, fee: Service) =>
-    set((state) => ({ fee: { ...state.fee, [productId]: fee } })),
+  addShippingFee: (cartProductId: number, fee: Service) =>
+    set((state) => {
+      return { fee: { ...state.fee, [cartProductId]: fee } };
+    }),
   setLoading: (load: boolean) => set(() => ({ isLoading: load })),
   clear: () => set(() => ({ fee: {}, totalShipping: 0 })),
 });

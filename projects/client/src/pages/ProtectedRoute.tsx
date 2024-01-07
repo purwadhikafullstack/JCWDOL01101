@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/clerk-react";
 import React from "react";
 import Homepage from "./homepage/content/Homepage";
-import UserContext from "@/context/UserContext";
+import { UserContext } from "@/context/UserContext";
 import { useCurrentUser } from "@/hooks/useUser";
 import { Link, useNavigate } from "react-router-dom";
 

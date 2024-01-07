@@ -1,15 +1,11 @@
-import UserContext from "@/context/UserContext";
+import { useUserContext } from "@/context/UserContext";
 import AddNewAddressDialog from "@/pages/homepage/components/checkout/AddNewAddressDialog";
 import AddressModal from "@/pages/homepage/components/checkout/AddressModal";
 import EditAddressDialog from "@/pages/homepage/components/checkout/EditAddressDialog";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 
 const SelectAddressDialog = ({ children }: { children: React.ReactNode }) => {
-  const userContext = useContext(UserContext);
-  if (!userContext) {
-    throw new Error("useUser must be used within a UserProvider");
-  }
-  const { user } = userContext;
+  const { user } = useUserContext();
   const [mainDialog, setMainDialog] = useState(false);
   const [addDialog, setAddDialog] = useState(false);
   const [editDialog, setEditDialog] = useState(false);

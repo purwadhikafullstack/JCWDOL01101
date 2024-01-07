@@ -86,7 +86,9 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
                   <span>{`${lowLabel} - ${highLabel}`}</span>
                 )}
               </div>
-              <p className="font-bold text-sm md:text-base">{product.name}</p>
+              <p className="text-sm md:text-base line-clamp-2">
+                {product.name}
+              </p>
               <span>
                 <p className="font-bold text-base md:text-xl">
                   {formatToIDR(product.price.toString())}

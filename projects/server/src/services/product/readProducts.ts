@@ -1,6 +1,6 @@
 import { DB } from '@/database';
 import { GetFilterProduct, Product, User } from '@/interfaces';
-import { CategoryModel, ImageModel, InventoryModel, ReviewModel, SizeModel, WarehouseModel, WishlistModel } from '@/models';
+import { CategoryModel, ImageModel, InventoryModel, SizeModel, WarehouseModel, WishlistModel } from '@/models';
 import { HttpException } from '@/exceptions/HttpException';
 import { FindOptions, Op } from 'sequelize';
 import { queryStringToArray } from './queryStringToArray';
@@ -98,8 +98,7 @@ export async function readProducts({
     options.order = filter === 'stock' || filter === 'sold' ? [[{ model: InventoryModel, as: 'inventory' }, filter, order]] : [[filter, order]];
   }
 
-  const warehouseProducts = await DB.Product.findAll(options);
-  const totalCount = await DB.Product.count({ where: options.where });
+  const [warehouseProducts, totalCount] = await Promise.all([DB.Product.findAll(options), DB.Product.count({ where: options.where })]);
   const totalPages = Math.ceil(totalCount / limit);
 
   return { totalPages: totalPages, products: warehouseProducts };

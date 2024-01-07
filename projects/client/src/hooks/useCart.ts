@@ -44,7 +44,7 @@ export const useCartProductOnSize = (
   return cart;
 };
 
-export const useCartProduct = (isCart: boolean, productId: number) => {
+export const useCartProduct = (productId: number) => {
   const { getToken } = useAuth();
   const cart = useQuery<cartProducts[]>({
     queryKey: ["cart-product", productId],
@@ -57,7 +57,7 @@ export const useCartProduct = (isCart: boolean, productId: number) => {
       });
       return res.data.data;
     },
-    enabled: !!productId && isCart,
+    enabled: !!productId,
   });
 
   return cart;

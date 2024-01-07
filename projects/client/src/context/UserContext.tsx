@@ -44,8 +44,14 @@ interface UserContextProps {
   user: User | undefined;
 }
 
-const UserContext = React.createContext<UserContextProps | undefined>(
+export const UserContext = React.createContext<UserContextProps | undefined>(
   undefined
 );
 
-export default UserContext;
+export const useUserContext = () => {
+  const context = React.useContext(UserContext);
+  if (!context) {
+    throw new Error("useUserContext must be used within a UserProvider");
+  }
+  return context;
+};

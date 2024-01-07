@@ -1,24 +1,24 @@
-import { useCurrentUser } from "@/hooks/useUser"
-import { useUser } from "@clerk/clerk-react"
-import { ChevronDown } from "lucide-react"
-import React from "react"
-import { useState } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { useCurrentUser } from "@/hooks/useUser";
+import { useUser } from "@clerk/clerk-react";
+import { ChevronDown } from "lucide-react";
+import React from "react";
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 type SidebarLink = {
-  title: string
-  path: string
-  icon: React.ReactElement
-  state?: boolean
-  display?: string
-}
+  title: string;
+  path: string;
+  icon: React.ReactElement;
+  state?: boolean;
+  display?: string;
+};
 
 type Children = {
-  title: string
-  path: string
-  icon: React.ReactElement
-  state?: boolean
-}
+  title: string;
+  path: string;
+  icon: React.ReactElement;
+  state?: boolean;
+};
 
 export const DashboardLink = ({
   title,
@@ -27,11 +27,11 @@ export const DashboardLink = ({
   path,
   display,
 }: SidebarLink) => {
-  const { user, isSignedIn, isLoaded } = useUser()
+  const { user, isSignedIn, isLoaded } = useUser();
   const { data: userAdmin } = useCurrentUser({
-    externalId: user?.id!,
+    externalId: user?.id,
     enabled: isLoaded && !!isSignedIn,
-  })
+  });
   return (
     <div
       className={display ? `${display !== userAdmin?.role && "hidden"}` : ""}
@@ -55,8 +55,8 @@ export const DashboardLink = ({
         </li>
       </Link>
     </div>
-  )
-}
+  );
+};
 
 export const DropdownLink = ({
   title,
@@ -66,20 +66,20 @@ export const DropdownLink = ({
   path,
   display,
 }: {
-  title: string
-  path: string
-  icon: React.ReactElement
-  children: Children[]
-  state?: boolean
-  display?: string
+  title: string;
+  path: string;
+  icon: React.ReactElement;
+  children: Children[];
+  state?: boolean;
+  display?: string;
 }) => {
-  const location = useLocation()
-  const [isOpen, setIsOpen] = useState(false)
-  const { user, isSignedIn, isLoaded } = useUser()
+  const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
+  const { user, isSignedIn, isLoaded } = useUser();
   const { data: userAdmin } = useCurrentUser({
     externalId: user?.id!,
     enabled: isLoaded && !!isSignedIn,
-  })
+  });
   return (
     <>
       <Link to={path}>
@@ -126,5 +126,5 @@ export const DropdownLink = ({
         </ul>
       </div>
     </>
-  )
-}
+  );
+};

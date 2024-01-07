@@ -5,4 +5,6 @@ export interface OrderDetails {
   productId?: number;
   quantity: number;
   price: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

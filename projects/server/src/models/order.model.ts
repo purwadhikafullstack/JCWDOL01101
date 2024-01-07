@@ -10,6 +10,9 @@ export class OrderModel extends Model<Order> implements Order {
   public shippingFee: number;
   public status: string;
   public deletedAt: Date;
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
 
 export default function (sequelize: Sequelize): typeof OrderModel {
