@@ -19,8 +19,6 @@ export class CheckoutController {
         message: 'get.courier',
       });
     } catch (err) {
-      console.log("-------------------------------------- raja ongkir ---------------------------------------")
-      console.log(err.response.data)
       next(err);
     }
 

@@ -48,7 +48,6 @@ const DatePicker = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
                 <>
                   {format(date.from, "LLL dd, y")} -{" "}
                   {format(date.to, "LLL dd, y")}
-                  {console.log(typeof(date.from.toLocaleDateString()))}
                 </>
               ) : (
                 format(date.from, "LLL dd, y")
