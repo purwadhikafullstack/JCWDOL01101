@@ -21,6 +21,7 @@ const SearchInput = ({ expandSearch, setExpandSearch }: SearchInputProps) => {
   const { data: products, isLoading } = useSearchProducts(debounceSearch);
 
   const ref = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as Node)) {
@@ -31,6 +32,21 @@ const SearchInput = ({ expandSearch, setExpandSearch }: SearchInputProps) => {
       });
     }
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "k" && e.ctrlKey) {
+        e.preventDefault();
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+        setIsClick(true);
+        setExpandSearch(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -46,6 +62,7 @@ const SearchInput = ({ expandSearch, setExpandSearch }: SearchInputProps) => {
     >
       <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground peer-focus:text-primary" />
       <Input
+        ref={inputRef}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onClick={() => {
@@ -68,24 +85,31 @@ const SearchInput = ({ expandSearch, setExpandSearch }: SearchInputProps) => {
           <Loader2 className="animate-spin w-5 h-5 mx-auto text-muted-foreground" />
         ) : (
           <div>
-            {products &&
-              products.map((product) => (
-                <Link
-                  onClick={() => {
-                    setIsClick(false);
-                    setSearchTerm(" ");
-                    queryClient.removeQueries({
-                      queryKey: ["search/products", searchTerm],
-                    });
-                  }}
-                  to={`/product/${product.slug}`}
-                  key={product.id}
-                  className="flex items-center gap-2 w-full p-2 hover:bg-muted cursor-pointer rounded-md"
-                >
-                  <SearchIcon className="w-4 h-4 mr-2 text-muted-foreground" />
-                  <p key={product.id}>{product.name}</p>
-                </Link>
-              ))}
+            {products && products.length > 0 ? (
+              <>
+                {products.map((product) => (
+                  <Link
+                    onClick={() => {
+                      setIsClick(false);
+                      setSearchTerm(" ");
+                      queryClient.removeQueries({
+                        queryKey: ["search/products", searchTerm],
+                      });
+                    }}
+                    to={`/product/${product.slug}`}
+                    key={product.id}
+                    className="flex items-center gap-2 w-full p-2 hover:bg-muted cursor-pointer rounded-md"
+                  >
+                    <SearchIcon className="w-4 h-4 mr-2 text-muted-foreground" />
+                    <p key={product.id}>{product.name}</p>
+                  </Link>
+                ))}
+              </>
+            ) : (
+              <p className="text-muted-foreground text-center">
+                no products found
+              </p>
+            )}
           </div>
         )}
       </div>

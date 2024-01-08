@@ -87,8 +87,10 @@ const WishlistItem = ({ product }: WishlistItemProps) => {
             e.stopPropagation();
             wishlistMutation.mutate({ productId: product.id });
           }}
+          type="button"
           variant="outline"
-          className="border-black hidden md:block rounded-none h-6 px-0 self-end lg:self-start mb-2 lg:mb-0 order-1 lg:order-2"
+          size="icon"
+          className="border-black dark:border-border hidden md:block w-max rounded-none h-6 px-0 self-end lg:self-start mb-2 lg:mb-0 order-1 lg:order-2"
         >
           <X />
         </Button>
