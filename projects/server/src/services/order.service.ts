@@ -36,14 +36,17 @@ export class OrderService {
   }: {
     externalId: string;
     page: number;
-    status: string;
+    status: string | string[];
     q: string;
     limit: number;
   }): Promise<{ orders: Order[]; totalPages: number }> {
     const findUser: User = await DB.User.findOne({ where: { externalId, status: 'ACTIVE' } });
     if (!findUser) throw new HttpException(409, "User doesn't exist");
-    limit = limit || 8
+    limit = limit || 8;
     const offset = (page - 1) * limit;
+    if (status === 'UNSUCCESSFUL') {
+      status = ['CANCELED', 'FAILED', 'REJECTED'];
+    }
     const options: FindOptions<Order> = {
       limit,
       offset,
@@ -77,11 +80,9 @@ export class OrderService {
 
     if (q && q.length > 0) {
       options.where = {
-      ...options.where,
-        [Op.or]:[
-          { invoice: { [Op.like]: `%${q}%` } },
-        ]
-      }
+        ...options.where,
+        [Op.or]: [{ invoice: { [Op.like]: `%${q}%` } }],
+      };
     }
 
     const findOrder: Order[] = await DB.Order.findAll(options);
@@ -175,21 +176,21 @@ export class OrderService {
 
   public async cancelOrder(orderId: number): Promise<Order> {
     const order = await DB.Order.findByPk(orderId);
-    if (!order) throw new HttpException(404, "Order not found");
+    if (!order) throw new HttpException(404, 'Order not found');
 
-    order.status = 'FAILED';
+    order.status = 'CANCELED';
     await order.save();
-  
+
     return order;
   }
 
   public async confirmOrder(orderId: number): Promise<Order> {
     const order = await DB.Order.findByPk(orderId);
-    if (!order) throw new HttpException(404, "Order not found");
-  
+    if (!order) throw new HttpException(404, 'Order not found');
+
     order.status = 'SUCCESS';
     await order.save();
-  
+
     return order;
   }
 }

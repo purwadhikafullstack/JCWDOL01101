@@ -18,7 +18,7 @@ const orderStatuses = [
   },
   {
     label: "Unsuccessful",
-    status: "FAILED",
+    status: "UNSUCCESSFUL",
   },
 ];
 
