@@ -34,8 +34,6 @@ const OrderCard = ({ order }: props) => {
               <div className="ml-2">
                 <div className="text-red-600 font-bold mr-4">
                   {order.status}
-
-
                   {order.status === "PENDING" ? (
                     <div>
                       <div className="flex">
@@ -45,13 +43,14 @@ const OrderCard = ({ order }: props) => {
                           src={paymentMethods[order.paymentDetails.method]}
                         />
                       </div>
-                      {`expired : ${format(new Date(order.paymentDetails.paymentDate), "Pp")}`}
+                      {`expired : ${format(
+                        new Date(order.paymentDetails.paymentDate),
+                        "Pp"
+                      )}`}
                     </div>
                   ) : (
                     ""
                   )}
-
-
                 </div>
                 {order.invoice} | {format(new Date(order.createdAt), "P")}
               </div>

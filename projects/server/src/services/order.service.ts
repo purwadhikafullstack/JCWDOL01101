@@ -24,7 +24,6 @@ export class OrderService {
       },
       order: [['createdAt', 'DESC']],
     });
-
     return findOrder;
   }
 
@@ -183,7 +182,7 @@ export class OrderService {
   public async cancelOrder(orderId: number): Promise<Order> {
     const order = await DB.Order.findByPk(orderId);
     if (!order) throw new HttpException(404, 'Order not found');
-
+    
     order.status = 'CANCELED';
     await order.save();
 
