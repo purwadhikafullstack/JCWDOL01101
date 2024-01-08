@@ -15,6 +15,7 @@ export interface Order {
   warehouseOrder: { name: string };
   userOrder: { firstname: string; lastname: string };
   orderDetails: OrderDetails[];
+  paymentDetails:Payment;
 }
 
 export interface OrderDetails {
@@ -26,6 +27,16 @@ export interface OrderDetails {
   price: number;
   product: Product;
 }
+
+export interface Payment {
+  id: number | undefined;
+  orderId?: number;
+  method: string;
+  virtualAccount: string;
+  status: string;
+  paymentDate: Date;
+}
+
 
 type Params = {
   status: string;

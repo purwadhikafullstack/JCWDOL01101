@@ -8,6 +8,7 @@ import { OrderDetailsModel } from '@/models/orderDetails.model';
 import { WarehouseModel } from '@/models/warehouse.model';
 import { UserModel } from '@/models/user.model';
 import { ImageModel, ProductModel } from '@/models';
+import { PaymentDetailsModel } from '@/models/paymentDetails.model';
 
 @Service()
 export class OrderService {
@@ -74,6 +75,11 @@ export class OrderService {
             },
           ],
         },
+        {
+          model:PaymentDetailsModel,
+          as:'paymentDetails',
+          attributes:["virtualAccount", "paymentDate","method"]
+        }
       ],
       order: [['createdAt', 'DESC']],
     };

@@ -14,6 +14,12 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import CancelOrder from "./OrderCancel";
 import ConfirmOrder from "./OrderConfrim";
 
+const paymentMethods: { [key: string]: string } = {
+  "BRI-VA": "/ilus/bri.png",
+  "BCA-VA": "/ilus/bca.png",
+  "DOKU-VA": "/ilus/doku_va.png",
+};
+
 type props = {
   order: Order;
 };
@@ -27,7 +33,25 @@ const OrderCard = ({ order }: props) => {
             <div className="mt-2">
               <div className="ml-2">
                 <div className="text-red-600 font-bold mr-4">
-                  {order.status}{" "}
+                  {order.status}
+
+
+                  {order.status === "PENDING" ? (
+                    <div>
+                      <div className="flex">
+                        {`Finish Your Payment : ${order.paymentDetails.virtualAccount}`}
+                        <img
+                          className="w-12"
+                          src={paymentMethods[order.paymentDetails.method]}
+                        />
+                      </div>
+                      {`expired : ${format(new Date(order.paymentDetails.paymentDate), "Pp")}`}
+                    </div>
+                  ) : (
+                    ""
+                  )}
+
+
                 </div>
                 {order.invoice} | {format(new Date(order.createdAt), "P")}
               </div>
