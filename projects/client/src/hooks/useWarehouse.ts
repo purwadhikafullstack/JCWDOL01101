@@ -55,7 +55,6 @@ export const useGetWarehouseCustomer = () => {
       const response = await service.get("/warehouses");
       return response.data.data;
     },
-    // enabled: isSuperAdmin,
   });
   return warehouse;
 };
