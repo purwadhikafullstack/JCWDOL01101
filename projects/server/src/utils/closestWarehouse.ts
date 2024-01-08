@@ -95,22 +95,18 @@ export async function findWarehousesAndDistributeStock(cartProducts: CartProduct
             inventory.save(),
             currentInventory.save(),
             DB.Jurnal.create({
-              warehouseId: inventory.warehouseId,
               inventoryId: inventory.id,
               oldQty: inventory.stock + transferQuantity,
               qtyChange: transferQuantity,
               newQty: inventory.stock,
-              type: 'STOCK OUT',
-              date: new Date(),
+              type: '0',
             }),
             DB.Jurnal.create({
-              warehouseId: currentWarehouse.id,
               inventoryId: currentInventory.id,
               oldQty: currentInventory.stock - transferQuantity,
               qtyChange: transferQuantity,
               newQty: currentInventory.stock,
-              type: 'STOCK IN',
-              date: new Date(),
+              type: '1',
             }),
           ]);
         }
