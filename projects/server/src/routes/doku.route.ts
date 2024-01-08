@@ -14,6 +14,6 @@ export class DokuRoute implements Routes {
 
   private initializeRoutes() {
     this.router.post(`${this.path}/payment-url`, ClerkExpressRequireAuth(), this.doku.createPaymentIntent);
-    this.router.post(`${this.path}/payment/notify`, this.doku.postNotify);
+    this.router.post(`${this.path}/payments/notifications`, this.doku.postNotify);
   }
 }

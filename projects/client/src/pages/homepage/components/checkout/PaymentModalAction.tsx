@@ -71,7 +71,9 @@ const PaymentModalAction = ({
           {createPayment.isPending ? (
             <span className="animate-pulse flex items-center">
               <Loader className="w-4 h-4 mr-2 animate-spin" />
-              {t("checkoutPage.paymentModal.loading")}
+              <p className="line-clamp-1 md:line-clamp-none">
+                {t("checkoutPage.paymentModal.loading")}
+              </p>
             </span>
           ) : (
             <>

@@ -12,6 +12,8 @@ import { CLERK_SECRET_KEY } from '@/config';
 import axios from 'axios';
 import { ImageModel } from '@/models/image.model';
 import { WarehouseModel } from '@/models/warehouse.model';
+import { CityModel } from '@/models';
+import { WarehouseAddressModel } from '@/models/warehouseAddress.model';
 
 type UserOptions = {
   offset: number;
@@ -85,6 +87,18 @@ export class UserService {
         {
           model: WarehouseModel,
           as: 'userData',
+          include: [
+            {
+              model: WarehouseAddressModel,
+              as: 'warehouseAddress',
+              include: [
+                {
+                  model: CityModel,
+                  as: 'cityWarehouse',
+                },
+              ],
+            },
+          ],
         },
       ],
     });

@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/ThemeProvider";
+import { ComputerIcon, Monitor } from "lucide-react";
 const ModeToggle = () => {
   const { setTheme } = useTheme();
   return (
@@ -21,14 +22,26 @@ const ModeToggle = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
+        <DropdownMenuItem
+          className="flex justify-between"
+          onClick={() => setTheme("light")}
+        >
+          <span>Light</span>
+          <SunIcon />
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
+        <DropdownMenuItem
+          className="flex justify-between"
+          onClick={() => setTheme("dark")}
+        >
+          <span>Dark</span>
+          <MoonIcon />
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
+        <DropdownMenuItem
+          className="flex justify-between"
+          onClick={() => setTheme("system")}
+        >
+          <span>System</span>
+          <Monitor className="w-4 h-4" />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

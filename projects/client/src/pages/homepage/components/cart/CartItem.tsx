@@ -96,6 +96,7 @@ const CartItem = ({ hasCart, cartProduct }: CartItemProps) => {
       );
     }
   }, [deleteMutation.isSuccess]);
+
   return (
     <>
       <div className="w-full space-y-2">

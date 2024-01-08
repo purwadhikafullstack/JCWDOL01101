@@ -27,6 +27,9 @@ export default function () {
   DB.Size.hasMany(DB.OrderDetails, { foreignKey: 'size_id', as: 'orderDetails' });
   DB.OrderDetails.belongsTo(DB.Size, { foreignKey: 'size_id', as: 'size' });
 
+  DB.Order.hasOne(DB.PaymentDetails, { foreignKey: 'order_id', as: 'paymentDetails' });
+  DB.PaymentDetails.belongsTo(DB.Order, { foreignKey: 'order_id', as: 'paymentDetails' });
+
   DB.Order.hasOne(DB.Shipment, { foreignKey: 'order_id', as: 'orderShipment' });
   DB.Shipment.belongsTo(DB.Order, { foreignKey: 'order_id', as: 'orderShipment' });
 

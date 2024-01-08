@@ -116,18 +116,18 @@ const Admin = () => {
                       </TableCell>
                       <TableCell className="text-center">{user.role}</TableCell>
                       <TableCell className="capitalize font-medium text-center">
-                        <Button className="w-[140px]">
-                          <Dialog>
-                            <DialogTrigger>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button>
                               {warehouses[user.id] || "Unassigned"}
-                            </DialogTrigger>
-                            {warehouses[user.id] ? (
-                              <UnassignAdminForm userId={user.id as number} />
-                            ) : (
-                              <AssignAdminForm userId={user.id as number} />
-                            )}
-                          </Dialog>
-                        </Button>
+                            </Button>
+                          </DialogTrigger>
+                          {warehouses[user.id] ? (
+                            <UnassignAdminForm userId={user.id as number} />
+                          ) : (
+                            <AssignAdminForm userId={user.id as number} />
+                          )}
+                        </Dialog>
                       </TableCell>
                       <TableCell className="text-center">
                         {getDate(user.createdAt.toLocaleString())}

@@ -1,8 +1,7 @@
+import React from "react";
 import { Separator } from "@/components/ui/separator";
 import { useSelectedItem } from "@/hooks/useCheckout";
 import { formatToIDR } from "@/lib/utils";
-import { useBoundStore } from "@/store/client/useStore";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import CartProducts from "./CartProducts";
 
@@ -55,7 +54,9 @@ const PaymentModalItems = ({
         <b className="text-sm">
           {t("checkoutPage.paymentModal.shippingAddress")}
         </b>
-        <p className=" w-[300px] text-sm text-muted-foreground text-ellipsis overflow-hidden whitespace-nowrap">{`${address.address}, ${address.city.cityName}, ${address.city.province}`}</p>
+        <p className="w-[300px] text-sm text-muted-foreground text-ellipsis overflow-hidden whitespace-nowrap">
+          {`${address.address}, ${address.city.cityName}, ${address.city.province}`}
+        </p>
       </div>
     </div>
   );

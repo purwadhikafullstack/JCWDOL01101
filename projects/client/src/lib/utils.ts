@@ -3,7 +3,6 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { useState } from "react";
 
-
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -35,12 +34,19 @@ export function getDate(value: string) {
   return date;
 }
 
-export function getWarehouse(value: number, setWarehouses: React.Dispatch<React.SetStateAction<{ [key: number]: string }>>) {
-  service.get(`/warehouses/user/${value}`)
-    .then(response => {
-      setWarehouses(prevState => ({ ...prevState, [value]: response.data.data.name }));
+export function getWarehouse(
+  value: number,
+  setWarehouses: React.Dispatch<React.SetStateAction<{ [key: number]: string }>>
+) {
+  service
+    .get(`/warehouses/user/${value}`)
+    .then((response) => {
+      setWarehouses((prevState) => ({
+        ...prevState,
+        [value]: response.data.data.name,
+      }));
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("There was an error!", error);
     });
 }
