@@ -18,6 +18,28 @@ export class OrderController {
     }
   };
 
+  public getCurrentUserOrders = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
+    try {
+      const externalId = req.auth.userId;
+      const status = String(req.query.status);
+      const page = Number(req.query.page);
+      const q = String(req.query.q);
+      const limit = Number(req.query.limit);
+
+      const { orders, totalPages } = await this.order.findCurrentUserOrder({ externalId, status, page, q, limit });
+
+      res.status(200).json({
+        data: {
+          orders,
+          totalPages,
+        },
+        message: 'get Current User Order',
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   public getOrders = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const { page, s, order, filter, limit, warehouse, status } = req.query;
@@ -53,6 +75,34 @@ export class OrderController {
       res.status(200).json({ data: orders, message: 'get user order' });
     } catch (error) {
       next(error);
+    }
+  };
+
+  public cancelOrder = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const orderId = Number(req.params.orderId);
+      const updatedOrder = await this.order.cancelOrder(orderId);
+  
+      res.status(200).json({
+        data: updatedOrder,
+        message: 'order.cancelled',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public confirmOrder = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const orderId = Number(req.params.orderId);
+      const updatedOrder = await this.order.confirmOrder(orderId);
+  
+      res.status(200).json({
+        data: updatedOrder,
+        message: 'order.confirmed',
+      });
+    } catch (err) {
+      next(err);
     }
   };
 }

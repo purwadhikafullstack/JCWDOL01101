@@ -7,6 +7,8 @@ import { FindOptions, Op } from 'sequelize';
 import { OrderDetailsModel } from '@/models/orderDetails.model';
 import { WarehouseModel } from '@/models/warehouse.model';
 import { UserModel } from '@/models/user.model';
+import { ImageModel, ProductModel } from '@/models';
+import { PaymentDetailsModel } from '@/models/paymentDetails.model';
 
 @Service()
 export class OrderService {
@@ -22,8 +24,76 @@ export class OrderService {
       },
       order: [['createdAt', 'DESC']],
     });
-
     return findOrder;
+  }
+
+  public async findCurrentUserOrder({
+    externalId,
+    page,
+    status,
+    q,
+    limit,
+  }: {
+    externalId: string;
+    page: number;
+    status: string | string[];
+    q: string;
+    limit: number;
+  }): Promise<{ orders: Order[]; totalPages: number }> {
+    const findUser: User = await DB.User.findOne({ where: { externalId, status: 'ACTIVE' } });
+    if (!findUser) throw new HttpException(409, "User doesn't exist");
+    limit = limit || 8;
+    const offset = (page - 1) * limit;
+    if (status === 'UNSUCCESSFUL') {
+      status = ['CANCELED', 'FAILED', 'REJECTED'];
+    }
+    const options: FindOptions<Order> = {
+      limit,
+      offset,
+      where: {
+        userId: findUser.id,
+        ...(status &&
+          status !== 'ALL' && {
+            status,
+          }),
+      },
+      include: [
+        {
+          model: OrderDetailsModel,
+          as: 'orderDetails',
+          include: [
+            {
+              model: ProductModel,
+              as: 'product',
+              include: [
+                {
+                  model: ImageModel,
+                  as: 'productImage',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model:PaymentDetailsModel,
+          as:'paymentDetails',
+          attributes:["virtualAccount", "paymentDate","method"]
+        }
+      ],
+      order: [['createdAt', 'DESC']],
+    };
+
+    if (q && q.length > 0) {
+      options.where = {
+        ...options.where,
+        [Op.or]: [{ invoice: { [Op.like]: `%${q}%` } }],
+      };
+    }
+
+    const findOrder: Order[] = await DB.Order.findAll(options);
+    const count = await DB.Order.count({ where: options.where });
+    const totalPages = Math.ceil(count / limit);
+    return { orders: findOrder, totalPages };
   }
 
   public async allowOrder(externalId: string, productId: number): Promise<Order> {
@@ -107,5 +177,25 @@ export class OrderService {
     const totalPages = Math.ceil(totalCount / LIMIT);
 
     return { totalPages: totalPages, orders: allOrder };
+  }
+
+  public async cancelOrder(orderId: number): Promise<Order> {
+    const order = await DB.Order.findByPk(orderId);
+    if (!order) throw new HttpException(404, 'Order not found');
+    
+    order.status = 'CANCELED';
+    await order.save();
+
+    return order;
+  }
+
+  public async confirmOrder(orderId: number): Promise<Order> {
+    const order = await DB.Order.findByPk(orderId);
+    if (!order) throw new HttpException(404, 'Order not found');
+
+    order.status = 'SUCCESS';
+    await order.save();
+
+    return order;
   }
 }

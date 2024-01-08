@@ -48,6 +48,17 @@ export const useGetWarehouse = (isSuperAdmin: boolean) => {
   return warehouse;
 };
 
+export const useGetWarehouseCustomer = () => {
+  const warehouse = useQuery<Warehouse[]>({
+    queryKey: ["warehouses"],
+    queryFn: async () => {
+      const response = await service.get("/warehouses");
+      return response.data.data;
+    },
+  });
+  return warehouse;
+};
+
 export const useGetWarehouseById = (warehouseId: string | undefined) => {
   const warehouse = useQuery<Warehouse>({
     queryKey: ["warehouse", warehouseId],
