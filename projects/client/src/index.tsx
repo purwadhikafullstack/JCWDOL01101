@@ -31,7 +31,9 @@ root.render(
       <ClerkProvider publishableKey={clerkPubKey}>
         <RouterProvider router={router} />
       </ClerkProvider>
-      <ReactQueryDevtools />
+      <div className="hidden lg:block">
+        <ReactQueryDevtools />
+      </div>
     </QueryClientProvider>
   </React.StrictMode>
 );

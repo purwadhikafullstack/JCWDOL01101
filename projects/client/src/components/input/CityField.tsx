@@ -1,3 +1,4 @@
+import React, { useEffect, useRef, useState } from "react";
 import {
   FormField,
   FormItem,
@@ -9,10 +10,10 @@ import { Input } from "@/components/ui/input";
 import { useCity } from "@/hooks/useAddress";
 import useOutsideClick from "@/hooks/useClickOutside";
 import { Loader2 } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "use-debounce";
+
 export type Coordinates = {
   latitude: number;
   langitude: number;
@@ -59,7 +60,7 @@ const CityField = () => {
                 />
                 {show && cities && (
                   <div className=" mt-2 w-full absolute top-full left-0 z-10">
-                    <div className="cursor-pointer w-full bg-white border overflow-auto transition-all duration-200 max-h-[150px] flex flex-col  items-start rounded-md text-sm">
+                    <div className="cursor-pointer w-full bg-background border overflow-auto transition-all duration-200 max-h-[150px] flex flex-col  items-start rounded-md text-sm">
                       {citiesLoading ? (
                         <div className="text-center">
                           <Loader2 className="animate-spin " />

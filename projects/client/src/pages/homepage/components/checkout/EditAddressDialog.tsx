@@ -6,6 +6,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/custom-dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, X } from "lucide-react";
@@ -16,6 +22,7 @@ import { usePutAddress } from "@/hooks/useAddressMutation";
 import EditForm from "./EditForm";
 import z from "zod";
 import { useTranslation } from "react-i18next";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 export const editAddressSchema = z.object({
   recepient: z.string().min(4, "required").max(50),
@@ -85,43 +92,68 @@ const EditAddressDialog = ({
     }
   }, [updateAddress.isSuccess]);
 
-  return (
-    <Dialog open={open} onOpenChange={(value) => setEditDialog(value)}>
-      <DialogContent className="w-full lg:max-w-[712px]">
-        <DialogClose
-          onClick={() => {
-            handleToggleDialog(true);
-          }}
-          className="absolute left-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span className="sr-only">Back</span>
-        </DialogClose>
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  if (isDesktop) {
+    return (
+      <Dialog open={open} onOpenChange={(value) => setEditDialog(value)}>
+        <DialogContent className="w-full lg:max-w-[712px]">
+          <DialogClose
+            onClick={() => {
+              handleToggleDialog(true);
+            }}
+            className="absolute left-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span className="sr-only">Back</span>
+          </DialogClose>
 
-        <DialogClose
-          onClick={() => {
-            handleToggleDialog(true);
-          }}
-          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
-        >
-          <X className="h-4 w-4" />
-          <span className="sr-only">Close</span>
-        </DialogClose>
-        <DialogHeader>
-          <DialogTitle className="text-center lg:text-3xl">
+          <DialogClose
+            onClick={() => {
+              handleToggleDialog(true);
+            }}
+            className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </DialogClose>
+          <DialogHeader>
+            <DialogTitle className="text-center lg:text-3xl">
+              {t("checkoutPage.addressModal.modify.header")}
+            </DialogTitle>
+          </DialogHeader>
+          <Separator />
+          <div className="w-full h-[500px] overflow-y-auto pb-10 p-4">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-8"
+              >
+                <EditForm isPending={updateAddress.isPending} />
+              </form>
+            </Form>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Drawer open={open} onOpenChange={(value) => setEditDialog(value)}>
+      <DrawerContent className="h-[85%]">
+        <DrawerHeader className="text-left">
+          <DrawerTitle>
             {t("checkoutPage.addressModal.modify.header")}
-          </DialogTitle>
-        </DialogHeader>
-        <Separator />
-        <div className="w-full h-[500px] overflow-y-auto pb-10 p-4">
+          </DrawerTitle>
+        </DrawerHeader>
+        <div className="w-full md:h-[500px] overflow-y-auto pb-10 p-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <EditForm isPending={updateAddress.isPending} />
             </form>
           </Form>
         </div>
-      </DialogContent>
-    </Dialog>
+      </DrawerContent>
+    </Drawer>
   );
 };
 
