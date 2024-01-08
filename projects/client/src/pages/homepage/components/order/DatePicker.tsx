@@ -29,15 +29,6 @@ const DatePicker = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
     from: firstDayOfMonth,
     to: lastDayOfMonth,
   });
-
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  // React.useEffect(() => {
-  //   setSearchParams((params) => {
-  //     params.set("from", date?.from);
-  //     return params;
-  //   });
-  // }, []);
   
   return (
     <div className={cn("grid gap-2", className)}>
@@ -57,6 +48,7 @@ const DatePicker = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
                 <>
                   {format(date.from, "LLL dd, y")} -{" "}
                   {format(date.to, "LLL dd, y")}
+                  {console.log(typeof(date.from.toLocaleDateString()))}
                 </>
               ) : (
                 format(date.from, "LLL dd, y")

@@ -1,6 +1,6 @@
 import service from "@/service";
 import { useAuth } from "@clerk/clerk-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Product } from "./useProduct";
 export interface Order {
   id: number;
@@ -13,8 +13,8 @@ export interface Order {
   createdAt: Date;
   deletedAt: Date;
   warehouseOrder: { name: string };
-  userOrder: { firstname: string, lastname: string; }
-  orderDetails : OrderDetails[]
+  userOrder: { firstname: string; lastname: string };
+  orderDetails: OrderDetails[];
 }
 
 export interface OrderDetails {
@@ -24,7 +24,7 @@ export interface OrderDetails {
   productId: number;
   quantity: number;
   price: number;
-  product:Product;
+  product: Product;
 }
 
 type Params = {
@@ -32,23 +32,24 @@ type Params = {
   page: string;
   q: string;
   limit?: number;
-  from:string;
-  to:string;
-}
+};
 
-export const useCurrentUserOrders = ({status,page, q, limit,from, to}:Params) => {
+export const useCurrentUserOrders = ({
+  status,
+  page,
+  q,
+  limit,
+}: Params) => {
   const { getToken } = useAuth();
-  const query = useQuery<{orders: Order[], totalPages: number}>({
-    queryKey: ['orders/current-user', status, page, q, limit,from, to],
+  const query = useQuery<{ orders: Order[]; totalPages: number }>({
+    queryKey: ["orders/current-user", status, page, q, limit],
     queryFn: async () => {
-      const res = await service.get('/orders/user/current-user', {
+      const res = await service.get("/orders/user/current-user", {
         params: {
           q,
           page,
           status,
           limit,
-          from,
-          to,
         },
         headers: { Authorization: `Bearer ${await getToken()}` },
       });
@@ -137,4 +138,38 @@ export const useProductIsOrder = (
   });
 
   return query;
+};
+
+export const useCancelOrder = (orderId: number) => {
+  const { getToken } = useAuth();
+  const mutation = useMutation({
+    mutationFn: async () => {
+      return service.post(
+        `/orders/cancel/${orderId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${await getToken()}` },
+        }
+      );
+    },
+  });
+
+  return mutation;
+};
+
+export const useConfirmOrder = (orderId: number) => {
+  const { getToken } = useAuth();
+  const mutation = useMutation({
+    mutationFn: async () => {
+      return service.post(
+        `/orders/confirm/${orderId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${await getToken()}` },
+        }
+      );
+    },
+  });
+
+  return mutation;
 };

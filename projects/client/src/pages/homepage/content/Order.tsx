@@ -12,10 +12,8 @@ const UserOrder = () => {
   const status = searchParams.get("status") || "All";
   const page = searchParams.get("page") || "1";
   const q = searchParams.get("q") || "";
-  const from = searchParams.get("from") || "";
-  const to = searchParams.get("to") || "";
 
-  const { data } = useCurrentUserOrders({ status, page, q, limit: 6, from, to });
+  const { data } = useCurrentUserOrders({ status, page, q, limit: 6});
 
   return (
     <div>
@@ -23,7 +21,6 @@ const UserOrder = () => {
       <div className="space-y-2">
         <div className="flex justify-between items-center">
           <SearchInput />
-          <DatePicker />
         </div>
         <OrderStatus />
       </div>

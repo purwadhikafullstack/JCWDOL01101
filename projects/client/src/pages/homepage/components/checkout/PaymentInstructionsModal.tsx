@@ -155,7 +155,7 @@ const PaymentInstructionsModal = ({ isOpen, paymentLink }: Props) => {
 
           <div className="space-y-2">
             <Button
-              onClick={() => navigate("/transactions")}
+              onClick={() => navigate("/order")}
               className="w-full uppercase"
             >
               Click here after payment

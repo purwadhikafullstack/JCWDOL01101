@@ -45,7 +45,7 @@ export default [
     ),
   },
   {
-    path: "transactions",
+    path: "/order",
     element: (
       <ProtectedRoute>
         <OrderPage />

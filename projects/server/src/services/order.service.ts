@@ -33,16 +33,12 @@ export class OrderService {
     status,
     q,
     limit,
-    from,
-    to,
   }: {
     externalId: string;
     page: number;
     status: string;
     q: string;
     limit: number;
-    from:string;
-    to:string;
   }): Promise<{ orders: Order[]; totalPages: number }> {
     const findUser: User = await DB.User.findOne({ where: { externalId, status: 'ACTIVE' } });
     if (!findUser) throw new HttpException(409, "User doesn't exist");
@@ -57,9 +53,6 @@ export class OrderService {
           status !== 'ALL' && {
             status,
           }),
-          // createdAt: [
-          //   [Op.between]: [from, to] 
-          // ]
       },
       include: [
         {
@@ -178,5 +171,25 @@ export class OrderService {
     const totalPages = Math.ceil(totalCount / LIMIT);
 
     return { totalPages: totalPages, orders: allOrder };
+  }
+
+  public async cancelOrder(orderId: number): Promise<Order> {
+    const order = await DB.Order.findByPk(orderId);
+    if (!order) throw new HttpException(404, "Order not found");
+
+    order.status = 'FAILED';
+    await order.save();
+  
+    return order;
+  }
+
+  public async confirmOrder(orderId: number): Promise<Order> {
+    const order = await DB.Order.findByPk(orderId);
+    if (!order) throw new HttpException(404, "Order not found");
+  
+    order.status = 'SUCCESS';
+    await order.save();
+  
+    return order;
   }
 }
