@@ -56,7 +56,7 @@ const Footer = () => {
             </span>
           </div>
           <p className="text-center my-2 text-sm text-muted-foreground">
-            copyright &copy; {new Date().getFullYear()}
+            &copy; {new Date().getFullYear()} Toten, All rights reserved.
           </p>
         </div>
       </div>

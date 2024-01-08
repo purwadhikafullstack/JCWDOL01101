@@ -1,7 +1,7 @@
+import React from "react";
 import { useProduct } from "@/hooks/useProduct";
 import { useSize } from "@/hooks/useSize";
 import { cn } from "@/lib/utils";
-import React from "react";
 import { useParams } from "react-router-dom";
 
 type Props = {
@@ -18,7 +18,7 @@ const ProductSize = ({
   return (
     pd &&
     sizes && (
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-2 items-center flex-wrap">
         {sizes.map((size) => {
           const availableSize = pd.totalStockBySize
             .flat()

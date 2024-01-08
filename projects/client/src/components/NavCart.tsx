@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import NavDropdown from "./NavDropdown";
 import { ShoppingCart, ShoppingCartIcon } from "lucide-react";
 import { useUserContext } from "@/context/UserContext";
@@ -45,7 +45,7 @@ const NavCart = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
                     <div key={id} className="py-1">
                       <div className="w-full flex justify-between items-center">
                         <img
-                          src={`${baseURL}/images/${product.productImage[0].image}`}
+                          src={`${baseURL}/images/${product.primaryImage}`}
                           className="w-10 h-10"
                           alt={product.name}
                         />

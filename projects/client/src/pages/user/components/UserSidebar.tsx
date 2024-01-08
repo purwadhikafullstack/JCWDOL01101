@@ -1,27 +1,27 @@
-import React from "react"
-import { Home, User } from "lucide-react"
-import { useLocation } from "react-router-dom"
-import { DashboardLink } from "@/pages/dashboard/components/SidebarLink"
-import { useUser } from "@clerk/clerk-react"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { useTranslation } from "react-i18next"
+import React from "react";
+import { Home, User } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import { DashboardLink } from "@/pages/dashboard/components/SidebarLink";
+import { useUser } from "@clerk/clerk-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useTranslation } from "react-i18next";
 
 const UserSidebar = () => {
-  const { t } = useTranslation()
-  const location = useLocation()
-  const { user } = useUser()
+  const { t } = useTranslation();
+  const location = useLocation();
+  const { user } = useUser();
   const links = [
     {
       title: t("profileSettingsPage.sidebar.profile"),
-      icon: <User className="w-4 h-4" />,
+      Icon: User,
       path: "/user",
     },
     {
       title: t("profileSettingsPage.sidebar.address"),
-      icon: <Home className="w-4 h-4" />,
+      Icon: Home,
       path: "/user/address",
     },
-  ]
+  ];
   return (
     <div className="w-full p-4">
       <div className="flex items-center gap-2 mb-4">
@@ -43,14 +43,14 @@ const UserSidebar = () => {
           <DashboardLink
             key={link.title}
             title={link.title}
-            icon={link.icon}
+            Icon={link.Icon}
             path={link.path}
             state={location.pathname === link.path}
           />
         ))}
       </ul>
     </div>
-  )
-}
+  );
+};
 
-export default UserSidebar
+export default UserSidebar;

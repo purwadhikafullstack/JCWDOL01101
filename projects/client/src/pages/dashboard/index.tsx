@@ -6,6 +6,7 @@ import DashboardOrderPage from "./content/DashboardOrder";
 import ManageMutationPage from "./content/ManageMutation";
 import MutationFormPage from "./content/MutationForm";
 import ProductPage from "./content/Product";
+// import ProductPage from "./components/product/table/page";
 import ProductReviewsPage from "./content/ProductReviews";
 import UserPage from "./content/User";
 import WarehousePage from "./content/Warehouse";

@@ -40,6 +40,7 @@ export const useCourier = ({
       return res.data.data;
     },
     enabled: !!courier && !!origin && !!destination && !!weight,
+    refetchOnWindowFocus: false,
   });
 
   return query;
@@ -53,6 +54,7 @@ export const useSelectedItem = (cartId: number | undefined) => {
       return res.data.data;
     },
     enabled: !!cartId,
+    refetchOnWindowFocus: false,
   });
 
   return cartProducts;

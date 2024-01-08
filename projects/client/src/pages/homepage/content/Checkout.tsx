@@ -63,7 +63,7 @@ const Checkout = () => {
       <Helmet>
         <title>Checkout | TOTEN</title>
       </Helmet>
-      <div className="py-4  border-b fixed inset-0 bg-white h-max">
+      <div className="py-4  border-b fixed inset-0 bg-background h-max">
         <div className="w-full container">
           <BackToCartDialog>
             <span className="text-lg font-bold text-primary flex gap-2 items-center cursor-pointer">

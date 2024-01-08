@@ -75,6 +75,18 @@ export interface Inventory {
   warehouse: Warehouse;
 }
 
+export const useProductsDashboard = () => {
+  const query = useQuery<Product[]>({
+    queryKey: ["products/dashbaord"],
+    queryFn: async () => {
+      const res = await service.get("/products/dashboard");
+      return res.data.data;
+    },
+  });
+
+  return query;
+};
+
 export const useProducts = (params: ProductOptions) => {
   const { s, size, page, order, limit, status, filter, warehouse, category } =
     params;
