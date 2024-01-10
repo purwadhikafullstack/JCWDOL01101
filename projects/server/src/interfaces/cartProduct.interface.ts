@@ -1,4 +1,4 @@
-import { Status } from '.';
+import { Product, Status } from '.';
 
 export interface CartProduct {
   id?: number;
@@ -9,4 +9,5 @@ export interface CartProduct {
   status: Status;
   price: number;
   selected: boolean;
+  product?: Product;
 }

@@ -1,3 +1,4 @@
+import React from "react";
 import SelectCourierSkeleton from "@/components/skeleton/SelectCourierSkeleton";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -10,52 +11,44 @@ import {
 } from "@/components/ui/select";
 import { Address } from "@/hooks/useAddress";
 import { useCourier } from "@/hooks/useCheckout";
-import { Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import { useBoundStore } from "@/store/client/useStore";
-import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-const SelectCourier = ({
-  origin,
-  product,
-  address,
-  quantity,
-  cartProductId,
-}: {
+type Props = {
   origin: string;
-  product: Product;
-  quantity: number;
+  weightTotal: number;
   address: Address | undefined;
-  cartProductId: number;
-}) => {
+};
+
+const SelectCourier = ({ origin, address, weightTotal }: Props) => {
   const { t } = useTranslation();
   const addShippingFee = useBoundStore((state) => state.addShippingFee);
   const setLoading = useBoundStore((state) => state.setLoading);
   const getTotalShippingFee = useBoundStore(
     (state) => state.getTotalShippingFee
   );
-  const [courier, setCourier] = useState("jne");
-  const [service, setService] = useState("0");
+  const [courier, setCourier] = React.useState("jne");
+  const [service, setService] = React.useState("0");
   const { data, isLoading } = useCourier({
     origin,
     courier,
     destination: address?.cityId!,
-    weight: product.weight * quantity,
+    weight: weightTotal,
   });
 
   const selectedService = data?.costs[Number(service)];
 
-  useEffect(() => {
+  React.useEffect(() => {
     setLoading(isLoading);
   }, [isLoading]);
 
-  useEffect(() => {
-    if (cartProductId && selectedService && selectedService.cost.length > 0) {
-      addShippingFee(cartProductId, selectedService);
+  React.useEffect(() => {
+    if (selectedService && selectedService.cost.length > 0) {
+      addShippingFee({ name: courier, ...selectedService });
       getTotalShippingFee();
     }
-  }, [selectedService, cartProductId]);
+  }, [selectedService]);
 
   return (
     <div className="w-full">
@@ -71,7 +64,7 @@ const SelectCourier = ({
               disabled={isLoading}
               className={buttonVariants({
                 variant: "default",
-                className: `rounded-lg lg:justify-between lg:py-6 font-semibold ${
+                className: `rounded-lg lg:justify-between font-semibold ${
                   isLoading && "animate-pulse"
                 }`,
               })}
@@ -89,7 +82,7 @@ const SelectCourier = ({
           {data && data.costs.length > 0 && (
             <>
               <div className="mt-2 text-muted-foreground grid grid-cols-2 gap-2">
-                <span>{data?.name}</span>
+                <span className="text-sm">{data?.name}</span>
                 <Select
                   value={service}
                   onValueChange={(value) => {

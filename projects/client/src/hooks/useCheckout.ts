@@ -47,7 +47,10 @@ export const useCourier = ({
 };
 
 export const useSelectedItem = (cartId: number | undefined) => {
-  const cartProducts = useQuery<cartProducts[]>({
+  const cartProducts = useQuery<{
+    cartProducts: cartProducts[];
+    weightTotal: number;
+  }>({
     queryKey: ["selected-cart", cartId],
     queryFn: async () => {
       const res = await service.get(`/checkout/cart/${cartId}/products`);
