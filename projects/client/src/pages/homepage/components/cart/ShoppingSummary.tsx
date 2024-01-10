@@ -1,7 +1,7 @@
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { formatToIDR } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSelectedItem } from "@/hooks/useCheckout";
@@ -37,7 +37,7 @@ const ShoppingSummary = ({
           <Button
             disabled={!someTrue}
             onClick={() => {
-              if (selectedCart && selectedCart.length > 0) {
+              if (selectedCart && selectedCart.cartProducts.length > 0) {
                 navigate("/checkout");
               }
             }}

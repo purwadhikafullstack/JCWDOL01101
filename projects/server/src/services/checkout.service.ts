@@ -39,9 +39,10 @@ export class CheckoutService {
     return results;
   }
 
-  public async getSelectedCartProduct(cartId: number) {
-    const findAllCartProduct = await DB.CartProduct.findAll({
-      where: { cartId, selected: true, status: 'ACTIVE' },
+  public async getSelectedCartProduct(cartId: number): Promise<{ cartProducts: CartProduct[]; weightTotal: number }> {
+    const where = { cartId, selected: true, status: 'ACTIVE' };
+    const findAllCartProduct: CartProduct[] = await DB.CartProduct.findAll({
+      where,
       include: [
         {
           model: SizeModel,
@@ -68,8 +69,9 @@ export class CheckoutService {
         },
       ],
     });
+    const weightTotal = findAllCartProduct.reduce((acc, cur) => acc + cur.product.weight * cur.quantity, 0);
 
-    return findAllCartProduct;
+    return { cartProducts: findAllCartProduct, weightTotal };
   }
 
   public async findClosestWarehouse(externalId: string, targetLocation: Location): Promise<Warehouse | null> {
