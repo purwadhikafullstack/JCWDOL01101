@@ -37,3 +37,17 @@ export const useInventoryByWarehouseId = (
 
   return inventory;
 };
+
+// export const useCheckInventory = (warehouseId: number, body: { productId: number; sizeId: number }) => {
+//   const { data, isLoading } = useQuery<Inventory[]>({
+//     queryKey: ["Inventory-Check", body],
+//     queryFn: async () => {
+//       const res = await service.get(
+//         `/inventories/warehouse/${warehouseId}`, body
+//       );
+//       return res.data.data;
+//     },
+//     enabled: !!productId && !!warehouseId && !!sizeId,
+//   });
+//   return { data, isLoading };
+// }

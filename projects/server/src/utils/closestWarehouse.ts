@@ -1,6 +1,6 @@
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
-import { CartProduct } from '@/interfaces/cartProduct.interface';
+import { OrderDetails } from '@/interfaces';
 import { Warehouse } from '@/interfaces/warehouse.interface';
 import { InventoryModel } from '@/models/inventory.model';
 import { WarehouseAddressModel } from '@/models/warehouseAddress.model';
@@ -69,20 +69,20 @@ async function getClosestWarehouses(warehouse: Warehouse): Promise<Warehouse[]> 
   return distances.map(d => d.warehouse);
 }
 
-export async function findWarehousesAndDistributeStock(cartProducts: CartProduct[], currentWarehouse: Warehouse) {
+export async function findWarehousesAndDistributeStock(orderDetails: OrderDetails[], currentWarehouse: Warehouse) {
   const transaction = await DB.sequelize.transaction();
   try {
-    for (const cartProduct of cartProducts) {
-      let remainingQuantity = cartProduct.quantity;
+    for (const orderDetail of orderDetails) {
+      let remainingQuantity = orderDetail.quantity;
       const closestWarehouses = await getClosestWarehouses(currentWarehouse);
       const currentInventory = await DB.Inventories.findOne({
-        where: { productId: cartProduct.productId, warehouseId: currentWarehouse.id },
+        where: { productId: orderDetail.productId, sizeId: orderDetail.sizeId, warehouseId: currentWarehouse.id },
       });
 
       for (const warehouse of closestWarehouses) {
         if (warehouse.id === currentWarehouse.id) continue;
         const inventory = await DB.Inventories.findOne({
-          where: { productId: cartProduct.productId, warehouseId: warehouse.id },
+          where: { productId: orderDetail.productId, sizeId: orderDetail.sizeId, warehouseId: warehouse.id },
         });
         if (!inventory || inventory.stock === 0) continue;
         const transferQuantity = Math.min(inventory.stock, remainingQuantity);
@@ -95,30 +95,27 @@ export async function findWarehousesAndDistributeStock(cartProducts: CartProduct
             inventory.save(),
             currentInventory.save(),
             DB.Jurnal.create({
-              warehouseId: inventory.warehouseId,
               inventoryId: inventory.id,
               oldQty: inventory.stock + transferQuantity,
               qtyChange: transferQuantity,
               newQty: inventory.stock,
-              type: 'STOCK OUT',
-              date: new Date(),
+              type: '0',
+              notes: `Stock out to warehouse ${currentWarehouse.name}`,
             }),
             DB.Jurnal.create({
-              warehouseId: currentWarehouse.id,
               inventoryId: currentInventory.id,
               oldQty: currentInventory.stock - transferQuantity,
               qtyChange: transferQuantity,
               newQty: currentInventory.stock,
-              type: 'STOCK IN',
-              date: new Date(),
+              type: '1',
+              notes: `Stock in from warehouse ${warehouse.name}`,
             }),
           ]);
         }
         if (remainingQuantity === 0) break;
       }
       if (remainingQuantity > 0) {
-        await DB.CartProduct.update({ status: 'DELETED' }, { where: { id: cartProduct.id } });
-        throw new HttpException(409, `Not enough stock for product ${cartProduct.productId}`);
+        throw new HttpException(409, `Not enough stock for product ${orderDetail.productId}`);
       }
     }
     await transaction.commit();

@@ -1,5 +1,5 @@
 import { DB } from '@/database';
-import { Service } from 'typedi';
+import Container, { Service } from 'typedi';
 import { GetFilterOrder, Order } from '@/interfaces/order.interface';
 import { User } from '@/interfaces/user.interface';
 import { HttpException } from '@/exceptions/HttpException';
@@ -7,9 +7,14 @@ import { FindOptions, Op } from 'sequelize';
 import { OrderDetailsModel } from '@/models/orderDetails.model';
 import { WarehouseModel } from '@/models/warehouse.model';
 import { UserModel } from '@/models/user.model';
+import { OrderDetails, Warehouse } from '@/interfaces';
+import { findWarehousesAndDistributeStock } from '@/utils/closestWarehouse';
+import { WarehouseService } from './warehouse.service';
 
 @Service()
 export class OrderService {
+  warehouse = Container.get(WarehouseService);
+
   public async findOrder(userId: number): Promise<Order[]> {
     const findUser: User = await DB.User.findOne({ where: { id: userId, status: 'ACTIVE' } });
     if (!findUser) throw new HttpException(409, "User doesn't exist");
@@ -107,5 +112,29 @@ export class OrderService {
     const totalPages = Math.ceil(totalCount / LIMIT);
 
     return { totalPages: totalPages, orders: allOrder };
+  }
+
+  public async acceptOrder(orderId: number) {
+    const findOrder: Order = await DB.Order.findByPk(orderId);
+    if (!findOrder) throw new HttpException(409, "Order doesn't exist");
+    if (findOrder.status !== 'WAITING') throw new HttpException(409, "Can't accept order");
+    const currentWarehouse: Warehouse = await this.warehouse.findWarehouseById(findOrder.warehouseId);
+    const orderDetails: OrderDetails[] = await DB.OrderDetails.findAll({ where: { orderId } });
+    if (!orderDetails || orderDetails.length === 0) throw new HttpException(409, "Order doesn't exist");
+
+    await findWarehousesAndDistributeStock(orderDetails, currentWarehouse);
+    await DB.Order.update({ status: 'PROCESS' }, { where: { id: orderId } });
+    const updatedOrder = await DB.Mutation.findByPk(orderId);
+    return updatedOrder;
+  }
+
+  public async rejectOrder(orderId: number) {
+    const findOrder: Order = await DB.Order.findByPk(orderId);
+    if (!findOrder) throw new HttpException(409, "Order doesn't exist");
+    if (findOrder.status !== 'WAITING') throw new HttpException(409, "Can't reject order");
+
+    await DB.Order.update({ status: 'REJECTED' }, { where: { id: orderId } });
+    const updatedOrder = await DB.Mutation.findByPk(orderId);
+    return updatedOrder;
   }
 }

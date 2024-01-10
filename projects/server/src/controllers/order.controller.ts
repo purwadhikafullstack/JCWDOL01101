@@ -55,4 +55,26 @@ export class OrderController {
       next(error);
     }
   };
+
+  public acceptOrder = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const orderId = Number(req.params.orderId);
+      const editOrder = await this.order.acceptOrder(orderId);
+
+      res.status(200).json({ data: editOrder, message: 'patch.order' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public rejectOrder = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const orderId = Number(req.params.orderId);
+      const editOrder = await this.order.rejectOrder(orderId);
+
+      res.status(200).json({ data: editOrder, message: 'patch.order' });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
