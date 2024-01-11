@@ -19,6 +19,7 @@ import { InventoryRoute } from './routes/inventory.route';
 import { JurnalRoute } from './routes/jurnal.route';
 import { MutationRoute } from './routes/mutation.route';
 import { LastSeenProductRoute } from './routes/lastSeenProduct.route';
+import { RecommendationRoute } from './routes/recommendation.route';
 
 ValidateEnv();
 
@@ -45,6 +46,7 @@ const app = new App([
   new InventoryRoute(),
   new JurnalRoute(),
   new LastSeenProductRoute(),
+  new RecommendationRoute(),
 ]);
 
 app.listen();
