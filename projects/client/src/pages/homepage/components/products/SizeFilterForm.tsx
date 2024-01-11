@@ -3,9 +3,11 @@ import { cn } from "@/lib/utils";
 import { FilterSize } from "@/store/client/filterSizeSlice";
 import { useBoundStore } from "@/store/client/useStore";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 const SizeFilterForm = () => {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const setFilterSize = useBoundStore((state) => state.setSize);
   const sizeParams = searchParams.get("size");
@@ -13,7 +15,7 @@ const SizeFilterForm = () => {
   const { data: sizes } = useSize();
   return (
     <div className="flex flex-col  items-start gap-2">
-      <span className="uppercase">Size</span>
+      <span className="uppercase">{t("productsPage.size")}</span>
       <div className="flex flex-wrap">
         {sizes &&
           sizes.map((size) => (
