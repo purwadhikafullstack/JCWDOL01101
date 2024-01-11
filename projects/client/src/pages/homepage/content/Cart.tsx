@@ -10,12 +10,14 @@ import RemoveItemsDialog from "../components/cart/RemoveItemsDialog";
 import ShoppingSummary from "../components/cart/ShoppingSummary";
 import { useToggleAllSelectProduct } from "@/hooks/useCartMutation";
 import { useTranslation } from "react-i18next";
-import { useNewestProducts } from "@/hooks/useProduct";
 import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton";
 import ProductCard from "../components/ProductCard";
 import { Helmet } from "react-helmet";
+import { useRecommendedProduct } from "@/hooks/useRecommendedProduct";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const Cart = () => {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useUserContext();
@@ -26,8 +28,8 @@ const Cart = () => {
   }, []);
 
   const { data: cart } = useCart(user?.id!, !!user?.userCart);
-  const { data: newestProducts, isLoading: newestProductLoading } =
-    useNewestProducts();
+  const { data: recommendedProducts, isLoading: isLoadingRecommended } =
+    useRecommendedProduct(user?.id);
   const carts = cart?.cart.cartProducts || [];
 
   const totalQuantity = cart?.totalQuantity || 0;
@@ -114,7 +116,7 @@ const Cart = () => {
               </p>
               <Button
                 onClick={() => navigate("/products")}
-                className="px-10 w-max mt-4 rounded-none bg-black hover:bg-black/80 font-bold"
+                className="px-10 w-max mt-4 rounded-none bg-black border dark:border-border hover:bg-black/80 font-bold"
               >
                 {t("cartPage.empty.btn")}
               </Button>
@@ -130,26 +132,23 @@ const Cart = () => {
           />
         )}
       </div>
-      <div>
+      <>
         <h3 className="font-bold my-2 mt-8 pt-4 uppercase">
           {t("cartPage.misc.title")}
         </h3>
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-          {newestProductLoading ? (
-            <NewestProductSekeleton product={12} />
+          {isLoadingRecommended ? (
+            <NewestProductSekeleton product={isDesktop ? 6 : 2} />
           ) : (
             <>
-              {newestProducts && (
-                <>
-                  {newestProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </>
-              )}
+              {recommendedProducts &&
+                recommendedProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
             </>
           )}
         </div>
-      </div>
+      </>
     </>
   );
 };
