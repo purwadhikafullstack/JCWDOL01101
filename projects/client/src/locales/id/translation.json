@@ -46,8 +46,8 @@
       "sub": "Pilih berdasarkan",
       "select1": "Produk Unggulan",
       "select2": "Baru Tiba",
-      "select3": "Rendah ke Tinggi",
-      "select4": "Tinggi ke Rendah",
+      "select3": "Harga (Rendah ke Tinggi)",
+      "select4": "Harga (Tinggi ke Rendah)",
       "select5": "Peringkat Tertinggi"
     }
   },

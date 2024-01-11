@@ -52,7 +52,7 @@ const Cart = () => {
   return (
     <>
       <Helmet>
-        <title>{t("cartPage.title")} | TOTEN</title>
+        <title>Cart | TOTEN</title>
       </Helmet>
       <div className="flex flex-col md:flex md:flex-row w-full gap-8">
         <div className="flex flex-col  flex-1">

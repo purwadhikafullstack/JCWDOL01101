@@ -18,7 +18,6 @@
     }
   },
   "homepage": {
-    "title": "Homepage | TOTEN",
     "title1": "popular category",
     "sub1": "see all category",
     "sub2": "see all",
@@ -47,8 +46,8 @@
       "sub": "Select by",
       "select1": "Featured Product",
       "select2": "Just Arrived",
-      "select3": "Low To High",
-      "select4": "High To Low",
+      "select3": "Price (Low To High)",
+      "select4": "Price (High To Low)",
       "select5": "Highest Rating"
     }
   },

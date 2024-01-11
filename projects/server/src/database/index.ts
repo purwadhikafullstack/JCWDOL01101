@@ -23,6 +23,7 @@ import WishlistModel from '@/models/wishlist.model';
 import MutationModel from '@/models/mutation.model';
 import SizeModel from '@/models/size.model';
 import PaymentDetailsModel from '@/models/paymentDetails.model';
+import LastSeenProductModel from '@/models/lastSeenProduct.model';
 
 import associations from './associations';
 
@@ -72,6 +73,7 @@ export const DB = {
   Review: ReviewModel(sequelize),
   WishList: WishlistModel(sequelize),
   Mutation: MutationModel(sequelize),
+  LastSeenProduct: LastSeenProductModel(sequelize),
   sequelize,
   Sequelize,
 };
