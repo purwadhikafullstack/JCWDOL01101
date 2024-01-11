@@ -17,3 +17,15 @@ export interface JurnalData {
   stockChangeSender: number;
   stockChangeReceiver: number;
 }
+
+export interface GetFilterJurnal {
+  page: number;
+  s: string;
+  filter: string;
+  order: string;
+  limit: number;
+  externalId: string;
+  warehouse: string;
+  product: string;
+  size:string;
+}

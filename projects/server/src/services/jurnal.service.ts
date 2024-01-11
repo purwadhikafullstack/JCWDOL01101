@@ -1,13 +1,117 @@
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
-import { Jurnal, JurnalData } from '@/interfaces/jurnal.interface';
+import { User } from '@/interfaces';
+import { GetFilterJurnal, Jurnal, JurnalData } from '@/interfaces/jurnal.interface';
 import { Service } from 'typedi';
+import { queryStringToArray } from './product/queryStringToArray';
+import { FindOptions } from 'sequelize';
 
 @Service()
 export class JurnalService {
   public async findAllJurnal(): Promise<Jurnal[]> {
-    const allJurnal: Jurnal[] = await DB.Jurnal.findAll();
+    const allJurnal: Jurnal[] = await DB.Jurnal.findAll({
+      include: [
+        {
+          model: DB.Inventories,
+          as: 'jurnal',
+          attributes: ['stock'],
+          include: [
+            {
+              model: DB.Warehouses,
+              as: 'warehouse',
+              attributes: ['name'],
+            },
+            {
+              model: DB.Size,
+              as: 'sizes',
+              attributes: ['label'],
+            },
+            {
+              model: DB.Product,
+              as: 'product',
+              attributes: ['name'],
+            },
+          ],
+        },
+      ],
+    });
     return allJurnal;
+  }
+
+  public async findAllJurnaltes({
+    page,
+    s,
+    order,
+    limit,
+    filter,
+    externalId,
+    warehouse,
+    product,
+    size,
+  }: GetFilterJurnal): Promise<{ jurnals: Jurnal[]; totalPages: number }> {
+    // limit = limit || 10;
+    // page = page || 1;
+
+    const findUser: User = await DB.User.findOne({ where: { externalId } });
+    if (!findUser) throw new HttpException(409, "user doesn't exist");
+    const role = findUser.role;
+    const where =
+      role === 'ADMIN'
+        ? {
+            ...(warehouse && { id: Number(warehouse) }),
+          }
+        : role === 'WAREHOUSE ADMIN'
+        ? {
+            userId: findUser.id,
+          }
+        : {};
+
+    // const products = queryStringToArray(product);
+    // const sizes = queryStringToArray(size);
+
+    const LIMIT = Number(limit) || 10;
+    const offset = (page - 1) * LIMIT;
+
+    const options: FindOptions<Jurnal> = {
+      // offset: (page - 1) * limit,
+      // limit: limit,
+      offset,
+      limit: LIMIT,
+      include: [
+        {
+          model: DB.Inventories,
+          as: 'jurnal',
+          attributes: ['stock'],
+          include: [
+            {
+              model: DB.Warehouses,
+              as: 'warehouse',
+              attributes: ['name'],
+            },
+            {
+              model: DB.Size,
+              as: 'sizes',
+              attributes: ['label'],
+            },
+            {
+              model: DB.Product,
+              as: 'product',
+              attributes: ['name'],
+            },
+          ],
+        },
+      ],
+    };
+
+    if (order) {
+      options.order = [[filter, order]];
+    }
+
+    const allJurnal = await DB.Jurnal.findAll(options);
+    const totalCount = await DB.Jurnal.count(options);
+    const totalPages = Math.ceil(totalCount / LIMIT);
+
+    return  { totalPages: totalPages, jurnals: allJurnal };
   }
 
   public async findJurnalById(jurnalId: number): Promise<Jurnal> {
