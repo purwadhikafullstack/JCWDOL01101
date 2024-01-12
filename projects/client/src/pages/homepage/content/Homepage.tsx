@@ -21,7 +21,7 @@ const Homepage = () => {
   return (
     <>
       <Helmet>
-        <title>{t("homepage.title")}</title>
+        <title>Homepage | TOTEN</title>
         <meta name="description" content={t("homepage.description")} />
       </Helmet>
       <MainCarousel />

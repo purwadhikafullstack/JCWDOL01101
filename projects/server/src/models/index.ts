@@ -17,6 +17,7 @@ import { UserModel } from './user.model';
 import { WarehouseModel } from './warehouse.model';
 import { WarehouseAddress } from '@/interfaces';
 import { WishlistModel } from './wishlist.model';
+import { LastSeenProductModel } from './lastSeenProduct.model';
 
 export {
   AddressModel,
@@ -27,6 +28,7 @@ export {
   ImageModel,
   InventoryModel,
   JurnalModel,
+  LastSeenProductModel,
   OrderModel,
   OrderDetails,
   ProductModel,

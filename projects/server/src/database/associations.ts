@@ -81,4 +81,9 @@ export default function () {
   DB.Mutation.belongsTo(DB.Product, { foreignKey: 'product_id', as: 'productMutation' });
   DB.Size.hasMany(DB.Mutation, { foreignKey: 'size_id', as: 'sizeMutation' });
   DB.Mutation.belongsTo(DB.Size, { foreignKey: 'size_id', as: 'sizeMutation' });
+
+  DB.LastSeenProduct.belongsTo(DB.Product, { foreignKey: 'productId', as: 'lastSeenProduct' });
+  DB.Product.hasOne(DB.LastSeenProduct, { foreignKey: 'productId', as: 'lastSeenProduct' });
+  DB.LastSeenProduct.belongsTo(DB.User, { foreignKey: 'userId', as: 'userLastSeen' });
+  DB.User.hasMany(DB.LastSeenProduct, { foreignKey: 'userId', as: 'userLastSeen' });
 }
