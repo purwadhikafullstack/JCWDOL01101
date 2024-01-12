@@ -1,27 +1,43 @@
 import React from "react";
-import {Carousel} from "react-responsive-carousel";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
+import {
+  Carousel,
+  type CarouselApi,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import { DotButton, NextButton, PrevButton } from "./MainCarouselArrow";
+
+const carouselImages = [
+  "/carousel/1.jpg",
+  "/carousel/2.jpg",
+  "/carousel/3.jpg",
+];
 
 const MainCarousel = () => {
+  const [api, setApi] = React.useState<CarouselApi>();
+  const scrollPrev = React.useCallback(() => api && api.scrollPrev(), [api]);
+  const scrollNext = React.useCallback(() => api && api.scrollNext(), [api]);
+
   return (
     <Carousel
-      autoPlay
-      infiniteLoop
-      interval={4000}
-      transitionTime={800}
-      showThumbs={false}
-      showArrows={false}
-      showStatus={false}
+      setApi={setApi}
+      plugins={[Autoplay({ delay: 5000 })]}
+      opts={{
+        loop: true,
+        slidesToScroll: 1,
+      }}
+      className="relative group"
     >
-      <div>
-        <img src="/carousel/1.jpg" alt="carousel 1" className="rounded-lg" />
-      </div>
-      <div>
-        <img src="/carousel/2.jpg" alt="carousel 2" className="rounded-lg" />
-      </div>
-      <div>
-        <img src="/carousel/3.jpg" alt="carousel 3" className="rounded-lg" />
-      </div>
+      <PrevButton onClick={scrollPrev} />
+      <CarouselContent>
+        {carouselImages.map((image, index) => (
+          <CarouselItem key={index} className="cursor-pointer">
+            <img src={image} alt={`carousel-${index}`} />
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <NextButton onClick={scrollNext} />
     </Carousel>
   );
 };

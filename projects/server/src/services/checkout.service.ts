@@ -1,16 +1,8 @@
 import { RAJAONGKIR_API_KEY } from '@/config';
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
-import { CartProduct } from '@/interfaces/cartProduct.interface';
-import { Inventory } from '@/interfaces/inventory.interface';
-import { User } from '@/interfaces/user.interface';
-import { Warehouse } from '@/interfaces/warehouse.interface';
-import { CartModel } from '@/models/cart.model';
-import { CategoryModel } from '@/models/category.model';
-import { ImageModel } from '@/models/image.model';
-import { InventoryModel } from '@/models/inventory.model';
-import { ProductModel } from '@/models/product.model';
-import { SizeModel } from '@/models/size.model';
+import { CartProduct, Inventory, Warehouse, User } from '@/interfaces';
+import { CartModel, CategoryModel, ImageModel, InventoryModel, ProductModel, SizeModel } from '@/models';
 import { Location, findClosestWarehouse } from '@/utils/closestWarehouse';
 import axios from 'axios';
 import { Service } from 'typedi';
@@ -47,9 +39,10 @@ export class CheckoutService {
     return results;
   }
 
-  public async getSelectedCartProduct(cartId: number) {
-    const findAllCartProduct = await DB.CartProduct.findAll({
-      where: { cartId, selected: true, status: 'ACTIVE' },
+  public async getSelectedCartProduct(cartId: number): Promise<{ cartProducts: CartProduct[]; weightTotal: number }> {
+    const where = { cartId, selected: true, status: 'ACTIVE' };
+    const findAllCartProduct: CartProduct[] = await DB.CartProduct.findAll({
+      where,
       include: [
         {
           model: SizeModel,
@@ -76,9 +69,9 @@ export class CheckoutService {
         },
       ],
     });
-    if (!findAllCartProduct || findAllCartProduct.length === 0) throw new HttpException(409, 'No Selected Item(s)');
+    const weightTotal = findAllCartProduct.reduce((acc, cur) => acc + cur.product.weight * cur.quantity, 0);
 
-    return findAllCartProduct;
+    return { cartProducts: findAllCartProduct, weightTotal };
   }
 
   public async findClosestWarehouse(externalId: string, targetLocation: Location): Promise<Warehouse | null> {

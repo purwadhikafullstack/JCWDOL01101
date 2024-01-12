@@ -1,21 +1,25 @@
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { formatToIDR } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useSelectedItem } from "@/hooks/useCheckout";
 
 const ShoppingSummary = ({
+  cartId,
   someTrue,
   totalPrice,
   totalQuantity,
 }: {
+  cartId: number | undefined;
   someTrue: boolean;
   totalPrice: number;
   totalQuantity: number;
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { data: selectedCart } = useSelectedItem(cartId);
   return (
     <div className="w-full md:w-[320px] relative ">
       <div className="sticky top-[100px] ">
@@ -33,7 +37,9 @@ const ShoppingSummary = ({
           <Button
             disabled={!someTrue}
             onClick={() => {
-              navigate("/checkout");
+              if (selectedCart && selectedCart.cartProducts.length > 0) {
+                navigate("/checkout");
+              }
             }}
             className="w-full rounded-none"
           >

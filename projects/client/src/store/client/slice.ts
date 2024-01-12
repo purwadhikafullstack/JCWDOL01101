@@ -11,6 +11,7 @@ export interface QuantitySlice {
 }
 
 type Service = {
+  name: string;
   service: string;
   description: string;
   cost: {
@@ -20,15 +21,11 @@ type Service = {
   }[];
 };
 
-export interface Fee {
-  [productId: string]: Service;
-}
-
 export interface ShippingFeeSlice {
-  fee: Fee;
+  service: Service;
   isLoading: boolean;
   totalShipping: number;
-  addShippingFee: (productId: number, fee: Service) => void;
+  addShippingFee: (service: Service) => void;
   getTotalShippingFee: () => void;
   clear: () => void;
   setLoading: (state: boolean) => void;
@@ -60,18 +57,22 @@ export const createShippingSlice: StateCreator<
   [],
   ShippingFeeSlice
 > = (set) => ({
-  fee: {},
+  service: {
+    name: "",
+    service: "",
+    description: "",
+    cost: [],
+  },
   isLoading: false,
   totalShipping: 0,
   getTotalShippingFee: () =>
     set((state) => ({
-      totalShipping: Object.values(state.fee).reduce(
-        (prev, fee) => prev + Number(fee.cost[0].value),
-        0
-      ),
+      totalShipping: state.service.cost[0].value,
     })),
-  addShippingFee: (productId: number, fee: Service) =>
-    set((state) => ({ fee: { ...state.fee, [productId]: fee } })),
+  addShippingFee: (service: Service) =>
+    set((state) => ({
+      service,
+    })),
   setLoading: (load: boolean) => set(() => ({ isLoading: load })),
   clear: () => set(() => ({ fee: {}, totalShipping: 0 })),
 });

@@ -1,6 +1,8 @@
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
 import { AddStock, Inventory } from '@/interfaces/inventory.interface';
+import { Order, OrderDetails } from '@/interfaces';
+import { Warehouse } from '@/interfaces/warehouse.interface';
 import Container, { Service } from 'typedi';
 import { Op } from 'sequelize';
 import { WarehouseModel } from '@/models/warehouse.model';
@@ -149,6 +151,35 @@ export class InventoryService {
         await transaction.rollback();
       }
       throw new HttpException(409, err.message);
+    }
+  }
+
+  public async orderStock(findOrder: Order, orderDetails: OrderDetails[], currentWarehouse: Warehouse) {
+    const transaction = await DB.sequelize.transaction();
+    try {
+      for (const orderDetail of orderDetails) {
+        const currentInventory = await DB.Inventories.findOne({
+          where: { productId: orderDetail.productId, sizeId: orderDetail.sizeId, warehouseId: currentWarehouse.id },
+        });
+        const oldQty = currentInventory.stock;
+        currentInventory.stock -= orderDetail.quantity;
+        if (currentInventory.stock < 0) throw new HttpException(409, `Not enough stock for product ${orderDetail.productId}`);
+        await Promise.all([
+          currentInventory.save(),
+          DB.Jurnal.create({
+            inventoryId: currentInventory.id,
+            oldQty,
+            qtyChange: orderDetail.quantity,
+            newQty: currentInventory.stock,
+            type: '0',
+            notes: `Stock out order ${findOrder.invoice}`,
+          }),
+        ]);
+      }
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
     }
   }
 }

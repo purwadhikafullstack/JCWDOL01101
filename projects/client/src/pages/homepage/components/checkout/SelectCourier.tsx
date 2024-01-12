@@ -1,3 +1,4 @@
+import React from "react";
 import SelectCourierSkeleton from "@/components/skeleton/SelectCourierSkeleton";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -8,62 +9,43 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Address } from "@/hooks/useAddress";
 import { useCourier } from "@/hooks/useCheckout";
-import { Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import { useBoundStore } from "@/store/client/useStore";
-import { Loader2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-type Service = {
-  service: string;
-  description: string;
-  cost: {
-    value: number;
-    etd: string;
-    note: string;
-  }[];
+
+type Props = {
+  origin: string;
+  weightTotal: number;
+  address: Address | undefined;
 };
 
-const SelectCourier = ({
-  origin,
-  product,
-  address,
-  quantity,
-}: {
-  origin: string;
-  product: Product;
-  quantity: number;
-  address: Address | undefined;
-}) => {
+const SelectCourier = ({ origin, address, weightTotal }: Props) => {
   const { t } = useTranslation();
   const addShippingFee = useBoundStore((state) => state.addShippingFee);
   const setLoading = useBoundStore((state) => state.setLoading);
   const getTotalShippingFee = useBoundStore(
     (state) => state.getTotalShippingFee
   );
-  const [courier, setCourier] = useState("jne");
-  const [service, setService] = useState("0");
+  const [courier, setCourier] = React.useState("jne");
+  const [service, setService] = React.useState("0");
   const { data, isLoading } = useCourier({
     origin,
     courier,
     destination: address?.cityId!,
-    weight: product.weight * quantity,
+    weight: weightTotal,
   });
-  const selectedService: Service | null =
-    data && data.costs && data.costs.length > 0
-      ? data?.costs[Number(service)]
-      : null;
 
-  useEffect(() => {
+  const selectedService = data?.costs[Number(service)];
+
+  React.useEffect(() => {
     setLoading(isLoading);
   }, [isLoading]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (selectedService && selectedService.cost.length > 0) {
-      addShippingFee(product.id!, selectedService);
+      addShippingFee({ name: courier, ...selectedService });
       getTotalShippingFee();
     }
   }, [selectedService]);
@@ -82,7 +64,7 @@ const SelectCourier = ({
               disabled={isLoading}
               className={buttonVariants({
                 variant: "default",
-                className: `rounded-lg lg:justify-between lg:py-6 font-semibold ${
+                className: `rounded-lg lg:justify-between font-semibold ${
                   isLoading && "animate-pulse"
                 }`,
               })}
@@ -100,7 +82,7 @@ const SelectCourier = ({
           {data && data.costs.length > 0 && (
             <>
               <div className="mt-2 text-muted-foreground grid grid-cols-2 gap-2">
-                <span>{data?.name}</span>
+                <span className="text-sm">{data?.name}</span>
                 <Select
                   value={service}
                   onValueChange={(value) => {
@@ -123,14 +105,14 @@ const SelectCourier = ({
                 <div className="text-muted-foreground col-start-2 text-sm">
                   {selectedService ? (
                     <>
-                      <span>{`${selectedService?.service} (${formatToIDR(
-                        selectedService?.cost[0].value.toString()
+                      <span>{`${selectedService.service} (${formatToIDR(
+                        selectedService.cost[0].value
                       )})`}</span>
-                      <p>{selectedService?.description}</p>
+                      <p>{selectedService.description}</p>
                       <p>
-                        Estimated arrival {}
-                        {`${selectedService?.cost[0].etd} ${
-                          +selectedService?.cost[0].etd > 0 ? "days" : "day"
+                        Estimated arrival:{" "}
+                        {`${selectedService.cost[0].etd} ${
+                          +selectedService.cost[0].etd > 0 ? "days" : "day"
                         }`}
                       </p>
                     </>

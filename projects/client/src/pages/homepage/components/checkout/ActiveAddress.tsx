@@ -1,8 +1,9 @@
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Address } from "@/hooks/useAddress";
 import React from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Address } from "@/hooks/useAddress";
 import { useTranslation } from "react-i18next";
+import SelectAddressDialog from "@/components/SelectAddressDialog";
 
 const ActiveAddress = ({
   activeAddress,
@@ -11,28 +12,24 @@ const ActiveAddress = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <>
+    <div className="flex flex-col w-full">
+      <p className="font-bold text-sm mb-2">{t("checkoutPage.shipping")}</p>
       {activeAddress ? (
         <>
-          <div className="py-2">
-            <div className="flex text-sm gap-2 items-center">
-              <b>{activeAddress?.recepient}</b>
-              <span>({activeAddress?.label})</span>
-              {activeAddress?.isMain && (
-                <Badge variant="default" className="rounded-md">
-                  {t("checkoutPage.main")}
-                </Badge>
-              )}
-            </div>
-            <div className="flex flex-col text-sm text-muted-foreground">
-              <span>{activeAddress?.phone}</span>
-              <span>{activeAddress?.address}</span>
-              <span>
-                {`${activeAddress?.city.cityName}, ${activeAddress.city.province}`}
-              </span>
-            </div>
+          <div className="flex text-sm gap-2 items-center">
+            <b>{activeAddress.recepient}</b>
+            <span>({activeAddress.label})</span>
+            {activeAddress.isMain && (
+              <Badge className="rounded-[1rem]">{t("checkoutPage.main")}</Badge>
+            )}
           </div>
-          <Separator className="my-2" />
+          <div className="flex flex-col text-sm text-muted-foreground">
+            <span>{activeAddress.phone}</span>
+            <span>{activeAddress.address}</span>
+            <span>
+              {`${activeAddress.city.cityName}, ${activeAddress.city.province}`}
+            </span>
+          </div>
         </>
       ) : (
         <div className="w-full text-center">
@@ -47,7 +44,14 @@ const ActiveAddress = ({
           </p>
         </div>
       )}
-    </>
+      <SelectAddressDialog>
+        <Button variant="secondary" className="w-full lg:w-max mt-2">
+          {activeAddress
+            ? t("checkoutPage.addressBtn")
+            : t("checkoutPage.emptyAddressBtn")}
+        </Button>
+      </SelectAddressDialog>
+    </div>
   );
 };
 

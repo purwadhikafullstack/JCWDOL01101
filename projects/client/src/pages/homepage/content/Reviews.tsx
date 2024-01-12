@@ -164,7 +164,7 @@ const Reviews = () => {
                   <Link to={`/product/${pd?.product?.slug}/reviews/new`}>
                     <Button
                       variant="outline"
-                      className="border-black uppercase mt-6 w-full rounded-none"
+                      className="border-black dark:border-border uppercase mt-6 w-full"
                     >
                       {t("reviewsPage.allowReview.btn")}
                     </Button>
@@ -181,7 +181,7 @@ const Reviews = () => {
           <Button
             onClick={scrollToTop}
             variant="outline"
-            className="border-black uppercase mt-6 w-max rounded-none"
+            className="border-black dark:border-border uppercase mt-6 w-max rounded-none"
           >
             <ArrowUp className="w-4 h-4 mr-2" />
             {t("reviewsPage.backToTop")}

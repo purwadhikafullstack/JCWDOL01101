@@ -22,6 +22,7 @@ import ReviewModel from '@/models/review.model';
 import WishlistModel from '@/models/wishlist.model';
 import MutationModel from '@/models/mutation.model';
 import SizeModel from '@/models/size.model';
+import PaymentDetailsModel from '@/models/paymentDetails.model';
 
 import associations from './associations';
 
@@ -57,6 +58,7 @@ export const DB = {
   Product: ProductModel(sequelize),
   Order: OrderModel(sequelize),
   OrderDetails: OrderDetailsModel(sequelize),
+  PaymentDetails: PaymentDetailsModel(sequelize),
   Image: ImageModel(sequelize),
   Shipment: ShipmentModel(sequelize),
   Address: AddressModel(sequelize),

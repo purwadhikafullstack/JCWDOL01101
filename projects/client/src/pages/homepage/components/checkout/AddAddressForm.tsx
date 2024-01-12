@@ -1,7 +1,8 @@
+import * as React from "react";
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
-import React, { useState } from "react";
 import LabelField from "@/components/input/LabelField";
 import CityField from "@/components/input/CityField";
 import RecepientField from "@/components/input/RecepientField";
@@ -16,7 +17,7 @@ type AddAddressForm = {
 };
 const AddAddressForm = ({ isPending }: AddAddressForm) => {
   const { t } = useTranslation();
-  const [tos, setTos] = useState(false);
+  const [tos, setTos] = React.useState(false);
 
   return (
     <>

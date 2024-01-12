@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -42,23 +42,23 @@ const PaymentModal = ({
   const { t } = useTranslation();
   const shippingFee = useBoundStore((state) => state.totalShipping);
   const isLoading = useBoundStore((state) => state.isLoading);
-  const [paymentMethod, setPaymentMethods] = useState("0");
-  const [show, setShow] = useState(false);
-  const [exit, setExit] = useState(false);
-  const [paymentPending, setPaymentPending] = useState(false);
+  const [paymentMethod, setPaymentMethods] = React.useState("0");
+  const [show, setShow] = React.useState(false);
+  const [exit, setExit] = React.useState(false);
+  const [paymentPending, setPaymentPending] = React.useState(false);
   const checkClosestWarehouse = useClosestWarehouse();
 
   const handlePaymentPending = (state: boolean) => {
     setPaymentPending(state);
   };
 
-  const onSubmit = () => {
+  const onCheckClosestWarehouse = () => {
     if (address) {
       checkClosestWarehouse.mutate({ lat: address.lat, lng: address.lng });
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (show) {
       document.body.style.overflow = "hidden";
     } else {
@@ -70,8 +70,9 @@ const PaymentModal = ({
     };
   }, [show]);
 
-  useEffect(() => {
-    if (checkClosestWarehouse.isSuccess) {
+  React.useEffect(() => {
+    const invoice = localStorage.getItem("invoice");
+    if (checkClosestWarehouse.isSuccess || invoice) {
       setShow(true);
     }
   }, [checkClosestWarehouse.isSuccess]);
@@ -80,7 +81,7 @@ const PaymentModal = ({
     <>
       <Button
         disabled={isLoading || checkClosestWarehouse.isError}
-        onClick={onSubmit}
+        onClick={onCheckClosestWarehouse}
         className="font-bold w-full lg:py-6 text-base lg:text-lg rounded-lg"
       >
         {checkClosestWarehouse.isPending ? (
@@ -107,7 +108,7 @@ const PaymentModal = ({
       )}
       <>
         {show && (
-          <div className="top-0  m-0 left-0 z-30 w-full h-screen fixed bg-black/80">
+          <div className="top-0 m-0 left-0 z-50 w-full h-screen fixed bg-background/80">
             <div className="w-full flex justify-center items-center h-full">
               <div className="w-[95%] lg:w-[500px] overflow-hidden  transition-all duration-200 relative">
                 <PaymentModalExit

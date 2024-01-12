@@ -1,17 +1,11 @@
+import React from "react";
 import { Separator } from "@/components/ui/separator";
-import { useCartProduct } from "@/hooks/useCart";
 import { useSelectedItem } from "@/hooks/useCheckout";
 import { formatToIDR } from "@/lib/utils";
-import { useBoundStore } from "@/store/client/useStore";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import CartProducts from "./CartProducts";
+import { useBoundStore } from "@/store/client/useStore";
 
-interface PaymentMethod {
-  img: string;
-  method: string;
-  id: string;
-}
 type Props = {
   paymentMethod: string;
   totalPrice: number;
@@ -19,6 +13,7 @@ type Props = {
   address: any;
   cartId: number;
 };
+
 const PaymentModalItems = ({
   paymentMethod,
   totalPrice,
@@ -27,8 +22,9 @@ const PaymentModalItems = ({
   address,
 }: Props) => {
   const { t } = useTranslation();
-  const shipping = useBoundStore((state) => state.fee);
   const { data: cartProducts } = useSelectedItem(cartId);
+  const courierService = useBoundStore((state) => state.service);
+
   return (
     <div className="mb-8 p-4 space-y-4">
       <b className="text-sm">{t("checkoutPage.paymentModal.summary")}</b>
@@ -41,9 +37,16 @@ const PaymentModalItems = ({
         <li className="flex gap-2 justify-between items-center">
           <span>
             {t("checkoutPage.paymentModal.totalPrice")} (
-            {cartProducts ? cartProducts.length : 0})
+            {cartProducts ? cartProducts.cartProducts.length : 0})
           </span>
           <b>{formatToIDR(totalPrice)}</b>
+        </li>
+        <li className="flex gap-2 justify-between items-center">
+          <span>Courier (Service)</span>
+          <span className="flex items-center">
+            <b className="uppercase">{courierService.name}</b> (
+            <p>{courierService.service}</p>)
+          </span>
         </li>
         <li className="flex gap-2 justify-between items-center">
           <span>{t("checkoutPage.paymentModal.shippingFee")}</span>
@@ -53,8 +56,8 @@ const PaymentModalItems = ({
       <div>
         <b className="text-sm">{t("checkoutPage.paymentModal.purchased")}</b>
         <Separator className="my-2" />
-        {cartProducts && cartProducts.length > 0 && (
-          <CartProducts cartProducts={cartProducts} shipping={shipping} />
+        {cartProducts && cartProducts.cartProducts.length > 0 && (
+          <CartProducts cartProducts={cartProducts.cartProducts} />
         )}
         <Separator className="my-2" />
       </div>
@@ -62,7 +65,9 @@ const PaymentModalItems = ({
         <b className="text-sm">
           {t("checkoutPage.paymentModal.shippingAddress")}
         </b>
-        <p className=" w-[300px] text-sm text-muted-foreground text-ellipsis overflow-hidden whitespace-nowrap">{`${address.address}, ${address.city.cityName}, ${address.city.province}`}</p>
+        <p className="w-[300px] text-sm text-muted-foreground text-ellipsis overflow-hidden whitespace-nowrap">
+          {`${address.address}, ${address.city.cityName}, ${address.city.province}`}
+        </p>
       </div>
     </div>
   );

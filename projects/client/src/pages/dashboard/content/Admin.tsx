@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { SearchIcon } from "lucide-react"
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { SearchIcon } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -8,26 +8,26 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { useSearchParams } from "react-router-dom"
-import { useUsers } from "@/hooks/useUser"
-import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton"
-import { useDebounce } from "use-debounce"
-import { getDate, getWarehouse } from "@/lib/utils"
-import TablePagination from "../components/TablePagination"
-import NewAdminFrom from "../components/NewAdminForm"
-import AdminAction from "../components/AdminAction"
-import ChangeOrderButton from "../components/ChangeOrderButton"
-import AssignAdminForm from "../components/AssignAdminForm"
-import UnassignAdminForm from "../components/UnassignAdminForm"
+} from "@/components/ui/table";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useSearchParams } from "react-router-dom";
+import { useUsers } from "@/hooks/useUser";
+import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton";
+import { useDebounce } from "use-debounce";
+import { getDate, getWarehouse } from "@/lib/utils";
+import TablePagination from "../components/TablePagination";
+import NewAdminFrom from "../components/NewAdminForm";
+import AdminAction from "../components/AdminAction";
+import ChangeOrderButton from "../components/ChangeOrderButton";
+import AssignAdminForm from "../components/AssignAdminForm";
+import UnassignAdminForm from "../components/UnassignAdminForm";
 
 const Admin = () => {
-  const [searchParams, setSearchParams] = useSearchParams({ page: "1" })
-  const currentPage = Number(searchParams.get("page"))
-  const [searchTerm, setSearchTerm] = useState("")
-  const [debounceSearch] = useDebounce(searchTerm, 1000)
+  const [searchParams, setSearchParams] = useSearchParams({ page: "1" });
+  const currentPage = Number(searchParams.get("page"));
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debounceSearch] = useDebounce(searchTerm, 1000);
 
   const { data, isLoading, isFetched } = useUsers({
     page: currentPage,
@@ -35,15 +35,15 @@ const Admin = () => {
     r: "WAREHOUSE ADMIN",
     filter: searchParams.get("filter") || "",
     order: searchParams.get("order") || "",
-  })
+  });
 
-  const [warehouses, setWarehouses] = useState<{ [key: number]: string }>({})
+  const [warehouses, setWarehouses] = useState<{ [key: number]: string }>({});
 
   useEffect(() => {
     data?.users!.forEach((user) => {
-      getWarehouse(Number(user.id), setWarehouses)
-    })
-  }, [data])
+      getWarehouse(Number(user.id), setWarehouses);
+    });
+  }, [data]);
 
   return (
     <div className="flex flex-col p-2 w-full">
@@ -54,10 +54,10 @@ const Admin = () => {
             value={searchTerm}
             onChange={(e) => {
               setSearchParams((params) => {
-                params.set("s", e.target.value)
-                return params
-              })
-              setSearchTerm(e.target.value)
+                params.set("s", e.target.value);
+                return params;
+              });
+              setSearchTerm(e.target.value);
             }}
             className=" w-full pl-10"
             placeholder="search admin ..."
@@ -116,18 +116,18 @@ const Admin = () => {
                       </TableCell>
                       <TableCell className="text-center">{user.role}</TableCell>
                       <TableCell className="capitalize font-medium text-center">
-                        <Button className="w-[140px]">
-                          <Dialog>
-                            <DialogTrigger>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button>
                               {warehouses[user.id] || "Unassigned"}
-                            </DialogTrigger>
-                            {warehouses[user.id] ? (
-                              <UnassignAdminForm userId={user.id as number} />
-                            ) : (
-                              <AssignAdminForm userId={user.id as number} />
-                            )}
-                          </Dialog>
-                        </Button>
+                            </Button>
+                          </DialogTrigger>
+                          {warehouses[user.id] ? (
+                            <UnassignAdminForm userId={user.id as number} />
+                          ) : (
+                            <AssignAdminForm userId={user.id as number} />
+                          )}
+                        </Dialog>
                       </TableCell>
                       <TableCell className="text-center">
                         {getDate(user.createdAt.toLocaleString())}
@@ -158,7 +158,7 @@ const Admin = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Admin
+export default Admin;

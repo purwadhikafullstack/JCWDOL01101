@@ -1,17 +1,13 @@
-import React, { useContext } from "react"
-import AddressCard from "../components/AddressCard"
-import NewAddressDialog from "../components/NewAddressDialog"
-import UserContext from "@/context/UserContext"
-import { useAddressByUserId } from "@/hooks/useAddress"
-import AddressModalSkeleton from "@/components/skeleton/AddressModalSkeleton"
+import React, { useContext } from "react";
+import AddressCard from "../components/AddressCard";
+import NewAddressDialog from "../components/NewAddressDialog";
+import { useUserContext } from "@/context/UserContext";
+import { useAddressByUserId } from "@/hooks/useAddress";
+import AddressModalSkeleton from "@/components/skeleton/AddressModalSkeleton";
 
 const Address = () => {
-  const userContext = useContext(UserContext)
-  if (!userContext) {
-    throw new Error("useUser must be used within a UserProvider")
-  }
-  const { user } = userContext
-  const { data: addresses, isLoading } = useAddressByUserId(Number(user?.id))
+  const { user } = useUserContext();
+  const { data: addresses, isLoading } = useAddressByUserId(Number(user?.id));
 
   return (
     <>
@@ -47,7 +43,7 @@ const Address = () => {
         )}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Address
+export default Address;

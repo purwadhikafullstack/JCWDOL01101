@@ -40,19 +40,24 @@ export const useCourier = ({
       return res.data.data;
     },
     enabled: !!courier && !!origin && !!destination && !!weight,
+    refetchOnWindowFocus: false,
   });
 
   return query;
 };
 
-export const useSelectedItem = (cartId: number) => {
-  const cartProducts = useQuery<cartProducts[]>({
+export const useSelectedItem = (cartId: number | undefined) => {
+  const cartProducts = useQuery<{
+    cartProducts: cartProducts[];
+    weightTotal: number;
+  }>({
     queryKey: ["selected-cart", cartId],
     queryFn: async () => {
       const res = await service.get(`/checkout/cart/${cartId}/products`);
       return res.data.data;
     },
     enabled: !!cartId,
+    refetchOnWindowFocus: false,
   });
 
   return cartProducts;

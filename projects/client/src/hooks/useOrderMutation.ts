@@ -2,6 +2,7 @@ import service from "@/service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@clerk/clerk-react";
 
 export const useAcceptOrder = (orderId: number) => {
   const queryClient = useQueryClient();
@@ -49,4 +50,38 @@ export const useRejectOrder = (orderId: number) => {
   });
 
   return editMutation;
+};
+
+export const useCancelOrder = (orderId: number) => {
+  const { getToken } = useAuth();
+  const mutation = useMutation({
+    mutationFn: async () => {
+      return service.post(
+        `/orders/cancel/${orderId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${await getToken()}` },
+        }
+      );
+    },
+  });
+
+  return mutation;
+};
+
+export const useConfirmOrder = (orderId: number) => {
+  const { getToken } = useAuth();
+  const mutation = useMutation({
+    mutationFn: async () => {
+      return service.post(
+        `/orders/confirm/${orderId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${await getToken()}` },
+        }
+      );
+    },
+  });
+
+  return mutation;
 };

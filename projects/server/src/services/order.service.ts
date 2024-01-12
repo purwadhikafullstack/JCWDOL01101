@@ -1,5 +1,5 @@
 import { DB } from '@/database';
-import Container, { Service } from 'typedi';
+import { Service } from 'typedi';
 import { GetFilterOrder, Order } from '@/interfaces/order.interface';
 import { User } from '@/interfaces/user.interface';
 import { HttpException } from '@/exceptions/HttpException';
@@ -7,14 +7,11 @@ import { FindOptions, Op } from 'sequelize';
 import { OrderDetailsModel } from '@/models/orderDetails.model';
 import { WarehouseModel } from '@/models/warehouse.model';
 import { UserModel } from '@/models/user.model';
-import { OrderDetails, Warehouse } from '@/interfaces';
-import { findWarehousesAndDistributeStock } from '@/utils/closestWarehouse';
-import { WarehouseService } from './warehouse.service';
+import { ImageModel, ProductModel } from '@/models';
+import { PaymentDetailsModel } from '@/models/paymentDetails.model';
 
 @Service()
 export class OrderService {
-  warehouse = Container.get(WarehouseService);
-
   public async findOrder(userId: number): Promise<Order[]> {
     const findUser: User = await DB.User.findOne({ where: { id: userId, status: 'ACTIVE' } });
     if (!findUser) throw new HttpException(409, "User doesn't exist");
@@ -27,30 +24,76 @@ export class OrderService {
       },
       order: [['createdAt', 'DESC']],
     });
-
     return findOrder;
   }
 
-  public async allowOrder(externalId: string, productId: number): Promise<Order> {
+  public async findCurrentUserOrder({
+    externalId,
+    page,
+    status,
+    q,
+    limit,
+  }: {
+    externalId: string;
+    page: number;
+    status: string | string[];
+    q: string;
+    limit: number;
+  }): Promise<{ orders: Order[]; totalPages: number }> {
     const findUser: User = await DB.User.findOne({ where: { externalId, status: 'ACTIVE' } });
     if (!findUser) throw new HttpException(409, "User doesn't exist");
-    const findOrder: Order = await DB.Order.findOne({
+    limit = limit || 8;
+    const offset = (page - 1) * limit;
+    if (status === 'UNSUCCESSFUL') {
+      status = ['CANCELED', 'FAILED', 'REJECTED'];
+    }
+    const options: FindOptions<Order> = {
+      limit,
+      offset,
       where: {
         userId: findUser.id,
-        status: 'DELIVERED',
+        ...(status &&
+          status !== 'ALL' && {
+          status,
+        }),
       },
       include: [
         {
           model: OrderDetailsModel,
           as: 'orderDetails',
-          where: {
-            productId,
-          },
+          include: [
+            {
+              model: ProductModel,
+              as: 'product',
+              include: [
+                {
+                  model: ImageModel,
+                  as: 'productImage',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: PaymentDetailsModel,
+          as: 'paymentDetails',
+          attributes: ['virtualAccount', 'paymentDate', 'method'],
         },
       ],
       order: [['createdAt', 'DESC']],
-    });
-    return findOrder;
+    };
+
+    if (q && q.length > 0) {
+      options.where = {
+        ...options.where,
+        [Op.or]: [{ invoice: { [Op.like]: `%${q}%` } }],
+      };
+    }
+
+    const findOrder: Order[] = await DB.Order.findAll(options);
+    const count = await DB.Order.count({ where: options.where });
+    const totalPages = Math.ceil(count / limit);
+    return { orders: findOrder, totalPages };
   }
 
   public async getAllOrder({
@@ -112,29 +155,5 @@ export class OrderService {
     const totalPages = Math.ceil(totalCount / LIMIT);
 
     return { totalPages: totalPages, orders: allOrder };
-  }
-
-  public async acceptOrder(orderId: number) {
-    const findOrder: Order = await DB.Order.findByPk(orderId);
-    if (!findOrder) throw new HttpException(409, "Order doesn't exist");
-    if (findOrder.status !== 'WAITING') throw new HttpException(409, "Can't accept order");
-    const currentWarehouse: Warehouse = await this.warehouse.findWarehouseById(findOrder.warehouseId);
-    const orderDetails: OrderDetails[] = await DB.OrderDetails.findAll({ where: { orderId } });
-    if (!orderDetails || orderDetails.length === 0) throw new HttpException(409, "Order doesn't exist");
-
-    await findWarehousesAndDistributeStock(orderDetails, currentWarehouse);
-    await DB.Order.update({ status: 'PROCESS' }, { where: { id: orderId } });
-    const updatedOrder = await DB.Mutation.findByPk(orderId);
-    return updatedOrder;
-  }
-
-  public async rejectOrder(orderId: number) {
-    const findOrder: Order = await DB.Order.findByPk(orderId);
-    if (!findOrder) throw new HttpException(409, "Order doesn't exist");
-    if (findOrder.status !== 'WAITING') throw new HttpException(409, "Can't reject order");
-
-    await DB.Order.update({ status: 'REJECTED' }, { where: { id: orderId } });
-    const updatedOrder = await DB.Mutation.findByPk(orderId);
-    return updatedOrder;
   }
 }

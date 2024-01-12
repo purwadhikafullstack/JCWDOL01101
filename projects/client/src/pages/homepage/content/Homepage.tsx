@@ -43,7 +43,7 @@ const Homepage = () => {
           <section className="grid grid-cols-4 lg:grid-cols-6 gap-4">
             {highestSell && highestSell.length > 0 ? (
               <>
-                {highestSell.map((product, i) => (
+                {highestSell.map(({ product }, i) => (
                   <div
                     key={product.id}
                     className={cn(
@@ -52,6 +52,7 @@ const Homepage = () => {
                     )}
                   >
                     <TopProductCard
+                      index={i}
                       size={i !== 0 ? "sm" : ""}
                       product={product}
                     />

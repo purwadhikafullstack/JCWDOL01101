@@ -1,29 +1,29 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import z from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { Loader2, Plus } from "lucide-react"
-import { Button, buttonVariants } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Form } from "@/components/ui/form"
-import LabelField from "@/components/input/LabelField"
-import CityField from "@/components/input/CityField"
-import RecepientField from "@/components/input/RecepientField"
-import AddressField from "@/components/input/AddressField"
-import NotesField from "@/components/input/NotesField"
-import MainCheckboxField from "@/components/input/MainCheckboxField"
-import PhoneField from "@/components/input/PhoneField"
-import toast from "react-hot-toast"
-import { usePostAddress } from "@/hooks/useAddressMutation"
-import { addressSchema } from "@/pages/homepage/components/checkout/AddNewAddressDialog"
-import { useTranslation } from "react-i18next"
+} from "@/components/ui/dialog";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Loader2, Plus } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Form } from "@/components/ui/form";
+import LabelField from "@/components/input/LabelField";
+import CityField from "@/components/input/CityField";
+import RecepientField from "@/components/input/RecepientField";
+import AddressField from "@/components/input/AddressField";
+import NotesField from "@/components/input/NotesField";
+import MainCheckboxField from "@/components/input/MainCheckboxField";
+import PhoneField from "@/components/input/PhoneField";
+import toast from "react-hot-toast";
+import { usePostAddress } from "@/hooks/useAddressMutation";
+import { addressSchema } from "@/pages/homepage/components/checkout/AddNewAddressDialog";
+import { useTranslation } from "react-i18next";
 const emptyValues = {
   recepient: "",
   phone: "",
@@ -32,45 +32,45 @@ const emptyValues = {
   address: "",
   notes: "",
   isMain: false,
-}
+};
 export type Coordinates = {
-  latitude: number
-  langitude: number
-}
+  latitude: number;
+  langitude: number;
+};
 
 const NewAddressDialog = ({
   name,
   userId,
 }: {
-  userId: number
-  name: string
+  userId: number;
+  name: string;
 }) => {
-  const { t } = useTranslation()
-  const [open, setOpen] = useState(false)
-  const [tos, setTos] = useState(false)
-  const addressMutation = usePostAddress()
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const [tos, setTos] = useState(false);
+  const addressMutation = usePostAddress();
   const form = useForm<z.infer<typeof addressSchema>>({
     resolver: zodResolver(addressSchema),
     defaultValues: emptyValues,
-  })
+  });
 
   useEffect(() => {
     if (name) {
-      form.setValue("recepient", name)
+      form.setValue("recepient", name);
     }
-  }, [name, form])
+  }, [name, form]);
 
   const onSubmit = (values: z.infer<typeof addressSchema>) => {
-    addressMutation.mutate({ userId, ...values })
-  }
+    addressMutation.mutate({ userId, ...values });
+  };
 
   useEffect(() => {
     if (addressMutation.isSuccess) {
-      form.reset(emptyValues)
-      toast.success("Successfully create a new address")
-      setOpen(false)
+      form.reset(emptyValues);
+      toast.success("Successfully create a new address");
+      setOpen(false);
     }
-  }, [addressMutation.isSuccess])
+  }, [addressMutation.isSuccess]);
 
   return (
     <Dialog open={addressMutation.isPending || open} onOpenChange={setOpen}>
@@ -121,7 +121,7 @@ const NewAddressDialog = ({
         </Form>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default NewAddressDialog
+export default NewAddressDialog;

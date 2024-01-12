@@ -1,7 +1,7 @@
 import { ProductDto } from '@/dtos/product.dto';
 import { Service } from 'typedi';
 import { createProduct } from './createProduct';
-import { Inventory, Image, Product, Status, GetFilterProduct, Review } from '@/interfaces';
+import { Inventory, Image, Product, Status, GetFilterProduct, Review, Order, OrderDetails } from '@/interfaces';
 import { deleteProductImage } from './deleteProductImage';
 import { readProducts } from './readProducts';
 import { ProductQuery } from '@/controllers/product.controller';
@@ -52,7 +52,7 @@ export class ProductService {
     return readNewestProducts(externalId);
   }
 
-  public async getHighestSoldProducts(limit: number, externalId: string | undefined): Promise<Product[]> {
+  public async getHighestSoldProducts(limit: number, externalId: string | undefined): Promise<OrderDetails[]> {
     return readHighestSoldProducts(limit, externalId);
   }
 

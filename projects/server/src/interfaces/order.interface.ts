@@ -7,6 +7,8 @@ export interface Order {
   invoice: string;
   status: string;
   deletedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface GetFilterOrder {
