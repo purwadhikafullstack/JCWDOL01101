@@ -12,10 +12,6 @@ import {
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import RejectAction from "./RejectAction"
 import AcceptAction from "./AcceptAction"
-// import { z } from "zod"
-// export const mutationActionSchema = z.object({
-//   notes: z.string().optional(),
-// })
 
 const OrderAction = ({ orderId }: { orderId: number }) => {
   const [modal, setModal] = useState("")
