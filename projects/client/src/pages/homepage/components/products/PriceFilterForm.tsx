@@ -48,7 +48,7 @@ const PriceFilterForm = ({ param, placeholder }: PriceFilterFormProps) => {
           value={price.formatted}
           onChange={handlePriceOnChange}
           placeholder={placeholder}
-          className="w-full outline-none py-1 pl-2 rounded-r-lg bg-background"
+          className="w-full outline-none py-1 pl-2 rounded-l-lg bg-background"
         />
       </form>
     </div>

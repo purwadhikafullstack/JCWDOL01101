@@ -16,7 +16,7 @@ const SearchInput = ({ expandSearch, setExpandSearch }: SearchInputProps) => {
   const { t } = useTranslation();
   const [isClick, setIsClick] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [debounceSearch] = useDebounce(searchTerm.trim(), 200);
+  const [debounceSearch] = useDebounce(searchTerm.trim(), 300);
   const queryClient = useQueryClient();
   const { data: products, isLoading } = useSearchProducts(debounceSearch);
 
@@ -58,7 +58,7 @@ const SearchInput = ({ expandSearch, setExpandSearch }: SearchInputProps) => {
   return (
     <div
       ref={ref}
-      className="flex-1 items-center relative flex-shrink-0 border"
+      className="flex-1 items-center relative flex-shrink-0 border rounded-lg"
     >
       <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground peer-focus:text-primary" />
       <Input
@@ -70,14 +70,14 @@ const SearchInput = ({ expandSearch, setExpandSearch }: SearchInputProps) => {
           setExpandSearch(true);
         }}
         className={cn(
-          "peer pl-10 rounded-none bg-background h-8 lg:h-9",
+          "peer pl-10  bg-background h-8 lg:h-9 rounded-lg",
           expandSearch && "w-full"
         )}
         placeholder={t("navbar.searchPlaceholder")}
       />
       <div
         className={cn(
-          "absolute overflow-y-auto max-h-[200px] z-50 scale-y-0 w-full  goup-hover:scale-y-100 origin-top left-1/2 -translate-x-1/2 translate-y-2 lg:translate-y-4 transition-all duration-100  bg-background shadow-md p-2",
+          "absolute overflow-y-auto max-h-[200px] z-50 scale-y-0 w-full  goup-hover:scale-y-100 origin-top left-1/2 -translate-x-1/2 translate-y-2 lg:translate-y-4 transition-all duration-100  bg-background rounded-b-lg shadow-md p-2",
           searchTerm.trim().length > 0 && isClick && "scale-y-100"
         )}
       >

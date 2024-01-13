@@ -1,18 +1,19 @@
+import React, { useEffect, useRef, useState } from "react";
 import { ProductData } from "@/hooks/useProduct";
 import { cn, formatToIDR } from "@/lib/utils";
-import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ReviewStar from "./ReviewStar";
 import { Separator } from "@/components/ui/separator";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { useCartProduct } from "@/hooks/useCart";
+import { useCart, useCartProduct } from "@/hooks/useCart";
 import { useAddCart } from "@/hooks/useCartMutation";
 import { useReviewByProduct } from "@/hooks/useReview";
 import { useToggleWishlist } from "@/hooks/useWishlistMutation";
 import ProductSize from "./ProductSize";
 import QuantityButton from "./QuantityButton";
 import { useUserContext } from "@/context/UserContext";
+import useOutsideClick from "@/hooks/useClickOutside";
 
 type Props = {
   productData: ProductData;
@@ -26,12 +27,20 @@ const ProductDescription = ({ productData }: Props) => {
     totalStockBySize,
   } = productData;
   const { user } = useUserContext();
+  const { data: cart } = useCart(user?.id, !!user?.userCart);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState("");
-  const { data: cartProduct } = useCartProduct(product.id);
+  const isUserCartProducts =
+    (user?.userCart && user?.userCart.cartProducts.length > 0) || false;
+  const isProductInCart =
+    isUserCartProducts &&
+    user?.userCart.cartProducts.find(
+      (cartProduct) => cartProduct.productId === product.id
+    ) !== undefined;
+  const { data: cartProduct } = useCartProduct(product.id, isProductInCart);
   const { data: reviewData } = useReviewByProduct(product?.id);
   const cartMutation = useAddCart();
   const toggleWishlist = useToggleWishlist();
@@ -57,9 +66,14 @@ const ProductDescription = ({ productData }: Props) => {
         productId: product.id,
         externalId: user.externalId,
       });
-      setQuantity(1);
     }
   };
+
+  React.useEffect(() => {
+    if (cartMutation.isSuccess) {
+      setQuantity(1);
+    }
+  }, [cartMutation.isSuccess]);
 
   useEffect(() => {
     const totalQuantity = (currentProductQtyInCart || 0) + quantity;
@@ -71,24 +85,14 @@ const ProductDescription = ({ productData }: Props) => {
     ) {
       setError(`This product(s) maximum quantity is ${totalStock} item(s)`);
     }
-  }, [currentProductQtyInCart, quantity, totalStock]);
+  }, [currentProductQtyInCart, quantity, totalStock, cart]);
 
-  useEffect(() => {
-    function handleClickOuside(event: MouseEvent) {
-      if (
-        error &&
-        inputRef.current &&
-        !inputRef.current.contains(event.target as Node)
-      ) {
-        setError("");
-        setQuantity(1);
-      }
+  useOutsideClick(inputRef, () => {
+    setError("");
+    if (quantity <= 0) {
+      setQuantity(1);
     }
-    document.addEventListener("mousedown", handleClickOuside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOuside);
-    };
-  }, [inputRef, error]);
+  });
   return (
     <div className="sticky top-[100px]">
       <div className="w-full h-full">
@@ -144,7 +148,7 @@ const ProductDescription = ({ productData }: Props) => {
               (currentProductQtyInCart || 0) + quantity > totalStock
             }
             onClick={addToCart}
-            className="rounded-none w-full uppercase font-semibold py-6"
+            className="w-full uppercase font-semibold py-6"
           >
             {t("productDetailPage.options.addToCart")}
           </Button>
@@ -158,7 +162,7 @@ const ProductDescription = ({ productData }: Props) => {
                 toggleWishlist.mutate({ productId: product.id });
               }}
               variant="outline"
-              className="rounded-none border-black w-full uppercase font-semibold"
+              className="border-black w-full uppercase font-semibold"
             >
               {t("productDetailPage.options.addToWishlist")}
             </Button>
@@ -171,13 +175,13 @@ const ProductDescription = ({ productData }: Props) => {
                 toggleWishlist.mutate({ productId: product.id });
               }}
               variant="outline"
-              className="rounded-none border-black w-full uppercase font-semibold"
+              className="border-black w-full uppercase font-semibold"
             >
               {t("productDetailPage.options.removeFromWishlist")}
             </Button>
           )}
           <div className="mt-4">
-            <img src="/carousel/1.jpg" alt="advertise" />
+            <img src="/carousel/1.jpg" alt="advertise" className="rounded-lg" />
           </div>
         </div>
       </div>

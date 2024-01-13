@@ -24,7 +24,6 @@ const TosFormField = () => {
               checked={field.value}
               onCheckedChange={field.onChange}
               id="tos"
-              className="rounded-none"
             />
             <FormLabel htmlFor="tos" className="font-semibold">
               {t("reviewsPage.form.note.tos")}

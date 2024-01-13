@@ -110,21 +110,19 @@ const PaymentModal = ({
         {show && (
           <div className="top-0 m-0 left-0 z-50 w-full h-screen fixed bg-background/80">
             <div className="w-full flex justify-center items-center h-full">
-              <div className="w-[95%] lg:w-[500px] overflow-hidden  transition-all duration-200 relative">
+              <div className="w-[95%] lg:w-[500px] overflow-hidden transition-all duration-200 relative">
                 <PaymentModalExit
                   exit={exit}
                   setExit={setExit}
                   setShow={setShow}
                 />
-                <div
-                  className={` w-full max-h-[500px]  bg-background rounded-lg relative overflow-y-auto transition-all duration-300 `}
-                >
+                <div className="w-full max-h-[500px] border bg-background rounded-lg relative overflow-y-auto transition-all duration-300">
                   <div className="absolute top-0 left-0 p-4 flex gap-2 items-center">
                     <Button
                       disabled={paymentPending}
                       variant="ghost"
                       onClick={() => setExit(!exit)}
-                      className="cursor-pointer z-50 p-2"
+                      className="cursor-pointer  p-2"
                     >
                       <X />
                     </Button>

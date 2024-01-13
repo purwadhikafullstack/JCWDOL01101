@@ -39,7 +39,7 @@ const CheckoutItem = ({
           <div className="flex gap-2 items-start text-sm mt-2 w-full">
             <img
               src={`${baseURL}/images/${cp.product.primaryImage}`}
-              className="w-[80px] h-[80px] object-contain"
+              className="w-[80px] h-[80px] object-contain rounded-lg"
             />
             <div className="flex flex-col gap-2 w-full">
               <span>{cp.product.name}</span>

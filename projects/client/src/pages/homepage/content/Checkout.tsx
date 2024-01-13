@@ -7,7 +7,6 @@ import { useCart } from "@/hooks/useCart";
 import { formatToIDR } from "@/lib/utils";
 import { useBoundStore } from "@/store/client/useStore";
 import ActiveAddress from "../components/checkout/ActiveAddress";
-import BackToCartDialog from "../components/checkout/BackToCartDialog";
 import CheckoutItem from "../components/checkout/CheckoutItem";
 import PaymentModal from "../components/checkout/PaymentModal";
 import { useGetClosestWarehouse } from "@/hooks/useWarehouse";
@@ -23,11 +22,13 @@ export type Dialog = {
   add: boolean;
   edit: boolean;
 };
+const WEIGHT_LIMIT = 30000;
 
 const Checkout = () => {
   const { t } = useTranslation();
   const { user } = useUserContext();
   const { data: cart } = useCart(user?.id!, !!user?.userCart);
+  const { data: selectedCartProducts } = useSelectedItem(cart?.cart.id);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -36,12 +37,20 @@ const Checkout = () => {
     }
   }, [cart]);
 
+  useEffect(() => {
+    if (
+      selectedCartProducts &&
+      selectedCartProducts.weightTotal >= WEIGHT_LIMIT
+    ) {
+      return navigate("/cart");
+    }
+  }, [selectedCartProducts]);
+
   const { data: activeAddress } = useActiveAddress(!!user?.id);
   const { data: closestWarehouse } = useGetClosestWarehouse({
     lat: activeAddress?.lat,
     lng: activeAddress?.lng,
   });
-  const { data: selectedCartProducts } = useSelectedItem(cart?.cart.id);
   const weightTotal = selectedCartProducts
     ? selectedCartProducts.weightTotal
     : 0;
@@ -56,13 +65,8 @@ const Checkout = () => {
     }
   }, [selectedCartProducts]);
   const cartProductsLength = selectedCartProducts?.cartProducts?.length || 0;
-  const totalPrice =
-    selectedCartProducts && selectedCartProducts.cartProducts
-      ? selectedCartProducts.cartProducts.reduce(
-          (prev, curr) => prev + curr.product.price * curr.quantity,
-          0
-        )
-      : 0;
+  const totalPrice = selectedCartProducts?.totalPrice || 0;
+
   const shippingFee = useBoundStore((state) => state.totalShipping);
   const shippingTotal = Number(shippingFee) + Number(totalPrice);
 
@@ -73,11 +77,12 @@ const Checkout = () => {
       </Helmet>
       <div className="py-4  border-b fixed inset-0 bg-background h-max">
         <div className="w-full container">
-          <BackToCartDialog>
-            <span className="text-lg font-bold text-primary flex gap-2 items-center cursor-pointer">
-              当店 <p className="hidden lg:block">| Toten</p>
-            </span>
-          </BackToCartDialog>
+          <span
+            onClick={() => navigate(-1)}
+            className="text-lg font-bold text-primary flex gap-2 items-center cursor-pointer"
+          >
+            当店 <p className="hidden lg:block">| Toten</p>
+          </span>
         </div>
       </div>
       <div className="container my-16">
@@ -86,18 +91,16 @@ const Checkout = () => {
             <h3 className="font-bold text-xl pt-4 mb-8">
               {t("checkoutPage.header")}
             </h3>
-            {activeAddress && closestWarehouse && cart && (
-              <div className="flex flex-col lg:flex-row gap-2">
-                <ActiveAddress activeAddress={activeAddress} />
-                {closestWarehouse.warehouseAddress && (
-                  <SelectCourier
-                    weightTotal={weightTotal}
-                    address={activeAddress}
-                    origin={closestWarehouse.warehouseAddress.cityId}
-                  />
-                )}
-              </div>
-            )}
+            <div className="flex flex-col lg:flex-row gap-2">
+              <ActiveAddress activeAddress={activeAddress} />
+              {closestWarehouse && closestWarehouse.warehouseAddress && (
+                <SelectCourier
+                  weightTotal={weightTotal}
+                  address={activeAddress}
+                  origin={closestWarehouse.warehouseAddress.cityId}
+                />
+              )}
+            </div>
             <Separator className="my-2" />
             <>
               {selectedCartProducts &&
@@ -123,11 +126,15 @@ const Checkout = () => {
                       <span className="flex gap-2 items-center">
                         <Trans
                           i18nKey="checkoutPage.summary.totalPrice"
-                          values={{ total: cartProductsLength }}
+                          values={{
+                            total: selectedCartProducts?.totalQuantity || 0,
+                          }}
                         >
                           Total Price (
-                          {`${cartProductsLength} ${
-                            cartProductsLength > 1 ? "products" : "product"
+                          {`${selectedCartProducts?.totalQuantity || 0} ${
+                            selectedCartProducts?.totalQuantity || 0 > 1
+                              ? "products"
+                              : "product"
                           }`}
                           )
                         </Trans>
