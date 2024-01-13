@@ -1,6 +1,6 @@
 import service from "@/service";
 import { useAuth } from "@clerk/clerk-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Product } from "./useProduct";
 export interface Order {
   id: number;
@@ -15,7 +15,7 @@ export interface Order {
   warehouseOrder: { name: string };
   userOrder: { firstname: string; lastname: string };
   orderDetails: OrderDetails[];
-  paymentDetails:Payment;
+  paymentDetails: Payment;
 }
 
 export interface OrderDetails {
@@ -149,38 +149,4 @@ export const useProductIsOrder = (
   });
 
   return query;
-};
-
-export const useCancelOrder = (orderId: number) => {
-  const { getToken } = useAuth();
-  const mutation = useMutation({
-    mutationFn: async () => {
-      return service.post(
-        `/orders/cancel/${orderId}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${await getToken()}` },
-        }
-      );
-    },
-  });
-
-  return mutation;
-};
-
-export const useConfirmOrder = (orderId: number) => {
-  const { getToken } = useAuth();
-  const mutation = useMutation({
-    mutationFn: async () => {
-      return service.post(
-        `/orders/confirm/${orderId}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${await getToken()}` },
-        }
-      );
-    },
-  });
-
-  return mutation;
 };

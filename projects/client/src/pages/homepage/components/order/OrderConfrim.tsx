@@ -10,15 +10,15 @@ import { Button } from "@/components/ui/button"
 import { useDeleteAdmin } from "@/hooks/useUserMutation"
 import { Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
-import { useConfirmOrder } from "@/hooks/useOrder"
+import { useConfirmOrder } from "@/hooks/useOrderMutation"
 
 const ConfirmOrder = ({ orderId }: { orderId: Number }) => {
-  const confirmOrder = useConfirmOrder(orderId as number);
+  const confirmOrder = useConfirmOrder(orderId as number)
   const { toast } = useToast()
   const onConfirmlOrder = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    confirmOrder.mutate();
-  };
+    confirmOrder.mutate()
+  }
 
   useEffect(() => {
     if (confirmOrder.isSuccess) {
@@ -33,9 +33,7 @@ const ConfirmOrder = ({ orderId }: { orderId: Number }) => {
     <DialogContent>
       <DialogHeader>
         <DialogTitle>Finish This Order?</DialogTitle>
-        <DialogDescription>
-          You're about to finish this order
-        </DialogDescription>
+        <DialogDescription>You're about to finish this order</DialogDescription>
       </DialogHeader>
       <form onSubmit={onConfirmlOrder}>
         <span className="flex justify-center gap-4 w-full">

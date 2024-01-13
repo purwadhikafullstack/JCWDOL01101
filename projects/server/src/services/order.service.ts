@@ -54,8 +54,8 @@ export class OrderService {
         userId: findUser.id,
         ...(status &&
           status !== 'ALL' && {
-            status,
-          }),
+          status,
+        }),
       },
       include: [
         {
@@ -75,10 +75,10 @@ export class OrderService {
           ],
         },
         {
-          model:PaymentDetailsModel,
-          as:'paymentDetails',
-          attributes:["virtualAccount", "paymentDate","method"]
-        }
+          model: PaymentDetailsModel,
+          as: 'paymentDetails',
+          attributes: ['virtualAccount', 'paymentDate', 'method'],
+        },
       ],
       order: [['createdAt', 'DESC']],
     };
@@ -94,28 +94,6 @@ export class OrderService {
     const count = await DB.Order.count({ where: options.where });
     const totalPages = Math.ceil(count / limit);
     return { orders: findOrder, totalPages };
-  }
-
-  public async allowOrder(externalId: string, productId: number): Promise<Order> {
-    const findUser: User = await DB.User.findOne({ where: { externalId, status: 'ACTIVE' } });
-    if (!findUser) throw new HttpException(409, "User doesn't exist");
-    const findOrder: Order = await DB.Order.findOne({
-      where: {
-        userId: findUser.id,
-        status: 'DELIVERED',
-      },
-      include: [
-        {
-          model: OrderDetailsModel,
-          as: 'orderDetails',
-          where: {
-            productId,
-          },
-        },
-      ],
-      order: [['createdAt', 'DESC']],
-    });
-    return findOrder;
   }
 
   public async getAllOrder({
@@ -177,25 +155,5 @@ export class OrderService {
     const totalPages = Math.ceil(totalCount / LIMIT);
 
     return { totalPages: totalPages, orders: allOrder };
-  }
-
-  public async cancelOrder(orderId: number): Promise<Order> {
-    const order = await DB.Order.findByPk(orderId);
-    if (!order) throw new HttpException(404, 'Order not found');
-    
-    order.status = 'CANCELED';
-    await order.save();
-
-    return order;
-  }
-
-  public async confirmOrder(orderId: number): Promise<Order> {
-    const order = await DB.Order.findByPk(orderId);
-    if (!order) throw new HttpException(404, 'Order not found');
-
-    order.status = 'SUCCESS';
-    await order.save();
-
-    return order;
   }
 }

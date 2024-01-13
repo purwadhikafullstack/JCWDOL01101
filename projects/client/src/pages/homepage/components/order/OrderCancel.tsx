@@ -10,15 +10,15 @@ import { Button } from "@/components/ui/button"
 import { useDeleteAdmin } from "@/hooks/useUserMutation"
 import { Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
-import { useCancelOrder } from "@/hooks/useOrder"
+import { useCancelOrder } from "@/hooks/useOrderMutation"
 
 const CancelOrder = ({ orderId }: { orderId: Number }) => {
-  const cancelOrder = useCancelOrder(orderId as number);
+  const cancelOrder = useCancelOrder(orderId as number)
   const { toast } = useToast()
   const onCancelOrder = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    cancelOrder.mutate();
-  };
+    cancelOrder.mutate()
+  }
 
   useEffect(() => {
     if (cancelOrder.isSuccess) {
@@ -33,9 +33,7 @@ const CancelOrder = ({ orderId }: { orderId: Number }) => {
     <DialogContent>
       <DialogHeader>
         <DialogTitle>Cancel This Order</DialogTitle>
-        <DialogDescription>
-          You're about to cancel this order
-        </DialogDescription>
+        <DialogDescription>You're about to cancel this order</DialogDescription>
       </DialogHeader>
       <form onSubmit={onCancelOrder}>
         <span className="flex justify-center gap-4 w-full">

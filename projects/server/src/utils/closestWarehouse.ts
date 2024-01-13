@@ -1,6 +1,6 @@
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
-import { CartProduct } from '@/interfaces/cartProduct.interface';
+import { OrderDetails } from '@/interfaces';
 import { Warehouse } from '@/interfaces/warehouse.interface';
 import { InventoryModel } from '@/models/inventory.model';
 import { WarehouseAddressModel } from '@/models/warehouseAddress.model';
@@ -42,6 +42,28 @@ async function getAllWarehouse(): Promise<Warehouse[]> {
   return warehouses;
 }
 
+export async function verifyStock(orderDetails: OrderDetails[], currentWarehouse: Warehouse) {
+  for (const orderDetail of orderDetails) {
+    const currentInventory = await DB.Inventories.findOne({
+      where: { productId: orderDetail.productId, sizeId: orderDetail.sizeId, warehouseId: currentWarehouse.id },
+    });
+    if (orderDetail.quantity > currentInventory.stock) {
+      const QtyLeft = orderDetail.quantity - currentInventory.stock;
+      await findWarehousesAndDistributeStock(QtyLeft, orderDetail, currentWarehouse);
+    }
+  }
+  const updatedCurrentWarehouse: Warehouse = await DB.Warehouses.findOne({
+    where: { id: currentWarehouse.id },
+    include: [
+      {
+        model: InventoryModel,
+        as: 'inventories',
+      },
+    ],
+  });
+  return updatedCurrentWarehouse;
+}
+
 export async function findClosestWarehouse(targetLocation: Location): Promise<Warehouse | null> {
   let minDistance = Infinity;
   const warehouses = await getAllWarehouse();
@@ -69,65 +91,53 @@ async function getClosestWarehouses(warehouse: Warehouse): Promise<Warehouse[]> 
   return distances.map(d => d.warehouse);
 }
 
-export async function findWarehousesAndDistributeStock(cartProducts: CartProduct[], currentWarehouse: Warehouse) {
+async function findWarehousesAndDistributeStock(QtyLeft: number, orderDetail: OrderDetails, currentWarehouse: Warehouse) {
   const transaction = await DB.sequelize.transaction();
+  let remainingQuantity = QtyLeft;
+  const closestWarehouses = await getClosestWarehouses(currentWarehouse);
+  const currentInventory = await DB.Inventories.findOne({
+    where: { productId: orderDetail.productId, sizeId: orderDetail.sizeId, warehouseId: currentWarehouse.id },
+  });
   try {
-    for (const cartProduct of cartProducts) {
-      let remainingQuantity = cartProduct.quantity;
-      const closestWarehouses = await getClosestWarehouses(currentWarehouse);
-      const currentInventory = await DB.Inventories.findOne({
-        where: { productId: cartProduct.productId, warehouseId: currentWarehouse.id },
+    for (const warehouse of closestWarehouses) {
+      if (warehouse.id === currentWarehouse.id) continue;
+      const inventory = await DB.Inventories.findOne({
+        where: { productId: orderDetail.productId, sizeId: orderDetail.sizeId, warehouseId: warehouse.id },
       });
+      if (!inventory || inventory.stock === 0) continue;
+      const transferQuantity = Math.min(inventory.stock, remainingQuantity);
+      if (transferQuantity > 0) {
+        inventory.stock -= transferQuantity;
+        currentInventory.stock += transferQuantity;
+        remainingQuantity -= transferQuantity;
 
-      for (const warehouse of closestWarehouses) {
-        if (warehouse.id === currentWarehouse.id) continue;
-        const inventory = await DB.Inventories.findOne({
-          where: { productId: cartProduct.productId, warehouseId: warehouse.id },
-        });
-        if (!inventory || inventory.stock === 0) continue;
-        const transferQuantity = Math.min(inventory.stock, remainingQuantity);
-        if (transferQuantity > 0) {
-          inventory.stock -= transferQuantity;
-          currentInventory.stock += transferQuantity;
-          remainingQuantity -= transferQuantity;
-
-          await Promise.all([
-            inventory.save(),
-            currentInventory.save(),
-            DB.Jurnal.create({
-              inventoryId: inventory.id,
-              oldQty: inventory.stock + transferQuantity,
-              qtyChange: transferQuantity,
-              newQty: inventory.stock,
-              type: '0',
-            }),
-            DB.Jurnal.create({
-              inventoryId: currentInventory.id,
-              oldQty: currentInventory.stock - transferQuantity,
-              qtyChange: transferQuantity,
-              newQty: currentInventory.stock,
-              type: '1',
-            }),
-          ]);
-        }
-        if (remainingQuantity === 0) break;
+        await Promise.all([
+          inventory.save(),
+          currentInventory.save(),
+          DB.Jurnal.create({
+            inventoryId: inventory.id,
+            oldQty: inventory.stock + transferQuantity,
+            qtyChange: transferQuantity,
+            newQty: inventory.stock,
+            type: '0',
+            notes: `Stock out to warehouse ${currentWarehouse.name}`,
+          }),
+          DB.Jurnal.create({
+            inventoryId: currentInventory.id,
+            oldQty: currentInventory.stock - transferQuantity,
+            qtyChange: transferQuantity,
+            newQty: currentInventory.stock,
+            type: '1',
+            notes: `Stock in from warehouse ${warehouse.name}`,
+          }),
+        ]);
       }
-      if (remainingQuantity > 0) {
-        await DB.CartProduct.update({ status: 'DELETED' }, { where: { id: cartProduct.id } });
-        throw new HttpException(409, `Not enough stock for product ${cartProduct.productId}`);
-      }
+      if (remainingQuantity === 0) break;
+    }
+    if (remainingQuantity > 0) {
+      throw new HttpException(409, `Not enough stock for product ${orderDetail.productId}`);
     }
     await transaction.commit();
-    const updatedCurrentWarehouse: Warehouse = await DB.Warehouses.findOne({
-      where: { id: currentWarehouse.id },
-      include: [
-        {
-          model: InventoryModel,
-          as: 'inventories',
-        },
-      ],
-    });
-    return updatedCurrentWarehouse;
   } catch (error) {
     await transaction.rollback();
     throw error;

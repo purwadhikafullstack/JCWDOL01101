@@ -10,6 +10,7 @@ import {
 import { getDate, formatToIDR } from "@/lib/utils"
 import ChangeOrderButton from "./ChangeOrderButton"
 import { Order } from "@/hooks/useOrder"
+import OrderAction from "./order/OrderAction"
 
 function OrderTable({
   data,
@@ -70,7 +71,9 @@ function OrderTable({
                 <TableCell className="text-center">
                   {getDate(order.createdAt!.toLocaleString())}
                 </TableCell>
-                <TableCell className="text-center">...</TableCell>
+                <TableCell className="text-center">
+                  <OrderAction orderId={order.id} />
+                </TableCell>
               </TableRow>
             ))}
           </>
