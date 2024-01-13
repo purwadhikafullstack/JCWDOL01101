@@ -20,8 +20,8 @@ const nav = [
     icon: <Heart />,
   },
   {
-    link: "/transactions",
-    label: "Transactions",
+    link: "/order",
+    label: "Order",
     icon: <ScrollText />,
   },
 ];

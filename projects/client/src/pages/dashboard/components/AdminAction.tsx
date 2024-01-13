@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { buttonVariants } from "@/components/ui/button"
 import { TableCell } from "@/components/ui/table"
@@ -26,10 +26,11 @@ export const adminEditSchema = z.object({
 })
 
 const AdminAction = ({ user }: { user: User }) => {
+  const [open, setOpen] = useState(false)
   return (
     <>
       <TableCell className="text-center">
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
           <DropdownMenu>
             <DropdownMenuTrigger
               className={buttonVariants({ variant: "ghost" })}
@@ -50,7 +51,11 @@ const AdminAction = ({ user }: { user: User }) => {
               </DialogTrigger>
             </DropdownMenuContent>
           </DropdownMenu>
-          <DeleteAdmin userId={user.id as number} />
+          <DeleteAdmin
+            open={open}
+            setOpen={setOpen}
+            userId={user.id as number}
+          />
         </Dialog>
       </TableCell>
     </>

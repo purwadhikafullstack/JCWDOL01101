@@ -10,62 +10,48 @@ import { Button } from "@/components/ui/button"
 import { useDeleteAdmin } from "@/hooks/useUserMutation"
 import { Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
+import { useCancelOrder } from "@/hooks/useOrderMutation"
 
-const DeleteAdmin = ({
-  open,
-  setOpen,
-  userId,
-}: {
-  open: boolean
-  setOpen: (value: boolean) => void
-  userId: Number
-}) => {
-  const deleteProduct = useDeleteAdmin(userId as number)
+const CancelOrder = ({ orderId }: { orderId: Number }) => {
+  const cancelOrder = useCancelOrder(orderId as number)
   const { toast } = useToast()
-  const onDeleteAdmin = (e: FormEvent<HTMLFormElement>) => {
+  const onCancelOrder = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    deleteProduct.mutate()
-    setOpen(false)
+    cancelOrder.mutate()
   }
 
   useEffect(() => {
-    if (deleteProduct.isSuccess) {
+    if (cancelOrder.isSuccess) {
       toast({
-        title: "Admin Deleted",
-        description: "Successfully delete admin warehouse",
+        title: "order cancelled",
+        description: "Successfully cancel order",
         duration: 3000,
       })
     }
-  }, [deleteProduct.isSuccess, toast])
+  }, [cancelOrder.isSuccess, toast])
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Delete This Admin</DialogTitle>
-        <DialogDescription>
-          You're about to delete this admin warehouse
-        </DialogDescription>
+        <DialogTitle>Cancel This Order</DialogTitle>
+        <DialogDescription>You're about to cancel this order</DialogDescription>
       </DialogHeader>
-      <form onSubmit={onDeleteAdmin}>
+      <form onSubmit={onCancelOrder}>
         <span className="flex justify-center gap-4 w-full">
           <Button
             type="submit"
             variant="destructive"
-            disabled={deleteProduct.isPending}
+            disabled={cancelOrder.isPending}
             className="cursor-pointer "
           >
             <Loader2
               className={
-                deleteProduct.isPending ? "animate-spin w-4 h-4 mr-2" : "hidden"
+                cancelOrder.isPending ? "animate-spin w-4 h-4 mr-2" : "hidden"
               }
             />
-            Yes, delete admin
+            Yes, cancel my order
           </Button>
           <DialogClose asChild>
-            <Button
-              type="button"
-              variant="secondary"
-              disabled={deleteProduct.isPending}
-            >
+            <Button type="button" variant="secondary">
               Cancel
             </Button>
           </DialogClose>
@@ -75,4 +61,4 @@ const DeleteAdmin = ({
   )
 }
 
-export default DeleteAdmin
+export default CancelOrder

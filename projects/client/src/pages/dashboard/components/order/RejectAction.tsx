@@ -1,4 +1,4 @@
-import React, { useEffect, FormEvent } from "react"
+import React, { FormEvent, useEffect, useState } from "react"
 import {
   DialogContent,
   DialogDescription,
@@ -7,64 +7,63 @@ import {
   DialogClose,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { useDeleteAdmin } from "@/hooks/useUserMutation"
 import { Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
+import { useRejectOrder } from "@/hooks/useOrderMutation"
 
-const DeleteAdmin = ({
-  open,
-  setOpen,
-  userId,
+const RejectAction = ({
+  orderId,
+  setModal,
 }: {
-  open: boolean
-  setOpen: (value: boolean) => void
-  userId: Number
+  orderId: number
+  setModal: (value: string) => void
 }) => {
-  const deleteProduct = useDeleteAdmin(userId as number)
   const { toast } = useToast()
-  const onDeleteAdmin = (e: FormEvent<HTMLFormElement>) => {
+
+  const rejectOrder = useRejectOrder(orderId)
+  const handleRejectOrder = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    deleteProduct.mutate()
-    setOpen(false)
+    rejectOrder.mutate()
   }
 
   useEffect(() => {
-    if (deleteProduct.isSuccess) {
+    if (rejectOrder.isSuccess) {
       toast({
-        title: "Admin Deleted",
-        description: "Successfully delete admin warehouse",
+        title: "Order Rejected",
+        description: "Successfully reject customer order",
         duration: 3000,
       })
+      setModal("")
     }
-  }, [deleteProduct.isSuccess, toast])
+  }, [rejectOrder.isSuccess, toast])
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Delete This Admin</DialogTitle>
+        <DialogTitle>Reject Order</DialogTitle>
         <DialogDescription>
-          You're about to delete this admin warehouse
+          You're about to reject customer order
         </DialogDescription>
       </DialogHeader>
-      <form onSubmit={onDeleteAdmin}>
-        <span className="flex justify-center gap-4 w-full">
+      <form onSubmit={handleRejectOrder}>
+        <span className="mt-4 flex justify-center gap-4 w-full">
           <Button
             type="submit"
             variant="destructive"
-            disabled={deleteProduct.isPending}
+            disabled={rejectOrder.isPending}
             className="cursor-pointer "
           >
             <Loader2
               className={
-                deleteProduct.isPending ? "animate-spin w-4 h-4 mr-2" : "hidden"
+                rejectOrder.isPending ? "animate-spin w-4 h-4 mr-2" : "hidden"
               }
             />
-            Yes, delete admin
+            Yes, reject order
           </Button>
           <DialogClose asChild>
             <Button
               type="button"
               variant="secondary"
-              disabled={deleteProduct.isPending}
+              disabled={rejectOrder.isPending}
             >
               Cancel
             </Button>
@@ -75,4 +74,4 @@ const DeleteAdmin = ({
   )
 }
 
-export default DeleteAdmin
+export default RejectAction

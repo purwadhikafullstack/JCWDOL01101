@@ -176,6 +176,16 @@ const Login = () => {
                   </FormItem>
                 )}
               />
+              <span className="flex w-full justify-end items-end mt-2">
+                <Link
+                  to="/resetPassword"
+                  className="ml-2  text-primary hover:underline"
+                >
+                  {" "}
+                  Forgot Password?{" "}
+                </Link>
+              </span>
+
               <Button className="w-full" type="submit">
                 Login
               </Button>
