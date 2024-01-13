@@ -41,7 +41,7 @@ const ShoppingSummary = ({ cartId, someTrue }: Props) => {
         </DialogContent>
       </Dialog>
       <div className="sticky top-[100px] ">
-        <div className="w-full h-full px-4 py-6 border space-y-2">
+        <div className="w-full h-full px-4 py-6 border space-y-2 rounded-lg">
           <p className="font-bold">{t("cartPage.summary.title")}</p>
           {selectedCart && (
             <>
@@ -71,7 +71,7 @@ const ShoppingSummary = ({ cartId, someTrue }: Props) => {
                 }
               }
             }}
-            className="w-full rounded-none"
+            className="w-full"
           >
             {t("cartPage.summary.buyBtn")}({selectedCart?.totalQuantity || 0})
           </Button>

@@ -38,6 +38,7 @@ export const useChageQty = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["selected-cart"] });
     },
   });
   return quantityMutation;
