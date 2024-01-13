@@ -23,11 +23,13 @@ export type Dialog = {
   add: boolean;
   edit: boolean;
 };
+const WEIGHT_LIMIT = 30000;
 
 const Checkout = () => {
   const { t } = useTranslation();
   const { user } = useUserContext();
   const { data: cart } = useCart(user?.id!, !!user?.userCart);
+  const { data: selectedCartProducts } = useSelectedItem(cart?.cart.id);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -36,12 +38,20 @@ const Checkout = () => {
     }
   }, [cart]);
 
+  useEffect(() => {
+    if (
+      selectedCartProducts &&
+      selectedCartProducts.weightTotal >= WEIGHT_LIMIT
+    ) {
+      return navigate("/cart");
+    }
+  }, [selectedCartProducts]);
+
   const { data: activeAddress } = useActiveAddress(!!user?.id);
   const { data: closestWarehouse } = useGetClosestWarehouse({
     lat: activeAddress?.lat,
     lng: activeAddress?.lng,
   });
-  const { data: selectedCartProducts } = useSelectedItem(cart?.cart.id);
   const weightTotal = selectedCartProducts
     ? selectedCartProducts.weightTotal
     : 0;
@@ -56,13 +66,8 @@ const Checkout = () => {
     }
   }, [selectedCartProducts]);
   const cartProductsLength = selectedCartProducts?.cartProducts?.length || 0;
-  const totalPrice =
-    selectedCartProducts && selectedCartProducts.cartProducts
-      ? selectedCartProducts.cartProducts.reduce(
-          (prev, curr) => prev + curr.product.price * curr.quantity,
-          0
-        )
-      : 0;
+  const totalPrice = selectedCartProducts?.totalPrice || 0;
+
   const shippingFee = useBoundStore((state) => state.totalShipping);
   const shippingTotal = Number(shippingFee) + Number(totalPrice);
 
@@ -86,18 +91,16 @@ const Checkout = () => {
             <h3 className="font-bold text-xl pt-4 mb-8">
               {t("checkoutPage.header")}
             </h3>
-            {activeAddress && closestWarehouse && cart && (
-              <div className="flex flex-col lg:flex-row gap-2">
-                <ActiveAddress activeAddress={activeAddress} />
-                {closestWarehouse.warehouseAddress && (
-                  <SelectCourier
-                    weightTotal={weightTotal}
-                    address={activeAddress}
-                    origin={closestWarehouse.warehouseAddress.cityId}
-                  />
-                )}
-              </div>
-            )}
+            <div className="flex flex-col lg:flex-row gap-2">
+              <ActiveAddress activeAddress={activeAddress} />
+              {closestWarehouse && closestWarehouse.warehouseAddress && (
+                <SelectCourier
+                  weightTotal={weightTotal}
+                  address={activeAddress}
+                  origin={closestWarehouse.warehouseAddress.cityId}
+                />
+              )}
+            </div>
             <Separator className="my-2" />
             <>
               {selectedCartProducts &&
@@ -123,11 +126,15 @@ const Checkout = () => {
                       <span className="flex gap-2 items-center">
                         <Trans
                           i18nKey="checkoutPage.summary.totalPrice"
-                          values={{ total: cartProductsLength }}
+                          values={{
+                            total: selectedCartProducts?.totalQuantity || 0,
+                          }}
                         >
                           Total Price (
-                          {`${cartProductsLength} ${
-                            cartProductsLength > 1 ? "products" : "product"
+                          {`${selectedCartProducts?.totalQuantity || 0} ${
+                            selectedCartProducts?.totalQuantity || 0 > 1
+                              ? "products"
+                              : "product"
                           }`}
                           )
                         </Trans>

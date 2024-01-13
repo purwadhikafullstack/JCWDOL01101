@@ -7,7 +7,7 @@ import NavCart from "./NavCart";
 import { useUser } from "@clerk/clerk-react";
 import { Button, buttonVariants } from "./ui/button";
 import NavDropdown from "./NavDropdown";
-import { ChevronDown, MapPin, Menu, User2 } from "lucide-react";
+import { ChevronDown, MapPin, Menu, User2, Weight } from "lucide-react";
 import { useActiveAddress } from "@/hooks/useAddress";
 import SelectAddressDialog from "./SelectAddressDialog";
 import NavWishlist from "./NavWishlist";
@@ -130,10 +130,7 @@ const Navbar = () => {
                         <span className="flex items-center text-foreground">
                           <b
                             className={cn(
-                              "text-ellipsis overflow-hidden whitespace-nowrap md:w-[150px]",
-                              activeAddress &&
-                                activeAddress.recepient.length > 8 &&
-                                "w-max"
+                              "line-clamp-1 max-w-[100px] lg:max-w-[130px]"
                             )}
                           >
                             {activeAddress?.label}, {activeAddress?.recepient}

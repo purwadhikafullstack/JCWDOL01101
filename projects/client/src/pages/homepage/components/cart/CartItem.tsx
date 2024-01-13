@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCartProductOnSize } from "@/hooks/useCart";
 import { formatToIDR } from "@/lib/utils";
@@ -31,20 +31,20 @@ const CartItem = ({ hasCart, cartProduct }: CartItemProps) => {
   const deleteMutation = useDeleteCartProduct();
   const cancelDeleteMutation = useCancelCartProductDeletion();
   const toggleSelectedCart = useToggleSelectedProduct(id, product.id!);
-  const [quantityChange, setQuantityChange] = useState(0);
-  const quantityChangeRef = useRef(quantityChange);
+  const [quantityChange, setQuantityChange] = React.useState(0);
+  const quantityChangeRef = React.useRef(quantityChange);
   const qtyMutation = useChageQty();
 
-  useEffect(() => {
+  React.useEffect(() => {
     quantityChangeRef.current = quantityChange;
   }, [quantityChange]);
 
-  const debouncedQtyMutation = useCallback(
+  const debouncedQtyMutation = React.useCallback(
     debounce(() => {
-      if (product.id && quantityChangeRef.current !== 0) {
+      if (cp && product.id && quantityChangeRef.current !== 0) {
         const newQuantity = Math.max(
           1,
-          Math.min(stock, quantity + quantityChangeRef.current)
+          Math.min(cp.stock, quantity + quantityChangeRef.current)
         );
         qtyMutation.mutate({
           cartId,
@@ -55,7 +55,7 @@ const CartItem = ({ hasCart, cartProduct }: CartItemProps) => {
         setQuantityChange(0);
       }
     }, 300),
-    [qtyMutation.mutate, cartId, product.id, quantity]
+    [qtyMutation.mutate, cartId, product.id, quantity, cp]
   );
 
   const changeQuantity = (change: number) => {
@@ -69,7 +69,7 @@ const CartItem = ({ hasCart, cartProduct }: CartItemProps) => {
     deleteMutation.mutate(id);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (deleteMutation.isSuccess) {
       toast(
         (t) => (

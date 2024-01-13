@@ -50,6 +50,8 @@ export const useSelectedItem = (cartId: number | undefined) => {
   const cartProducts = useQuery<{
     cartProducts: cartProducts[];
     weightTotal: number;
+    totalQuantity: number;
+    totalPrice: number;
   }>({
     queryKey: ["selected-cart", cartId],
     queryFn: async () => {
