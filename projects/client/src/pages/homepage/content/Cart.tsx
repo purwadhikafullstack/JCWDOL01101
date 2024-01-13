@@ -75,11 +75,7 @@ const Cart = () => {
                   }}
                   className="flex items-center gap-4 py-2 my-2 text-sm cursor-pointer px-0 lg:px-0 hover:bg-transparent"
                 >
-                  <Checkbox
-                    id="select"
-                    checked={selected.allTrue}
-                    className="rounded-none"
-                  />
+                  <Checkbox id="select" checked={selected.allTrue} />
                   <label
                     htmlFor="select"
                     className="text-muted-foreground  uppercase"

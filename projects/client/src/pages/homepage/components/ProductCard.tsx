@@ -79,7 +79,7 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
               effect="opacity"
               width="100%"
               height="100%"
-              className="object-cover transition-all duration-100"
+              className="object-cover transition-all duration-100 rounded-lg"
               src={`${baseURL}/images/${product.primaryImage}`}
               alt={product.name}
             />

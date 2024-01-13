@@ -27,7 +27,7 @@ const ReviewSuccessModal = ({
   const navigate = useNavigate();
   return (
     <Dialog open={modal}>
-      <DialogContent className="lg:rounded-none">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>{t("reviewsPage.successModal.title")}</DialogTitle>
           <DialogDescription>
@@ -39,14 +39,14 @@ const ReviewSuccessModal = ({
             onClick={() => navigate(`/product/${slug}`)}
             type="button"
             variant="outline"
-            className="w-full border-black uppercase rounded-none"
+            className="w-full border-black uppercase"
           >
             <ArrowLeft className="w-4 h-4 mr-2" /> {t("reviewsPage.form.back")}
           </Button>
           <Button
             onClick={() => setModal(false)}
             type="button"
-            className="bg-black hover:bg-black/80 w-full border-black uppercase rounded-none  mb-2 lg:mb-0"
+            className="bg-black hover:bg-black/80 w-full border-black uppercase mb-2 lg:mb-0"
           >
             {t("reviewsPage.successModal.post")}
           </Button>

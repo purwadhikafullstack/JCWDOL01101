@@ -7,7 +7,6 @@ import { useCart } from "@/hooks/useCart";
 import { formatToIDR } from "@/lib/utils";
 import { useBoundStore } from "@/store/client/useStore";
 import ActiveAddress from "../components/checkout/ActiveAddress";
-import BackToCartDialog from "../components/checkout/BackToCartDialog";
 import CheckoutItem from "../components/checkout/CheckoutItem";
 import PaymentModal from "../components/checkout/PaymentModal";
 import { useGetClosestWarehouse } from "@/hooks/useWarehouse";
@@ -78,11 +77,12 @@ const Checkout = () => {
       </Helmet>
       <div className="py-4  border-b fixed inset-0 bg-background h-max">
         <div className="w-full container">
-          <BackToCartDialog>
-            <span className="text-lg font-bold text-primary flex gap-2 items-center cursor-pointer">
-              当店 <p className="hidden lg:block">| Toten</p>
-            </span>
-          </BackToCartDialog>
+          <span
+            onClick={() => navigate(-1)}
+            className="text-lg font-bold text-primary flex gap-2 items-center cursor-pointer"
+          >
+            当店 <p className="hidden lg:block">| Toten</p>
+          </span>
         </div>
       </div>
       <div className="container my-16">

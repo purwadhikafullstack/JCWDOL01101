@@ -70,7 +70,7 @@ const WishlistItem = ({ product }: WishlistItemProps) => {
             </span>
             <LazyLoadImage
               src={`${baseURL}/images/${product.primaryImage}`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover rounded-lg"
             />
           </div>
           <div className="space-y-1">
@@ -90,9 +90,9 @@ const WishlistItem = ({ product }: WishlistItemProps) => {
           type="button"
           variant="outline"
           size="icon"
-          className="border-black dark:border-border hidden md:block w-max rounded-none h-6 px-0 self-end lg:self-start mb-2 lg:mb-0 order-1 lg:order-2"
+          className="border-black dark:border-border hidden md:block w-max px-2 h-6 self-end lg:self-start mb-2 lg:mb-0 order-1 lg:order-2"
         >
-          <X />
+          <X className="w-4 h-4" />
         </Button>
       </div>
       <Separator className="my-6" />

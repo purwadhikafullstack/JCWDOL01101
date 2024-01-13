@@ -26,7 +26,6 @@ const NicknameFormField = () => {
             <div className="col-span-3">
               <Input
                 {...field}
-                className="rounded-none"
                 placeholder={t("reviewsPage.form.nicknamePlaceholder")}
               />
               <FormMessage />

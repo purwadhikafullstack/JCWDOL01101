@@ -1,5 +1,5 @@
-import { Separator } from "@/components/ui/separator";
 import React from "react";
+import { Separator } from "@/components/ui/separator";
 import PriceFilterForm from "./PriceFilterForm";
 import SizeFilterForm from "./SizeFilterForm";
 import { useTranslation } from "react-i18next";

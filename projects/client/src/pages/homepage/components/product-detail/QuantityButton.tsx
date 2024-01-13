@@ -32,21 +32,24 @@ const QuantityButton = ({
           <Button
             disabled={quantity <= 1}
             onClick={() => setQuantity(quantity - 1)}
-            className="bg-black dark:border hover:bg-black/80 rounded-none"
+            className="bg-black dark:border hover:bg-black/80 rounded-lg"
           >
             <Minus />
           </Button>
           <Input
-            disabled={totalStock <= 0}
             ref={inputRef}
             value={quantity}
+            disabled={
+              (currentProductQtyInCart || 0) + quantity >= totalStock ||
+              totalStock <= 0
+            }
             onChange={(e) => {
               if (quantity >= 0) {
                 const numericValue = e.target.value.trim().replace(/\D/g, "");
                 setQuantity(Number(numericValue));
               }
             }}
-            className="rounded-none text-lg focus-visible:ring-black outline-none text-center"
+            className="text-lg focus-visible:ring-black outline-none text-center"
           />
           <Button
             disabled={
@@ -58,7 +61,7 @@ const QuantityButton = ({
                 setQuantity(quantity + 1);
               }
             }}
-            className="bg-black dark:border hover:bg-black/80 rounded-none"
+            className="bg-black dark:border hover:bg-black/80 rounded-lg"
           >
             <Plus />
           </Button>

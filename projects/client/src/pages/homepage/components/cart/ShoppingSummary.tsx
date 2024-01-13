@@ -73,7 +73,7 @@ const ShoppingSummary = ({ cartId, someTrue }: Props) => {
             }}
             className="w-full"
           >
-            {t("cartPage.summary.buyBtn")}({selectedCart?.totalQuantity || 0})
+            {t("cartPage.summary.buyBtn")} ({selectedCart?.totalQuantity || 0})
           </Button>
           {selectedCart && selectedCart.weightTotal > WEIGHT_LIMIT && (
             <p className="text-primary text-sm">

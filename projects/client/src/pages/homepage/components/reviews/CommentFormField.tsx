@@ -25,7 +25,7 @@ const CommentFormField = () => {
               <b className="text-primary">*</b>
             </FormLabel>
             <div className="col-span-3">
-              <Textarea {...field} className="rounded-none" />
+              <Textarea {...field} />
               <FormDescription>
                 {t("reviewsPage.form.commentDesc")}
               </FormDescription>

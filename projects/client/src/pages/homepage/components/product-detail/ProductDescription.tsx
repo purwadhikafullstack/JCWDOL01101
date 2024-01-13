@@ -148,7 +148,7 @@ const ProductDescription = ({ productData }: Props) => {
               (currentProductQtyInCart || 0) + quantity > totalStock
             }
             onClick={addToCart}
-            className="rounded-none w-full uppercase font-semibold py-6"
+            className="w-full uppercase font-semibold py-6"
           >
             {t("productDetailPage.options.addToCart")}
           </Button>
@@ -162,7 +162,7 @@ const ProductDescription = ({ productData }: Props) => {
                 toggleWishlist.mutate({ productId: product.id });
               }}
               variant="outline"
-              className="rounded-none border-black w-full uppercase font-semibold"
+              className="border-black w-full uppercase font-semibold"
             >
               {t("productDetailPage.options.addToWishlist")}
             </Button>
@@ -175,13 +175,13 @@ const ProductDescription = ({ productData }: Props) => {
                 toggleWishlist.mutate({ productId: product.id });
               }}
               variant="outline"
-              className="rounded-none border-black w-full uppercase font-semibold"
+              className="border-black w-full uppercase font-semibold"
             >
               {t("productDetailPage.options.removeFromWishlist")}
             </Button>
           )}
           <div className="mt-4">
-            <img src="/carousel/1.jpg" alt="advertise" />
+            <img src="/carousel/1.jpg" alt="advertise" className="rounded-lg" />
           </div>
         </div>
       </div>

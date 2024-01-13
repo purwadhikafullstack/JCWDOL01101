@@ -74,13 +74,13 @@ const PaymentInstructionsModal = ({ isOpen, paymentLink }: Props) => {
                 <DialogTitle className="text-lg py-2 font-bold">
                   Toten Checkout
                 </DialogTitle>
-                <div className="w-full bg-orange-200 text-orange-500  py-4 px-4">
+                <div className="w-full bg-orange-200 text-orange-500  py-4 px-4 rounded-lg">
                   Complete Payment in{" "}
                   {paymentData.virtual_account_info.expired_in}
                 </div>
               </DialogHeader>
               {paymentData && (
-                <div className="flex flex-col space-y-4 border shadow-sm p-4">
+                <div className="flex flex-col space-y-4 border shadow-sm p-4 rounded-lg">
                   <div>
                     <p className="text-muted-foreground text-sm">
                       Total Payment
