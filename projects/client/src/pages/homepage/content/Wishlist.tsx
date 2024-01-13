@@ -36,7 +36,7 @@ const Wishlist = () => {
             {hasNextPage && (
               <Button
                 onClick={() => fetchNextPage()}
-                // disabled={!hasNextPage || isFetchingNextPage}
+                disabled={!hasNextPage || isFetchingNextPage}
                 variant="outline"
                 className="border-black rounded-none w-max mx-auto md:px-20"
               >
