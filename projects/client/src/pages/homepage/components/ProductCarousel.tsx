@@ -51,7 +51,7 @@ const ProductCarousel = ({ images }: { images: Image[] }) => {
                 <img
                   src={`${baseURL}/images/${image}`}
                   alt={image}
-                  className="object-contain w-full h-full"
+                  className="object-contain w-full h-full rounded-lg"
                 />
               </CarouselItem>
             ))}

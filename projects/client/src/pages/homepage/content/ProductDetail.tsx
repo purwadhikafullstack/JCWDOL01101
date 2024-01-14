@@ -80,7 +80,7 @@ const ProductDetail = () => {
                   <Link to={`/product/${pd.product.slug}/reviews/new`}>
                     <Button
                       variant="outline"
-                      className="border-black uppercase mt-6 px-10 rounded-none"
+                      className="border-black uppercase mt-6 px-10"
                     >
                       {t("reviewsPage.form.writeReview")}
                     </Button>

@@ -95,10 +95,10 @@ const ReviewForm = () => {
         <div>
           <AllowReviewModal slug={pd.product.slug} productId={pd.product.id} />
           <Breadcrumbs />
-          <div className="flex flex-col md:flex-row justify-between ">
+          <div className="flex flex-col md:flex-row justify-between">
             <div className="flex-1 order-2 lg:order-1 mt-4 lg:mt-0">
               <h3 className="text-2xl font-bold">{pd.product.name}</h3>
-              <div className="border px-4 py-6 pb-10 flex-1 mt-6">
+              <div className="border px-4 py-6 pb-10 flex-1 mt-6 rounded-lg">
                 <span className="flex items-center justify-between">
                   <p className="uppercase font-bold text-lg">
                     {t("reviewsPage.form.writeReview")}
@@ -131,14 +131,14 @@ const ReviewForm = () => {
                         onClick={() => navigate(`/product/${pd.product.slug}`)}
                         type="button"
                         variant="outline"
-                        className="lg:px-20 w-full lg:w-max border-black uppercase rounded-none"
+                        className="lg:px-20 w-full lg:w-max border-black uppercase"
                       >
                         {t("reviewsPage.form.back")}
                       </Button>
                       <Button
                         disabled={reviewMutation.isPending}
                         type="submit"
-                        className="lg:px-20 w-full lg:w-max bg-black hover:bg-black/80 uppercase rounded-none "
+                        className="lg:px-20 w-full lg:w-max bg-black hover:bg-black/80 uppercase"
                       >
                         {t("reviewsPage.form.submit")}
                       </Button>
@@ -155,6 +155,7 @@ const ReviewForm = () => {
             <div className="lg:w-[450px] relative order-1 lg:order-2">
               <div className=" lg:w-[355px] lg:sticky lg:top-[140px] ml-auto">
                 <LazyLoadImage
+                  className="rounded-lg"
                   src={`${baseURL}/images/${pd.product.primaryImage}`}
                 />
               </div>

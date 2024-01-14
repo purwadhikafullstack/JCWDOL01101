@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useUserContext } from "@/context/UserContext";
@@ -23,7 +23,7 @@ const Cart = () => {
   const { user } = useUserContext();
 
   const clearCheckout = useBoundStore((state) => state.clear);
-  useEffect(() => {
+  React.useEffect(() => {
     clearCheckout();
   }, []);
 
@@ -36,9 +36,12 @@ const Cart = () => {
   const totalPrice = cart?.totalPrice || 0;
 
   const toggleAllSelectedCart = useToggleAllSelectProduct();
-  const [selected, setSelected] = useState({ allTrue: false, someTrue: false });
+  const [selected, setSelected] = React.useState({
+    allTrue: false,
+    someTrue: false,
+  });
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (carts.length > 0) {
       const { allTrue, someTrue } = carts.reduce(
         (acc, value) => ({
@@ -72,11 +75,7 @@ const Cart = () => {
                   }}
                   className="flex items-center gap-4 py-2 my-2 text-sm cursor-pointer px-0 lg:px-0 hover:bg-transparent"
                 >
-                  <Checkbox
-                    id="select"
-                    checked={selected.allTrue}
-                    className="rounded-none"
-                  />
+                  <Checkbox id="select" checked={selected.allTrue} />
                   <label
                     htmlFor="select"
                     className="text-muted-foreground  uppercase"
@@ -127,8 +126,6 @@ const Cart = () => {
           <ShoppingSummary
             cartId={cart?.cart.id}
             someTrue={selected.someTrue}
-            totalPrice={totalPrice}
-            totalQuantity={totalQuantity}
           />
         )}
       </div>

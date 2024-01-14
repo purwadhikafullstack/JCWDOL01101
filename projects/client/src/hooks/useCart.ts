@@ -3,11 +3,12 @@ import service from "@/service";
 import { useAuth } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
 
-export const useCart = (userId: number, hasCart: boolean) => {
+export const useCart = (userId: number | undefined, hasCart: boolean) => {
   const cart = useQuery<{
     cart: Cart;
     totalQuantity: number;
     totalPrice: number;
+    totalWeight: number;
   }>({
     queryKey: ["cart"],
     queryFn: async () => {
@@ -15,8 +16,6 @@ export const useCart = (userId: number, hasCart: boolean) => {
       return res.data.data;
     },
     enabled: !!userId && hasCart,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
   });
 
   return cart;
@@ -44,7 +43,7 @@ export const useCartProductOnSize = (
   return cart;
 };
 
-export const useCartProduct = (productId: number) => {
+export const useCartProduct = (productId: number, isProductInCart: boolean) => {
   const { getToken } = useAuth();
   const cart = useQuery<cartProducts[]>({
     queryKey: ["cart-product", productId],
@@ -57,7 +56,7 @@ export const useCartProduct = (productId: number) => {
       });
       return res.data.data;
     },
-    enabled: !!productId,
+    enabled: !!productId && isProductInCart,
   });
 
   return cart;

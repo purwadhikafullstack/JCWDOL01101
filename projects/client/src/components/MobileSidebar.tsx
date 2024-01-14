@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "./ui/separator";
 import LanguageSelector from "./LanguageSelector";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const nav = [
   {
@@ -48,24 +49,14 @@ type ProfileMenuCardProps = {
 const MobileSidebar = ({ open, setOpen }: ProfileMenuCardProps) => {
   const navigate = useNavigate();
   const { user, isLoaded } = useUser();
-  const [isBigScreen, setIsBigScreen] = useState(window.innerWidth > 720);
+  const isDesktop = useMediaQuery("(min-widht: 640px)");
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsBigScreen(window.innerWidth > 720);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
   return (
     isLoaded && (
       <div
         className={cn(
-          "fixed bottom-0 left-0 overflow-auto duration-300 bg-background z-50 w-full h-screen transform  transition-all",
-          open && !isBigScreen ? "translate-y-0 top-0" : "translate-y-full"
+          "fixed bottom-0 left-0 overflow-auto duration-300 bg-background sm z-50 w-full h-screen transform  transition-all",
+          open && !isDesktop ? "translate-y-0 top-0" : "translate-y-full"
         )}
       >
         <div className="p-2">

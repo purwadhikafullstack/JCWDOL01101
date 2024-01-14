@@ -91,7 +91,7 @@ const ProductsPage = () => {
                 });
               }}
             >
-              <SelectTrigger className="w-full rounded-none">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder={t("productsPage.category")} />
               </SelectTrigger>
               {categories && categories.length > 0 && (

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCartProductOnSize } from "@/hooks/useCart";
 import { formatToIDR } from "@/lib/utils";
@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { debounce } from "lodash";
 import { cartProducts } from "@/context/UserContext";
+import { useDebounce } from "use-debounce";
+import useOutsideClick from "@/hooks/useClickOutside";
 
 type CartItemProps = {
   hasCart: boolean;
@@ -31,20 +33,27 @@ const CartItem = ({ hasCart, cartProduct }: CartItemProps) => {
   const deleteMutation = useDeleteCartProduct();
   const cancelDeleteMutation = useCancelCartProductDeletion();
   const toggleSelectedCart = useToggleSelectedProduct(id, product.id!);
-  const [quantityChange, setQuantityChange] = useState(0);
-  const quantityChangeRef = useRef(quantityChange);
+  const [quantityChange, setQuantityChange] = React.useState(0);
+  const [inputQuantity, setInputQuantity] = React.useState(quantity);
+  const [debouncedInputQuantity] = useDebounce(inputQuantity, 1000);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const quantityChangeRef = React.useRef(quantityChange);
   const qtyMutation = useChageQty();
 
-  useEffect(() => {
+  React.useEffect(() => {
+    setInputQuantity(quantity);
+  }, [quantity]);
+
+  React.useEffect(() => {
     quantityChangeRef.current = quantityChange;
   }, [quantityChange]);
 
-  const debouncedQtyMutation = useCallback(
+  const debouncedQtyMutation = React.useCallback(
     debounce(() => {
-      if (product.id && quantityChangeRef.current !== 0) {
+      if (cp && product.id && quantityChangeRef.current !== 0) {
         const newQuantity = Math.max(
           1,
-          Math.min(stock, quantity + quantityChangeRef.current)
+          Math.min(cp.stock, quantity + quantityChangeRef.current)
         );
         qtyMutation.mutate({
           cartId,
@@ -55,8 +64,28 @@ const CartItem = ({ hasCart, cartProduct }: CartItemProps) => {
         setQuantityChange(0);
       }
     }, 300),
-    [qtyMutation.mutate, cartId, product.id, quantity]
+    [qtyMutation.mutate, cartId, product.id, quantity, cp]
   );
+
+  React.useEffect(() => {
+    if (cp && product.id && debouncedInputQuantity > 0) {
+      const newQuantity = Math.max(
+        1,
+        Math.min(cp.stock, debouncedInputQuantity)
+      );
+      qtyMutation.mutate({
+        cartId,
+        sizeId: size.id,
+        productId: product.id,
+        qty: newQuantity,
+      });
+    }
+  }, [debouncedInputQuantity]);
+
+  const onChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const numericValue = e.target.value.replace(/\D/g, "");
+    setInputQuantity(Number(numericValue));
+  };
 
   const changeQuantity = (change: number) => {
     if (product.id && (change > 0 ? quantity < stock : quantity > 1)) {
@@ -69,7 +98,7 @@ const CartItem = ({ hasCart, cartProduct }: CartItemProps) => {
     deleteMutation.mutate(id);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (deleteMutation.isSuccess) {
       toast(
         (t) => (
@@ -97,6 +126,10 @@ const CartItem = ({ hasCart, cartProduct }: CartItemProps) => {
     }
   }, [deleteMutation.isSuccess]);
 
+  useOutsideClick(inputRef, () => {
+    setInputQuantity(quantity);
+  });
+
   return (
     <>
       <div className="w-full space-y-2">
@@ -107,7 +140,6 @@ const CartItem = ({ hasCart, cartProduct }: CartItemProps) => {
               onCheckedChange={(value) => {
                 toggleSelectedCart.mutate({ value: !!value });
               }}
-              className="rounded-none"
             />
             <div>
               <h3 className="font-bold">Toten Offical</h3>
@@ -145,19 +177,29 @@ const CartItem = ({ hasCart, cartProduct }: CartItemProps) => {
                 disabled={quantity <= 1}
                 onClick={() => changeQuantity(-1)}
                 size="sm"
-                className="h-8 bg-black dark:border hover:bg-black/80 rounded-none"
+                className="h-8 bg-black dark:border hover:bg-black/80"
               >
                 <Minus className="text-primary-foreground w-5 h-5" />
               </Button>
-              <span className=" border  h-8 grid place-content-center px-8 text-xl leading-3 select-none">
-                {quantity}
-              </span>
+              <div className="border focus-within:ring-2 focus-within:ring-black rounded-lg w-max flex items-center">
+                <input
+                  ref={inputRef}
+                  disabled={quantity > stock}
+                  max={stock}
+                  className="h-full outline-none w-[50px] bg-background text-end pr-2"
+                  value={inputQuantity}
+                  onChange={onChangeQuantity}
+                />
+                <div className="w-full bg-border p-1 rounded-r-lg">
+                  <p className="text-muted-foreground">{stock}</p>
+                </div>
+              </div>
               <Button
                 disabled={quantity >= stock}
                 onClick={() => changeQuantity(+1)}
                 variant="ghost"
                 size="sm"
-                className="h-8 bg-black dark:border hover:bg-black/80 rounded-none"
+                className="h-8 bg-black dark:border hover:bg-black/80"
               >
                 <Plus className="text-primary-foreground w-5 h-5" />
               </Button>

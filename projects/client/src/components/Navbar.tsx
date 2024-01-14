@@ -7,7 +7,7 @@ import NavCart from "./NavCart";
 import { useUser } from "@clerk/clerk-react";
 import { Button, buttonVariants } from "./ui/button";
 import NavDropdown from "./NavDropdown";
-import { ChevronDown, MapPin, Menu, User2 } from "lucide-react";
+import { ChevronDown, MapPin, Menu, User2, Weight } from "lucide-react";
 import { useActiveAddress } from "@/hooks/useAddress";
 import SelectAddressDialog from "./SelectAddressDialog";
 import NavWishlist from "./NavWishlist";
@@ -54,7 +54,7 @@ const Navbar = () => {
                     <div className="items-center flex">
                       {!expandSearch && (
                         <>
-                          <div className="h-8 lg:hidden flex items-center gap-2">
+                          <div className="h-8 md:hidden flex items-center gap-2">
                             <NavCart setIsDim={setIsDim} />
                             <Button
                               onClick={() => setOpen(true)}
@@ -66,19 +66,19 @@ const Navbar = () => {
                           </div>
                         </>
                       )}
-                      <div className="hidden lg:flex items-center">
+                      <div className="hidden md:flex items-center">
                         <NavCart setIsDim={setIsDim} />
                         <NavDelivery setIsDim={setIsDim} />
                         <NavWishlist setIsDim={setIsDim} />
                       </div>
                     </div>
-                    <div className="hidden lg:block">
+                    <div className="hidden md:block">
                       <NavProfile setIsDim={setIsDim} />
                     </div>
                   </>
                 ) : (
                   <>
-                    <div className="hidden lg:flex items-center gap-2 ">
+                    <div className="hidden md:flex items-center gap-2 ">
                       <Link
                         to="/login"
                         state={{ redirectTo: location }}
@@ -93,7 +93,7 @@ const Navbar = () => {
                         Register
                       </Link>
                     </div>
-                    <div className="block lg:hidden">
+                    <div className="block md:hidden">
                       <NavDropdown
                         path="/"
                         icon={<User2 />}
@@ -120,7 +120,7 @@ const Navbar = () => {
               </div>
             </div>
             {isSignedIn && (
-              <div className="flex flex-col items-start lg:items-end cursor-pointer">
+              <div className="flex flex-col items-start md:items-end cursor-pointer">
                 <SelectAddressDialog>
                   <div className="flex gap-2 text-xs mt-2 md:mt-0 items-center text-muted-foreground">
                     <MapPin className="w-3 h-3" />
@@ -130,10 +130,7 @@ const Navbar = () => {
                         <span className="flex items-center text-foreground">
                           <b
                             className={cn(
-                              "text-ellipsis overflow-hidden whitespace-nowrap md:w-[150px]",
-                              activeAddress &&
-                                activeAddress.recepient.length > 8 &&
-                                "w-max"
+                              "line-clamp-1 max-w-[100px] lg:max-w-[130px]"
                             )}
                           >
                             {activeAddress?.label}, {activeAddress?.recepient}

@@ -24,7 +24,7 @@ const ReviewProduct = ({ slug, productId }: ReviewProductProps) => {
         <Link to={`/product/${slug}/reviews`}>
           <Button
             variant="outline"
-            className="border-black uppercase mt-6 px-10 rounded-none"
+            className="border-black uppercase mt-6 px-10"
           >
             {t("productDetailPage.misc.sub")}
           </Button>

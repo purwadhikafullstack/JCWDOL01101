@@ -16,7 +16,7 @@ const SizeFilterForm = () => {
   return (
     <div className="flex flex-col  items-start gap-2">
       <span className="uppercase">{t("productsPage.size")}</span>
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap gap-1">
         {sizes &&
           sizes.map((size) => (
             <div
@@ -37,7 +37,7 @@ const SizeFilterForm = () => {
                 setFilterSize(filterSizeLabel);
               }}
               className={cn(
-                "border hover:border-primary/80 hover:bg-muted cursor-pointer w-12 lg:w-11 p-2 grid place-content-center",
+                "border hover:border-primary/80 hover:bg-muted cursor-pointer w-12 lg:w-11 p-2 grid place-content-center rounded-md",
                 currentSize.has(size.id) && "border-primary"
               )}
               key={size.id}
