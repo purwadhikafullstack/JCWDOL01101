@@ -181,7 +181,11 @@ const ProductDescription = ({ productData }: Props) => {
             </Button>
           )}
           <div className="mt-4">
-            <img src="/carousel/1.jpg" alt="advertise" className="rounded-lg" />
+            <img
+              src="/carousel/banner-2.png"
+              alt="advertise"
+              className="rounded-lg"
+            />
           </div>
         </div>
       </div>

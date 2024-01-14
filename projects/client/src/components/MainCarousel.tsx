@@ -9,9 +9,9 @@ import Autoplay from "embla-carousel-autoplay";
 import { DotButton, NextButton, PrevButton } from "./MainCarouselArrow";
 
 const carouselImages = [
-  "/carousel/1.jpg",
-  "/carousel/2.jpg",
-  "/carousel/3.jpg",
+  "/carousel/banner-1.png",
+  "/carousel/banner-2.png",
+  "/carousel/banner-3.png",
 ];
 
 const MainCarousel = () => {
