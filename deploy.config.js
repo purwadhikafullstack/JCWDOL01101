@@ -1,11 +1,11 @@
 module.exports = {
   apps: [
     {
-      name: "JCWD-2000-01", // Format JCWD-{batchcode}-{groupnumber}
-      script: "./projects/server/src/index.js",
+      name: "JCWDOL-011-01", // Format JCWD-{batchcode}-{groupnumber}
+      script: "./projects/server/dist/server.js",
       env: {
         NODE_ENV: "production",
-        PORT: 8000,
+        PORT: 3101,
       },
       time: true,
     },
