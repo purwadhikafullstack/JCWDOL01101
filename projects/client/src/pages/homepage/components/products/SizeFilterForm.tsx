@@ -1,8 +1,8 @@
+import React from "react";
+import { useBoundStore } from "@/store/client/useStore";
 import { useSize } from "@/hooks/useSize";
 import { cn } from "@/lib/utils";
 import { FilterSize } from "@/store/client/filterSizeSlice";
-import { useBoundStore } from "@/store/client/useStore";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
@@ -25,7 +25,10 @@ const SizeFilterForm = () => {
                   ? currentSize.delete(size.id)
                   : currentSize.add(size.id);
                 const sizeArray = Array.from(currentSize);
-                setSearchParams({ size: sizeArray.join(",") });
+                setSearchParams((params) => {
+                  params.set("size", sizeArray.join(","));
+                  return params;
+                });
 
                 const filterSizeLabel: FilterSize[] = sizeArray.map((id) => {
                   const size = sizes.find((size) => size.id === id);

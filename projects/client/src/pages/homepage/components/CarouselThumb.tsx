@@ -13,7 +13,7 @@ const CarouselThumb = ({ imgSrc, selected, onClick, index }: PropType) => {
       <button
         className={cn(
           "w-[100px] bg-transparent touch-manipulation block cursor-pointer opacity-20 transition-opacity duration-200 rounded-lg",
-          selected && "opacity-100  border-2 border-black dark:border-primary"
+          selected && "opacity-100  border-2 border-primary"
         )}
         onClick={onClick}
         type="button"
