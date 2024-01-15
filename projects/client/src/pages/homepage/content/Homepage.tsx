@@ -26,22 +26,24 @@ const Homepage = () => {
       </Helmet>
       <MainCarousel />
       <div className="mt-2 flex flex-col">
-        <span className="flex items-center justify-between mt-8 my-2">
-          <h3 className="font-bold text-sm lg:text-xl uppercase">
-            {t("homepage.title2")}
-          </h3>
-          <Link
-            to="/products?f=hs"
-            className="text-primary text-xs md:text-sm font-bold"
-          >
-            {t("homepage.sub2")}
-          </Link>
-        </span>
+        {highestSell && highestSell.length > 0 && (
+          <span className="flex items-center justify-between mt-8 my-2">
+            <h3 className="font-bold text-sm lg:text-xl uppercase">
+              {t("homepage.title2")}
+            </h3>
+            <Link
+              to="/products?f=hs"
+              className="text-primary text-xs md:text-sm font-bold"
+            >
+              {t("homepage.sub2")}
+            </Link>
+          </span>
+        )}
         {highestSellLoading ? (
           <HighestSellSkeleton />
         ) : (
-          <section className="grid grid-cols-4 lg:grid-cols-6 gap-4">
-            {highestSell && highestSell.length > 0 ? (
+          <div className="grid grid-cols-4 lg:grid-cols-6 gap-4">
+            {highestSell && highestSell.length > 0 && (
               <>
                 {highestSell.map(({ product }, i) => (
                   <div
@@ -59,12 +61,8 @@ const Homepage = () => {
                   </div>
                 ))}
               </>
-            ) : (
-              <div className="col-span-4 lg:col-span-6 row-span-2 text-center">
-                No Product
-              </div>
             )}
-          </section>
+          </div>
         )}
         <span className="flex items-center justify-between mt-8 my-2 capitalize">
           <h3 className="font-bold text-sm lg:text-xl uppercase">
