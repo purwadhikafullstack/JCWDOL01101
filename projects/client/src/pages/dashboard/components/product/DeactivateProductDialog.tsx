@@ -14,19 +14,23 @@ import { useSearchParams } from "react-router-dom";
 import { Product } from "@/hooks/useProduct";
 import { Button } from "@/components/ui/button";
 import { EyeOff, Loader2 } from "lucide-react";
+import Hashids from "hashids";
 type Props = {
+  dropdownChange: (open: boolean) => void;
   product: Product;
 };
 
-const DeactivateProductDialog = ({ product }: Props) => {
+const DeactivateProductDialog = ({ product, dropdownChange }: Props) => {
+  const hashids = new Hashids("TOTEN", 10);
   const [open, setOpen] = React.useState(false);
   const [params] = useSearchParams();
   const warehouseId = params.get("warehouse") || undefined;
   const changeProductInventory = useChangeStatusInventory();
   const handleDeactivatedProduct = () => {
     if (product.id && warehouseId) {
+      const decodeWarehouseId = hashids.decode(warehouseId);
       changeProductInventory.mutate({
-        warehouseId,
+        warehouseId: Number(decodeWarehouseId),
         productId: product.id,
         status: "DEACTIVATED",
       });
@@ -35,10 +39,17 @@ const DeactivateProductDialog = ({ product }: Props) => {
   React.useEffect(() => {
     if (changeProductInventory.isSuccess) {
       setOpen(false);
+      dropdownChange(false);
     }
   }, [changeProductInventory.isSuccess]);
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(state) => {
+        setOpen(state);
+        dropdownChange(state);
+      }}
+    >
       <DialogTrigger asChild>
         <DropdownMenuItem
           onSelect={(e) => e.preventDefault()}

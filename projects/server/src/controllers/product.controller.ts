@@ -1,5 +1,5 @@
 import { ProductDto } from '@/dtos/product.dto';
-import { Order, OrderDetails, Status } from '@/interfaces';
+import { OrderDetails, Status } from '@/interfaces';
 import { Image } from '@/interfaces/image.interface';
 import { Inventory } from '@/interfaces/inventory.interface';
 import { Product } from '@/interfaces/product.interface';
@@ -77,7 +77,7 @@ export class ProductController {
   public getHigestSellProducts = async (req: WithAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const limit = Number(req.query.limit);
-      const products: OrderDetails[] = await this.product.getHighestSoldProducts(limit, req.auth.userId);
+      const products: OrderDetails[] = await this.product.getHighestSoldProducts(limit);
       res.status(200).json({
         data: products,
         message: 'get.highest',
@@ -175,17 +175,30 @@ export class ProductController {
 
   public changeProductStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const hashids = new Hashids('TOTEN', 10);
       const productId = Number(req.params.productId);
       const status = String(req.body.status) as Status;
       const previousStatus = String(req.body.previousStatus) as Status;
-      const warehouseBody = String(req.body.warehouseId);
-      const warehouseId = Number(hashids.decode(warehouseBody));
-      const deletedProduct: Product = await this.product.updateProductStatus(productId, warehouseId, status, previousStatus);
+      const warehouseId = Number(req.body.warehouseId);
+      const changeProductStatus: Product = await this.product.updateProductStatus(productId, warehouseId, status, previousStatus);
 
       res.status(200).json({
-        data: deletedProduct,
-        message: 'product.deleted',
+        data: changeProductStatus,
+        message: 'change product status',
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public patchAllProductStatus = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const status = String(req.body.status) as Status;
+      const previousStatus = String(req.body.previousStatus) as Status;
+      const warehouseId = Number(req.params.warehouseId);
+      await this.product.updateAllProductStatus(warehouseId, status, previousStatus);
+
+      res.status(200).json({
+        message: 'change all product status',
       });
     } catch (err) {
       next(err);
@@ -194,16 +207,14 @@ export class ProductController {
 
   public changeProductInventoryStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const hashids = new Hashids('TOTEN', 10);
       const productId = Number(req.params.productId);
-      const warehouseBody = String(req.body.warehouseId);
-      const warehouseId = Number(hashids.decode(warehouseBody));
+      const warehouseId = Number(req.body.warehouseId);
       const status = String(req.body.status) as Status;
-      const deletedInventory: Inventory = await this.product.updateProductInvetoryStatus(productId, warehouseId, status);
+      const inventory: Inventory = await this.product.updateProductInvetoryStatus(productId, warehouseId, status);
 
       res.status(200).json({
-        data: deletedInventory,
-        message: 'inventory.deleted',
+        data: inventory,
+        message: 'change inventory status',
       });
     } catch (err) {
       next(err);

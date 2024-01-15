@@ -11,7 +11,7 @@ import { readHighestSoldProducts } from './readHighestSoldProducts';
 import { readProductsByCategory } from './readProductsByCategory';
 import { ProductBySlug, readProductBySlug } from './readProductBySlug';
 import { readProductsByName } from './readProductByName';
-import { updateProduct, updateProductInventoryStatus, updateProductStatus } from './updateProduct';
+import { updateAllProductStatus, updateProduct, updateProductInventoryStatus, updateProductStatusById } from './updateProduct';
 
 @Service()
 export class ProductService {
@@ -29,7 +29,11 @@ export class ProductService {
   }
 
   public async updateProductStatus(productId: number, warehouseId: number | undefined, status: Status, previousStatus: Status): Promise<Product> {
-    return updateProductStatus(productId, warehouseId, status, previousStatus);
+    return updateProductStatusById(productId, warehouseId, status, previousStatus);
+  }
+
+  public async updateAllProductStatus(warehouseId: number | undefined, status: Status, previousStatus: Status) {
+    return updateAllProductStatus(warehouseId, status, previousStatus);
   }
 
   public async updateProductInvetoryStatus(productId: number, warehouseId: number | undefined, status: Status): Promise<Inventory> {
@@ -52,8 +56,8 @@ export class ProductService {
     return readNewestProducts(externalId);
   }
 
-  public async getHighestSoldProducts(limit: number, externalId: string | undefined): Promise<OrderDetails[]> {
-    return readHighestSoldProducts(limit, externalId);
+  public async getHighestSoldProducts(limit: number): Promise<OrderDetails[]> {
+    return readHighestSoldProducts(limit);
   }
 
   public async getProductsByCategory(productId: number, categoryId: number, externalId: string, limit: number): Promise<Product[]> {

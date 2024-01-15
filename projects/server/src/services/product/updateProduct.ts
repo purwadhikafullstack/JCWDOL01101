@@ -76,7 +76,7 @@ export async function updateProduct(
   return updatedProduct;
 }
 
-export async function updateProductStatus(
+export async function updateProductStatusById(
   productId: number,
   warehouseId: number | undefined,
   status: Status,
@@ -85,7 +85,6 @@ export async function updateProductStatus(
   const findProduct: Product = await DB.Product.findByPk(productId);
   if (!findProduct) throw new HttpException(409, "Product doesn't exist");
 
-  await DB.CartProduct.update({ status }, { where: { productId } });
   await DB.Product.update({ status }, { where: { id: productId } });
   if (warehouseId && status == 'ACTIVE') {
     await DB.Inventories.update(
@@ -101,8 +100,20 @@ export async function updateProductStatus(
   } else {
     await DB.Inventories.update({ status: status }, { where: { productId } });
   }
-
   return findProduct;
+}
+
+export async function updateAllProductStatus(warehouseId: number | undefined, status: Status, previousStatus: Status) {
+  await DB.Product.update({ status }, { where: { status: previousStatus } });
+  await DB.Inventories.update(
+    { status },
+    {
+      where: {
+        warehouseId,
+        status: previousStatus,
+      },
+    },
+  );
 }
 
 export async function updateProductInventoryStatus(productId: number, warehouseId: number, status: Status): Promise<Inventory> {
@@ -111,7 +122,6 @@ export async function updateProductInventoryStatus(productId: number, warehouseI
   const findInventory: Inventory = await DB.Inventories.findOne({ where: { status: 'ACTIVE', productId, warehouseId } });
   if (!findInventory) throw new HttpException(409, "Inventory doesn't exist");
 
-  await DB.CartProduct.update({ status }, { where: { productId } });
   await DB.Inventories.update(
     { status },
     {

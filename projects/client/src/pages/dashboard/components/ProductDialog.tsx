@@ -19,6 +19,7 @@ import DeleteProductDialog from "./product/DeleteProductDialog";
 import DeactivateProductDialog from "./product/DeactivateProductDialog";
 
 const ProductDialog = ({ product }: { product: Product }) => {
+  const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const [params] = useSearchParams();
   const warehouseId = params.get("warehouse") || undefined;
   const status = (String(params.get("status")) as STATUS) || "";
@@ -42,8 +43,14 @@ const ProductDialog = ({ product }: { product: Product }) => {
     }
   };
 
+  const handleDropdownChange = (open: boolean) => {
+    if (open === false) {
+      setDropdownOpen(false);
+    }
+  };
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost">
           <DotsHorizontalIcon />
@@ -77,8 +84,14 @@ const ProductDialog = ({ product }: { product: Product }) => {
                     </DropdownMenuItem>
                   </Link>
                   <DropdownMenuSeparator />
-                  <DeactivateProductDialog product={product} />
-                  <DeleteProductDialog product={product} />
+                  <DeactivateProductDialog
+                    dropdownChange={handleDropdownChange}
+                    product={product}
+                  />
+                  <DeleteProductDialog
+                    dropdownChange={handleDropdownChange}
+                    product={product}
+                  />
                 </>
               )}
             </>
