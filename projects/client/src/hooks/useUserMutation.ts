@@ -83,8 +83,9 @@ export const useEditUser = (userId: number) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const userMutation = useMutation({
-    mutationFn: async (user: EditUser) =>
-      service.put(`/manage-user/${userId}`, user),
+    mutationFn: async (user: EditUser) => {
+      return service.put(`/manage-user/${userId}`, user);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },

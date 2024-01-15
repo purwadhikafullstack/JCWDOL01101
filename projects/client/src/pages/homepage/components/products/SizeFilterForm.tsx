@@ -3,9 +3,11 @@ import { cn } from "@/lib/utils";
 import { FilterSize } from "@/store/client/filterSizeSlice";
 import { useBoundStore } from "@/store/client/useStore";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 const SizeFilterForm = () => {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const setFilterSize = useBoundStore((state) => state.setSize);
   const sizeParams = searchParams.get("size");
@@ -13,8 +15,8 @@ const SizeFilterForm = () => {
   const { data: sizes } = useSize();
   return (
     <div className="flex flex-col  items-start gap-2">
-      <span className="uppercase">Size</span>
-      <div className="flex flex-wrap">
+      <span className="uppercase">{t("productsPage.size")}</span>
+      <div className="flex flex-wrap gap-1">
         {sizes &&
           sizes.map((size) => (
             <div
@@ -35,7 +37,7 @@ const SizeFilterForm = () => {
                 setFilterSize(filterSizeLabel);
               }}
               className={cn(
-                "border hover:border-primary/80 hover:bg-muted cursor-pointer w-12 lg:w-11 p-2 grid place-content-center",
+                "border hover:border-primary/80 hover:bg-muted cursor-pointer w-12 lg:w-11 p-2 grid place-content-center rounded-md",
                 currentSize.has(size.id) && "border-primary"
               )}
               key={size.id}

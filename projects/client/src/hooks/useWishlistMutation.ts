@@ -21,6 +21,8 @@ export const useToggleWishlist = () => {
       queryClient.invalidateQueries({ queryKey: ["products", "newest"] });
       queryClient.invalidateQueries({ queryKey: ["highest-sell"] });
       queryClient.invalidateQueries({ queryKey: ["product"] });
+      queryClient.invalidateQueries({ queryKey: ["last-seen-product"] });
+      queryClient.invalidateQueries({ queryKey: ["recommendedProduct"] });
     },
   });
 

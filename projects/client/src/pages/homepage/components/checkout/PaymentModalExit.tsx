@@ -38,7 +38,7 @@ const PaymentModalExit = ({ exit, setShow, setExit }: Props) => {
         </div>
       </div>
       {exit && (
-        <div className="z-40 w-full h-full absolute left-0 top-0 bg-black/60" />
+        <div className="z-40 w-full h-full absolute left-0 top-0 bg-background/80" />
       )}
     </>
   );

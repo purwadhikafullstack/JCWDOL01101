@@ -57,8 +57,8 @@ const PaymentModalAction = ({
   }, [createPayment.isPending]);
 
   return (
-    <div className="bg-background sticky bottom-0 ">
-      <div className=" w-full grid grid-cols-2 bg-gradient-to-tr from-background to-primary/20 dark:to-background py-4 px-2">
+    <div className="bg-background sticky bottom-0 left-0">
+      <div className="w-full grid grid-cols-2 bg-gradient-to-tr from-background to-primary/20 dark:to-background py-4 px-2">
         <div>
           <p>{t("checkoutPage.paymentModal.total")}</p>
           <b className="text-sm">{formatToIDR(+totalPrice + shippingFee)}</b>

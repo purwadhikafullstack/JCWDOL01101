@@ -11,12 +11,21 @@ import { useDeleteAdmin } from "@/hooks/useUserMutation"
 import { Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 
-const DeleteAdmin = ({ userId }: { userId: Number }) => {
+const DeleteAdmin = ({
+  open,
+  setOpen,
+  userId,
+}: {
+  open: boolean
+  setOpen: (value: boolean) => void
+  userId: Number
+}) => {
   const deleteProduct = useDeleteAdmin(userId as number)
   const { toast } = useToast()
   const onDeleteAdmin = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     deleteProduct.mutate()
+    setOpen(false)
   }
 
   useEffect(() => {
@@ -52,7 +61,11 @@ const DeleteAdmin = ({ userId }: { userId: Number }) => {
             Yes, delete admin
           </Button>
           <DialogClose asChild>
-            <Button type="button" variant="secondary">
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={deleteProduct.isPending}
+            >
               Cancel
             </Button>
           </DialogClose>

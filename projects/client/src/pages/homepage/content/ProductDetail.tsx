@@ -3,7 +3,6 @@ import ProductCarousel from "../components/ProductCarousel";
 import ReviewStar from "../components/product-detail/ReviewStar";
 import ProductDescription from "../components/product-detail/ProductDescription";
 import Breadcrumbs from "../components/product-detail/Breadcrumbs";
-import RecommendedProduct from "../components/product-detail/RecommendedProduct";
 import { useProduct } from "@/hooks/useProduct";
 import { Link, useParams } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
@@ -16,15 +15,30 @@ import { useProductIsOrder } from "@/hooks/useOrder";
 import PurchasedReviewModal from "../components/reviews/PurchasedReviewModal";
 import { t } from "i18next";
 import { Helmet } from "react-helmet";
+import { usePostLastSeenProduct } from "@/hooks/useLastSeenProduct";
+import { useUserContext } from "@/context/UserContext";
+import LastSeenProduct from "../components/product-detail/LastSeenProduct";
 
 const ProductDetail = () => {
   const { user } = useUser();
   const { slug } = useParams();
+  const { user: currentUser } = useUserContext();
   const { data: pd } = useProduct(slug || "");
   const { data: isUserOrderProduct } = useProductIsOrder(
     user?.id,
     pd?.product.id
   );
+
+  const mutation = usePostLastSeenProduct();
+  React.useEffect(() => {
+    if (pd && currentUser) {
+      mutation.mutate({
+        userId: currentUser.id,
+        productId: pd.product.id,
+      });
+    }
+  }, [pd, currentUser]);
+
   const { data: reviewData } = useReviewByProduct(pd?.product?.id);
   return (
     pd &&
@@ -66,7 +80,7 @@ const ProductDetail = () => {
                   <Link to={`/product/${pd.product.slug}/reviews/new`}>
                     <Button
                       variant="outline"
-                      className="border-black uppercase mt-6 px-10 rounded-none"
+                      className="border-black uppercase mt-6 px-10"
                     >
                       {t("reviewsPage.form.writeReview")}
                     </Button>
@@ -86,10 +100,12 @@ const ProductDetail = () => {
             </div>
           </div>
           <div>
-            <RecommendedProduct
-              productId={pd.product.id}
-              categoryId={pd.product.categoryId}
-            />
+            {currentUser && (
+              <LastSeenProduct
+                productId={pd.product.id}
+                userId={currentUser.id}
+              />
+            )}
           </div>
         </div>
       </>

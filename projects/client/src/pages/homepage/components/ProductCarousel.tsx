@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   Carousel,
   type CarouselApi,
@@ -6,7 +7,6 @@ import {
 } from "@/components/ui/carousel";
 import { Image } from "@/hooks/useProduct";
 import { baseURL } from "@/service";
-import React, { useCallback } from "react";
 import CarouselThumb from "./CarouselThumb";
 import useEmblaCarousel from "embla-carousel-react";
 
@@ -28,7 +28,7 @@ const ProductCarousel = ({ images }: { images: Image[] }) => {
     [api]
   );
 
-  const onSelect = useCallback(() => {
+  const onSelect = React.useCallback(() => {
     if (!api || !thumbApi) return;
     setSelectedIndex(api.selectedScrollSnap());
     thumbApi.scrollTo(api.selectedScrollSnap());
@@ -51,7 +51,7 @@ const ProductCarousel = ({ images }: { images: Image[] }) => {
                 <img
                   src={`${baseURL}/images/${image}`}
                   alt={image}
-                  className="object-contain w-full h-full"
+                  className="object-contain w-full h-full rounded-lg"
                 />
               </CarouselItem>
             ))}

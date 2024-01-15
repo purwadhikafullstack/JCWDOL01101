@@ -18,6 +18,7 @@ import { User } from './user.interface';
 import { Warehouse } from './warehouse.interface';
 import { WarehouseAddress } from './warehouseAddress.interface';
 import { Wishlist } from './wishlist.interface';
+import { LastSeenProducts } from './lastSeenProducts.interface';
 
 type Status = 'ACTIVE' | 'DEACTIVATED' | 'DELETED';
 type Role = 'ADMIN' | 'WAREHOUSE ADMIN' | 'CUSTOMER';
@@ -74,4 +75,5 @@ export type {
   WarehouseAddress,
   Wishlist,
   GetFilterProduct,
+  LastSeenProducts,
 };

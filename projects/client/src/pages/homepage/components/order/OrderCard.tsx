@@ -1,28 +1,24 @@
-import {
-  Order,
-  OrderDetails,
-  useCancelOrder,
-  useConfirmOrder,
-} from "@/hooks/useOrder";
-import { Product } from "@/hooks/useProduct";
-import React from "react";
-import OrderProduct from "./OrderProduct";
-import { format } from "date-fns";
-import { formatToIDR } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import CancelOrder from "./OrderCancel";
-import ConfirmOrder from "./OrderConfrim";
+import { Order, OrderDetails } from "@/hooks/useOrder"
+import { useCancelOrder, useConfirmOrder } from "@/hooks/useOrderMutation"
+import { Product } from "@/hooks/useProduct"
+import React from "react"
+import OrderProduct from "./OrderProduct"
+import { format } from "date-fns"
+import { formatToIDR } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
+import CancelOrder from "./OrderCancel"
+import ConfirmOrder from "./OrderConfrim"
 
 const paymentMethods: { [key: string]: string } = {
   "BRI-VA": "/ilus/bri.png",
   "BCA-VA": "/ilus/bca.png",
   "DOKU-VA": "/ilus/doku_va.png",
-};
+}
 
 type props = {
-  order: Order;
-};
+  order: Order
+}
 
 const OrderCard = ({ order }: props) => {
   return (
@@ -94,7 +90,7 @@ const OrderCard = ({ order }: props) => {
         </div>
       </Dialog>
     </>
-  );
-};
+  )
+}
 
-export default OrderCard;
+export default OrderCard

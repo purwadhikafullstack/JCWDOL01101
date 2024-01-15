@@ -1,11 +1,13 @@
 import { Order } from '@/interfaces/order.interface';
 import { OrderService } from '@/services/order.service';
+import { OrderMutationService } from '@/services/orderMutation.service';
 import { RequireAuthProp } from '@clerk/clerk-sdk-node';
 import { NextFunction, Request, Response } from 'express';
 import Container from 'typedi';
 
 export class OrderController {
   public order = Container.get(OrderService);
+  public orderMutation = Container.get(OrderMutationService);
 
   public getOrder = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
@@ -72,7 +74,7 @@ export class OrderController {
     try {
       const externalId = req.auth.userId;
       const productId = Number(req.params.productId);
-      const orders: Order = await this.order.allowOrder(externalId, productId);
+      const orders: Order = await this.orderMutation.allowOrder(externalId, productId);
 
       res.status(200).json({ data: orders, message: 'get user order' });
     } catch (error) {
@@ -83,8 +85,8 @@ export class OrderController {
   public cancelOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const orderId = Number(req.params.orderId);
-      const updatedOrder = await this.order.cancelOrder(orderId);
-  
+      const updatedOrder = await this.orderMutation.cancelOrder(orderId);
+
       res.status(200).json({
         data: updatedOrder,
         message: 'order.cancelled',
@@ -97,14 +99,36 @@ export class OrderController {
   public confirmOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const orderId = Number(req.params.orderId);
-      const updatedOrder = await this.order.confirmOrder(orderId);
-  
+      const updatedOrder = await this.orderMutation.confirmOrder(orderId);
+
       res.status(200).json({
         data: updatedOrder,
         message: 'order.confirmed',
       });
     } catch (err) {
       next(err);
+    }
+  };
+
+  public adminAcceptOrder = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const orderId = Number(req.params.orderId);
+      const editOrder = await this.orderMutation.adminAcceptOrder(orderId);
+
+      res.status(200).json({ data: editOrder, message: 'patch.order' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public adminRejectOrder = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const orderId = Number(req.params.orderId);
+      const editOrder = await this.orderMutation.adminRejectOrder(orderId);
+
+      res.status(200).json({ data: editOrder, message: 'patch.order' });
+    } catch (error) {
+      next(error);
     }
   };
 }
