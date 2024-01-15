@@ -95,6 +95,8 @@ type orderOptions = {
   limit: number;
   warehouse: string;
   status: string;
+  to:Date;
+  from:Date;
 };
 export const getAllOrders = ({
   page,
@@ -104,13 +106,15 @@ export const getAllOrders = ({
   limit,
   warehouse,
   status,
+  to,
+  from,
 }: orderOptions) => {
   const { getToken } = useAuth();
   const { data, isLoading, isFetched } = useQuery<{
     orders: Order[];
     totalPages: number;
   }>({
-    queryKey: ["orders", page, s, filter, order, warehouse, status],
+    queryKey: ["orders", page, s, filter, order, warehouse, status, to, from],
     queryFn: async () => {
       const res = await service.get("/orders", {
         params: {
@@ -121,6 +125,8 @@ export const getAllOrders = ({
           filter,
           warehouse,
           status,
+          to,
+          from,
         },
         withCredentials: true,
         headers: { Authorization: `Bearer ${await getToken()}` },

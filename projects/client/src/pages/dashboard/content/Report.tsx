@@ -1,190 +1,194 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useCurrentUser } from "@/hooks/useUser";
-import { getAllJurnals, useGetJurnal } from "@/hooks/useJurnal";
+import { getAllJurnals } from "@/hooks/useJurnal";
+import { CalendarIcon, MapPin, SearchIcon } from "lucide-react";
+import { addDays, format } from "date-fns";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import ChangeOrderButton from "../components/ChangeOrderButton";
-import { Loader2, MapPin } from "lucide-react";
-import service from "@/service";
-import { format } from "date-fns";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useDebounce } from "use-debounce";
+import { useSearchParams } from "react-router-dom";
+import { useGetWarehouse } from "@/hooks/useWarehouse";
+import TablePagination from "../components/TablePagination";
+import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton";
+import ReportTable from "../components/ReportTable";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import Hashids from "hashids";
+import { Calendar } from "@/components/ui/calendar";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select"
-
-type JurnalType = {
-  id: number;
-  jurnal?: InventoryType;
-  oldQty: number;
-  qtyChange: number;
-  newQty: number;
-  type: string;
-  notes: string;
-  createdAt:string;
-};
-
-type InventoryType = {
-  inventoryId: number;
-  warehouse: WarehouseType;
-  sizes: SizeType;
-  status: string;
-  product: ProductType;
-  stock: number;
-  sold: number;
-};
-
-type WarehouseType = {
-  warehouseId: number;
-  name: string;
-};
-
-type SizeType = {
-  sizeId: number;
-  label: string;
-  value: number;
-};
-
-type ProductType = {
-  productId: number;
-  name: string;
-};
-
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { DateRange } from "react-day-picker";
 const Report = () => {
+  const hashids = new Hashids("TOTEN", 10);
   const { user, isSignedIn, isLoaded } = useUser();
-  const ROLE = user?.publicMetadata.role || "CUSTOMER";
-  const { data: curentUser } = useCurrentUser({
-    externalId: user?.id,
+  const { data: userAdmin } = useCurrentUser({
+    externalId: user?.id!,
     enabled: isLoaded && !!isSignedIn,
   });
 
-  const { data: jurnals, isLoading, isError } = useGetJurnal(ROLE === "ADMIN");
+  const ROLE = userAdmin?.role || "CUSTOMER";
+  const [searchParams, setSearchParams] = useSearchParams({
+    page: "1",
+  });
+  const currentPage = Number(searchParams.get("page"));
+  const searchTerm = searchParams.get("s") || "";
+  const [debounceSearch] = useDebounce(searchTerm, 1000);
 
-  
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const { data: warehouses } = useGetWarehouse(ROLE === "ADMIN");
+  const { data, isLoading } = getAllJurnals({
+    page: currentPage,
+    s: debounceSearch,
+    filter: searchParams.get("filter") || "",
+    order: searchParams.get("order") || "",
+    limit: 10,
+    warehouse: searchParams.get("warehouse") || "",
+    to: new Date(String(searchParams.get("to"))) || new Date(),
+    from: new Date(String(searchParams.get("from"))) || addDays(new Date(), 30),
+  });
 
-  if (isError) {
-    return <div>Error loading data</div>;
-  }
+  const [date, setDate] = React.useState<DateRange | undefined>({
+    from: new Date(),
+    to: addDays(new Date(), 30),
+  });
 
-
-    // const { data: jurnals, isError, isLoading } = useGetJurnal(true);
-
-    // if (isLoading) {
-    //   return <div>Loading...</div>;
-    // }
-
-    // if (isError) {
-    //   return <div>Error!</div>;
-    // }
-
-    // const [jurnals, setJurnals] = useState<JurnalType[]>([]);
-
-    // useEffect(() => {
-    //   service
-    //     .get("/jurnals")
-    //     .then((response) => {
-    //       if (Array.isArray(response.data.data)) {
-    //         setJurnals(response.data.data);
-    //         console.log(response.data.data);
-    //       } else {
-    //         console.error("Data is not an array:", response.data.data);
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       console.error("There was an error!", error);
-    //     });
-    // }, []);
+  const handleSelectDate = (e: DateRange | undefined) => {
+    setDate(e);
+    setSearchParams((params) => {
+      params.set("from", String(e?.from));
+      params.set("to", String(e?.to));
+      return params;
+    });
+  };
 
   return (
     <>
-      <div className="border border-black w-1/4">
-        <div>Rincian</div>
-        <div className="flex">Total</div>
-      </div>
-      
       <div className="flex flex-col p-2 w-full">
-        <div className="border rounded-md mt-2">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="">#</TableHead>
-                <TableHead className=" text-center">
-                  <ChangeOrderButton paramKey="warehouse" name="Warehouse" />
-                </TableHead>
-                <TableHead className=" text-center">
-                  <ChangeOrderButton paramKey="product" name="Product" />
-                </TableHead>
-                <TableHead className=" text-center">
-                  <ChangeOrderButton paramKey="size" name="Size" />
-                </TableHead>
-                <TableHead className=" text-center">
-                  <ChangeOrderButton paramKey="newQty" name="newQty" />
-                </TableHead>
-                <TableHead className="text-center">
-                  <ChangeOrderButton paramKey="qtyChange" name="qtyChange" />
-                </TableHead>
-                <TableHead className="text-center">
-                  <ChangeOrderButton paramKey="oldQty" name="oldQty" />
-                </TableHead>
-                <TableHead className="text-center">type</TableHead>
-                <TableHead className="text-center">notes</TableHead>
-                <TableHead className="text-center">Date / Time</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {jurnals &&
-                jurnals.map((jurnal) => (
-                  <TableRow key={jurnal.id}>
-                    <TableCell className="text-center">{jurnal.id}</TableCell>
-                    <TableCell className="text-center">
-                      {jurnal.jurnal?.warehouse.name}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {jurnal.jurnal?.product.name}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {jurnal.jurnal?.sizes.label}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {jurnal.newQty}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {jurnal.qtyChange}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {jurnal.oldQty}
-                    </TableCell>
-                    <TableCell className="text-center">{jurnal.type}</TableCell>
-                    <TableCell className="text-center">
-                    {jurnal.notes}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {format(new Date(jurnal.createdAt),"Pp")}
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
+        <div className="flex justify-between items-center w-full">
+          <div className="flex gap-2 ">
+            <div className="relative w-[300px]">
+              <SearchIcon className="absolute h-4 w-4 text-muted-foreground left-3 top-1/2 -translate-y-1/2" />
+              <Input
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchParams((params) => {
+                    params.set("s", e.target.value);
+                    return params;
+                  });
+                }}
+                className=" w-full pl-10"
+                placeholder="search product..."
+              />
+            </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date"
+                  variant={"outline"}
+                  className={cn(
+                    "w-[300px] justify-start text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date?.from ? (
+                    date.to ? (
+                      <>
+                        {format(date.from, "LLL dd, y")}-{" "}
+                        {format(date.to, "LLL dd, y")}
+                      </>
+                    ) : (
+                      format(date.from, "LLL dd, y")
+                    )
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={date?.from}
+                  selected={date}
+                  onSelect={handleSelectDate}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          <div
+            className={cn(
+              ROLE !== "ADMIN" && "hidden",
+              "flex gap-2 items-center"
+            )}
+          >
+            {warehouses && warehouses.length > 0 && (
+              <Select
+                defaultValue="ALL"
+                onValueChange={(value) => {
+                  setSearchParams((params) => {
+                    params.set("warehouse", value);
+                    return params;
+                  });
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Warehouse" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">
+                    <div className="flex items-center w-[300px] justify-between">
+                      <span className="font-bold w-full self-start">All</span>
+                      <span className="flex gap-2 text-center justify-end text-muted-foreground w-full">
+                        All Warehouse
+                        <MapPin className="w-4 h-4 mr-2" />
+                      </span>
+                    </div>
+                  </SelectItem>
+                  {warehouses.map((warehouse) => {
+                    const hashWarehouseId = hashids.encode(warehouse.id);
+                    return (
+                      <SelectItem key={warehouse.id} value={hashWarehouseId}>
+                        <div className="flex items-center w-[300px] justify-between">
+                          <span className="font-bold w-full self-start">
+                            {warehouse.name}
+                          </span>
+                          <span className="flex gap-2 text-center justify-end text-muted-foreground w-full">
+                            {
+                              warehouse.warehouseAddress?.cityWarehouse
+                                ?.cityName
+                            }
+                            <MapPin className="w-4 h-4 mr-2" />
+                          </span>
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
         </div>
-        {/* <div className="flex gap-2 items-center justify-end mt-4">
+        <div className="border rounded-md mt-2">
+          {isLoading ? <ProductsPageSkeleton /> : <ReportTable data={data!} />}
+        </div>
+        <div className="flex gap-2 items-center justify-end mt-4">
           <TablePagination
             currentPage={currentPage}
-            dataLength={data?.products.length!}
+            dataLength={data?.jurnals.length!}
             totalPages={data?.totalPages!}
           />
-        </div> */}
+        </div>
       </div>
     </>
   );

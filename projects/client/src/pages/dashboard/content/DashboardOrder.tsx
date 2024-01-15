@@ -1,5 +1,5 @@
 import React from "react"
-import { SearchIcon, MapPin } from "lucide-react"
+import { SearchIcon, MapPin, CalendarIcon } from "lucide-react"
 import {
   Select,
   SelectContent,
@@ -18,6 +18,11 @@ import { useCurrentUser } from "@/hooks/useUser"
 import { getAllOrders } from "@/hooks/useOrder"
 import OrderTable from "../components/OrderTable"
 import { cn } from "@/lib/utils"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Button } from "@/components/ui/button"
+import { addDays, format } from "date-fns"
+import { Calendar } from "@/components/ui/calendar"
+import { DateRange } from "react-day-picker"
 
 const DashboardOrder = () => {
   const { user, isSignedIn, isLoaded } = useUser()
@@ -46,7 +51,23 @@ const DashboardOrder = () => {
       (warehouses && warehouses[0].name) ||
       "",
     status: searchParams.get("status") || "",
+    to: new Date(String(searchParams.get("to"))) || new Date(),
+    from: new Date(String(searchParams.get("from"))) || addDays(new Date(), 30),
   })
+
+  const [date, setDate] = React.useState<DateRange | undefined>({
+    from: new Date(),
+    to: addDays(new Date(), 30),
+  });
+
+  const handleSelectDate = (e: DateRange | undefined) => {
+    setDate(e);
+    setSearchParams((params) => {
+      params.set("from", String(e?.from));
+      params.set("to", String(e?.to));
+      return params;
+    });
+  };
   return (
     <div className="flex flex-col p-2 w-full">
       <div className="flex justify-between items-center w-full">
@@ -86,6 +107,42 @@ const DashboardOrder = () => {
               </SelectContent>
             </Select>
           </div>
+          <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date"
+                  variant={"outline"}
+                  className={cn(
+                    "w-[300px] justify-start text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date?.from ? (
+                    date.to ? (
+                      <>
+                        {format(date.from, "LLL dd, y")}-{" "}
+                        {format(date.to, "LLL dd, y")}
+                      </>
+                    ) : (
+                      format(date.from, "LLL dd, y")
+                    )
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={date?.from}
+                  selected={date}
+                  onSelect={handleSelectDate}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
         </div>
         <div
           className={cn(

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { Routes } from '@interfaces/routes.interface';
 import { JurnalController } from '@/controllers/jurnal.controller';
+import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node';
 
 export class JurnalRoute implements Routes {
   public path = '/v1/jurnals';
@@ -12,7 +13,8 @@ export class JurnalRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, this.jurnal.getJurnaltes);
+    this.router.get(`${this.path}`, this.jurnal.getJurnal);
+    this.router.get(`${this.path}/tes`, ClerkExpressRequireAuth(),this.jurnal.getJurnaltes);
     this.router.get(`${this.path}/:id`, this.jurnal.getJurnalById);
     this.router.post(`${this.path}`, this.jurnal.createJurnal);
     this.router.put(`${this.path}/:id`, this.jurnal.updateJurnal);

@@ -42,7 +42,7 @@ export class OrderController {
 
   public getOrders = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
-      const { page, s, order, filter, limit, warehouse, status } = req.query;
+      const { page, s, order, filter, limit, warehouse, status, to, from } = req.query;
 
       const { orders, totalPages } = await this.order.getAllOrder({
         s: String(s),
@@ -53,6 +53,8 @@ export class OrderController {
         warehouse: String(warehouse),
         externalId: req.auth.userId,
         status: String(status),
+        to: new Date(String(to)),
+        from : new Date (String(from)),
       });
       res.status(200).json({
         data: {

@@ -19,8 +19,8 @@ export class JurnalController {
 
   public getJurnaltes = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
-      const { page, s, order, filter, limit, warehouse, product, size } = req.query;
-      const { jurnals, totalPages } = await this.jurnal.findAllJurnaltes({
+      const { page, s, order, filter, limit, warehouse, to, from } = req.query;
+      const jurnals = await this.jurnal.findAllJurnaltes({
         s: String(s),
         order: String(order),
         limit: Number(limit),
@@ -28,14 +28,12 @@ export class JurnalController {
         page: Number(page),
         warehouse: String(warehouse),
         externalId: req.auth.userId,
-        product: String(product),
-        size:String(size)
+        to: new Date(String(to)),
+        from : new Date (String(from)),
       });
+
       res.status(200).json({
-        data: {
-          jurnals,
-          totalPages,
-        },
+        data: jurnals,
         message: 'get.jurnals',
       });
     } catch (err) {

@@ -1,6 +1,7 @@
 import service from "@/service";
 import { useAuth } from "@clerk/clerk-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import Hashids from "hashids";
 
 type InventoryType = {
     inventoryId: number;
@@ -60,43 +61,49 @@ type jurnalOptions = {
   order: string;
   limit: number;
   warehouse: string;
-  product: string;
-  size: string;
+  to : Date;
+  from: Date;
 
 };
 
-export const useGetAllJurnals = ({
+export const getAllJurnals = ({
   page,
     s,
     order,
     limit,
     filter,
     warehouse,
-    product,
-    size,
+    to,
+    from
 }: jurnalOptions) => {
+  const hashids = new Hashids("TOTEN", 10)
   const { getToken } = useAuth();
   const { data, isLoading, isFetched } = useQuery<{
     jurnals: Jurnal[];
     totalPages: number;
   }>({
-    queryKey: ["jurnals", page, s, filter, order, warehouse, product,size],
+    queryKey: ["jurnals", page, s, filter, order, warehouse,to ,from],
     queryFn: async () => {
-      const res = await service.get("/jurnals", {
-        params: {
-          s,
-          page,
-          order,
-          limit,
-          filter,
-          warehouse,
-          product,
-          size,
-        },
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${await getToken()}` },
-      });
-      return res.data.data;
+      try{
+        const res = await service.get("/jurnals/tes", {
+          params: {
+            s,
+            page,
+            order,
+            limit,
+            filter,
+            warehouse: warehouse === "ALL" ? warehouse :  Number(hashids.decode(warehouse)),
+            to,
+            from
+          },
+          withCredentials: true,
+          headers: { Authorization: `Bearer ${await getToken()}` },
+        });
+        return res.data.data;
+      } catch(error){
+        console.error(error)
+      }
+      
     },
   });
 

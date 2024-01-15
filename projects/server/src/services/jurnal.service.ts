@@ -3,8 +3,7 @@ import { HttpException } from '@/exceptions/HttpException';
 import { User } from '@/interfaces';
 import { GetFilterJurnal, Jurnal, JurnalData } from '@/interfaces/jurnal.interface';
 import { Service } from 'typedi';
-import { queryStringToArray } from './product/queryStringToArray';
-import { FindOptions } from 'sequelize';
+import { FindOptions, Op } from 'sequelize';
 
 @Service()
 export class JurnalService {
@@ -46,19 +45,16 @@ export class JurnalService {
     filter,
     externalId,
     warehouse,
-    product,
-    size,
+    to,
+    from,
   }: GetFilterJurnal): Promise<{ jurnals: Jurnal[]; totalPages: number }> {
-    // limit = limit || 10;
-    // page = page || 1;
-
-    const findUser: User = await DB.User.findOne({ where: { externalId } });
+    const findUser: User = await DB.User.findOne({ where: { externalId, status: 'ACTIVE' } });
     if (!findUser) throw new HttpException(409, "user doesn't exist");
     const role = findUser.role;
     const where =
       role === 'ADMIN'
         ? {
-            ...(warehouse && { id: Number(warehouse) }),
+            ...(warehouse && warehouse !== 'ALL' && { warehouseId: Number(warehouse) }),
           }
         : role === 'WAREHOUSE ADMIN'
         ? {
@@ -66,22 +62,26 @@ export class JurnalService {
           }
         : {};
 
-    // const products = queryStringToArray(product);
-    // const sizes = queryStringToArray(size);
-
     const LIMIT = Number(limit) || 10;
     const offset = (page - 1) * LIMIT;
 
+  
+    console.log (new Date(from))
+    console.log (new Date (to))
     const options: FindOptions<Jurnal> = {
-      // offset: (page - 1) * limit,
-      // limit: limit,
       offset,
       limit: LIMIT,
+      where: {
+        createdAt: {
+          [Op.between]: [new Date (from),new Date (to)],
+        },
+      },
       include: [
         {
           model: DB.Inventories,
           as: 'jurnal',
           attributes: ['stock'],
+          where,
           include: [
             {
               model: DB.Warehouses,
@@ -97,6 +97,13 @@ export class JurnalService {
               model: DB.Product,
               as: 'product',
               attributes: ['name'],
+              where: {
+                ...(s && {
+                  name: {
+                    [DB.Sequelize.Op.like]: `%${s}%`,
+                  },
+                }),
+              },
             },
           ],
         },
@@ -108,10 +115,10 @@ export class JurnalService {
     }
 
     const allJurnal = await DB.Jurnal.findAll(options);
-    const totalCount = await DB.Jurnal.count(options);
+    const totalCount = await DB.Jurnal.count({ where: options.where });
     const totalPages = Math.ceil(totalCount / LIMIT);
 
-    return  { totalPages: totalPages, jurnals: allJurnal };
+    return { totalPages: totalPages, jurnals: allJurnal };
   }
 
   public async findJurnalById(jurnalId: number): Promise<Jurnal> {

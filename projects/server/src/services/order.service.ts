@@ -127,6 +127,8 @@ export class OrderService {
     externalId,
     warehouse,
     status,
+    to,
+    from,
   }: GetFilterOrder): Promise<{ orders: Order[]; totalPages: number }> {
     const findUser: User = await DB.User.findOne({ where: { externalId } });
     if (!findUser) throw new HttpException(409, "user doesn't exist");
@@ -137,12 +139,17 @@ export class OrderService {
     }
     const LIMIT = Number(limit) || 10;
     const offset = (page - 1) * LIMIT;
+    console.log (new Date(from))
+    console.log (new Date (to))
     const options: FindOptions<Order> = {
       offset,
       limit: LIMIT,
       where: {
         ...(warehouse !== 'All' && { warehouseId: findWarehouse.id }),
         ...(status && { status }),
+        createdAt: {
+          [Op.between]: [new Date (from),new Date (to)],
+        },
       },
       ...(order && {
         order: filter === 'user' ? [[{ model: UserModel, as: 'userOrder' }, 'firstname', order]] : [[filter, order]],
