@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import path from 'path';
 import express from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
@@ -25,6 +26,7 @@ export class App {
     this.port = PORT || 8000;
 
     this.connectToDatabase();
+    this.initializeClient();
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
     this.initializeSwagger();
@@ -46,6 +48,14 @@ export class App {
 
   private async connectToDatabase() {
     await DB.sequelize.sync({ force: false });
+  }
+
+  private initializeClient() {
+    const clientPath = '../../client/build';
+    this.app.use(express.static(path.join(__dirname, clientPath)));
+    this.app.get('*', (req, res) => {
+      res.sendFile(path.join(__dirname, clientPath, 'index.html'));
+    });
   }
 
   private initializeMiddlewares() {
