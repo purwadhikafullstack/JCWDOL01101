@@ -48,32 +48,37 @@ export class JurnalService {
     to,
     from,
   }: GetFilterJurnal): Promise<{ jurnals: Jurnal[]; totalPages: number }> {
-    const findUser: User = await DB.User.findOne({ where: { externalId, status: 'ACTIVE' } });
+    const findUser: User = await DB.User.findOne({
+      where: { externalId, status: 'ACTIVE' },
+      include: [{ model: DB.Warehouses, as: 'userData', attributes: ['id'] }],
+    });
     if (!findUser) throw new HttpException(409, "user doesn't exist");
     const role = findUser.role;
     const where =
       role === 'ADMIN'
         ? {
-            ...(warehouse && warehouse !== 'ALL' && { warehouseId: Number(warehouse) }),
+            ...(warehouse && warehouse !== 'ALL' && { id: Number(warehouse) }),
           }
         : role === 'WAREHOUSE ADMIN'
         ? {
             userId: findUser.id,
           }
         : {};
-
+    const date = new Date();
+    let firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    let lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    if (from && to) {
+      firstDayOfMonth = new Date(from);
+      lastDayOfMonth = new Date(to);
+    }
     const LIMIT = Number(limit) || 10;
     const offset = (page - 1) * LIMIT;
-
-  
-    console.log (new Date(from))
-    console.log (new Date (to))
     const options: FindOptions<Jurnal> = {
       offset,
       limit: LIMIT,
       where: {
         createdAt: {
-          [Op.between]: [new Date (from),new Date (to)],
+          [Op.between]: [new Date(from), new Date(to)],
         },
       },
       include: [
@@ -81,12 +86,17 @@ export class JurnalService {
           model: DB.Inventories,
           as: 'jurnal',
           attributes: ['stock'],
-          where,
+          where: {
+            ...(role === 'WAREHOUSE ADMIN' && {
+              warehouseId: findUser.userData.id,
+            }),
+          },
           include: [
             {
               model: DB.Warehouses,
               as: 'warehouse',
               attributes: ['name'],
+              where,
             },
             {
               model: DB.Size,
@@ -174,5 +184,51 @@ export class JurnalService {
     };
     await DB.Jurnal.create({ ...senderJurnal }, { transaction });
     await DB.Jurnal.create({ ...receiverJurnal }, { transaction });
+  }
+
+  public async getStockSummary({
+    from,
+    to,
+    s,
+  }: Pick<GetFilterJurnal, 'from' | 'to' | 's'>): Promise<{ totalAddition: number; totalReduction: number; finalStock: number }> {
+    const where = {
+      createdAt: {
+        [Op.between]: [from, to],
+      },
+      '$jurnal.product.name$': {
+        [Op.like]: `%${s}%`,
+      },
+    };
+
+    const jurnals = await DB.Jurnal.findAll({
+      where,
+      include: [
+        {
+          model: DB.Inventories,
+          as: 'jurnal',
+          attributes: ['stock'],
+          include:[
+            {
+              model: DB.Product,
+              as: 'product',
+              attributes: [],
+            }
+          ]
+        },
+      ],
+    });
+
+    let totalAddition = 0;
+    let totalReduction = 0;
+    jurnals.forEach(jurnal => {
+      if (jurnal.type === '1') {
+        totalAddition += jurnal.qtyChange;
+      } else if (jurnal.type === '0') {
+        totalReduction += jurnal.qtyChange;
+      }
+    });
+
+    const finalStock = totalAddition - totalReduction;
+    return { totalAddition, totalReduction, finalStock };
   }
 }

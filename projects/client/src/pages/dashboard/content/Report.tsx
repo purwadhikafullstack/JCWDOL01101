@@ -3,7 +3,7 @@ import { useUser } from "@clerk/clerk-react";
 import { useCurrentUser } from "@/hooks/useUser";
 import { getAllJurnals } from "@/hooks/useJurnal";
 import { CalendarIcon, MapPin, SearchIcon } from "lucide-react";
-import { addDays, format } from "date-fns";
+import { format, subDays } from "date-fns";
 import {
   Select,
   SelectContent,
@@ -44,6 +44,11 @@ const Report = () => {
   const searchTerm = searchParams.get("s") || "";
   const [debounceSearch] = useDebounce(searchTerm, 1000);
 
+  const [date, setDate] = React.useState<DateRange | undefined>({
+    from: subDays(new Date(), 30),
+    to: new Date(),
+  });
+
   const { data: warehouses } = useGetWarehouse(ROLE === "ADMIN");
   const { data, isLoading } = getAllJurnals({
     page: currentPage,
@@ -52,13 +57,8 @@ const Report = () => {
     order: searchParams.get("order") || "",
     limit: 10,
     warehouse: searchParams.get("warehouse") || "",
-    to: new Date(String(searchParams.get("to"))) || new Date(),
-    from: new Date(String(searchParams.get("from"))) || addDays(new Date(), 30),
-  });
-
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(),
-    to: addDays(new Date(), 30),
+    to: date?.to,
+    from: date?.from,
   });
 
   const handleSelectDate = (e: DateRange | undefined) => {
@@ -69,6 +69,10 @@ const Report = () => {
       return params;
     });
   };
+  console.log("report========================"); 
+  console.log(data?.data.jurnals); 
+  const jurnals = data?.data.jurnals || [];
+  const stockSummary = data?.stockSummary || { totalAddition: 0, totalReduction: 0, finalStock: 0 };
 
   return (
     <>
@@ -180,13 +184,13 @@ const Report = () => {
           </div>
         </div>
         <div className="border rounded-md mt-2">
-          {isLoading ? <ProductsPageSkeleton /> : <ReportTable data={data!} />}
+          {isLoading ? <ProductsPageSkeleton /> :   <ReportTable data={{ jurnals, totalPages: data?.data.totalPages || 0 }} stockSummary={stockSummary} />}
         </div>
         <div className="flex gap-2 items-center justify-end mt-4">
           <TablePagination
             currentPage={currentPage}
-            dataLength={data?.jurnals.length!}
-            totalPages={data?.totalPages!}
+            dataLength={data?.data.jurnals.length!}
+            totalPages={data?.data.totalPages!}
           />
         </div>
       </div>

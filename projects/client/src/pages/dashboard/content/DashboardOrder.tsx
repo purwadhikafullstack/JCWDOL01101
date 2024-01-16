@@ -20,7 +20,7 @@ import OrderTable from "../components/OrderTable"
 import { cn } from "@/lib/utils"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
-import { addDays, format } from "date-fns"
+import { addDays, format, subDays } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
 import { DateRange } from "react-day-picker"
 
@@ -38,6 +38,11 @@ const DashboardOrder = () => {
   const searchTerm = searchParams.get("s") || ""
   const [debounceSearch] = useDebounce(searchTerm, 1000)
 
+  const [date, setDate] = React.useState<DateRange | undefined>({
+    from: subDays(new Date(),30),
+    to: new Date(),
+  });
+  
   const { data: warehouses } = useGetWarehouse(ROLE === "ADMIN")
   const { data, isLoading } = getAllOrders({
     page: currentPage,
@@ -51,14 +56,9 @@ const DashboardOrder = () => {
       (warehouses && warehouses[0].name) ||
       "",
     status: searchParams.get("status") || "",
-    to: new Date(String(searchParams.get("to"))) || new Date(),
-    from: new Date(String(searchParams.get("from"))) || addDays(new Date(), 30),
+    to:   date?.to,
+    from:  date?.from,
   })
-
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(),
-    to: addDays(new Date(), 30),
-  });
 
   const handleSelectDate = (e: DateRange | undefined) => {
     setDate(e);
@@ -68,6 +68,12 @@ const DashboardOrder = () => {
       return params;
     });
   };
+  // console.log("report========================"); 
+  // console.log(data); 
+  // const orders = data?.orders || [];
+  // const salesReport = data?.salesSummary || { totalSuccess: 0 };
+
+
   return (
     <div className="flex flex-col p-2 w-full">
       <div className="flex justify-between items-center w-full">

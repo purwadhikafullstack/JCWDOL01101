@@ -6,17 +6,21 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { getDate, formatToIDR } from "@/lib/utils"
-import ChangeOrderButton from "./ChangeOrderButton"
-import { Order } from "@/hooks/useOrder"
-import OrderAction from "./order/OrderAction"
+} from "@/components/ui/table";
+import { getDate, formatToIDR } from "@/lib/utils";
+import ChangeOrderButton from "./ChangeOrderButton";
+import { Order } from "@/hooks/useOrder";
+import OrderAction from "./order/OrderAction";
 
 function OrderTable({
   data,
 }: {
-  data: { orders: Order[]; totalPages: number };
+  data: { orders: Order[]; totalPages: number; 
+    // salesSummary:{totalSuccess:number}; 
+  };
 }) {
+  // const statusTotals = data?.totals;
+
   const statusTotals = React.useMemo(() => {
     const totals = {
       success: 0,
@@ -43,11 +47,11 @@ function OrderTable({
 
   return (
     <>
-      <div className="border text-center justify-evenly p-1">
-        <p className="ml-12 font-bold">Ringkasan</p>
+      {/* <div className="border text-center justify-evenly p-1">
+        <p className="font-bold">SALES REPORT</p>
         <div className="flex justify-evenly text-center">
           <div className="flex bg-green-500 border-4 rounded-xl p-2 font-semibold">
-            Success: {formatToIDR(statusTotals.success)}
+            Success: {(data.salesSummary.totalSuccess)}
           </div>
           <div className="flex bg-blue-400  p-2 border-4 rounded-xl font-semibold">
             Pending: {formatToIDR(statusTotals.pending)}
@@ -59,7 +63,30 @@ function OrderTable({
             Failed: {formatToIDR(statusTotals.canceled + statusTotals.rejected)}
           </div>
         </div>
+      </div> */}
+      <div className="flex justify-evenly text-center">
+        {statusTotals && ( // Menambahkan pengecekan apakah statusTotals sudah ada
+          <>
+            <div className="flex bg-green-500 border-4 rounded-xl p-2 font-semibold">
+              Success:{" "}
+              {statusTotals.success ? formatToIDR(statusTotals.success) : 0}
+            </div>
+            <div className="flex bg-blue-400  p-2 border-4 rounded-xl font-semibold">
+              Pending:{" "}
+              {statusTotals.pending ? formatToIDR(statusTotals.pending) : 0}
+            </div>
+            <div className="flex bg-yellow-400 p-2 border-4 rounded-xl font-semibold">
+              Ongoing:{" "}
+              {statusTotals.ongoing ? formatToIDR(statusTotals.ongoing) : 0}
+            </div>
+            {/* <div className="flex bg-red-400 p-2 border-4 rounded-xl font-semibold">
+              Failed:{" "}
+              {statusTotals.failed ? formatToIDR(statusTotals.failed) : 0}
+            </div> */}
+          </>
+        )}
       </div>
+
       <Table>
         <TableHeader>
           <TableRow>
@@ -114,8 +141,8 @@ function OrderTable({
                     {getDate(order.createdAt!.toLocaleString())}
                   </TableCell>
                   <TableCell className="text-center">
-                  <OrderAction orderId={order.id} />
-                </TableCell>
+                    <OrderAction orderId={order.id} />
+                  </TableCell>
                 </TableRow>
               ))}
             </>

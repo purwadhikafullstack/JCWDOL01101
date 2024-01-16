@@ -54,8 +54,8 @@ export class OrderService {
         userId: findUser.id,
         ...(status &&
           status !== 'ALL' && {
-          status,
-        }),
+            status,
+          }),
       },
       include: [
         {
@@ -115,10 +115,15 @@ export class OrderService {
       findWarehouse = await DB.Warehouses.findOne({ where: { name: warehouse } });
       if (!findWarehouse) throw new HttpException(409, "warehouse doesn't exist");
     }
+    const date = new Date();
+    let firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    let lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    if (from && to) {
+      firstDayOfMonth = new Date(from);
+      lastDayOfMonth = new Date(to);
+    }
     const LIMIT = Number(limit) || 10;
     const offset = (page - 1) * LIMIT;
-    console.log (new Date(from))
-    console.log (new Date (to))
     const options: FindOptions<Order> = {
       offset,
       limit: LIMIT,
@@ -126,7 +131,7 @@ export class OrderService {
         ...(warehouse !== 'All' && { warehouseId: findWarehouse.id }),
         ...(status && { status }),
         createdAt: {
-          [Op.between]: [new Date (from),new Date (to)],
+          [Op.between]: [new Date(from), new Date(to)],
         },
       },
       ...(order && {
@@ -162,5 +167,49 @@ export class OrderService {
     const totalPages = Math.ceil(totalCount / LIMIT);
 
     return { totalPages: totalPages, orders: allOrder };
+  }
+
+  public async getSalesSummary({ from, to, s }: Pick<GetFilterOrder, 'from' | 'to' | 's'>): Promise<{ totalSuccess: number }> {
+    const where = {
+      createdAt: {
+        [Op.between]: [from, to],
+      },
+      // '$order.product.name$': {
+      //   [Op.like]: `%${s}%`,
+      // },
+    };
+
+    const orders = await DB.Order.findAll({
+      where,
+      include: [
+        {
+          model: DB.Warehouses,
+          as: 'warehouseOrder',
+          include: [
+            {
+              model: DB.Inventories,
+              as: 'inventories',
+              include: [
+                {
+                  model: DB.Product,
+                  as: 'product',
+                  attributes: [],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    let totalSuccess = 0;
+    orders.forEach(order => {
+      if (order.status === 'SUCCESS') {
+        totalSuccess += order.totalPrice;
+      }
+    });
+    console.log('service =========================');
+    console.log(totalSuccess);
+    return { totalSuccess };
   }
 }

@@ -37,7 +37,6 @@ export interface Payment {
   paymentDate: Date;
 }
 
-
 type Params = {
   status: string;
   page: string;
@@ -45,12 +44,7 @@ type Params = {
   limit?: number;
 };
 
-export const useCurrentUserOrders = ({
-  status,
-  page,
-  q,
-  limit,
-}: Params) => {
+export const useCurrentUserOrders = ({ status, page, q, limit }: Params) => {
   const { getToken } = useAuth();
   const query = useQuery<{ orders: Order[]; totalPages: number }>({
     queryKey: ["orders/current-user", status, page, q, limit],
@@ -95,8 +89,8 @@ type orderOptions = {
   limit: number;
   warehouse: string;
   status: string;
-  to:Date;
-  from:Date;
+  to: Date | undefined;
+  from: Date | undefined;
 };
 export const getAllOrders = ({
   page,
@@ -113,6 +107,7 @@ export const getAllOrders = ({
   const { data, isLoading, isFetched } = useQuery<{
     orders: Order[];
     totalPages: number;
+    salesSummary:number;
   }>({
     queryKey: ["orders", page, s, filter, order, warehouse, status, to, from],
     queryFn: async () => {
@@ -131,6 +126,8 @@ export const getAllOrders = ({
         withCredentials: true,
         headers: { Authorization: `Bearer ${await getToken()}` },
       });
+      // console.log("useOrder========================")
+      // console.log(res.data.data);
       return res.data.data;
     },
   });
