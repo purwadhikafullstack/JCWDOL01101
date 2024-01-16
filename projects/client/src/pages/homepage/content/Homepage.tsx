@@ -20,10 +20,6 @@ const Homepage = () => {
     useHighestSellProducts();
   return (
     <>
-      <Helmet>
-        <title>Homepage | TOTEN</title>
-        <meta name="description" content={t("homepage.description")} />
-      </Helmet>
       <MainCarousel />
       <div className="mt-2 flex flex-col">
         <span className="flex items-center justify-between mt-8 my-2">
