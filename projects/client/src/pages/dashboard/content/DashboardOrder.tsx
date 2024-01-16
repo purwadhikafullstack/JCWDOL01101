@@ -65,7 +65,7 @@ const DashboardOrder = () => {
               placeholder="search order..."
             />
           </div>
-          <div className="w-[100px]">
+          <div className="flex justify-end">
             <Select
               onValueChange={(value) => {
                 setSearchParams((params) => {
@@ -74,15 +74,17 @@ const DashboardOrder = () => {
                 })
               }}
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Status" />
+              <SelectTrigger className="w-[150px]">
+                <SelectValue placeholder="Select Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="WAITING">waiting</SelectItem>
-                <SelectItem value="PROCESS">process</SelectItem>
-                <SelectItem value="DELIVERED">delivered</SelectItem>
-                <SelectItem value="SHIPPED">shipped</SelectItem>
-                <SelectItem value="FAILED">failed</SelectItem>
+                <SelectItem value="ALL">All</SelectItem>
+                <SelectItem value="WAITING">Waiting</SelectItem>
+                <SelectItem value="PROCESS">Process</SelectItem>
+                <SelectItem value="SHIPPED">Shipped</SelectItem>
+                <SelectItem value="DELIVERED">Delivered</SelectItem>
+                <SelectItem value="SUCCESS">Success</SelectItem>
+                <SelectItem value="UNSUCCESSFUL">Failed</SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -78,11 +78,15 @@ export const useGetMutation = ({
 };
 
 export const usePostMutation = () => {
+  const { getToken } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const createMutation = useMutation({
     mutationFn: async (mutation: postMutation) => {
-      await service.post("/mutations", mutation);
+      await service.post("/mutations", mutation, {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mutations"] });
@@ -102,11 +106,15 @@ export const usePostMutation = () => {
 };
 
 export const useCancelMutation = (mutationId: number) => {
+  const { getToken } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const editMutation = useMutation({
     mutationFn: async () => {
-      await service.patch(`/mutations/cancel/${mutationId}`);
+      await service.patch(`/mutations/cancel/${mutationId}`, {}, {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mutations"] });
@@ -126,11 +134,15 @@ export const useCancelMutation = (mutationId: number) => {
 };
 
 export const useAcceptMutation = (mutationId: number) => {
+  const { getToken } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const editMutation = useMutation({
     mutationFn: async (data: { name: string; notes?: string }) => {
-      await service.patch(`/mutations/accept/${mutationId}`, data);
+      await service.patch(`/mutations/accept/${mutationId}`, data, {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mutations"] });
@@ -150,11 +162,15 @@ export const useAcceptMutation = (mutationId: number) => {
 };
 
 export const useRejectMutation = (mutationId: number) => {
+  const { getToken } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const editMutation = useMutation({
     mutationFn: async (data: { name: string; notes?: string }) => {
-      await service.patch(`/mutations/reject/${mutationId}`, data);
+      await service.patch(`/mutations/reject/${mutationId}`, data, {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mutations"] });

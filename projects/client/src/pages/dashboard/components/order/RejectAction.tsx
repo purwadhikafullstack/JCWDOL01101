@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
-import { useRejectOrder } from "@/hooks/useOrderMutation"
+import { useAdminRejectOrder } from "@/hooks/useOrderMutation"
 
 const RejectAction = ({
   orderId,
@@ -20,7 +20,7 @@ const RejectAction = ({
 }) => {
   const { toast } = useToast()
 
-  const rejectOrder = useRejectOrder(orderId)
+  const rejectOrder = useAdminRejectOrder(orderId)
   const handleRejectOrder = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     rejectOrder.mutate()
