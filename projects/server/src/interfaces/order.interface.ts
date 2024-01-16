@@ -19,5 +19,5 @@ export interface GetFilterOrder {
   limit: number;
   externalId: string;
   warehouse: string;
-  status: string;
+  status: string | string[];
 }

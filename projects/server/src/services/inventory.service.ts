@@ -4,7 +4,7 @@ import { AddStock, Inventory } from '@/interfaces/inventory.interface';
 import { Order, OrderDetails } from '@/interfaces';
 import { Warehouse } from '@/interfaces/warehouse.interface';
 import Container, { Service } from 'typedi';
-import { Op } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 import { WarehouseModel } from '@/models/warehouse.model';
 import { JurnalService } from './jurnal.service';
 import { SizeModel } from '@/models';
@@ -21,7 +21,6 @@ export class InventoryService {
   public async findInventoryById(inventoryId: number): Promise<Inventory> {
     const findInventory: Inventory = await DB.Inventories.findByPk(inventoryId);
     if (!findInventory) throw new HttpException(409, "Inventory doesn't exist");
-
     return findInventory;
   }
 
@@ -42,9 +41,7 @@ export class InventoryService {
   public async deleteInventory(inventoryId: number): Promise<Inventory> {
     const findInventory: Inventory = await DB.Inventories.findByPk(inventoryId);
     if (!findInventory) throw new HttpException(409, "Inventory doesn't exist");
-
     await DB.Inventories.destroy({ where: { id: inventoryId } });
-
     return findInventory;
   }
 
@@ -71,9 +68,7 @@ export class InventoryService {
         productId: productId,
       },
     });
-
     if (!inventoryItem) throw new HttpException(404, 'Inventory item not found');
-
     return inventoryItem;
   }
 
@@ -81,7 +76,6 @@ export class InventoryService {
     if (isNaN(productId) || isNaN(warehouseId)) {
       throw new HttpException(400, 'Invalid productId or warehouseId');
     }
-
     const findInventories = await DB.Inventories.findAll({
       where: { productId, warehouseId },
       include: [
@@ -99,7 +93,6 @@ export class InventoryService {
     if (isNaN(productId) || isNaN(warehouseId) || isNaN(sizeId)) {
       throw new HttpException(400, 'Invalid productId or warehouseId');
     }
-
     const findInventories = await DB.Inventories.findAll({
       where: {
         sizeId,
@@ -154,32 +147,53 @@ export class InventoryService {
     }
   }
 
-  public async orderStock(findOrder: Order, orderDetails: OrderDetails[], currentWarehouse: Warehouse) {
-    const transaction = await DB.sequelize.transaction();
-    try {
-      for (const orderDetail of orderDetails) {
-        const currentInventory = await DB.Inventories.findOne({
-          where: { productId: orderDetail.productId, sizeId: orderDetail.sizeId, warehouseId: currentWarehouse.id },
-        });
-        const oldQty = currentInventory.stock;
-        currentInventory.stock -= orderDetail.quantity;
-        if (currentInventory.stock < 0) throw new HttpException(409, `Not enough stock for product ${orderDetail.productId}`);
-        await Promise.all([
-          currentInventory.save(),
-          DB.Jurnal.create({
+  public async orderStock(findOrder: Order, orderDetails: OrderDetails[], currentWarehouse: Warehouse, transaction: Transaction) {
+    for (const orderDetail of orderDetails) {
+      const currentInventory = await DB.Inventories.findOne({
+        where: { productId: orderDetail.productId, sizeId: orderDetail.sizeId, warehouseId: currentWarehouse.id },
+      });
+      const oldQty = currentInventory.stock;
+      currentInventory.stock -= orderDetail.quantity;
+      if (currentInventory.stock < 0) throw new HttpException(409, `Not enough stock for product ${orderDetail.productId}`);
+      await Promise.all([
+        currentInventory.save({ transaction }),
+        DB.Jurnal.create(
+          {
             inventoryId: currentInventory.id,
             oldQty,
             qtyChange: orderDetail.quantity,
             newQty: currentInventory.stock,
             type: '0',
             notes: `Stock out order ${findOrder.invoice}`,
-          }),
-        ]);
-      }
-      await transaction.commit();
-    } catch (error) {
-      await transaction.rollback();
-      throw error;
+          },
+          { transaction },
+        ),
+      ]);
+    }
+  }
+
+  public async returnOrderStock(findOrder: Order, orderDetails: OrderDetails[], currentWarehouse: Warehouse, transaction: Transaction) {
+    for (const orderDetail of orderDetails) {
+      const currentInventory = await DB.Inventories.findOne({
+        where: { productId: orderDetail.productId, sizeId: orderDetail.sizeId, warehouseId: currentWarehouse.id },
+      });
+      if (!currentInventory) throw new HttpException(409, `Product ${orderDetail.productId} not found`);
+      const oldQty = currentInventory.stock;
+      currentInventory.stock += orderDetail.quantity;
+      await Promise.all([
+        currentInventory.save({ transaction }),
+        DB.Jurnal.create(
+          {
+            inventoryId: currentInventory.id,
+            oldQty,
+            qtyChange: orderDetail.quantity,
+            newQty: currentInventory.stock,
+            type: '1',
+            notes: `Return stock from order ${findOrder.invoice}`,
+          },
+          { transaction },
+        ),
+      ]);
     }
   }
 }
