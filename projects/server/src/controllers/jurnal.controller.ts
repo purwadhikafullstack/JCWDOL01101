@@ -31,18 +31,9 @@ export class JurnalController {
         to: new Date(String(to)),
         from: new Date(String(from)),
       });
-
-      // const stockSummary = await this.jurnal.getStockSummary({
-      //   from: new Date(String(from)),
-      //   to: new Date(String(to)),
-      //   s: String(s),
-      // });
       
-      console.log("controller====================================")
-      console.log(jurnals);
       res.status(200).json({
         data: jurnals,
-        // stockSummary,
         message: 'get.jurnals',
       });
     } catch (err) {

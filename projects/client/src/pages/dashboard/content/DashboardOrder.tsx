@@ -68,11 +68,6 @@ const DashboardOrder = () => {
       return params;
     });
   };
-  console.log("report========================"); 
-  console.log(data); 
-  const orders = data?.orders || [];
-  // const salesReport = data?.salesSummary || { totalSuccess: 0 };
-
 
   return (
     <div className="flex flex-col p-2 w-full">

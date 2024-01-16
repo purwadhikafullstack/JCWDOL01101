@@ -129,8 +129,6 @@ export const getAllOrders = ({
         withCredentials: true,
         headers: { Authorization: `Bearer ${await getToken()}` },
       });
-      // console.log("useOrder========================")
-      // console.log(res.data.data);
       return res.data.data;
     },
   });

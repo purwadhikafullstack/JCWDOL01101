@@ -58,15 +58,6 @@ export class OrderController {
         from : new Date (String(from)),
       }); 
 
-      // const salesSummary = await this.order.getSalesSummary({
-      //   from: new Date(String(from)),
-      //   to: new Date(String(to)),
-      //   s: String(s),
-      // });
-
-      console.log("controller====================================")
-      console.log(orders);
-
       res.status(200).json({
         data: {
           orders,

@@ -69,11 +69,7 @@ const Report = () => {
       return params;
     });
   };
-  console.log("report========================"); 
-  console.log(data?.data.jurnals); 
   const jurnals = data?.data.jurnals || [];
-  // const stockSummary = data?.stockSummary || { totalAddition: 0, totalReduction: 0, finalStock: 0 };
-
   return (
     <>
       <div className="flex flex-col p-2 w-full">

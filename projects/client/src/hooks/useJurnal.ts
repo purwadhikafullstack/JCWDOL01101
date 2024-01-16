@@ -64,57 +64,6 @@ type jurnalOptions = {
   from: Date | undefined;
 };
 
-// export const getAllJurnals = ({
-//   page,
-//     s,
-//     order,
-//     limit,
-//     filter,
-//     warehouse,
-//     to,
-//     from
-// }: jurnalOptions) => {
-//   const hashids = new Hashids("TOTEN", 10)
-//   const { getToken } = useAuth();
-//   const { data, isLoading, isFetched } = useQuery<{
-//     jurnals: Jurnal[];
-//     totalPages: number;
-//     // stockSummary: {
-//     //   totalAddition: number;
-//     //   totalReduction: number;
-//     //   finalStock: number;
-//     // };
-//   }>({
-//     queryKey: ["jurnals", page, s, filter, order, warehouse,to ,from],
-//     queryFn: async () => {
-//       try{
-//         const res = await service.get("/jurnals/tes", {
-//           params: {
-//             s,
-//             page,
-//             order,
-//             limit,
-//             filter,
-//             warehouse: warehouse === "ALL" ? warehouse :  Number(hashids.decode(warehouse)),
-//             to,
-//             from
-//           },
-//           withCredentials: true,
-//           headers: { Authorization: `Bearer ${await getToken()}` },
-//         });
-//         console.log("usejurnal========================")
-//         console.log(res.data);
-//         return res.data.data;
-//       } catch(error){
-//         console.error(error)
-//       }
-
-//     },
-//   });
-
-//   return { data, isLoading, isFetched };
-// };
-
 export const getAllJurnals = ({
   page,
   s,
@@ -135,11 +84,6 @@ export const getAllJurnals = ({
       totalReduction: number;
       finalStock: number;
     };
-    // stockSummary: {
-    //   totalAddition: number;
-    //   totalReduction: number;
-    //   finalStock: number;
-    // };
   }>({
     queryKey: ["jurnals", page, s, filter, order, warehouse, to, from],
     queryFn: async () => {
@@ -161,8 +105,6 @@ export const getAllJurnals = ({
           withCredentials: true,
           headers: { Authorization: `Bearer ${await getToken()}` },
         });
-        console.log("usejurnal========================");
-        console.log(res.data);
         return res.data;
       } catch (error) {
         console.error(error);
