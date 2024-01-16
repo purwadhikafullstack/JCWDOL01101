@@ -13,8 +13,8 @@ const SelectBy = () => {
   const { t } = useTranslation();
   const [_, setSearchParams] = useSearchParams();
   return (
-    <div className="flex flex-col md:flex-row  gap-2 w-full lg:justify-end items-start md:items-center">
-      <h3 className="uppercase tracking-wide">
+    <div className="flex flex-col md:flex-row gap-2 w-full lg:justify-end items-start md:items-center">
+      <h3 className="uppercase tracking-wide hidden md:block">
         {t("productsPage.filter.header")}
       </h3>
       <Select

@@ -16,6 +16,10 @@ import { useSize } from "@/hooks/useSize";
 import { useUser } from "@clerk/clerk-react";
 import { Warehouse } from "@/hooks/useWarehouse";
 import Hashids from "hashids";
+import { STATUS } from "@/hooks/useReviewMutation";
+import { useProducts } from "@/hooks/useProduct";
+import { useDebounce } from "use-debounce";
+import RestoreProductDialog from "./RestoreProductDialog";
 
 type Props = {
   warehouses?: Warehouse[];
@@ -28,8 +32,23 @@ const ProductTableOptions = ({ warehouses }: Props) => {
   const searchTerm = searchParams.get("s") || "";
   const categoryParams = searchParams.get("category")?.split(",");
   const sizeParams = searchParams.get("size")?.split(",");
-  const filterParams = searchParams.get("filter");
   const orderParams = searchParams.get("order");
+  const currentPage = Number(searchParams.get("page"));
+  const filterParams = searchParams.get("filter");
+  const [debounceSearch] = useDebounce(searchTerm, 1000);
+  const status = searchParams.get("status") as STATUS;
+
+  const { data } = useProducts({
+    page: currentPage,
+    s: debounceSearch,
+    filter: filterParams || "",
+    order: orderParams || "",
+    limit: 10,
+    status: searchParams.get("status") || "",
+    size: searchParams.get("size") || "",
+    category: searchParams.get("category") || "",
+    warehouseId: searchParams.get("warehouse") || "",
+  });
 
   const { data: categories } = useCategories();
   const { data: sizes } = useSize();
@@ -45,6 +64,7 @@ const ProductTableOptions = ({ warehouses }: Props) => {
         label: size.label,
       }))
     : [];
+
   return (
     <>
       <div className="flex gap-2 items-center justify-between">
@@ -150,7 +170,10 @@ const ProductTableOptions = ({ warehouses }: Props) => {
           </div>
         )}
       </div>
-      <div className="flex justify-end">
+      <div className="flex items-center gap-2 justify-end">
+        {status && status !== "ACTIVE" && ROLE === "ADMIN" && data && (
+          <RestoreProductDialog disabled={data.products.length <= 0} />
+        )}
         <Select
           onValueChange={(value) => {
             setSearchParams((params) => {

@@ -78,7 +78,7 @@ const Product = () => {
     status: searchParams.get("status") || "",
     size: searchParams.get("size") || "",
     category: searchParams.get("category") || "",
-    warehouse: searchParams.get("warehouse") || "",
+    warehouseId: searchParams.get("warehouse") || "",
   });
 
   const clearImage = useBoundStore((state) => state.clearImage);
