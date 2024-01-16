@@ -72,7 +72,7 @@ const Report = () => {
   console.log("report========================"); 
   console.log(data?.data.jurnals); 
   const jurnals = data?.data.jurnals || [];
-  const stockSummary = data?.stockSummary || { totalAddition: 0, totalReduction: 0, finalStock: 0 };
+  // const stockSummary = data?.stockSummary || { totalAddition: 0, totalReduction: 0, finalStock: 0 };
 
   return (
     <>
@@ -184,7 +184,7 @@ const Report = () => {
           </div>
         </div>
         <div className="border rounded-md mt-2">
-          {isLoading ? <ProductsPageSkeleton /> :   <ReportTable data={{ jurnals, totalPages: data?.data.totalPages || 0 }} stockSummary={stockSummary} />}
+          {isLoading ? <ProductsPageSkeleton /> :   <ReportTable data={{ jurnals, totalPages: data?.data.totalPages || 0 ,totalAddition: data?.data.totalAddition || 0, totalReduction:data?.data.totalReduction||0, finalStock:data?.data.finalStock||0}} />}
         </div>
         <div className="flex gap-2 items-center justify-end mt-4">
           <TablePagination

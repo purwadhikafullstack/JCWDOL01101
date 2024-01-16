@@ -15,56 +15,56 @@ import OrderAction from "./order/OrderAction";
 function OrderTable({
   data,
 }: {
-  data: { orders: Order[]; totalPages: number; 
+  data: { orders: Order[]; totalPages: number; totalSuccess:number; 
     // salesSummary:{totalSuccess:number}; 
   };
 }) {
   // const statusTotals = data?.totals;
 
-  const statusTotals = React.useMemo(() => {
-    const totals = {
-      success: 0,
-      pending: 0,
-      canceled: 0,
-      rejected: 0,
-      ongoing: 0,
-    };
-    data.orders.forEach((order) => {
-      if (order.status === "SUCCESS") totals.success += order.totalPrice;
-      else if (order.status === "PENDING") totals.pending += order.totalPrice;
-      else if (order.status === "CANCELED") totals.canceled += order.totalPrice;
-      else if (order.status === "REJECTED") totals.rejected += order.totalPrice;
-      else if (
-        order.status === "DELIVERED" ||
-        order.status === "SHIPPED" ||
-        order.status === "WAITING" ||
-        order.status === "PROCESS"
-      )
-        totals.ongoing += order.totalPrice;
-    });
-    return totals;
-  }, [data.orders]);
+  // const statusTotals = React.useMemo(() => {
+  //   const totals = {
+  //     success: 0,
+  //     pending: 0,
+  //     canceled: 0,
+  //     rejected: 0,
+  //     ongoing: 0,
+  //   };
+  //   data.orders.forEach((order) => {
+  //     if (order.status === "SUCCESS") totals.success += order.totalPrice;
+  //     else if (order.status === "PENDING") totals.pending += order.totalPrice;
+  //     else if (order.status === "CANCELED") totals.canceled += order.totalPrice;
+  //     else if (order.status === "REJECTED") totals.rejected += order.totalPrice;
+  //     else if (
+  //       order.status === "DELIVERED" ||
+  //       order.status === "SHIPPED" ||
+  //       order.status === "WAITING" ||
+  //       order.status === "PROCESS"
+  //     )
+  //       totals.ongoing += order.totalPrice;
+  //   });
+  //   return totals;
+  // }, [data.orders]);
 
   return (
     <>
-      {/* <div className="border text-center justify-evenly p-1">
+      <div className="border text-center justify-evenly p-1">
         <p className="font-bold">SALES REPORT</p>
         <div className="flex justify-evenly text-center">
           <div className="flex bg-green-500 border-4 rounded-xl p-2 font-semibold">
-            Success: {(data.salesSummary.totalSuccess)}
+            Success: {formatToIDR(data.totalSuccess)}
           </div>
           <div className="flex bg-blue-400  p-2 border-4 rounded-xl font-semibold">
-            Pending: {formatToIDR(statusTotals.pending)}
+            {/* Pending: {formatToIDR(statusTotals.pending)} */}
           </div>
           <div className="flex bg-yellow-400 p-2 border-4 rounded-xl font-semibold">
-            Ongoing: {formatToIDR(statusTotals.ongoing)}
+            {/* Ongoing: {formatToIDR(statusTotals.ongoing)} */}
           </div>
           <div className="flex bg-red-400 p-2 border-4 rounded-xl font-semibold">
-            Failed: {formatToIDR(statusTotals.canceled + statusTotals.rejected)}
+            {/* Failed: {formatToIDR(statusTotals.canceled + statusTotals.rejected)} */}
           </div>
         </div>
-      </div> */}
-      <div className="flex justify-evenly text-center">
+      </div>
+      {/* <div className="flex justify-evenly text-center">
         {statusTotals && ( // Menambahkan pengecekan apakah statusTotals sudah ada
           <>
             <div className="flex bg-green-500 border-4 rounded-xl p-2 font-semibold">
@@ -79,13 +79,13 @@ function OrderTable({
               Ongoing:{" "}
               {statusTotals.ongoing ? formatToIDR(statusTotals.ongoing) : 0}
             </div>
-            {/* <div className="flex bg-red-400 p-2 border-4 rounded-xl font-semibold">
+            <div className="flex bg-red-400 p-2 border-4 rounded-xl font-semibold">
               Failed:{" "}
               {statusTotals.failed ? formatToIDR(statusTotals.failed) : 0}
-            </div> */}
+            </div>
           </>
         )}
-      </div>
+      </div> */}
 
       <Table>
         <TableHeader>

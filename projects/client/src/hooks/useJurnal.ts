@@ -4,30 +4,30 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import Hashids from "hashids";
 
 type InventoryType = {
-    inventoryId: number;
-    warehouse: WarehouseType;
-    sizes: SizeType;
-    status: string;
-    product: ProductType;
-    stock: number;
-    sold: number;
-  };
-  
-  type WarehouseType = {
-    warehouseId: number;
-    name: string;
-  };
-  
-  type SizeType = {
-    sizeId: number;
-    label: string;
-    value: number;
-  };
-  
-  type ProductType = {
-    productId: number;
-    name: string;
-  };
+  inventoryId: number;
+  warehouse: WarehouseType;
+  sizes: SizeType;
+  status: string;
+  product: ProductType;
+  stock: number;
+  sold: number;
+};
+
+type WarehouseType = {
+  warehouseId: number;
+  name: string;
+};
+
+type SizeType = {
+  sizeId: number;
+  label: string;
+  value: number;
+};
+
+type ProductType = {
+  productId: number;
+  name: string;
+};
 
 export interface Jurnal {
   id: number;
@@ -37,22 +37,21 @@ export interface Jurnal {
   newQty: number;
   type: "1" | "0";
   notes: string;
-  createdAt:string;
-  jurnal?:InventoryType;
+  createdAt: string;
+  jurnal?: InventoryType;
 }
 
-
 export const useGetJurnal = (isSuperAdmin: boolean) => {
-    const jurnal = useQuery<Jurnal[]>({
-      queryKey: ["jurnals"],
-      queryFn: async () => {
-        const response = await service.get("/jurnals");
-        return response.data.data;
-      },
-      enabled: isSuperAdmin,
-    });
-    return jurnal;
-  };
+  const jurnal = useQuery<Jurnal[]>({
+    queryKey: ["jurnals"],
+    queryFn: async () => {
+      const response = await service.get("/jurnals");
+      return response.data.data;
+    },
+    enabled: isSuperAdmin,
+  });
+  return jurnal;
+};
 
 type jurnalOptions = {
   page: number;
@@ -80,7 +79,7 @@ type jurnalOptions = {
 //   const { data, isLoading, isFetched } = useQuery<{
 //     jurnals: Jurnal[];
 //     totalPages: number;
-//     // stockSummary: { 
+//     // stockSummary: {
 //     //   totalAddition: number;
 //     //   totalReduction: number;
 //     //   finalStock: number;
@@ -109,7 +108,7 @@ type jurnalOptions = {
 //       } catch(error){
 //         console.error(error)
 //       }
-      
+
 //     },
 //   });
 
@@ -124,24 +123,27 @@ export const getAllJurnals = ({
   filter,
   warehouse,
   to,
-  from
+  from,
 }: jurnalOptions) => {
-  const hashids = new Hashids("TOTEN", 10)
+  const hashids = new Hashids("TOTEN", 10);
   const { getToken } = useAuth();
   const { data, isLoading, isFetched } = useQuery<{
     data: {
       jurnals: Jurnal[];
       totalPages: number;
-    };
-    stockSummary: { 
       totalAddition: number;
       totalReduction: number;
       finalStock: number;
     };
+    // stockSummary: {
+    //   totalAddition: number;
+    //   totalReduction: number;
+    //   finalStock: number;
+    // };
   }>({
-    queryKey: ["jurnals", page, s, filter, order, warehouse,to ,from],
+    queryKey: ["jurnals", page, s, filter, order, warehouse, to, from],
     queryFn: async () => {
-      try{
+      try {
         const res = await service.get("/jurnals/tes", {
           params: {
             s,
@@ -149,20 +151,22 @@ export const getAllJurnals = ({
             order,
             limit,
             filter,
-            warehouse: warehouse === "ALL" ? warehouse :  Number(hashids.decode(warehouse)),
+            warehouse:
+              warehouse === "ALL"
+                ? warehouse
+                : Number(hashids.decode(warehouse)),
             to,
-            from
+            from,
           },
           withCredentials: true,
           headers: { Authorization: `Bearer ${await getToken()}` },
         });
-        console.log("usejurnal========================")
+        console.log("usejurnal========================");
         console.log(res.data);
-        return res.data; 
-      } catch(error){
-        console.error(error)
+        return res.data;
+      } catch (error) {
+        console.error(error);
       }
-      
     },
   });
 

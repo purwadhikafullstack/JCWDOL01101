@@ -13,39 +13,39 @@ import { format } from "date-fns";
 
 function ReportTable({
   data,
-   stockSummary
+  //  stockSummary
 }: {
-  data: { jurnals: Jurnal[]; totalPages: number, };
-  stockSummary: { totalAddition: number; totalReduction: number; finalStock: number }; 
+  data: { jurnals: Jurnal[]; totalPages: number,totalAddition:number; totalReduction:number; finalStock:number  };
+  // stockSummary: { totalAddition: number; totalReduction: number; finalStock: number }; 
 }) {
-  const [totalAddition, setTotalAddition] = useState(0);
-  const [totalReduction, setTotalReduction] = useState(0);
-  const [finalStock, setFinalStock] = useState(0);
+  // const [totalAddition, setTotalAddition] = useState(0);
+  // const [totalReduction, setTotalReduction] = useState(0);
+  // const [finalStock, setFinalStock] = useState(0);
 
-  useEffect(() => {
-    let addition = 0;
-    let reduction = 0;
-    let stock = 0;
+  // useEffect(() => {
+  //   let addition = 0;
+  //   let reduction = 0;
+  //   let stock = 0;
 
-    if (data && data.jurnals) {
-      data.jurnals.forEach((jurnal) => {
-        if (jurnal.type === "1") {
-          addition += jurnal.qtyChange;
-        } else if (jurnal.type === "0") {
-          reduction += jurnal.qtyChange;
-        }
-        stock += jurnal.newQty;
-      });
-    }
+  //   if (data && data.jurnals) {
+  //     data.jurnals.forEach((jurnal) => {
+  //       if (jurnal.type === "1") {
+  //         addition += jurnal.qtyChange;
+  //       } else if (jurnal.type === "0") {
+  //         reduction += jurnal.qtyChange;
+  //       }
+  //       stock += jurnal.newQty;
+  //     });
+  //   }
 
-    setTotalAddition(addition);
-    setTotalReduction(reduction);
-    setFinalStock(stock);
-  }, [data]);
+  //   setTotalAddition(addition);
+  //   setTotalReduction(reduction);
+  //   setFinalStock(stock);
+  // }, [data]);
 
   return (
     <>
-      <div className="border text-center justify-evenly p-1">
+      {/* <div className="border text-center justify-evenly p-1">
         <p className="ml-12 font-bold">STOCK SUMMARY</p>
         <div className="flex justify-evenly text-center">
           <div className="flex bg-green-500 border-4 rounded-xl p-2 font-semibold">
@@ -58,21 +58,21 @@ function ReportTable({
             Stok Akhir : {finalStock}
           </div>
         </div>
-      </div>
-       {/* <div className="border text-center justify-evenly p-1">
+      </div> */}
+       <div className="border text-center justify-evenly p-1">
         <p className="ml-12 font-bold">STOCK SUMMARY</p>
         <div className="flex justify-evenly text-center">
           <div className="flex bg-green-500 border-4 rounded-xl p-2 font-semibold">
-            Total Penambahan : {stockSummary?.totalAddition}
+            Total Penambahan : {data.totalAddition}
           </div>
           <div className="flex bg-red-400 p-2 border-4 rounded-xl font-semibold">
-            Total Pengurangan : {stockSummary?.totalReduction}
+            Total Pengurangan : {data.totalReduction}
           </div>
           <div className="flex bg-blue-400 p-2 border-4 rounded-xl font-semibold">
-            Stok Akhir : {stockSummary?.finalStock}
+            Stok Akhir : {data.finalStock}
           </div>
         </div>
-      </div> */}
+      </div>
       <Table>
         <TableHeader>
           <TableRow>

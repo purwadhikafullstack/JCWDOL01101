@@ -47,7 +47,7 @@ export class JurnalService {
     warehouse,
     to,
     from,
-  }: GetFilterJurnal): Promise<{ jurnals: Jurnal[]; totalPages: number }> {
+  }: GetFilterJurnal): Promise<{ jurnals: Jurnal[]; totalPages: number; totalAddition:number; totalReduction:number; finalStock:number }> {
     const findUser: User = await DB.User.findOne({
       where: { externalId, status: 'ACTIVE' },
       include: [{ model: DB.Warehouses, as: 'userData', attributes: ['id'] }],
@@ -128,7 +128,19 @@ export class JurnalService {
     const totalCount = await DB.Jurnal.count({ where: options.where });
     const totalPages = Math.ceil(totalCount / LIMIT);
 
-    return { totalPages: totalPages, jurnals: allJurnal };
+    let totalAddition = 0;
+    let totalReduction = 0;
+    allJurnal.forEach(jurnal => {
+      if (jurnal.type === '1') {
+        totalAddition += jurnal.qtyChange;
+      } else if (jurnal.type === '0') {
+        totalReduction += jurnal.qtyChange;
+      }
+    });
+
+    const finalStock = totalAddition - totalReduction;
+
+    return { totalPages: totalPages, jurnals: allJurnal, totalAddition, totalReduction, finalStock };
   }
 
   public async findJurnalById(jurnalId: number): Promise<Jurnal> {

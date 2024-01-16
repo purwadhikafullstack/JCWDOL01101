@@ -107,7 +107,7 @@ export class OrderService {
     status,
     to,
     from,
-  }: GetFilterOrder): Promise<{ orders: Order[]; totalPages: number }> {
+  }: GetFilterOrder): Promise<{ orders: Order[]; totalPages: number , totalSuccess:number}> {
     const findUser: User = await DB.User.findOne({ where: { externalId } });
     if (!findUser) throw new HttpException(409, "user doesn't exist");
     let findWarehouse;
@@ -166,9 +166,16 @@ export class OrderService {
     const totalCount = await DB.Order.count(options);
     const totalPages = Math.ceil(totalCount / LIMIT);
 
-    return { totalPages: totalPages, orders: allOrder };
-  }
+    let totalSuccess = 0;
+    allOrder.forEach(order => {
+      if (order.status === 'SUCCESS') {
+        totalSuccess += order.totalPrice;
+      }
+    });
 
+    return { totalPages: totalPages, orders: allOrder, totalSuccess };
+  }
+////////////
   public async getSalesSummary({ from, to, s }: Pick<GetFilterOrder, 'from' | 'to' | 's'>): Promise<{ totalSuccess: number }> {
     const where = {
       createdAt: {

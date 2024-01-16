@@ -45,7 +45,7 @@ export class OrderController {
   public getOrders = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const { page, s, order, filter, limit, warehouse, status, to, from } = req.query;
-      const { orders, totalPages } = await this.order.getAllOrder({
+      const { orders, totalPages, totalSuccess } = await this.order.getAllOrder({
         s: String(s),
         order: String(order),
         limit: Number(limit),
@@ -58,20 +58,20 @@ export class OrderController {
         from : new Date (String(from)),
       }); 
 
-      const salesSummary = await this.order.getSalesSummary({
-        from: new Date(String(from)),
-        to: new Date(String(to)),
-        s: String(s),
-      });
+      // const salesSummary = await this.order.getSalesSummary({
+      //   from: new Date(String(from)),
+      //   to: new Date(String(to)),
+      //   s: String(s),
+      // });
 
       console.log("controller====================================")
-      console.log(salesSummary);
+      console.log(orders);
 
       res.status(200).json({
         data: {
           orders,
           totalPages,
-          salesSummary,
+          totalSuccess,
         },
         message: 'get.orders',
       });
