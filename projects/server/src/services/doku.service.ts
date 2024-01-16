@@ -94,13 +94,13 @@ export class DokuService {
             price: cp.price,
             sizeId: cp.sizeId,
           }));
-
           await DB.PaymentDetails.create(
             {
               orderId: createOrder.id,
               method: `${paymentMethod}-va`.toUpperCase(),
               paymentDate: new Date(data.virtual_account_info.created_date_utc),
               virtualAccount: data.virtual_account_info.virtual_account_number,
+              expiredDate: new Date(data.virtual_account_info.expired_date_utc),
               status: 'WAITING',
             },
             { transaction },

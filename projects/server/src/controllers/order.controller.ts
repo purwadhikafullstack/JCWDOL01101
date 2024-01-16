@@ -55,14 +55,17 @@ export class OrderController {
         externalId: req.auth.userId,
         status: String(status),
         to: new Date(String(to)),
-        from : new Date (String(from)),
-      }); 
+        from: new Date(String(from)),
+      });
 
       res.status(200).json({
         data: {
           orders,
           totalPages,
-          totalSuccess, totalPending, totalFailed, totalOngoing
+          totalSuccess,
+          totalPending,
+          totalFailed,
+          totalOngoing,
         },
         message: 'get.orders',
       });

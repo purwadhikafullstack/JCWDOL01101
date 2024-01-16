@@ -13,6 +13,7 @@ import { DB } from '@database';
 import { Routes } from '@interfaces/routes.interface';
 import { ErrorMiddleware } from '@middlewares/error.middleware';
 import { logger, stream } from '@utils/logger';
+import { startCronjob } from './utils/cronJob';
 
 export class App {
   public app: express.Application;
@@ -29,6 +30,7 @@ export class App {
     this.initializeRoutes(routes);
     this.initializeSwagger();
     this.initializeErrorHandling();
+    this.cronJob();
   }
 
   public listen() {
@@ -84,5 +86,9 @@ export class App {
 
   private initializeErrorHandling() {
     this.app.use(ErrorMiddleware);
+  }
+
+  private cronJob() {
+    startCronjob();
   }
 }

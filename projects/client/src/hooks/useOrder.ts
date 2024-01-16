@@ -35,6 +35,7 @@ export interface Payment {
   virtualAccount: string;
   status: string;
   paymentDate: Date;
+  expiredDate: Date;
 }
 
 type Params = {

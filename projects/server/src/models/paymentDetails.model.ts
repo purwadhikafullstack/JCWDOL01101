@@ -8,6 +8,7 @@ export class PaymentDetailsModel extends Model<Payment> implements Payment {
   public virtualAccount: string;
   public status: string;
   public paymentDate: Date;
+  public expiredDate:Date;
 }
 
 export default function (sequelize: Sequelize): typeof PaymentDetailsModel {
@@ -35,6 +36,10 @@ export default function (sequelize: Sequelize): typeof PaymentDetailsModel {
         allowNull: false,
       },
       paymentDate: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      expiredDate: {
         type: DataTypes.DATE,
         allowNull: false,
       },
