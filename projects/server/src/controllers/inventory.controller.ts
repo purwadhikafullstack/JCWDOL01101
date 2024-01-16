@@ -1,7 +1,6 @@
 import { Inventory } from '@/interfaces/inventory.interface';
 import { InventoryService } from '@/services/inventory.service';
 import { NextFunction, Request, Response } from 'express';
-import Hashids from 'hashids';
 import Container from 'typedi';
 
 export class InventoryController {
@@ -64,10 +63,8 @@ export class InventoryController {
 
   public addStock = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const hashids = new Hashids('TOTEN', 10);
       const { productId, warehouseId, stock, sizeId, notes } = req.body;
-      const decodeWarehouseId = Number(hashids.decode(warehouseId));
-      const inventory = await this.inventory.addStock(productId, sizeId, decodeWarehouseId, stock, notes);
+      const inventory = await this.inventory.addStock(productId, sizeId, warehouseId, stock, notes);
 
       res.status(200).json({ data: inventory, message: 'Stock added' });
     } catch (error) {
@@ -89,10 +86,8 @@ export class InventoryController {
 
   public getInventoryByWarehouseId = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const hashids = new Hashids('TOTEN', 10);
       const productId = Number(req.params.productId);
-      const decodeWarehouseId = String(req.params.warehouseId);
-      const warehouseId = Number(hashids.decode(decodeWarehouseId));
+      const warehouseId = Number(req.params.warehouseId);
       const findWarehouses = await this.inventory.getInventoryByWarehouseId(productId, warehouseId);
 
       res.status(200).json({

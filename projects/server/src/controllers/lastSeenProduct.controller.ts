@@ -15,8 +15,6 @@ export class LastSeenProductController {
         message: 'last seen products',
       });
     } catch (error) {
-      console.log(error);
-
       next(error);
     }
   };

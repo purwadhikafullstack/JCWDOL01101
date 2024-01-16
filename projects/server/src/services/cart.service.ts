@@ -65,6 +65,7 @@ export class CartService {
           {
             model: ProductModel,
             as: 'product',
+            where: { status: 'ACTIVE' },
           },
         ],
         transaction,
@@ -169,43 +170,6 @@ export class CartService {
     return { cartProduct: findCartProduct, stock };
   }
 
-  private async cartTotalWeight(cartId: number, productId: number, quantity: number): Promise<number> {
-    const transaction = await DB.sequelize.transaction();
-    try {
-      const cartProducts: CartProduct[] = await DB.CartProduct.findAll({
-        where: {
-          cartId,
-          status: 'ACTIVE',
-        },
-        attributes: ['quantity'],
-        include: [
-          {
-            model: ProductModel,
-            as: 'product',
-            attributes: ['weight'],
-          },
-        ],
-        transaction,
-      });
-
-      const findProduct: Product = await DB.Product.findOne({
-        where: { id: productId, status: 'ACTIVE' },
-        attributes: ['weight'],
-        transaction,
-      });
-      const totalWeight =
-        cartProducts.reduce((total, cp) => {
-          return total + cp.product.weight * cp.quantity;
-        }, 0) +
-        findProduct.weight * quantity;
-
-      await transaction.commit();
-      return totalWeight;
-    } catch (err) {
-      await transaction.rollback();
-      throw new HttpException(500, 'Failed to get total cart weight');
-    }
-  }
   public async changeQuantity(cartProductData: CartProductDto): Promise<CartProduct> {
     const { productId, cartId, quantity, sizeId } = cartProductData;
     const findCartProduct = await DB.CartProduct.findOne({ where: { productId, cartId } });

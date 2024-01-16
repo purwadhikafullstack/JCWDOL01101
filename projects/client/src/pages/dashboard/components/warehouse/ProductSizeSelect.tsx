@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/form";
 import { useFormContext } from "react-hook-form";
 import { useInventoryByWarehouseId } from "@/hooks/useInventory";
+import Hashids from "hashids";
 
 type Props = {
   productId: number | undefined;

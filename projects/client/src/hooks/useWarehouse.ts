@@ -1,5 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import service from "@/service";
+import Hashids from "hashids";
+
+const hashids = new Hashids("TOTEN", 10);
 
 export interface Warehouse {
   id: number;
@@ -60,13 +63,17 @@ export const useGetWarehouseCustomer = () => {
 };
 
 export const useGetWarehouseById = (warehouseId: string | undefined) => {
+  let decodeWarehouseId: number | string | undefined = warehouseId;
+  if (warehouseId) {
+    decodeWarehouseId = Number(hashids.decode(warehouseId));
+  }
   const warehouse = useQuery<Warehouse>({
-    queryKey: ["warehouse", warehouseId],
+    queryKey: ["warehouse", decodeWarehouseId],
     queryFn: async () => {
-      const response = await service.get(`/warehouses/${warehouseId}`);
+      const response = await service.get(`/warehouses/${decodeWarehouseId}`);
       return response.data.data;
     },
-    enabled: !!warehouseId,
+    enabled: !!decodeWarehouseId,
   });
   return warehouse;
 };
