@@ -8,7 +8,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { SearchIcon, X, MapPin, ArchiveRestore, Loader2 } from "lucide-react";
+import { SearchIcon, X, MapPin } from "lucide-react";
 import ReviewStatusCombobox from "../ReviewStatusCombobox";
 import { useSearchParams } from "react-router-dom";
 import { useCategories } from "@/hooks/useCategory";
@@ -16,10 +16,10 @@ import { useSize } from "@/hooks/useSize";
 import { useUser } from "@clerk/clerk-react";
 import { Warehouse } from "@/hooks/useWarehouse";
 import Hashids from "hashids";
-import { useChangeAllStatus } from "@/hooks/useProductMutation";
 import { STATUS } from "@/hooks/useReviewMutation";
 import { useProducts } from "@/hooks/useProduct";
 import { useDebounce } from "use-debounce";
+import RestoreProductDialog from "./RestoreProductDialog";
 
 type Props = {
   warehouses?: Warehouse[];
@@ -36,6 +36,7 @@ const ProductTableOptions = ({ warehouses }: Props) => {
   const currentPage = Number(searchParams.get("page"));
   const filterParams = searchParams.get("filter");
   const [debounceSearch] = useDebounce(searchTerm, 1000);
+  const status = searchParams.get("status") as STATUS;
 
   const { data } = useProducts({
     page: currentPage,
@@ -46,7 +47,7 @@ const ProductTableOptions = ({ warehouses }: Props) => {
     status: searchParams.get("status") || "",
     size: searchParams.get("size") || "",
     category: searchParams.get("category") || "",
-    warehouse: searchParams.get("warehouse") || "",
+    warehouseId: searchParams.get("warehouse") || "",
   });
 
   const { data: categories } = useCategories();
@@ -64,19 +65,6 @@ const ProductTableOptions = ({ warehouses }: Props) => {
       }))
     : [];
 
-  const changeAllStatusMutation = useChangeAllStatus();
-  const status = searchParams.get("status") as STATUS;
-  const warehouse = searchParams.get("warehouse");
-  const handleRestoreAllProduct = () => {
-    if (status !== "ACTIVE" && warehouse) {
-      const decodedWarehouseId = Number(hashids.decode(warehouse));
-      changeAllStatusMutation.mutate({
-        warehouseId: decodedWarehouseId,
-        status: "ACTIVE",
-        previousStatus: status,
-      });
-    }
-  };
   return (
     <>
       <div className="flex gap-2 items-center justify-between">
@@ -184,21 +172,7 @@ const ProductTableOptions = ({ warehouses }: Props) => {
       </div>
       <div className="flex items-center gap-2 justify-end">
         {status && status !== "ACTIVE" && ROLE === "ADMIN" && data && (
-          <Button
-            disabled={data.products.length <= 0}
-            onClick={handleRestoreAllProduct}
-            variant="outline"
-          >
-            <Loader2
-              className={
-                changeAllStatusMutation.isPending
-                  ? "animate-spin w-4 h-4 mr-2"
-                  : "hidden"
-              }
-            />
-            <ArchiveRestore className="w-4 h-4 mr-2" />
-            Restore All
-          </Button>
+          <RestoreProductDialog disabled={data.products.length <= 0} />
         )}
         <Select
           onValueChange={(value) => {

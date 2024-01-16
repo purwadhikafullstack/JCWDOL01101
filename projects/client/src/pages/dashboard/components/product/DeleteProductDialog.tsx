@@ -52,11 +52,18 @@ const DeleteProductDialog = ({ product, dropdownChange }: Props) => {
     }
   };
   React.useEffect(() => {
-    if (deleteProduct.isSuccess || deleteProductInventory.isSuccess) {
+    if (deleteProduct.isSuccess) {
       dropdownChange(false);
       setOpen(false);
     }
-  }, [deleteProduct.isSuccess, deleteProductInventory.isSuccess]);
+  }, [deleteProduct.isSuccess]);
+
+  React.useEffect(() => {
+    if (deleteProductInventory.isSuccess) {
+      dropdownChange(false);
+      setOpen(false);
+    }
+  }, [deleteProductInventory.isSuccess]);
 
   return (
     <Dialog

@@ -5,6 +5,7 @@ import { Size } from "./useSize";
 import { Review } from "./useReview";
 import { Warehouse } from "./useWarehouse";
 import { OrderDetails } from "./interfaces/Order";
+import Hashids from "hashids";
 
 export interface Product {
   id: number;
@@ -53,7 +54,7 @@ type ProductOptions = {
   limit: number;
   status: string;
   filter: string;
-  warehouse: string;
+  warehouseId: string;
   category: string;
 };
 
@@ -88,8 +89,10 @@ export const useProductsDashboard = () => {
 };
 
 export const useProducts = (params: ProductOptions) => {
-  const { s, size, page, order, limit, status, filter, warehouse, category } =
+  const hashids = new Hashids("TOTEN", 10);
+  const { s, size, page, order, limit, status, filter, category, warehouseId } =
     params;
+  const decodeWarehouseId = Number(hashids.decode(warehouseId));
   const { getToken } = useAuth();
   const { data, isLoading, isFetched } = useQuery<{
     products: Product[];
@@ -104,12 +107,12 @@ export const useProducts = (params: ProductOptions) => {
       limit,
       status,
       filter,
-      warehouse,
       category,
+      decodeWarehouseId,
     ],
     queryFn: async () => {
       const res = await service.get("/products", {
-        params,
+        params: { ...params, warehouseId: decodeWarehouseId },
         withCredentials: true,
         headers: { Authorization: `Bearer ${await getToken()}` },
       });

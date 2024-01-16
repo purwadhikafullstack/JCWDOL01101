@@ -5,16 +5,14 @@ import { useInView } from "react-intersection-observer";
 import ProductCard from "@/pages/homepage/components/ProductCard";
 import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton";
 import Filter from "../components/products/Filter";
-import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 import FilterModal from "../components/products/FilterModal";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import SelectBy from "../components/products/SelectBy";
 
 const ProductsPage = () => {
-  const { t } = useTranslation();
   const { ref, inView } = useInView();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const category = searchParams.get("category") || "";
   const size = searchParams.get("size") || "";
   const pmin = searchParams.get("pmin") || "";

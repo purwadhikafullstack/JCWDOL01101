@@ -25,7 +25,7 @@ export const productSchema = z.object({
   size: z.number().array().min(1, "Size is empty"),
   price: z.coerce.number().min(1),
   weight: z.coerce.number().min(1, "Weight is empty"),
-  description: z.string().min(2, "Description is empty").max(2000),
+  description: z.string().min(80, "Min description is 80 char").max(2000),
 });
 
 const emptyValues = {
