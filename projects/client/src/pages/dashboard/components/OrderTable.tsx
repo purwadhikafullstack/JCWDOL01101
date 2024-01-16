@@ -15,7 +15,7 @@ import OrderAction from "./order/OrderAction";
 function OrderTable({
   data,
 }: {
-  data: { orders: Order[]; totalPages: number; totalSuccess:number; 
+  data: { orders: Order[]; totalPages: number; totalSuccess:number; totalPending:number; totalFailed:number;  totalOngoing:number  
     // salesSummary:{totalSuccess:number}; 
   };
 }) {
@@ -54,13 +54,13 @@ function OrderTable({
             Success: {formatToIDR(data.totalSuccess)}
           </div>
           <div className="flex bg-blue-400  p-2 border-4 rounded-xl font-semibold">
-            {/* Pending: {formatToIDR(statusTotals.pending)} */}
+            Pending: {formatToIDR(data.totalPending)}
           </div>
           <div className="flex bg-yellow-400 p-2 border-4 rounded-xl font-semibold">
-            {/* Ongoing: {formatToIDR(statusTotals.ongoing)} */}
+            Ongoing: {formatToIDR(data.totalOngoing)}
           </div>
           <div className="flex bg-red-400 p-2 border-4 rounded-xl font-semibold">
-            {/* Failed: {formatToIDR(statusTotals.canceled + statusTotals.rejected)} */}
+            Failed: {formatToIDR(data.totalFailed)}
           </div>
         </div>
       </div>

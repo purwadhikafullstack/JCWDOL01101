@@ -47,7 +47,7 @@ export class JurnalService {
     warehouse,
     to,
     from,
-  }: GetFilterJurnal): Promise<{ jurnals: Jurnal[]; totalPages: number; totalAddition:number; totalReduction:number; finalStock:number }> {
+  }: GetFilterJurnal): Promise<{ jurnals: Jurnal[]; totalPages: number; totalAddition: number; totalReduction: number; finalStock: number }> {
     const findUser: User = await DB.User.findOne({
       where: { externalId, status: 'ACTIVE' },
       include: [{ model: DB.Warehouses, as: 'userData', attributes: ['id'] }],
@@ -128,9 +128,55 @@ export class JurnalService {
     const totalCount = await DB.Jurnal.count({ where: options.where });
     const totalPages = Math.ceil(totalCount / LIMIT);
 
+    const optionsCount: FindOptions<Jurnal> = {
+      where: {
+        createdAt: {
+          [Op.between]: [new Date(from), new Date(to)],
+        },
+      },
+      include: [
+        {
+          model: DB.Inventories,
+          as: 'jurnal',
+          attributes: ['stock'],
+          where: {
+            ...(role === 'WAREHOUSE ADMIN' && {
+              warehouseId: findUser.userData.id,
+            }),
+          },
+          include: [
+            {
+              model: DB.Warehouses,
+              as: 'warehouse',
+              attributes: ['name'],
+              where,
+            },
+            {
+              model: DB.Size,
+              as: 'sizes',
+              attributes: ['label'],
+            },
+            {
+              model: DB.Product,
+              as: 'product',
+              attributes: ['name'],
+              where: {
+                ...(s && {
+                  name: {
+                    [DB.Sequelize.Op.like]: `%${s}%`,
+                  },
+                }),
+              },
+            },
+          ],
+        },
+      ],
+    };
+    const allJurnalCcount = await DB.Jurnal.findAll(optionsCount);
+
     let totalAddition = 0;
     let totalReduction = 0;
-    allJurnal.forEach(jurnal => {
+    allJurnalCcount.forEach(jurnal => {
       if (jurnal.type === '1') {
         totalAddition += jurnal.qtyChange;
       } else if (jurnal.type === '0') {
@@ -196,51 +242,5 @@ export class JurnalService {
     };
     await DB.Jurnal.create({ ...senderJurnal }, { transaction });
     await DB.Jurnal.create({ ...receiverJurnal }, { transaction });
-  }
-
-  public async getStockSummary({
-    from,
-    to,
-    s,
-  }: Pick<GetFilterJurnal, 'from' | 'to' | 's'>): Promise<{ totalAddition: number; totalReduction: number; finalStock: number }> {
-    const where = {
-      createdAt: {
-        [Op.between]: [from, to],
-      },
-      '$jurnal.product.name$': {
-        [Op.like]: `%${s}%`,
-      },
-    };
-
-    const jurnals = await DB.Jurnal.findAll({
-      where,
-      include: [
-        {
-          model: DB.Inventories,
-          as: 'jurnal',
-          attributes: ['stock'],
-          include:[
-            {
-              model: DB.Product,
-              as: 'product',
-              attributes: [],
-            }
-          ]
-        },
-      ],
-    });
-
-    let totalAddition = 0;
-    let totalReduction = 0;
-    jurnals.forEach(jurnal => {
-      if (jurnal.type === '1') {
-        totalAddition += jurnal.qtyChange;
-      } else if (jurnal.type === '0') {
-        totalReduction += jurnal.qtyChange;
-      }
-    });
-
-    const finalStock = totalAddition - totalReduction;
-    return { totalAddition, totalReduction, finalStock };
   }
 }

@@ -45,7 +45,7 @@ export class OrderController {
   public getOrders = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const { page, s, order, filter, limit, warehouse, status, to, from } = req.query;
-      const { orders, totalPages, totalSuccess } = await this.order.getAllOrder({
+      const { orders, totalPages, totalSuccess, totalPending, totalFailed, totalOngoing } = await this.order.getAllOrder({
         s: String(s),
         order: String(order),
         limit: Number(limit),
@@ -71,7 +71,7 @@ export class OrderController {
         data: {
           orders,
           totalPages,
-          totalSuccess,
+          totalSuccess, totalPending, totalFailed, totalOngoing
         },
         message: 'get.orders',
       });

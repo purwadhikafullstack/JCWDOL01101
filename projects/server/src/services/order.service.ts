@@ -107,7 +107,7 @@ export class OrderService {
     status,
     to,
     from,
-  }: GetFilterOrder): Promise<{ orders: Order[]; totalPages: number , totalSuccess:number}> {
+  }: GetFilterOrder): Promise<{ orders: Order[]; totalPages: number; totalSuccess: number; totalPending:number; totalFailed:number; totalOngoing:number }> {
     const findUser: User = await DB.User.findOne({ where: { externalId } });
     if (!findUser) throw new HttpException(409, "user doesn't exist");
     let findWarehouse;
@@ -167,56 +167,48 @@ export class OrderService {
     const totalPages = Math.ceil(totalCount / LIMIT);
 
     let totalSuccess = 0;
-    allOrder.forEach(order => {
-      if (order.status === 'SUCCESS') {
-        totalSuccess += order.totalPrice;
-      }
-    });
+    let totalPending = 0;
+    let totalCanceled = 0;
+    let totalRejected = 0;
+    let totalOngoing = 0;
+    let totalFailed = 0;
 
-    return { totalPages: totalPages, orders: allOrder, totalSuccess };
-  }
-////////////
-  public async getSalesSummary({ from, to, s }: Pick<GetFilterOrder, 'from' | 'to' | 's'>): Promise<{ totalSuccess: number }> {
-    const where = {
-      createdAt: {
-        [Op.between]: [from, to],
+    const optionsCount: FindOptions<Order> = {
+      where: {
+        ...(warehouse !== 'All' && { warehouseId: findWarehouse.id }),
+        ...(status && { status }),
+        createdAt: {
+          [Op.between]: [new Date(from), new Date(to)],
+        },
       },
-      // '$order.product.name$': {
-      //   [Op.like]: `%${s}%`,
-      // },
-    };
-
-    const orders = await DB.Order.findAll({
-      where,
+      ...(order && {
+        order: filter === 'user' ? [[{ model: UserModel, as: 'userOrder' }, 'firstname', order]] : [[filter, order]],
+      }),
       include: [
         {
-          model: DB.Warehouses,
+          model: WarehouseModel,
           as: 'warehouseOrder',
-          include: [
-            {
-              model: DB.Inventories,
-              as: 'inventories',
-              include: [
-                {
-                  model: DB.Product,
-                  as: 'product',
-                  attributes: [],
-                },
-              ],
-            },
-          ],
+          attributes: ['name'],
+        },
+        {
+          model: UserModel,
+          as: 'userOrder',
+          attributes: ['firstname', 'lastname'],
         },
       ],
+    };
+    const allOrderCcount = await DB.Order.findAll(optionsCount);
+
+    allOrderCcount.forEach(order => {
+      if (order.status === 'SUCCESS') totalSuccess += order.totalPrice;
+      else if (order.status === 'PENDING') totalPending += order.totalPrice;
+      else if (order.status === 'CANCELED') totalCanceled += order.totalPrice;
+      else if (order.status === 'REJECTED') totalRejected += order.totalPrice;
+      else if (order.status === 'DELIVERED' || order.status === 'SHIPPED' || order.status === 'WAITING' || order.status === 'PROCESS')
+        totalOngoing += order.totalPrice;
+      totalFailed = totalCanceled+totalRejected
     });
 
-    let totalSuccess = 0;
-    orders.forEach(order => {
-      if (order.status === 'SUCCESS') {
-        totalSuccess += order.totalPrice;
-      }
-    });
-    console.log('service =========================');
-    console.log(totalSuccess);
-    return { totalSuccess };
+    return { totalPages: totalPages, orders: allOrder, totalSuccess, totalPending, totalFailed, totalOngoing };
   }
 }

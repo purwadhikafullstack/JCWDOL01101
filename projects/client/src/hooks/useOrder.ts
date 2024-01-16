@@ -107,7 +107,10 @@ export const getAllOrders = ({
   const { data, isLoading, isFetched } = useQuery<{
     orders: Order[];
     totalPages: number;
-    totalSuccess:number;
+    totalSuccess: number;
+    totalPending: number;
+    totalFailed: number;
+    totalOngoing: number;
   }>({
     queryKey: ["orders", page, s, filter, order, warehouse, status, to, from],
     queryFn: async () => {
