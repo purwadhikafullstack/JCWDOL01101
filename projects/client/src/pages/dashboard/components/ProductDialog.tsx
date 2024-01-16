@@ -10,20 +10,17 @@ import {
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Link, useSearchParams } from "react-router-dom";
 import { Product } from "@/hooks/useProduct";
-import { ArchiveRestore, Edit, MessagesSquare, Send } from "lucide-react";
+import { Edit, MessagesSquare, Send } from "lucide-react";
 import StockMutationModal from "./StockMutationModal";
-import { useChangeStatus } from "@/hooks/useProductMutation";
-import { STATUS } from "@/hooks/useReviewMutation";
 import { useUser } from "@clerk/clerk-react";
 import DeleteProductDialog from "./product/DeleteProductDialog";
 import DeactivateProductDialog from "./product/DeactivateProductDialog";
+import RestoreDropdownDialog from "./product/RestoreDropdownDialog";
 
 const ProductDialog = ({ product }: { product: Product }) => {
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const [params] = useSearchParams();
   const warehouseId = params.get("warehouse") || undefined;
-  const status = (String(params.get("status")) as STATUS) || "";
-  const changeStatusMutation = useChangeStatus();
   const { user } = useUser();
   const ROLE = user?.publicMetadata?.role;
   let isInventoryActive = false;
@@ -32,16 +29,6 @@ const ProductDialog = ({ product }: { product: Product }) => {
       isInventoryActive = true;
     }
   }
-  const handleRestoreProduct = () => {
-    if (product.id && status && warehouseId) {
-      changeStatusMutation.mutate({
-        warehouseId,
-        productId: product.id,
-        status: "ACTIVE",
-        previousStatus: status,
-      });
-    }
-  };
 
   const handleDropdownChange = (open: boolean) => {
     if (open === false) {
@@ -96,15 +83,10 @@ const ProductDialog = ({ product }: { product: Product }) => {
               )}
             </>
           ) : (
-            <>
-              <DropdownMenuItem
-                onClick={handleRestoreProduct}
-                className="w-full cursor-pointer text-muted-foreground"
-              >
-                <ArchiveRestore className="w-4 h-4 mr-2" />
-                Restore
-              </DropdownMenuItem>
-            </>
+            <RestoreDropdownDialog
+              dropdownChange={handleDropdownChange}
+              product={product}
+            />
           )}
         </>
       </DropdownMenuContent>
