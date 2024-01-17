@@ -28,7 +28,9 @@ export const useWishlist = (limit = 5) => {
     queryFn: ({ pageParam }) => fetchProjects(pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage, page) => {
-      return lastPage.wishlist.length === limit ? page.length + 1 : undefined;
+      return lastPage && lastPage.wishlist && lastPage.wishlist.length === limit
+        ? page.length + 1
+        : undefined;
     },
   });
 
