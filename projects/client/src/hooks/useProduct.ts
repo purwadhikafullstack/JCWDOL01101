@@ -165,7 +165,7 @@ export const useProductInfinite = ({
     queryFn: ({ pageParam }) => fetchProjects(pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage, page) =>
-      lastPage.length === limit ? page.length + 1 : undefined,
+      lastPage && lastPage.length === limit ? page.length + 1 : undefined,
   });
 
   return query;

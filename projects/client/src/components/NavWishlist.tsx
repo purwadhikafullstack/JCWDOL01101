@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import NavDropdown from "./NavDropdown";
 import { Heart } from "lucide-react";
 import { useWishlist } from "@/hooks/useWishlist";
 
 const NavWishlist = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
   const { data } = useWishlist();
-  const counter = data ? data.pages[0].totalWishlist : 0;
+  const counter: number =
+    data && data.pages.length > 0 ? data.pages[0].totalWishlist : 0;
   return (
     <NavDropdown
       counter={counter}

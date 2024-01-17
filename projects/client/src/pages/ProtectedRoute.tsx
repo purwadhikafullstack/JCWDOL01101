@@ -30,7 +30,7 @@ export const DashboardRoute = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const ROLE = user?.publicMetadata.role;
   useEffect(() => {
-    if (!user || ROLE === "CUSTOMER") {
+    if (isLoaded && (!user || ROLE === "CUSTOMER")) {
       return navigate("/");
     }
   }, [ROLE, isLoaded, user]);
