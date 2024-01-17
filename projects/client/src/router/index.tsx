@@ -9,6 +9,7 @@ import NotFound from "@/pages/dashboard/NotFound";
 import { CheckoutPage } from "@/pages/homepage";
 import MainPageRouter from "./MainPageRouter";
 import DashboardPageRouter from "./DashboardPageRouter";
+import ForgotPassword from "@/pages/auth/ForgotPassword";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/forgot",
+    element: <ForgotPassword />,
   },
   {
     path: "/verify",

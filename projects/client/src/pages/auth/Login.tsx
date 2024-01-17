@@ -178,7 +178,7 @@ const Login = () => {
               />
               <span className="flex w-full justify-end items-end mt-2">
                 <Link
-                  to="/resetPassword"
+                  to="/forgot"
                   className="ml-2  text-primary hover:underline"
                 >
                   {" "}
