@@ -6,7 +6,7 @@ export interface GetFilterUser {
   filter: string;
 }
 import { CartModel } from '@/models/cart.model';
-import { Role, Status } from '.';
+import { Role, Status, Warehouse } from '.';
 
 export interface User {
   id?: number;
@@ -21,4 +21,5 @@ export interface User {
   imageUrl: string;
   status: Status;
   userCart?: CartModel;
+  userData?:Warehouse;
 }

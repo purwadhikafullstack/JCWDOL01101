@@ -1,18 +1,32 @@
 import { Jurnal } from '@/interfaces/jurnal.interface';
 import { JurnalService } from '@/services/jurnal.service';
+import { RequireAuthProp } from '@clerk/clerk-sdk-node';
 import { NextFunction, Request, Response } from 'express';
 import Container from 'typedi';
 
 export class JurnalController {
   public jurnal = Container.get(JurnalService);
-
-  public getJurnal = async (req: Request, res: Response, next: NextFunction) => {
+  public getJurnal = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
-      const findAllJurnalData: Jurnal[] = await this.jurnal.findAllJurnal();
-
-      res.status(200).json({ data: findAllJurnalData, message: 'find all Jurnal' });
-    } catch (error) {
-      next(error);
+      const { page, s, order, filter, limit, warehouse, to, from } = req.query;
+      const jurnals = await this.jurnal.findAllJurnal({
+        s: String(s),
+        order: String(order),
+        limit: Number(limit),
+        filter: String(filter),
+        page: Number(page),
+        warehouse: String(warehouse),
+        externalId: req.auth.userId,
+        to: new Date(String(to)),
+        from: new Date(String(from)),
+      });
+      
+      res.status(200).json({
+        data: jurnals,
+        message: 'get.jurnals',
+      });
+    } catch (err) {
+      next(err);
     }
   };
 

@@ -8,6 +8,7 @@ export interface Jurnal {
   newQty: number;
   type: '1' | '0';
   notes?: string;
+  createdAt?:Date;
 }
 
 export interface JurnalData {
@@ -16,4 +17,16 @@ export interface JurnalData {
   stock: number;
   stockChangeSender: number;
   stockChangeReceiver: number;
+}
+
+export interface GetFilterJurnal {
+  page: number;
+  s: string;
+  filter: string;
+  order: string;
+  limit: number;
+  externalId: string;
+  warehouse: string;
+  to:Date;
+  from:Date;
 }

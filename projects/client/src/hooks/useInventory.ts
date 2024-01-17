@@ -43,3 +43,16 @@ export const useInventoryByWarehouseId = (
 
   return inventory;
 };
+
+
+export const useGetInventory = (isSuperAdmin: boolean) => {
+  const inventory = useQuery<Inventory[]>({
+    queryKey: ["inventories"],
+    queryFn: async () => {
+      const response = await service.get("/inventories");
+      return response.data.data;
+    },
+    enabled: isSuperAdmin,
+  });
+  return inventory;
+};

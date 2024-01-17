@@ -16,6 +16,7 @@ import {
   UserPage,
   WarehousePage,
 } from "@/pages/dashboard";
+import Report from "@/pages/dashboard/content/Report";
 
 export default [
   {
@@ -81,5 +82,9 @@ export default [
   {
     path: "order",
     element: <DashboardOrderPage />,
+  },
+  {
+    path: "report",
+    element: <Report />,
   },
 ];

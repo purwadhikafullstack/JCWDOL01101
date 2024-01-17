@@ -3,7 +3,7 @@ import { useCancelOrder, useConfirmOrder } from "@/hooks/useOrderMutation"
 import { Product } from "@/hooks/useProduct"
 import React from "react"
 import OrderProduct from "./OrderProduct"
-import { format } from "date-fns"
+import { addDays, addHours, format } from "date-fns"
 import { formatToIDR } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
@@ -40,7 +40,7 @@ const OrderCard = ({ order }: props) => {
                         />
                       </div>
                       {`expired : ${format(
-                        new Date(order.paymentDetails.paymentDate),
+                        new Date(order.paymentDetails.expiredDate),
                         "Pp"
                       )}`}
                     </div>
@@ -69,7 +69,7 @@ const OrderCard = ({ order }: props) => {
           </div>
           {order.status === "PENDING" ? (
             <div className="flex justify-end mr-6 mb-2">
-              <DialogTrigger>
+              <DialogTrigger asChild>
                 <Button>Cancel Order</Button>
               </DialogTrigger>
               <CancelOrder orderId={order.id as number} />
