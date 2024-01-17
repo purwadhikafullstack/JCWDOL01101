@@ -87,7 +87,12 @@ const ProductSizeField = ({
                   {sizeSet.size > 0 && (
                     <Button
                       type="button"
-                      onClick={() => setSelectedSize([])}
+                      onClick={() => {
+                        setSelectedSize([]);
+                        if (edit) {
+                          form.setValue("size", []);
+                        }
+                      }}
                       variant="ghost"
                       className="font-bold"
                     >

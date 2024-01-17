@@ -2,6 +2,7 @@ import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
 import { User } from '@/interfaces';
 import { GetFilterJurnal, Jurnal, JurnalData } from '@/interfaces/jurnal.interface';
+import { Transaction } from 'sequelize';
 import { Service } from 'typedi';
 import { FindOptions, Op } from 'sequelize';
 
@@ -219,7 +220,7 @@ export class JurnalService {
     return findJurnal;
   }
 
-  public async jurnalExchangeStock(jurnalData: JurnalData, transaction: any) {
+  public async jurnalExchangeStock(jurnalData: JurnalData, transaction: Transaction) {
     const sendWarehouse = await DB.Warehouses.findByPk(jurnalData.findSenderInventory.warehouseId);
     const receiveWarehouse = await DB.Warehouses.findByPk(jurnalData.findReceiverInventory.warehouseId);
     if (!sendWarehouse && !receiveWarehouse) throw new HttpException(409, 'Warehouses not found');

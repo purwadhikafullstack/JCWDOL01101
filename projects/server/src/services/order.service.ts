@@ -52,10 +52,7 @@ export class OrderService {
       offset,
       where: {
         userId: findUser.id,
-        ...(status &&
-          status !== 'ALL' && {
-            status,
-          }),
+        ...(status && status !== 'ALL' && { status }),
       },
       include: [
         {
@@ -122,14 +119,18 @@ export class OrderService {
       firstDayOfMonth = new Date(from);
       lastDayOfMonth = new Date(to);
     }
+    if (status === 'UNSUCCESSFUL') {
+      status = ['CANCELED', 'FAILED', 'REJECTED'];
+    }
     const LIMIT = Number(limit) || 10;
     const offset = (page - 1) * LIMIT;
     const options: FindOptions<Order> = {
       offset,
       limit: LIMIT,
       where: {
+        status: { [Op.ne]: 'PENDING' },
         ...(warehouse !== 'All' && { warehouseId: findWarehouse.id }),
-        ...(status && { status }),
+        ...(status && status !== 'ALL' && { status }),
         createdAt: {
           [Op.between]: [new Date(from), new Date(to)],
         },

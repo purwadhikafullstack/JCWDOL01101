@@ -114,7 +114,7 @@ export class OrderController {
     }
   };
 
-  public adminAcceptOrder = async (req: Request, res: Response, next: NextFunction) => {
+  public adminAcceptOrder = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const orderId = Number(req.params.orderId);
       const editOrder = await this.orderMutation.adminAcceptOrder(orderId);
@@ -125,10 +125,32 @@ export class OrderController {
     }
   };
 
-  public adminRejectOrder = async (req: Request, res: Response, next: NextFunction) => {
+  public adminRejectOrder = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const orderId = Number(req.params.orderId);
       const editOrder = await this.orderMutation.adminRejectOrder(orderId);
+
+      res.status(200).json({ data: editOrder, message: 'patch.order' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public adminSendOrder = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
+    try {
+      const orderId = Number(req.params.orderId);
+      const editOrder = await this.orderMutation.adminSendOrder(orderId);
+
+      res.status(200).json({ data: editOrder, message: 'patch.order' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public adminCancelOrder = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
+    try {
+      const orderId = Number(req.params.orderId);
+      const editOrder = await this.orderMutation.adminCancelOrder(orderId);
 
       res.status(200).json({ data: editOrder, message: 'patch.order' });
     } catch (error) {

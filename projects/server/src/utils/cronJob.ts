@@ -55,12 +55,10 @@ const changeStatusIn1Hour = async (from: string, to: string) => {
 
 const updateDaily = new CronJob('0 0 * * *', async () => {
   await changeStatusIn7Days('DELIVERED', 'SUCCESS');
-  console.log('hari');
 });
 
 const updateHourly = new CronJob('0 * * * *', async () => {
   await changeStatusIn1Hour('PENDING', 'CANCELED');
-  console.log('jam');
 });
 
 export const startCronjob = () => {

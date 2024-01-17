@@ -1,6 +1,7 @@
 import service from "@/service";
 import { useQuery } from "@tanstack/react-query";
 import { Inventory } from "./useProduct";
+import Hashids from "hashids";
 
 export const useWarehouse = (
   sizeId: number | undefined,
@@ -24,11 +25,16 @@ export const useInventoryByWarehouseId = (
   productId: number | undefined,
   warehouseId: string | undefined
 ) => {
+  const hashids = new Hashids("TOTEN", 10);
+  let decodeWarehouseId: number | string | undefined = warehouseId;
+  if (decodeWarehouseId) {
+    decodeWarehouseId = Number(hashids.decode(decodeWarehouseId));
+  }
   const inventory = useQuery<Inventory[]>({
     queryKey: ["inventory", warehouseId, productId],
     queryFn: async () => {
       const res = await service.get(
-        `/inventories/warehouse/${warehouseId}/product/${productId}`
+        `/inventories/warehouse/${decodeWarehouseId}/product/${productId}`
       );
       return res.data.data;
     },

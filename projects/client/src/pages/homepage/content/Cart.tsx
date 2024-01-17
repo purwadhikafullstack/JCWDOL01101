@@ -130,9 +130,11 @@ const Cart = () => {
         )}
       </div>
       <>
-        <h3 className="font-bold my-2 mt-8 pt-4 uppercase">
-          {t("cartPage.misc.title")}
-        </h3>
+        {recommendedProducts && recommendedProducts.length > 0 && (
+          <h3 className="font-bold my-2 mt-8 pt-4 uppercase">
+            {t("cartPage.misc.title")}
+          </h3>
+        )}
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
           {isLoadingRecommended ? (
             <NewestProductSekeleton product={isDesktop ? 6 : 2} />

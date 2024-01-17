@@ -9,9 +9,9 @@ import {
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
-import { useAdminAcceptOrder } from "@/hooks/useOrderMutation"
+import { useAdminSendOrder } from "@/hooks/useOrderMutation"
 
-const AcceptAction = ({
+const SendAction = ({
   orderId,
   setModal,
 }: {
@@ -20,50 +20,54 @@ const AcceptAction = ({
 }) => {
   const { toast } = useToast()
 
-  const acceptOrder = useAdminAcceptOrder(orderId)
-  const handleAcceptOrder = (e: FormEvent<HTMLFormElement>) => {
+  const sendOrder = useAdminSendOrder(orderId)
+  const handleSendOrder = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    acceptOrder.mutate()
+    sendOrder.mutate()
   }
 
   useEffect(() => {
-    if (acceptOrder.isSuccess) {
+    if (sendOrder.isSuccess) {
       toast({
-        title: "Order Confirmed",
-        description: "Successfully confirmed customer order",
+        title: "Order Shipped",
+        description: "Successfully send customer order",
         duration: 3000,
       })
       setModal("")
     }
-  }, [acceptOrder.isSuccess, toast])
+  }, [sendOrder.isSuccess, toast])
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Accept Order</DialogTitle>
+        <DialogTitle>Send Order</DialogTitle>
         <DialogDescription>
-          You're about to accept customer order
+          You're about to ship a customer order
         </DialogDescription>
       </DialogHeader>
-      <form onSubmit={handleAcceptOrder}>
+      <p>
+        Notes: You must wait until the orders actually arrive and ready at the
+        warehouse before sending the orders.
+      </p>
+      <form onSubmit={handleSendOrder}>
         <span className="mt-4 flex justify-center gap-4 w-full">
           <Button
             type="submit"
             variant="destructive"
-            disabled={acceptOrder.isPending}
+            disabled={sendOrder.isPending}
             className="cursor-pointer "
           >
             <Loader2
               className={
-                acceptOrder.isPending ? "animate-spin w-4 h-4 mr-2" : "hidden"
+                sendOrder.isPending ? "animate-spin w-4 h-4 mr-2" : "hidden"
               }
             />
-            Yes, accept order
+            Yes, send order
           </Button>
           <DialogClose asChild>
             <Button
               type="button"
               variant="secondary"
-              disabled={acceptOrder.isPending}
+              disabled={sendOrder.isPending}
             >
               Cancel
             </Button>
@@ -74,4 +78,4 @@ const AcceptAction = ({
   )
 }
 
-export default AcceptAction
+export default SendAction

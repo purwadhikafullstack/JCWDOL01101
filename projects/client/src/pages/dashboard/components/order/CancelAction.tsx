@@ -9,9 +9,9 @@ import {
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
-import { useAdminAcceptOrder } from "@/hooks/useOrderMutation"
+import { useAdminCancelOrder } from "@/hooks/useOrderMutation"
 
-const AcceptAction = ({
+const CancelAction = ({
   orderId,
   setModal,
 }: {
@@ -20,50 +20,54 @@ const AcceptAction = ({
 }) => {
   const { toast } = useToast()
 
-  const acceptOrder = useAdminAcceptOrder(orderId)
-  const handleAcceptOrder = (e: FormEvent<HTMLFormElement>) => {
+  const cancelOrder = useAdminCancelOrder(orderId)
+  const handleCancelOrder = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    acceptOrder.mutate()
+    cancelOrder.mutate()
   }
 
   useEffect(() => {
-    if (acceptOrder.isSuccess) {
+    if (cancelOrder.isSuccess) {
       toast({
-        title: "Order Confirmed",
-        description: "Successfully confirmed customer order",
+        title: "Order Canceled",
+        description: "Successfully return stock and cancel order",
         duration: 3000,
       })
       setModal("")
     }
-  }, [acceptOrder.isSuccess, toast])
+  }, [cancelOrder.isSuccess, toast])
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Accept Order</DialogTitle>
+        <DialogTitle>Cancel Order</DialogTitle>
         <DialogDescription>
-          You're about to accept customer order
+          You're about to cancel customer order
         </DialogDescription>
       </DialogHeader>
-      <form onSubmit={handleAcceptOrder}>
+      <p>
+        Notes: You only can cancel order if there are no product available, and
+        can't exchange stock.
+      </p>
+      <form onSubmit={handleCancelOrder}>
         <span className="mt-4 flex justify-center gap-4 w-full">
           <Button
             type="submit"
             variant="destructive"
-            disabled={acceptOrder.isPending}
+            disabled={cancelOrder.isPending}
             className="cursor-pointer "
           >
             <Loader2
               className={
-                acceptOrder.isPending ? "animate-spin w-4 h-4 mr-2" : "hidden"
+                cancelOrder.isPending ? "animate-spin w-4 h-4 mr-2" : "hidden"
               }
             />
-            Yes, accept order
+            Yes, cancel order
           </Button>
           <DialogClose asChild>
             <Button
               type="button"
               variant="secondary"
-              disabled={acceptOrder.isPending}
+              disabled={cancelOrder.isPending}
             >
               Cancel
             </Button>
@@ -74,4 +78,4 @@ const AcceptAction = ({
   )
 }
 
-export default AcceptAction
+export default CancelAction

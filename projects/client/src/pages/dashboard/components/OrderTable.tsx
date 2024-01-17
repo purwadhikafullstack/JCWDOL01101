@@ -141,7 +141,7 @@ function OrderTable({
                     {getDate(order.createdAt!.toLocaleString())}
                   </TableCell>
                   <TableCell className="text-center">
-                    <OrderAction orderId={order.id} />
+                    <OrderAction order={order} />
                   </TableCell>
                 </TableRow>
               ))}

@@ -14,9 +14,9 @@ export class MutationRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`${this.path}`, ClerkExpressRequireAuth(), this.mutation.getMutations);
-    this.router.post(`${this.path}`, this.mutation.createMutation);
-    this.router.patch(`${this.path}/cancel/:mutationId`, this.mutation.cancelMutation);
-    this.router.patch(`${this.path}/accept/:mutationId`, this.mutation.acceptMutation);
-    this.router.patch(`${this.path}/reject/:mutationId`, this.mutation.rejectMutation);
+    this.router.post(`${this.path}`, ClerkExpressRequireAuth(), this.mutation.createMutation);
+    this.router.patch(`${this.path}/cancel/:mutationId`, ClerkExpressRequireAuth(), this.mutation.cancelMutation);
+    this.router.patch(`${this.path}/accept/:mutationId`, ClerkExpressRequireAuth(), this.mutation.acceptMutation);
+    this.router.patch(`${this.path}/reject/:mutationId`, ClerkExpressRequireAuth(), this.mutation.rejectMutation);
   }
 }

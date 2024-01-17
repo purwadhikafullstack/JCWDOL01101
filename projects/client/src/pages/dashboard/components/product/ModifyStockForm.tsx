@@ -36,6 +36,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useInventoryMutation } from "@/hooks/useInventoryMutation";
 import { useSearchParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import Hashids from "hashids";
 
 const stockSchema = z.object({
   sizeId: z.string().min(1, "Required"),
@@ -73,9 +74,10 @@ const ModifyStockForm = ({ product, setOpen }: Props) => {
   });
 
   const onSubmit = (values: z.infer<typeof stockSchema>) => {
+    const hashids = new Hashids("TOTEN", 10);
     if (warehouseId) {
       stockMutation.mutate({
-        warehouseId,
+        warehouseId: Number(hashids.decode(warehouseId)),
         productId: product.id,
         sizeId: Number(values.sizeId),
         stock: Number(values.newStock),
