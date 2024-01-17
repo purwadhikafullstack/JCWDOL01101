@@ -4,11 +4,13 @@ import {
   useChangeStatusInventory,
 } from "@/hooks/useProductMutation";
 import { useGetWarehouseById } from "@/hooks/useWarehouse";
+import Hashids from "hashids";
 import { Loader2, MapPin } from "lucide-react";
 import React from "react";
 import { useSearchParams } from "react-router-dom";
 
 const DeleteProduct = ({ productId }: { productId: number }) => {
+  const hashids = new Hashids("TOTEN", 10);
   const [params] = useSearchParams();
   const warehouseId = params.get("warehouse") || undefined;
   const { data: warehouse } = useGetWarehouseById(warehouseId);
@@ -23,10 +25,11 @@ const DeleteProduct = ({ productId }: { productId: number }) => {
   };
 
   const onDeleteProductInventory = () => {
+    const decodedWarehouseId = Number(hashids.decode("warehouseId"));
     if (warehouseId) {
       deleteProductInventory.mutate({
         productId,
-        warehouseId,
+        warehouseId: decodedWarehouseId,
         status: "DELETED",
       });
     }
