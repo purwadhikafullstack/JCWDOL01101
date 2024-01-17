@@ -74,7 +74,7 @@ export class OrderService {
         {
           model: PaymentDetailsModel,
           as: 'paymentDetails',
-          attributes: ['virtualAccount', 'paymentDate', 'method'],
+          attributes: ['virtualAccount', 'paymentDate', 'method','expiredDate'],
         },
       ],
       order: [['createdAt', 'DESC']],
@@ -102,13 +102,22 @@ export class OrderService {
     externalId,
     warehouse,
     status,
-  }: GetFilterOrder): Promise<{ orders: Order[]; totalPages: number }> {
+    to,
+    from,
+  }: GetFilterOrder): Promise<{ orders: Order[]; totalPages: number; totalSuccess: number; totalPending:number; totalFailed:number; totalOngoing:number }> {
     const findUser: User = await DB.User.findOne({ where: { externalId } });
     if (!findUser) throw new HttpException(409, "user doesn't exist");
     let findWarehouse;
     if (warehouse !== 'All') {
       findWarehouse = await DB.Warehouses.findOne({ where: { name: warehouse } });
       if (!findWarehouse) throw new HttpException(409, "warehouse doesn't exist");
+    }
+    const date = new Date();
+    let firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    let lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    if (from && to) {
+      firstDayOfMonth = new Date(from);
+      lastDayOfMonth = new Date(to);
     }
     if (status === 'UNSUCCESSFUL') {
       status = ['CANCELED', 'FAILED', 'REJECTED'];
@@ -122,6 +131,9 @@ export class OrderService {
         status: { [Op.ne]: 'PENDING' },
         ...(warehouse !== 'All' && { warehouseId: findWarehouse.id }),
         ...(status && status !== 'ALL' && { status }),
+        createdAt: {
+          [Op.between]: [new Date(from), new Date(to)],
+        },
       },
       ...(order && {
         order: filter === 'user' ? [[{ model: UserModel, as: 'userOrder' }, 'firstname', order]] : [[filter, order]],
@@ -155,6 +167,49 @@ export class OrderService {
     const totalCount = await DB.Order.count(options);
     const totalPages = Math.ceil(totalCount / LIMIT);
 
-    return { totalPages: totalPages, orders: allOrder };
+    let totalSuccess = 0;
+    let totalPending = 0;
+    let totalCanceled = 0;
+    let totalRejected = 0;
+    let totalOngoing = 0;
+    let totalFailed = 0;
+
+    const optionsCount: FindOptions<Order> = {
+      where: {
+        ...(warehouse !== 'All' && { warehouseId: findWarehouse.id }),
+        ...(status && { status }),
+        createdAt: {
+          [Op.between]: [new Date(from), new Date(to)],
+        },
+      },
+      ...(order && {
+        order: filter === 'user' ? [[{ model: UserModel, as: 'userOrder' }, 'firstname', order]] : [[filter, order]],
+      }),
+      include: [
+        {
+          model: WarehouseModel,
+          as: 'warehouseOrder',
+          attributes: ['name'],
+        },
+        {
+          model: UserModel,
+          as: 'userOrder',
+          attributes: ['firstname', 'lastname'],
+        },
+      ],
+    };
+    const allOrderCcount = await DB.Order.findAll(optionsCount);
+
+    allOrderCcount.forEach(order => {
+      if (order.status === 'SUCCESS') totalSuccess += order.totalPrice;
+      else if (order.status === 'PENDING') totalPending += order.totalPrice;
+      else if (order.status === 'CANCELED') totalCanceled += order.totalPrice;
+      else if (order.status === 'REJECTED') totalRejected += order.totalPrice;
+      else if (order.status === 'DELIVERED' || order.status === 'SHIPPED' || order.status === 'WAITING' || order.status === 'PROCESS')
+        totalOngoing += order.totalPrice;
+      totalFailed = totalCanceled+totalRejected
+    });
+
+    return { totalPages: totalPages, orders: allOrder, totalSuccess, totalPending, totalFailed, totalOngoing };
   }
 }

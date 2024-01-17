@@ -1,14 +1,163 @@
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
-import { Jurnal, JurnalData } from '@/interfaces/jurnal.interface';
+import { User } from '@/interfaces';
+import { GetFilterJurnal, Jurnal, JurnalData } from '@/interfaces/jurnal.interface';
 import { Transaction } from 'sequelize';
 import { Service } from 'typedi';
+import { FindOptions, Op } from 'sequelize';
 
 @Service()
 export class JurnalService {
-  public async findAllJurnal(): Promise<Jurnal[]> {
-    const allJurnal: Jurnal[] = await DB.Jurnal.findAll();
-    return allJurnal;
+  public async findAllJurnal({
+    page,
+    s,
+    order,
+    limit,
+    filter,
+    externalId,
+    warehouse,
+    to,
+    from,
+  }: GetFilterJurnal): Promise<{ jurnals: Jurnal[]; totalPages: number; totalAddition: number; totalReduction: number; finalStock: number }> {
+    const findUser: User = await DB.User.findOne({
+      where: { externalId, status: 'ACTIVE' },
+      include: [{ model: DB.Warehouses, as: 'userData', attributes: ['id'] }],
+    });
+    if (!findUser) throw new HttpException(409, "user doesn't exist");
+    const role = findUser.role;
+    const where =
+      role === 'ADMIN'
+        ? {
+            ...(warehouse && warehouse !== 'ALL' && { id: Number(warehouse) }),
+          }
+        : role === 'WAREHOUSE ADMIN'
+        ? {
+            userId: findUser.id,
+          }
+        : {};
+    const date = new Date();
+    let firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    let lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    if (from && to) {
+      firstDayOfMonth = new Date(from);
+      lastDayOfMonth = new Date(to);
+    }
+    const LIMIT = Number(limit) || 10;
+    const offset = (page - 1) * LIMIT;
+    const options: FindOptions<Jurnal> = {
+      offset,
+      limit: LIMIT,
+      where: {
+        createdAt: {
+          [Op.between]: [new Date(from), new Date(to)],
+        },
+      },
+      include: [
+        {
+          model: DB.Inventories,
+          as: 'jurnal',
+          attributes: ['stock'],
+          where: {
+            ...(role === 'WAREHOUSE ADMIN' && {
+              warehouseId: findUser.userData.id,
+            }),
+          },
+          include: [
+            {
+              model: DB.Warehouses,
+              as: 'warehouse',
+              attributes: ['name'],
+              where,
+            },
+            {
+              model: DB.Size,
+              as: 'sizes',
+              attributes: ['label'],
+            },
+            {
+              model: DB.Product,
+              as: 'product',
+              attributes: ['name'],
+              where: {
+                ...(s && {
+                  name: {
+                    [DB.Sequelize.Op.like]: `%${s}%`,
+                  },
+                }),
+              },
+            },
+          ],
+        },
+      ],
+    };
+
+    if (order) {
+      options.order = [[filter, order]];
+    }
+
+    const allJurnal = await DB.Jurnal.findAll(options);
+    const totalCount = await DB.Jurnal.count({ where: options.where });
+    const totalPages = Math.ceil(totalCount / LIMIT);
+
+    const optionsCount: FindOptions<Jurnal> = {
+      where: {
+        createdAt: {
+          [Op.between]: [new Date(from), new Date(to)],
+        },
+      },
+      include: [
+        {
+          model: DB.Inventories,
+          as: 'jurnal',
+          attributes: ['stock'],
+          where: {
+            ...(role === 'WAREHOUSE ADMIN' && {
+              warehouseId: findUser.userData.id,
+            }),
+          },
+          include: [
+            {
+              model: DB.Warehouses,
+              as: 'warehouse',
+              attributes: ['name'],
+              where,
+            },
+            {
+              model: DB.Size,
+              as: 'sizes',
+              attributes: ['label'],
+            },
+            {
+              model: DB.Product,
+              as: 'product',
+              attributes: ['name'],
+              where: {
+                ...(s && {
+                  name: {
+                    [DB.Sequelize.Op.like]: `%${s}%`,
+                  },
+                }),
+              },
+            },
+          ],
+        },
+      ],
+    };
+    const allJurnalCcount = await DB.Jurnal.findAll(optionsCount);
+
+    let totalAddition = 0;
+    let totalReduction = 0;
+    allJurnalCcount.forEach(jurnal => {
+      if (jurnal.type === '1') {
+        totalAddition += jurnal.qtyChange;
+      } else if (jurnal.type === '0') {
+        totalReduction += jurnal.qtyChange;
+      }
+    });
+
+    const finalStock = totalAddition - totalReduction;
+
+    return { totalPages: totalPages, jurnals: allJurnal, totalAddition, totalReduction, finalStock };
   }
 
   public async findJurnalById(jurnalId: number): Promise<Jurnal> {

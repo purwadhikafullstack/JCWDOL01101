@@ -114,7 +114,7 @@ const DashboardSidebar = () => {
             {
               title: "Reports",
               icon: ClipboardList,
-              link: "#",
+              link: "/dashboard/report",
               variant: "ghost",
             },
           ]}

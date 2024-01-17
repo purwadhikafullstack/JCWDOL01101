@@ -4,27 +4,32 @@ import { Car, Clock, RefreshCcw, MapPin, ScrollText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Order, useOrders } from "@/hooks/useOrder";
 import { useUserContext } from "@/context/UserContext";
+import { Button } from "./ui/button";
 
 const process = [
   {
     icon: <Clock className="w-6 h-6" />,
     title: "Waiting for confirmation",
     id: "WAITING",
+    link:"/order?status=WAITING"
   },
   {
     icon: <RefreshCcw />,
     title: "Processing",
     id: "PROCESS",
+    link:"/order?status=PROCESS"
   },
   {
     icon: <Car />,
     title: "Shipped",
     id: "SHIPPED",
+    link:"/order?status=SHIPPED"
   },
   {
     id: "DELIVERED",
     icon: <MapPin />,
     title: "Delivered",
+    link:"/order?status=DELIVERED"
   },
 ];
 
@@ -69,6 +74,7 @@ const NavDelivery = ({ setIsDim }: { setIsDim: (x: boolean) => void }) => {
                   icon={p.icon}
                   title={p.title}
                   order={userOrders}
+                  link = {p.link}
                 />
               ))}
             </div>
@@ -84,11 +90,13 @@ const DeliveryDropdownItem = ({
   icon,
   title,
   order,
+  link,
 }: {
   id: string;
   icon: React.ReactElement;
   title: string;
   order: Order[] | undefined;
+  link : string;
 }) => {
   const findOrders = order
     ? order.filter(
@@ -96,10 +104,10 @@ const DeliveryDropdownItem = ({
       )
     : [];
   return (
-    <div className="relative flex  justify-between p-2 flex-col gap-2  items-center rounded-md cursor-pointer">
+    <Link to={link} className="relative flex  justify-between p-2 flex-col gap-2  items-center rounded-md cursor-pointer">
       <span className="text-primary/60">{icon}</span>
       <p className="text-xs text-wrap w-[80px] text-center">{title}</p>
-    </div>
+    </Link>
   );
 };
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { CalendarIcon } from "@radix-ui/react-icons";
-import { addDays, format, formatISO } from "date-fns";
+import {  format } from "date-fns";
 import { DateRange } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
@@ -11,7 +11,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useSearchParams } from "react-router-dom";
 
 const DatePicker = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const currentDate = new Date();
