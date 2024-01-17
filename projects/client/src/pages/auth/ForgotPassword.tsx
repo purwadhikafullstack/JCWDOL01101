@@ -87,9 +87,6 @@ const ForgotPassword: NextPage = () => {
           />
           <span className="text-center">
             <h3 className="font-bold text-lg">Forgot Your Password?</h3>
-            <p className="text-sm text-muted-foreground">
-              Enter your email below so we can help you
-            </p>
           </span>
           <form onSubmit={!successfulCreation ? create : reset}>
             {!successfulCreation && !complete && (
@@ -134,7 +131,7 @@ const ForgotPassword: NextPage = () => {
                 </Button>
               </>
             )}
-            {complete && "You successfully changed you password"}
+            {complete && <div className="ml-8 text-center">You successfully changed you password, Please return to Login</div>}
             {secondFactor && "2FA is required, this UI does not handle that"}
           </form>
         </div>
