@@ -8,7 +8,7 @@ export interface Jurnal {
   newQty: number;
   type: '1' | '0';
   notes?: string;
-  createdAt?:Date;
+  createdAt?: Date;
 }
 
 export interface JurnalData {
@@ -27,6 +27,6 @@ export interface GetFilterJurnal {
   limit: number;
   externalId: string;
   warehouse: string;
-  to:Date;
-  from:Date;
+  to: Date;
+  from: Date;
 }
