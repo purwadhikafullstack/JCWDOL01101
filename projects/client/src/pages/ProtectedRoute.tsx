@@ -30,10 +30,10 @@ export const DashboardRoute = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const ROLE = user?.publicMetadata.role;
   useEffect(() => {
-    if (ROLE === "CUSTOMER") {
+    if (!user || ROLE === "CUSTOMER") {
       return navigate("/");
     }
-  }, [ROLE, isLoaded]);
+  }, [ROLE, isLoaded, user]);
   return <>{children}</>;
 };
 export const AdminRoute = ({ children }: { children: React.ReactNode }) => {
