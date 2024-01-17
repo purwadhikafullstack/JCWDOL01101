@@ -112,13 +112,6 @@ export class OrderService {
       findWarehouse = await DB.Warehouses.findOne({ where: { name: warehouse } });
       if (!findWarehouse) throw new HttpException(409, "warehouse doesn't exist");
     }
-    const date = new Date();
-    let firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-    let lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-    if (from && to) {
-      firstDayOfMonth = new Date(from);
-      lastDayOfMonth = new Date(to);
-    }
     if (status === 'UNSUCCESSFUL') {
       status = ['CANCELED', 'FAILED', 'REJECTED'];
     }
