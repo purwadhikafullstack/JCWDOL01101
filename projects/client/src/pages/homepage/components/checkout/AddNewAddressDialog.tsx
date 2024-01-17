@@ -24,14 +24,14 @@ import { useTranslation } from "react-i18next";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 export const addressSchema = z.object({
-  recepient: z.string().min(4, "required").max(50),
+  recepient: z.string().trim().min(4, "required").max(50),
   phone: z.string().min(9, "required").max(15),
   formatPhone: z.string().min(9, "required").max(15),
-  label: z.string().min(3, "required").max(15, "max label length is 15"),
+  label: z.string().trim().min(3, "required").max(15, "max label length is 15"),
   cityId: z.string().min(1, "required"),
-  cityName: z.string().min(3, "required"),
-  address: z.string().min(3, "required"),
-  notes: z.string().optional(),
+  cityName: z.string().trim().min(3, "required"),
+  address: z.string().trim().min(3, "required"),
+  notes: z.string().trim().optional(),
   isMain: z.boolean().default(false),
 });
 

@@ -24,7 +24,7 @@ const ImageForm = ({ error }: { error: string | null }) => {
         </p>
       </div>
       <div className="col-span-2">
-        <div className="w-full gap-2 border rounded-lg p-4 grid grid-cols-5">
+        <div className="w-full gap-2 border rounded-lg p-4 grid grid-cols-2 lg:grid-cols-5">
           <ProductImage index={0} />
           <ProductImage index={1} />
           <ProductImage index={2} />

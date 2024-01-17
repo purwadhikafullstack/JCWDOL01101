@@ -33,12 +33,12 @@ const RecepientField = () => {
                   e.target.value = e.target.value.slice(0, LIMIT);
                 }}
               />
+              <FormMessage />
               <span className="self-end text-xs text-muted-foreground">{`${
                 form.getValues("recepient").length
               }/${LIMIT}`}</span>
             </div>
           </FormControl>
-          <FormMessage />
         </FormItem>
       )}
     />

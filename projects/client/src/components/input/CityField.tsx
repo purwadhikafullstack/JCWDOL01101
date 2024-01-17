@@ -14,11 +14,6 @@ import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "use-debounce";
 
-export type Coordinates = {
-  latitude: number;
-  langitude: number;
-};
-
 const CityField = () => {
   const { t } = useTranslation();
   const ref = useRef<HTMLDivElement | null>(null);
@@ -50,6 +45,7 @@ const CityField = () => {
             <div ref={ref}>
               <div className="flex gap-2 items-center relative">
                 <Input
+                  autoComplete="off"
                   id="city"
                   {...field}
                   value={search}
