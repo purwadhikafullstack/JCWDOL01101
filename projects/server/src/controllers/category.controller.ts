@@ -1,7 +1,6 @@
 import { Category } from '@/interfaces/category.interface';
 import { CategoryService } from '@/services/category.service';
 import { NextFunction, Request, Response } from 'express';
-import { Multer } from 'multer';
 import Container from 'typedi';
 
 export class CategoryController {

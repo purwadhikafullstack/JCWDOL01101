@@ -1,7 +1,7 @@
 import { AddressDto } from '@/dtos/address.dto';
 import { Address } from '@/interfaces/address.interface';
 import { AddressService } from '@/services/address.service';
-import { RequireAuthProp, WithAuthProp } from '@clerk/clerk-sdk-node';
+import { RequireAuthProp } from '@clerk/clerk-sdk-node';
 import { NextFunction, Request, Response } from 'express';
 import Container from 'typedi';
 

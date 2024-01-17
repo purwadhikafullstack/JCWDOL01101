@@ -1,7 +1,7 @@
 import { DB } from '@/database';
 import { CartDto, CartProductDto } from '@/dtos/cart.dto';
 import { HttpException } from '@/exceptions/HttpException';
-import { User, Cart, CartProduct, Product } from '@/interfaces';
+import { User, Cart, CartProduct } from '@/interfaces';
 import { SizeModel, ProductModel, ImageModel, InventoryModel, CartProductModel } from '@/models';
 import { Service } from 'typedi';
 
