@@ -21,9 +21,6 @@ jobs:
         run: |
           npm install
           npm run build
-        env:
-          REACT_APP_API_BASE_URL: ${{ secrets.FE_API_URL }}
-          REACT_APP_CLERK_PUBLISHABLE_KEY: ${{ secrets.FE_CLERK_KEY }}
       - name: Deploy to Linode
         uses: appleboy/scp-action@master
         with:
