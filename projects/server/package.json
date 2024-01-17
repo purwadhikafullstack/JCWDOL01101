@@ -8,7 +8,7 @@
     "start": "npm run build && cross-env NODE_ENV=production nodemon dist/server.js",
     "dev": "cross-env NODE_ENV=development nodemon",
     "serve": "node .",
-    "build": "tsc",
+    "build": "swc src -d dist --source-maps --copy-files",
     "build:tsc": "tsc && tsc-alias",
     "test": "jest --forceExit --detectOpenHandles",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
@@ -57,8 +57,8 @@
     "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
-    "@swc/cli": "^0.1.57",
-    "@swc/core": "^1.2.220",
+    "@swc/cli": "^0.1.63",
+    "@swc/core": "^1.3.103",
     "@types/bcrypt": "^5.0.0",
     "@types/compression": "^1.7.2",
     "@types/cookie-parser": "^1.4.3",
