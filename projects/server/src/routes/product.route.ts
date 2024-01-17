@@ -26,7 +26,8 @@ export class ProductRoute implements Routes {
     this.router.delete(`${this.path}/images/:imageId`, this.product.deleteProductImage);
     this.router.post(`${this.path}`, upload.array('images', 5), this.product.createProduct);
     this.router.put(`${this.path}/:slug`, upload.array('images', 5), this.product.updateProduct);
-    this.router.patch(`${this.path}/delete/:productId`, this.product.changeProductStatus);
-    this.router.patch(`${this.path}/delete/:productId/:warehouseId`, this.product.changeProductInventoryStatus);
+    this.router.patch(`${this.path}/status/:productId`, this.product.changeProductStatus);
+    this.router.patch(`${this.path}/status/:productId/:warehouseId`, this.product.changeProductInventoryStatus);
+    this.router.patch(`${this.path}/all-status/:warehouseId`, this.product.patchAllProductStatus);
   }
 }

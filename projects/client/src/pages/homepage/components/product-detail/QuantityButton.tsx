@@ -39,10 +39,7 @@ const QuantityButton = ({
           <Input
             ref={inputRef}
             value={quantity}
-            disabled={
-              (currentProductQtyInCart || 0) + quantity >= totalStock ||
-              totalStock <= 0
-            }
+            disabled={totalStock <= 0}
             onChange={(e) => {
               if (quantity >= 0) {
                 const numericValue = e.target.value.trim().replace(/\D/g, "");

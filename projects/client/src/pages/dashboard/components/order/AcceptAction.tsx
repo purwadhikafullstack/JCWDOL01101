@@ -1,30 +1,30 @@
-import React, { FormEvent, useEffect } from "react"
+import React, { FormEvent, useEffect } from "react";
 import {
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogClose,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Loader2 } from "lucide-react"
-import { useToast } from "@/components/ui/use-toast"
-import { useAcceptOrder } from "@/hooks/useOrderMutation"
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { useAdminAcceptOrder } from "@/hooks/useOrderMutation";
 
 const AcceptAction = ({
   orderId,
   setModal,
 }: {
-  orderId: number
-  setModal: (value: string) => void
+  orderId: number;
+  setModal: (value: string) => void;
 }) => {
-  const { toast } = useToast()
+  const { toast } = useToast();
 
-  const acceptOrder = useAcceptOrder(orderId)
+  const acceptOrder = useAdminAcceptOrder(orderId);
   const handleAcceptOrder = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    acceptOrder.mutate()
-  }
+    e.preventDefault();
+    acceptOrder.mutate();
+  };
 
   useEffect(() => {
     if (acceptOrder.isSuccess) {
@@ -32,10 +32,10 @@ const AcceptAction = ({
         title: "Order Confirmed",
         description: "Successfully confirmed customer order",
         duration: 3000,
-      })
-      setModal("")
+      });
+      setModal("");
     }
-  }, [acceptOrder.isSuccess, toast])
+  }, [acceptOrder.isSuccess, toast]);
   return (
     <DialogContent>
       <DialogHeader>
@@ -71,7 +71,7 @@ const AcceptAction = ({
         </span>
       </form>
     </DialogContent>
-  )
-}
+  );
+};
 
-export default AcceptAction
+export default AcceptAction;

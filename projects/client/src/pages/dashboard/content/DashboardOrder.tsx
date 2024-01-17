@@ -1,39 +1,39 @@
-import React from "react"
-import { SearchIcon, MapPin } from "lucide-react"
+import React from "react";
+import { SearchIcon, MapPin } from "lucide-react";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { useSearchParams } from "react-router-dom"
-import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton"
-import { useDebounce } from "use-debounce"
-import TablePagination from "../components/TablePagination"
-import { useUser } from "@clerk/clerk-react"
-import { useGetWarehouse } from "@/hooks/useWarehouse"
-import { useCurrentUser } from "@/hooks/useUser"
-import { getAllOrders } from "@/hooks/useOrder"
-import OrderTable from "../components/OrderTable"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { useSearchParams } from "react-router-dom";
+import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton";
+import { useDebounce } from "use-debounce";
+import TablePagination from "../components/TablePagination";
+import { useUser } from "@clerk/clerk-react";
+import { useGetWarehouse } from "@/hooks/useWarehouse";
+import { useCurrentUser } from "@/hooks/useUser";
+import { getAllOrders } from "@/hooks/useOrder";
+import OrderTable from "../components/OrderTable";
+import { cn } from "@/lib/utils";
 
 const DashboardOrder = () => {
-  const { user, isSignedIn, isLoaded } = useUser()
+  const { user, isSignedIn, isLoaded } = useUser();
   const { data: userAdmin } = useCurrentUser({
     externalId: user?.id!,
     enabled: isLoaded && !!isSignedIn,
-  })
-  const ROLE = userAdmin?.role || "CUSTOMER"
+  });
+  const ROLE = userAdmin?.role || "CUSTOMER";
   const [searchParams, setSearchParams] = useSearchParams({
     page: "1",
-  })
-  const currentPage = Number(searchParams.get("page"))
-  const searchTerm = searchParams.get("s") || ""
-  const [debounceSearch] = useDebounce(searchTerm, 1000)
+  });
+  const currentPage = Number(searchParams.get("page"));
+  const searchTerm = searchParams.get("s") || "";
+  const [debounceSearch] = useDebounce(searchTerm, 1000);
 
-  const { data: warehouses } = useGetWarehouse(ROLE === "ADMIN")
+  const { data: warehouses } = useGetWarehouse(ROLE === "ADMIN");
   const { data, isLoading } = getAllOrders({
     page: currentPage,
     s: debounceSearch,
@@ -46,7 +46,7 @@ const DashboardOrder = () => {
       (warehouses && warehouses[0].name) ||
       "",
     status: searchParams.get("status") || "",
-  })
+  });
   return (
     <div className="flex flex-col p-2 w-full">
       <div className="flex justify-between items-center w-full">
@@ -57,32 +57,34 @@ const DashboardOrder = () => {
               value={searchTerm}
               onChange={(e) => {
                 setSearchParams((params) => {
-                  params.set("s", e.target.value)
-                  return params
-                })
+                  params.set("s", e.target.value);
+                  return params;
+                });
               }}
               className=" w-full pl-10"
               placeholder="search order..."
             />
           </div>
-          <div className="w-[100px]">
+          <div className="flex justify-end">
             <Select
               onValueChange={(value) => {
                 setSearchParams((params) => {
-                  params.set("status", value)
-                  return params
-                })
+                  params.set("status", value);
+                  return params;
+                });
               }}
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Status" />
+              <SelectTrigger className="w-[150px]">
+                <SelectValue placeholder="Select Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="WAITING">waiting</SelectItem>
-                <SelectItem value="PROCESS">process</SelectItem>
-                <SelectItem value="DELIVERED">delivered</SelectItem>
-                <SelectItem value="SHIPPED">shipped</SelectItem>
-                <SelectItem value="FAILED">failed</SelectItem>
+                <SelectItem value="ALL">All</SelectItem>
+                <SelectItem value="WAITING">Waiting</SelectItem>
+                <SelectItem value="PROCESS">Process</SelectItem>
+                <SelectItem value="SHIPPED">Shipped</SelectItem>
+                <SelectItem value="DELIVERED">Delivered</SelectItem>
+                <SelectItem value="SUCCESS">Success</SelectItem>
+                <SelectItem value="UNSUCCESSFUL">Failed</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -98,9 +100,9 @@ const DashboardOrder = () => {
               defaultValue="All"
               onValueChange={(value) => {
                 setSearchParams((params) => {
-                  params.set("warehouse", value)
-                  return params
-                })
+                  params.set("warehouse", value);
+                  return params;
+                });
               }}
             >
               <SelectTrigger>
@@ -145,7 +147,7 @@ const DashboardOrder = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardOrder
+export default DashboardOrder;

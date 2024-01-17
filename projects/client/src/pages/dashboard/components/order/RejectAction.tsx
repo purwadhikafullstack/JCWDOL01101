@@ -1,30 +1,30 @@
-import React, { FormEvent, useEffect, useState } from "react"
+import React, { FormEvent, useEffect, useState } from "react";
 import {
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogClose,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Loader2 } from "lucide-react"
-import { useToast } from "@/components/ui/use-toast"
-import { useRejectOrder } from "@/hooks/useOrderMutation"
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { useAdminRejectOrder } from "@/hooks/useOrderMutation";
 
 const RejectAction = ({
   orderId,
   setModal,
 }: {
-  orderId: number
-  setModal: (value: string) => void
+  orderId: number;
+  setModal: (value: string) => void;
 }) => {
-  const { toast } = useToast()
+  const { toast } = useToast();
 
-  const rejectOrder = useRejectOrder(orderId)
+  const rejectOrder = useAdminRejectOrder(orderId);
   const handleRejectOrder = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    rejectOrder.mutate()
-  }
+    e.preventDefault();
+    rejectOrder.mutate();
+  };
 
   useEffect(() => {
     if (rejectOrder.isSuccess) {
@@ -32,10 +32,10 @@ const RejectAction = ({
         title: "Order Rejected",
         description: "Successfully reject customer order",
         duration: 3000,
-      })
-      setModal("")
+      });
+      setModal("");
     }
-  }, [rejectOrder.isSuccess, toast])
+  }, [rejectOrder.isSuccess, toast]);
   return (
     <DialogContent>
       <DialogHeader>
@@ -71,7 +71,7 @@ const RejectAction = ({
         </span>
       </form>
     </DialogContent>
-  )
-}
+  );
+};
 
-export default RejectAction
+export default RejectAction;

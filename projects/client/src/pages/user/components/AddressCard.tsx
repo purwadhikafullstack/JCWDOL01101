@@ -1,12 +1,11 @@
 import React from "react";
 import { Address } from "@/hooks/useAddress";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import SetMainDialog from "./SetMainDialog";
 import DeleteAddressDialog from "./DeleteAddressDialog";
 import EditAddressDialog from "./EditAddressDialog";
 import { cn } from "@/lib/utils";
-import { Badge } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Badge } from "@/components/ui/badge";
 
 const AddressCard = ({ address }: { address: Address }) => {
   const { t } = useTranslation();
@@ -21,7 +20,7 @@ const AddressCard = ({ address }: { address: Address }) => {
               "rounded-lg bg-red-500 text-xs p-1 text-white font-semibold"
             )}
           >
-            {t("checkoutPage.addressModal.main.primaryBadge")}
+            Primary
           </Badge>
         </span>
         <p className="text-2xl font-bold">{address.recepient}</p>
@@ -31,9 +30,14 @@ const AddressCard = ({ address }: { address: Address }) => {
         {`${address.city.province}, ${address.city.cityName}, ${address.address}, ${address.city.postalCode}`}
       </p>
       <div className="text-primary flex justify-between mt-4">
-        <div className="flex">
+        <div className="flex gap-2">
           <EditAddressDialog address={address} />
-          <SetMainDialog addressId={Number(address.id)} />
+          <div className={cn(address.isMain && "hidden")}>
+            <div className="flex gap-2">
+              <p>|</p>
+              <SetMainDialog addressId={Number(address.id)} />
+            </div>
+          </div>
         </div>
         <div className={cn(address.isMain && "hidden", "block")}>
           <DeleteAddressDialog addressId={Number(address.id)} />

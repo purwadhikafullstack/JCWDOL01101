@@ -5,7 +5,7 @@ type StockData = {
   stock: number;
   notes: string | undefined;
   sizeId: number;
-  warehouseId: string;
+  warehouseId: number;
   productId: number;
 };
 export const useInventoryMutation = () => {

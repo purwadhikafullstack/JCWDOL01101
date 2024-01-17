@@ -2,10 +2,10 @@ import 'reflect-metadata';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import path from 'path';
 import express from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
+import path from 'path';
 import morgan from 'morgan';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
@@ -14,6 +14,7 @@ import { DB } from '@database';
 import { Routes } from '@interfaces/routes.interface';
 import { ErrorMiddleware } from '@middlewares/error.middleware';
 import { logger, stream } from '@utils/logger';
+import { startCronjob } from './utils/cronJob';
 
 export class App {
   public app: express.Application;
@@ -26,11 +27,12 @@ export class App {
     this.port = PORT || 8000;
 
     this.connectToDatabase();
-    this.initializeClient();
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
     this.initializeSwagger();
     this.initializeErrorHandling();
+    this.cronJob();
+    this.initializeClient();
   }
 
   public listen() {
@@ -94,5 +96,9 @@ export class App {
 
   private initializeErrorHandling() {
     this.app.use(ErrorMiddleware);
+  }
+
+  private cronJob() {
+    startCronjob();
   }
 }

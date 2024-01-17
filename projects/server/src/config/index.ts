@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import path from "path";
+import path from 'path';
 config({ path: path.resolve(__dirname, `../../.env.${process.env.NODE_ENV || 'development'}.local`) });
 export const CREDENTIALS = process.env.CREDENTIALS === 'true';
 export const { OPENCAGE_API_KEY, RAJAONGKIR_API_KEY, CLERK_SECRET_KEY, DOKU_SECRET_KEY, DOKU_CLIENT_ID, DOKU_URL } = process.env;

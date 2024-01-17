@@ -138,7 +138,7 @@ const Reviews = () => {
           </div>
           <div className="w-[350px] relative">
             <div className="sticky top-[100px]">
-              <div className="border p-4 space-y-3">
+              <div className="border p-4 space-y-3 rounded-lg">
                 <h3 className="uppercase font-bold text-2xl">
                   {t("reviewsPage.reviewSummary")}
                 </h3>
@@ -181,7 +181,7 @@ const Reviews = () => {
           <Button
             onClick={scrollToTop}
             variant="outline"
-            className="border-black dark:border-border uppercase mt-6 w-max rounded-none"
+            className="border-black dark:border-border uppercase mt-6 w-max"
           >
             <ArrowUp className="w-4 h-4 mr-2" />
             {t("reviewsPage.backToTop")}

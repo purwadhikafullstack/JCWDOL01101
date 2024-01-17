@@ -34,7 +34,7 @@ export class MutationController {
     }
   };
 
-  public createMutation = async (req: Request, res: Response, next: NextFunction) => {
+  public createMutation = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const mutationData: MutationDto = req.body;
       const createdMutation: Mutation = await this.mutation.createMutation({ ...mutationData });
@@ -48,7 +48,7 @@ export class MutationController {
     }
   };
 
-  public cancelMutation = async (req: Request, res: Response, next: NextFunction) => {
+  public cancelMutation = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const mutationId = Number(req.params.mutationId);
       const cancelMutation: Mutation = await this.mutation.cancelMutation(mutationId);
@@ -62,7 +62,7 @@ export class MutationController {
     }
   };
 
-  public rejectMutation = async (req: Request, res: Response, next: NextFunction) => {
+  public rejectMutation = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const mutationId = Number(req.params.mutationId);
       const name = String(req.body.name);
@@ -78,7 +78,7 @@ export class MutationController {
     }
   };
 
-  public acceptMutation = async (req: Request, res: Response, next: NextFunction) => {
+  public acceptMutation = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const mutationId = Number(req.params.mutationId);
       const name = String(req.body.name);

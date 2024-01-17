@@ -60,17 +60,33 @@ export const useEditProduct = (slug: string) => {
 };
 
 type STATUS = "ACTIVE" | "DEACTIVATED" | "DELETED";
-type ChangeStatusData = {
-  productId: number;
+interface StatusData {
   previousStatus?: STATUS;
-  warehouseId?: string | undefined;
+  warehouseId?: string | number | undefined;
   status: STATUS;
+}
+
+interface ChangeStatusData extends StatusData {
+  productId: number;
+}
+
+export const useChangeAllStatus = () => {
+  const queryClient = useQueryClient();
+  const productMutation = useMutation({
+    mutationFn: async (data: StatusData) =>
+      service.patch(`/products/all-status/${data.warehouseId}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+  });
+
+  return productMutation;
 };
 export const useChangeStatus = () => {
   const queryClient = useQueryClient();
   const productMutation = useMutation({
     mutationFn: async (data: ChangeStatusData) =>
-      service.patch(`/products/delete/${data.productId}`, data),
+      service.patch(`/products/status/${data.productId}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
     },
@@ -81,7 +97,7 @@ export const useChangeStatus = () => {
 
 type ChangeStatusInventoryData = {
   productId: number;
-  warehouseId: string;
+  warehouseId: number;
   status: "ACTIVE" | "DEACTIVATED" | "DELETED";
 };
 export const useChangeStatusInventory = () => {
@@ -89,7 +105,7 @@ export const useChangeStatusInventory = () => {
   const productMutation = useMutation({
     mutationFn: async (data: ChangeStatusInventoryData) =>
       service.patch(
-        `/products/delete/${data.productId}/${data.warehouseId}`,
+        `/products/status/${data.productId}/${data.warehouseId}`,
         data
       ),
     onSuccess: () => {

@@ -28,7 +28,7 @@ export const usePostReview = () => {
   return addressMutation;
 };
 
-export type STATUS = "ACTIVE" | "DEACTIVATED" | "DELETED";
+export type STATUS = "ACTIVE" | "DEACTIVATED" | "DELETED" | undefined;
 export const useChangeReviewStatus = (reviewId: number) => {
   const { getToken } = useAuth();
   const queryClient = useQueryClient();
