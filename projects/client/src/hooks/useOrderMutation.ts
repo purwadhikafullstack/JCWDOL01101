@@ -10,11 +10,14 @@ export const useAdminAcceptOrder = (orderId: number) => {
   const { toast } = useToast();
   const editMutation = useMutation({
     mutationFn: async () => {
-      await service.patch(`/orders/admin-accept/${orderId}`, {},
+      await service.patch(
+        `/orders/admin-accept/${orderId}`,
+        {},
         {
           withCredentials: true,
           headers: { Authorization: `Bearer ${await getToken()}` },
-        });
+        }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
@@ -39,11 +42,14 @@ export const useAdminRejectOrder = (orderId: number) => {
   const { toast } = useToast();
   const editMutation = useMutation({
     mutationFn: async () => {
-      await service.patch(`/orders/admin-reject/${orderId}`, {},
+      await service.patch(
+        `/orders/admin-reject/${orderId}`,
+        {},
         {
           withCredentials: true,
           headers: { Authorization: `Bearer ${await getToken()}` },
-        });
+        }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
@@ -68,11 +74,14 @@ export const useAdminSendOrder = (orderId: number) => {
   const { toast } = useToast();
   const editMutation = useMutation({
     mutationFn: async () => {
-      await service.patch(`/orders/admin-send/${orderId}`, {},
+      await service.patch(
+        `/orders/admin-send/${orderId}`,
+        {},
         {
           withCredentials: true,
           headers: { Authorization: `Bearer ${await getToken()}` },
-        });
+        }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
@@ -97,11 +106,14 @@ export const useAdminCancelOrder = (orderId: number) => {
   const { toast } = useToast();
   const editMutation = useMutation({
     mutationFn: async () => {
-      await service.patch(`/orders/admin-cancel/${orderId}`, {},
+      await service.patch(
+        `/orders/admin-cancel/${orderId}`,
+        {},
         {
           withCredentials: true,
           headers: { Authorization: `Bearer ${await getToken()}` },
-        });
+        }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });

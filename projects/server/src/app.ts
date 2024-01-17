@@ -5,6 +5,7 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
+import path from 'path';
 import morgan from 'morgan';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
@@ -31,6 +32,7 @@ export class App {
     this.initializeSwagger();
     this.initializeErrorHandling();
     this.cronJob();
+    this.initializeClient();
   }
 
   public listen() {
@@ -48,6 +50,14 @@ export class App {
 
   private async connectToDatabase() {
     await DB.sequelize.sync({ force: false });
+  }
+
+  private initializeClient() {
+    const clientPath = '../../client/build';
+    this.app.use(express.static(path.join(__dirname, clientPath)));
+    this.app.get('*', (req, res) => {
+      res.sendFile(path.join(__dirname, clientPath, 'index.html'));
+    });
   }
 
   private initializeMiddlewares() {

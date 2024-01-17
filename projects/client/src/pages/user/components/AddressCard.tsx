@@ -1,14 +1,14 @@
-import React from "react"
-import { Address } from "@/hooks/useAddress"
-import SetMainDialog from "./SetMainDialog"
-import DeleteAddressDialog from "./DeleteAddressDialog"
-import EditAddressDialog from "./EditAddressDialog"
-import { cn } from "@/lib/utils"
-import { useTranslation } from "react-i18next"
-import { Badge } from "@/components/ui/badge"
+import React from "react";
+import { Address } from "@/hooks/useAddress";
+import SetMainDialog from "./SetMainDialog";
+import DeleteAddressDialog from "./DeleteAddressDialog";
+import EditAddressDialog from "./EditAddressDialog";
+import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
+import { Badge } from "@/components/ui/badge";
 
 const AddressCard = ({ address }: { address: Address }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <div className="w-full bg-inherit rounded-md border shadow-sm overflow-hidden py-4 px-6 capitalize">
       <div className="mb-1 space-y-0.5">
@@ -44,7 +44,7 @@ const AddressCard = ({ address }: { address: Address }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AddressCard
+export default AddressCard;

@@ -1,78 +1,78 @@
-import React, { useState, useCallback } from "react"
-import { useUser } from "@clerk/clerk-react"
-import { buttonVariants } from "@/components/ui/button"
+import React, { useState, useCallback } from "react";
+import { useUser } from "@clerk/clerk-react";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { useDropzone, DropzoneOptions, FileRejection } from "react-dropzone"
-import { Button } from "@/components/ui/button"
-import toast from "react-hot-toast"
+} from "@/components/ui/dialog";
+import { useDropzone, DropzoneOptions, FileRejection } from "react-dropzone";
+import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
 
-const MaxFileSize = 5 * 1024 * 1024
+const MaxFileSize = 5 * 1024 * 1024;
 const ProfileUpload = () => {
-  const { user } = useUser()
-  if (!user) return null
+  const { user } = useUser();
+  if (!user) return null;
 
-  const [open, setOpen] = useState(false)
-  const [files, setFiles] = useState<File[]>([])
-  const [previewImages, setPreviewImages] = useState<string[]>([])
+  const [open, setOpen] = useState(false);
+  const [files, setFiles] = useState<File[]>([]);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
 
   const onDrop = useCallback(
     (acceptedFiles: File[], fileRejections: FileRejection[]) => {
       if (fileRejections.length > 0) {
-        toast.error("Image error")
+        toast.error("Image error");
       } else {
         const validFiles = acceptedFiles.filter(
           (file) => file.size <= MaxFileSize
-        )
+        );
 
         if (validFiles.length < acceptedFiles.length) {
           toast.error(
             `files exceed the maximum allowed size of ${
               MaxFileSize / (1024 * 1024)
             } MB.`
-          )
+          );
         }
 
-        setFiles(validFiles)
-        const previews = validFiles.map((file) => URL.createObjectURL(file))
-        setPreviewImages(previews)
+        setFiles(validFiles);
+        const previews = validFiles.map((file) => URL.createObjectURL(file));
+        setPreviewImages(previews);
       }
     },
     [setFiles, setPreviewImages]
-  )
+  );
 
   const dropzoneOptions: DropzoneOptions = {
     accept: {
       "image/*": [".jpg", ".jpeg", ".png", ".gif"],
     },
     onDrop,
-  }
+  };
 
-  const { getRootProps, getInputProps } = useDropzone(dropzoneOptions)
+  const { getRootProps, getInputProps } = useDropzone(dropzoneOptions);
 
   const handleUpload = async () => {
     if (files.length === 0) {
-      toast.error("No file selected.")
-      return
+      toast.error("No file selected.");
+      return;
     }
 
     const setProfileImageParams = {
       file: files[0],
-    }
+    };
 
     try {
-      await user.setProfileImage(setProfileImageParams)
-      toast.success("Profile image updated successfully.")
-      setOpen(false)
+      await user.setProfileImage(setProfileImageParams);
+      toast.success("Profile image updated successfully.");
+      setOpen(false);
     } catch (error) {
-      toast.error("Failed to update profile image.")
+      toast.error("Failed to update profile image.");
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -116,7 +116,7 @@ const ProfileUpload = () => {
         </div>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default ProfileUpload
+export default ProfileUpload;
