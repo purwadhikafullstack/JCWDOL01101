@@ -133,8 +133,13 @@ const CreateProductForm = () => {
           >
             Cancel
           </Button>
-          <Button form="product" type="submit" variant="outline">
-            {productMutation.isPending && (
+          <Button
+            onClick={() => setButton("add")}
+            form="product"
+            type="submit"
+            variant="outline"
+          >
+            {productMutation.isPending && button === "add" && (
               <Loader2 className="mr-2 w-4 h-4 animate-spin" />
             )}
             Save & Add New
@@ -145,7 +150,7 @@ const CreateProductForm = () => {
             type="submit"
             className="px-6"
           >
-            {productMutation.isPending && (
+            {productMutation.isPending && button === "save" && (
               <Loader2 className="mr-2 w-4 h-4 animate-spin" />
             )}
             Save
