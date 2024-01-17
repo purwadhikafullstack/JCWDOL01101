@@ -111,10 +111,14 @@ export const useCancelMutation = (mutationId: number) => {
   const { toast } = useToast();
   const editMutation = useMutation({
     mutationFn: async () => {
-      await service.patch(`/mutations/cancel/${mutationId}`, {}, {
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${await getToken()}` },
-      });
+      await service.patch(
+        `/mutations/cancel/${mutationId}`,
+        {},
+        {
+          withCredentials: true,
+          headers: { Authorization: `Bearer ${await getToken()}` },
+        }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mutations"] });

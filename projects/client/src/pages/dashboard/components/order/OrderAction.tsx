@@ -1,25 +1,25 @@
-import React, { useState } from "react"
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
-import { buttonVariants } from "@/components/ui/button"
-import { TableCell } from "@/components/ui/table"
+import React, { useState } from "react";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { buttonVariants } from "@/components/ui/button";
+import { TableCell } from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"
-import { DotsHorizontalIcon } from "@radix-ui/react-icons"
-import RejectAction from "./RejectAction"
-import AcceptAction from "./AcceptAction"
-import { Order } from "@/hooks/useOrder"
-import { toast } from "@/components/ui/use-toast"
-import SendAction from "./SendAction"
-import CancelAction from "./CancelAction"
+} from "@/components/ui/dropdown-menu";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import RejectAction from "./RejectAction";
+import AcceptAction from "./AcceptAction";
+import { Order } from "@/hooks/useOrder";
+import { toast } from "@/components/ui/use-toast";
+import SendAction from "./SendAction";
+import CancelAction from "./CancelAction";
 
 const OrderAction = ({ order }: { order: Order }) => {
-  const [modal, setModal] = useState("")
-  const status = order ? order.status : "WAITING"
+  const [modal, setModal] = useState("");
+  const status = order ? order.status : "WAITING";
   return (
     <>
       <TableCell className="text-center">
@@ -104,7 +104,7 @@ const OrderAction = ({ order }: { order: Order }) => {
         </Dialog>
       </TableCell>
     </>
-  )
-}
+  );
+};
 
-export default OrderAction
+export default OrderAction;

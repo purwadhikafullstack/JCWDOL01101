@@ -25,12 +25,12 @@ import { Calendar } from "@/components/ui/calendar"
 import { DateRange } from "react-day-picker"
 
 const DashboardOrder = () => {
-  const { user, isSignedIn, isLoaded } = useUser()
+  const { user, isSignedIn, isLoaded } = useUser();
   const { data: userAdmin } = useCurrentUser({
     externalId: user?.id!,
     enabled: isLoaded && !!isSignedIn,
-  })
-  const ROLE = userAdmin?.role || "CUSTOMER"
+  });
+  const ROLE = userAdmin?.role || "CUSTOMER";
   const [searchParams, setSearchParams] = useSearchParams({
     page: "1",
   })
@@ -79,9 +79,9 @@ const DashboardOrder = () => {
               value={searchTerm}
               onChange={(e) => {
                 setSearchParams((params) => {
-                  params.set("s", e.target.value)
-                  return params
-                })
+                  params.set("s", e.target.value);
+                  return params;
+                });
               }}
               className=" w-full pl-10"
               placeholder="search order..."
@@ -91,9 +91,9 @@ const DashboardOrder = () => {
             <Select
               onValueChange={(value) => {
                 setSearchParams((params) => {
-                  params.set("status", value)
-                  return params
-                })
+                  params.set("status", value);
+                  return params;
+                });
               }}
             >
               <SelectTrigger className="w-[150px]">
@@ -158,9 +158,9 @@ const DashboardOrder = () => {
               defaultValue="All"
               onValueChange={(value) => {
                 setSearchParams((params) => {
-                  params.set("warehouse", value)
-                  return params
-                })
+                  params.set("warehouse", value);
+                  return params;
+                });
               }}
             >
               <SelectTrigger>
@@ -205,7 +205,7 @@ const DashboardOrder = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardOrder
+export default DashboardOrder;
