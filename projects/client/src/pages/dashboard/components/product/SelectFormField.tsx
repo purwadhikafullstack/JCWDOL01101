@@ -41,6 +41,7 @@ const SelectFormField = () => {
             <div className="col-span-2">
               {categories && categories.length > 0 ? (
                 <Select
+                  value={field.value}
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
