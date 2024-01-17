@@ -33,23 +33,28 @@ const ForgotPassword: NextPage = () => {
     e.preventDefault();
     const password = e.target[0].value;
     const code = e.target[1].value;
-    await signIn
-      ?.attemptFirstFactor({
-        strategy: "reset_password_email_code",
-        code,
-        password,
-      })
-      .then((result) => {
-        if (result.status === "needs_second_factor") {
-          setSecondFactor(true);
-        } else if (result.status === "complete") {
-          setActive({ session: result.createdSessionId });
-          setComplete(true);
-        } else {
-          console.log(result);
-        }
-      })
-      .catch((err) => console.error("error", err.errors[0].longMessage));
+    const confirm = window.confirm(
+      "Are you sure you want to reset your password?"
+    );
+    if (confirm) {
+      await signIn
+        ?.attemptFirstFactor({
+          strategy: "reset_password_email_code",
+          code,
+          password,
+        })
+        .then((result) => {
+          if (result.status === "needs_second_factor") {
+            setSecondFactor(true);
+          } else if (result.status === "complete") {
+            setActive({ session: result.createdSessionId });
+            setComplete(true);
+          } else {
+            console.log(result);
+          }
+        })
+        .catch((err) => console.error("error", err.errors[0].longMessage));
+    }
   }
 
   return (
@@ -98,10 +103,7 @@ const ForgotPassword: NextPage = () => {
                   required
                 />
 
-                <Button
-                  type="submit"
-                  className="w-full"
-                >
+                <Button type="submit" className="w-full">
                   {" "}
                   Submit
                 </Button>
@@ -121,17 +123,30 @@ const ForgotPassword: NextPage = () => {
                   placeholder="Verification Code"
                   required
                 />
-                <p className="text-slate-400 text-sm">Check Your Email for Verification Code</p>
-                <Button
-                  type="submit"
-                  className="w-full"
-                >
+                <p className="text-slate-400 text-sm">
+                  Check Your Email for Verification Code
+                </p>
+                <Button type="submit" className="w-full">
                   {" "}
                   Submit
                 </Button>
               </>
             )}
-            {complete && <div className="ml-8 text-center">You successfully changed you password, Please return to Login</div>}
+            {complete && (
+              <div className="ml-8 text-center">
+                You successfully changed your password.
+                <span className=" ml-20 flex w-full mt-2">
+                <Link
+                  to="/forgot"
+                  className="text-primary hover:underline"
+                >
+                  {" "}
+                  Click Here to Homepage{" "}
+                </Link>
+              </span>
+              </div>
+            )}
+
             {secondFactor && "2FA is required, this UI does not handle that"}
           </form>
         </div>
