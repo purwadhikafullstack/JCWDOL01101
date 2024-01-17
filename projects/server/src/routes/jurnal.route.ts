@@ -13,8 +13,7 @@ export class JurnalRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, this.jurnal.getJurnal);
-    this.router.get(`${this.path}/tes`, ClerkExpressRequireAuth(),this.jurnal.getJurnaltes);
+    this.router.get(`${this.path}`, ClerkExpressRequireAuth(),this.jurnal.getJurnal);
     this.router.get(`${this.path}/:id`, this.jurnal.getJurnalById);
     this.router.post(`${this.path}`, this.jurnal.createJurnal);
     this.router.put(`${this.path}/:id`, this.jurnal.updateJurnal);

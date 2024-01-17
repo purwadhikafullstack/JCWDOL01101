@@ -8,37 +8,7 @@ import { FindOptions, Op } from 'sequelize';
 
 @Service()
 export class JurnalService {
-  public async findAllJurnal(): Promise<Jurnal[]> {
-    const allJurnal: Jurnal[] = await DB.Jurnal.findAll({
-      include: [
-        {
-          model: DB.Inventories,
-          as: 'jurnal',
-          attributes: ['stock'],
-          include: [
-            {
-              model: DB.Warehouses,
-              as: 'warehouse',
-              attributes: ['name'],
-            },
-            {
-              model: DB.Size,
-              as: 'sizes',
-              attributes: ['label'],
-            },
-            {
-              model: DB.Product,
-              as: 'product',
-              attributes: ['name'],
-            },
-          ],
-        },
-      ],
-    });
-    return allJurnal;
-  }
-
-  public async findAllJurnaltes({
+  public async findAllJurnal({
     page,
     s,
     order,

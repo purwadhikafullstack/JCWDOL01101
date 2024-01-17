@@ -6,21 +6,10 @@ import Container from 'typedi';
 
 export class JurnalController {
   public jurnal = Container.get(JurnalService);
-
-  public getJurnal = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const findAllJurnalData: Jurnal[] = await this.jurnal.findAllJurnal();
-
-      res.status(200).json({ data: findAllJurnalData, message: 'find all Jurnal' });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  public getJurnaltes = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
+  public getJurnal = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const { page, s, order, filter, limit, warehouse, to, from } = req.query;
-      const jurnals = await this.jurnal.findAllJurnaltes({
+      const jurnals = await this.jurnal.findAllJurnal({
         s: String(s),
         order: String(order),
         limit: Number(limit),

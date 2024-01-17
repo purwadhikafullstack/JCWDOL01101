@@ -88,7 +88,7 @@ export const getAllJurnals = ({
     queryKey: ["jurnals", page, s, filter, order, warehouse, to, from],
     queryFn: async () => {
       try {
-        const res = await service.get("/jurnals/tes", {
+        const res = await service.get("/jurnals", {
           params: {
             s,
             page,
