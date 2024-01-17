@@ -1,3 +1,4 @@
+import React from "react";
 import {
   FormField,
   FormItem,
@@ -7,7 +8,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import useOutsideClick from "@/hooks/useClickOutside";
-import React, { useEffect, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -16,12 +16,12 @@ const LIMIT = 15;
 
 const LabelField = () => {
   const { t } = useTranslation();
-  const [show, setShow] = useState(false);
-  const [label, setLabel] = useState("");
-  const ref = useRef<HTMLDivElement | null>(null);
+  const [show, setShow] = React.useState(false);
+  const [label, setLabel] = React.useState("");
+  const ref = React.useRef<HTMLDivElement | null>(null);
   const form = useFormContext();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!!label) {
       form.setValue("label", label);
     }
