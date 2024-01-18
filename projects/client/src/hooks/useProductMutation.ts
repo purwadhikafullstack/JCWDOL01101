@@ -18,7 +18,6 @@ export const useProductMutation = () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
     },
     onError: (error) => {
-      console.log(error);
       if (error instanceof AxiosError) {
         toast({
           title: "Opps, Something went Wrong",

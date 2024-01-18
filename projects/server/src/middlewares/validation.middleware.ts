@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
-import { ValidationChain, body, validationResult } from 'express-validator';
+import { ContextRunner, body, validationResult } from 'express-validator';
 
-export const ValidationMiddleware = (validations: ValidationChain[]) => {
+export const ValidationMiddleware = (validations: ContextRunner[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     for (let validation of validations) {
       const result = await validation.run(req);
-      if (result.array.length) break;
+      if (result.array().length) break;
     }
 
     const errors = validationResult(req);
@@ -13,7 +13,7 @@ export const ValidationMiddleware = (validations: ValidationChain[]) => {
       return next();
     }
 
-    res.status(400).json({ message: errors.array()[0].msg });
+    res.status(400).json({ errors: errors.array() });
   };
 };
 
@@ -57,5 +57,35 @@ export const ProductValidationMiddleware = () => {
     }
 
     res.status(400).json({ message: errors.array()[0].msg });
+  };
+};
+
+export const addressValidationMiddleware = () => {
+  const validations = [
+    body('userId').exists().withMessage('userId is required').isNumeric().withMessage('userId must be a number'),
+    body('recepient')
+      .exists()
+      .withMessage('recepient is required')
+      .isLength({ min: 4, max: 50 })
+      .withMessage('recepient must be between 4 and 50 characters'),
+    body('phone').exists().withMessage('phone is required').isLength({ min: 9, max: 15 }).withMessage('phone must be between 9 and 15 characters'),
+    body('label').exists().withMessage('label is required').isLength({ min: 4, max: 15 }).withMessage('label must be between 3 and 15 characters'),
+    body('cityId').exists().withMessage('cityId is required').isString().trim(),
+    body('address').exists().withMessage('address is required').trim().isLength({ min: 3 }).withMessage('address must be at least 4 characters'),
+    body('notes').optional(),
+    body('isMain').exists().withMessage('isMain is required').isBoolean(),
+  ];
+  return async (req: Request, res: Response, next: NextFunction) => {
+    for (let validation of validations) {
+      const result = await validation.run(req);
+      if (result.array().length) break;
+    }
+
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+      return next();
+    }
+
+    res.status(400).json({ errors: errors.array() });
   };
 };
