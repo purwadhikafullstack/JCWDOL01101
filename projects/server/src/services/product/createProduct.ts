@@ -4,8 +4,7 @@ import { HttpException } from '@/exceptions/HttpException';
 import { Product, Image } from '@/interfaces';
 
 export async function createProduct(files: Express.Multer.File[], productData: ProductDto): Promise<Product> {
-  const { name } = productData;
-  const { size } = productData;
+  const { name, size } = productData;
 
   const slug = name
     .toLocaleLowerCase()

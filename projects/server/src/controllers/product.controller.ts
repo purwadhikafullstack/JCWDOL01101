@@ -1,4 +1,3 @@
-import { ProductDto } from '@/dtos/product.dto';
 import { OrderDetails, Status } from '@/interfaces';
 import { Image } from '@/interfaces/image.interface';
 import { Inventory } from '@/interfaces/inventory.interface';

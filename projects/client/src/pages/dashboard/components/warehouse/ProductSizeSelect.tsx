@@ -1,29 +1,28 @@
-import React from "react";
+import React from "react"
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { useFormContext } from "react-hook-form";
-import { useInventoryByWarehouseId } from "@/hooks/useInventory";
-import Hashids from "hashids";
+} from "@/components/ui/form"
+import { useFormContext } from "react-hook-form"
+import { useInventoryByWarehouseId } from "@/hooks/useInventory"
 
 type Props = {
-  productId: number | undefined;
-  warehouseId: string | undefined;
-};
+  productId: number | undefined
+  warehouseId: string | undefined
+}
 const ProductSizeSelect = ({ productId, warehouseId }: Props) => {
-  const form = useFormContext();
-  const { data: inventory } = useInventoryByWarehouseId(productId, warehouseId);
+  const form = useFormContext()
+  const { data: inventory } = useInventoryByWarehouseId(productId, warehouseId)
   return (
     <FormField
       control={form.control}
@@ -50,7 +49,7 @@ const ProductSizeSelect = ({ productId, warehouseId }: Props) => {
         </FormItem>
       )}
     />
-  );
-};
+  )
+}
 
-export default ProductSizeSelect;
+export default ProductSizeSelect

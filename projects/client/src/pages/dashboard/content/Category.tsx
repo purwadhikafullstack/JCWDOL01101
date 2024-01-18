@@ -1,7 +1,7 @@
-import React from "react";
-import { useCategories } from "@/hooks/useCategory";
-import { useDeleteCategoryMutation } from "@/hooks/useCategoryMutation";
-import AddCategoryForm from "../components/category/AddCategoryForm";
+import React from "react"
+import { useCategories } from "@/hooks/useCategory"
+import { useDeleteCategoryMutation } from "@/hooks/useCategoryMutation"
+import AddCategoryForm from "../components/category/AddCategoryForm"
 import {
   Table,
   TableBody,
@@ -9,17 +9,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { baseURL } from "@/service";
+} from "@/components/ui/table"
+import { baseURL } from "@/service"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { buttonVariants, Button } from "@/components/ui/button";
-import { DialogHeader, DialogFooter } from "@/components/ui/custom-dialog";
+} from "@/components/ui/dropdown-menu"
+import { buttonVariants, Button } from "@/components/ui/button"
+import { DialogHeader, DialogFooter } from "@/components/ui/custom-dialog"
 import {
   Dialog,
   DialogTrigger,
@@ -27,21 +27,25 @@ import {
   DialogTitle,
   DialogDescription,
   DialogClose,
-} from "@/components/ui/dialog";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { Link, useSearchParams } from "react-router-dom";
-import EditCategoryForm from "../components/category/EditCategoryForm";
-import { Loader2 } from "lucide-react";
+} from "@/components/ui/dialog"
+import { DotsHorizontalIcon } from "@radix-ui/react-icons"
+import { Link, useSearchParams } from "react-router-dom"
+import EditCategoryForm from "../components/category/EditCategoryForm"
+import { Loader2 } from "lucide-react"
+import { Helmet } from "react-helmet"
 
 export default function ManageCategory() {
-  const { data: categoriess } = useCategories();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const slug = searchParams.get("slug") || "";
-  const edit = !!searchParams.get("edit") || false;
-  const deleteCategoryMutation = useDeleteCategoryMutation();
+  const { data: categoriess } = useCategories()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const slug = searchParams.get("slug") || ""
+  const edit = !!searchParams.get("edit") || false
+  const deleteCategoryMutation = useDeleteCategoryMutation()
 
   return (
     <div>
+      <Helmet>
+        <title>Dashboard | Categories</title>
+      </Helmet>
       <div className="flex w-full gap-4">
         <div className="w-full space-y-2">
           <Table>
@@ -109,11 +113,11 @@ export default function ManageCategory() {
                             <Button
                               onClick={() => {
                                 setSearchParams((params) => {
-                                  params.delete("slug");
-                                  params.delete("edit");
-                                  return params;
-                                });
-                                deleteCategoryMutation.mutate(category.id);
+                                  params.delete("slug")
+                                  params.delete("edit")
+                                  return params
+                                })
+                                deleteCategoryMutation.mutate(category.id)
                               }}
                               type="button"
                             >
@@ -140,5 +144,5 @@ export default function ManageCategory() {
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -17,6 +17,7 @@ import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton"
 import { useDebounce } from "use-debounce"
 import { getDate } from "@/lib/utils"
 import ChangeOrderButton from "../components/ChangeOrderButton"
+import { Helmet } from "react-helmet"
 
 const User = () => {
   const [searchParams, setSearchParams] = useSearchParams({ page: "1" })
@@ -32,88 +33,97 @@ const User = () => {
     order: searchParams.get("order") || "",
   })
   return (
-    <div className="flex flex-col p-2 w-full">
-      <div className="relative w-[300px]">
-        <SearchIcon className="absolute h-4 w-4 text-muted-foreground left-3 top-1/2 -translate-y-1/2" />
-        <Input
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchParams((params) => {
-              params.set("s", e.target.value)
-              return params
-            })
-            setSearchTerm(e.target.value)
-          }}
-          className=" w-full pl-10"
-          placeholder="search user ..."
-        />
-      </div>
-      <div className="border rounded-md mt-2">
-        {isLoading ? (
-          <ProductsPageSkeleton />
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[80px]">#</TableHead>
-                <TableHead className="text-center">
-                  <ChangeOrderButton paramKey="firstname" name="Name" />
-                </TableHead>
-                <TableHead className="text-center">
-                  <ChangeOrderButton paramKey="status" name="Status" />
-                </TableHead>
-                <TableHead className="text-center">
-                  <ChangeOrderButton paramKey="role" name="Role" />
-                </TableHead>
-                <TableHead className="text-center">
-                  <ChangeOrderButton paramKey="createdAt" name="Created At" />
-                </TableHead>
-                <TableHead className="text-center">
-                  <ChangeOrderButton paramKey="updatedAt" name="Updated At" />
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isFetched && data?.users.length! > 0 ? (
-                <>
-                  {data?.users!.map((user, i) => (
-                    <TableRow key={user.id}>
-                      <TableCell className="w-[80px]">{i + 1}</TableCell>
-                      <TableCell className="font-medium text-center">
-                        {user.firstname} {user.lastname}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {user.status}
-                      </TableCell>
-                      <TableCell className="text-center">{user.role}</TableCell>
-                      <TableCell className="text-center">
-                        {getDate(user.createdAt.toLocaleString())}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {getDate(user.updatedAt.toLocaleString())}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </>
-              ) : (
+    <>
+      <Helmet>
+        <title>Dashboard | Users</title>
+      </Helmet>
+      <div className="flex flex-col p-2 w-full">
+        <div className="relative w-[300px]">
+          <SearchIcon className="absolute h-4 w-4 text-muted-foreground left-3 top-1/2 -translate-y-1/2" />
+          <Input
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchParams((params) => {
+                params.set("s", e.target.value)
+                return params
+              })
+              setSearchTerm(e.target.value)
+            }}
+            className=" w-full pl-10"
+            placeholder="search user ..."
+          />
+        </div>
+        <div className="border rounded-md mt-2">
+          {isLoading ? (
+            <ProductsPageSkeleton />
+          ) : (
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={10} className="text-center h-24">
-                    No Users
-                  </TableCell>
+                  <TableHead className="w-[80px]">#</TableHead>
+                  <TableHead className="text-center">
+                    <ChangeOrderButton paramKey="firstname" name="Name" />
+                  </TableHead>
+                  <TableHead className="text-center">
+                    <ChangeOrderButton paramKey="status" name="Status" />
+                  </TableHead>
+                  <TableHead className="text-center">
+                    <ChangeOrderButton paramKey="role" name="Role" />
+                  </TableHead>
+                  <TableHead className="text-center">
+                    <ChangeOrderButton paramKey="createdAt" name="Created At" />
+                  </TableHead>
+                  <TableHead className="text-center">
+                    <ChangeOrderButton paramKey="updatedAt" name="Updated At" />
+                  </TableHead>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        )}
+              </TableHeader>
+              <TableBody>
+                {isFetched && data?.users.length! > 0 ? (
+                  <>
+                    {data?.users!.map((user, i) => (
+                      <TableRow key={user.id}>
+                        <TableCell className="w-[80px]">{i + 1}</TableCell>
+                        <TableCell className="font-medium text-center">
+                          {user.firstname
+                            ? `${user.firstname} ${user.lastname}`
+                            : user.email}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {user.status}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {user.role}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {getDate(user.createdAt.toLocaleString())}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {getDate(user.updatedAt.toLocaleString())}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </>
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={10} className="text-center h-24">
+                      No Users
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          )}
+        </div>
+        <div className="flex gap-2 items-center justify-end mt-4">
+          <TablePagination
+            currentPage={currentPage}
+            dataLength={data?.users.length!}
+            totalPages={data?.totalPages!}
+          />
+        </div>
       </div>
-      <div className="flex gap-2 items-center justify-end mt-4">
-        <TablePagination
-          currentPage={currentPage}
-          dataLength={data?.users.length!}
-          totalPages={data?.totalPages!}
-        />
-      </div>
-    </div>
+    </>
   )
 }
 

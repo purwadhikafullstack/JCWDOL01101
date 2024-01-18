@@ -1,74 +1,70 @@
-import React, { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import React, { useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Form } from "@/components/ui/form"
 
-import z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
-import { Loader2 } from "lucide-react";
-import { useCurrentUser } from "@/hooks/useUser";
-import ProductFormField from "../components/ProductFormField";
-import { useToast } from "@/components/ui/use-toast";
-import { useUser } from "@clerk/clerk-react";
-import { usePostMutation } from "@/hooks/useMutation";
-import ReceiverWarehouseField from "../components/warehouse/ReceiverWarehouseField";
-import QuantityInput from "../components/warehouse/QuantityInput";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import { baseURL } from "@/service";
-import { useProduct } from "@/hooks/useProduct";
+import z from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom"
+import { Loader2 } from "lucide-react"
+import { useCurrentUser } from "@/hooks/useUser"
+import ProductFormField from "../components/ProductFormField"
+import { useToast } from "@/components/ui/use-toast"
+import { useUser } from "@clerk/clerk-react"
+import { usePostMutation } from "@/hooks/useMutation"
+import ReceiverWarehouseField from "../components/warehouse/ReceiverWarehouseField"
+import QuantityInput from "../components/warehouse/QuantityInput"
+import { LazyLoadImage } from "react-lazy-load-image-component"
+import { baseURL } from "@/service"
+import { useProduct } from "@/hooks/useProduct"
 
-import ProductSizeSelect from "../components/warehouse/ProductSizeSelect";
-import CurrentWarehouseDetail from "../components/warehouse/CurrentWarehouseDetail";
-import Hashids from "hashids";
-const hashids = new Hashids("TOTEN", 10);
+import ProductSizeSelect from "../components/warehouse/ProductSizeSelect"
+import CurrentWarehouseDetail from "../components/warehouse/CurrentWarehouseDetail"
+import Hashids from "hashids"
+import { Helmet } from "react-helmet"
+const hashids = new Hashids("TOTEN", 10)
 
 const mutationSchema = z.object({
   receiverWarehouseId: z.string().min(1, "You must select warehouse"),
   sizeId: z.string().min(1),
   quantity: z.string().min(1, "Product can't be empty"),
-  notes: z.string().optional(),
-});
+  notes: z.string().trim().optional(),
+})
 
 let emptyValues = {
   receiverWarehouseId: "",
   sizeId: "",
   quantity: "",
   notes: "",
-};
+}
 
 const MutationForm = () => {
-  const { slug } = useParams();
-  const navigate = useNavigate();
-  const [params] = useSearchParams();
-  const warehouseId = params.get("warehouse") || undefined;
+  const { slug } = useParams()
+  const navigate = useNavigate()
+  const [params] = useSearchParams()
+  const warehouseId = params.get("warehouse") || undefined
 
-  const { toast } = useToast();
-  const { user, isSignedIn, isLoaded } = useUser();
+  const { toast } = useToast()
+  const { user, isSignedIn, isLoaded } = useUser()
   const { data: userAdmin } = useCurrentUser({
     externalId: user?.id,
     enabled: isLoaded && !!isSignedIn,
-  });
-  const { data: pd } = useProduct(slug);
+  })
+  const { data: pd } = useProduct(slug)
 
   const adminName =
     userAdmin?.firstname || userAdmin?.lastname
       ? `${userAdmin?.firstname} ${userAdmin?.lastname}`
-      : userAdmin?.username || userAdmin?.email;
+      : userAdmin?.username || userAdmin?.email
 
-  const createMutation = usePostMutation();
+  const createMutation = usePostMutation()
   const form = useForm<z.infer<typeof mutationSchema>>({
     resolver: zodResolver(mutationSchema),
     defaultValues: emptyValues,
-  });
+  })
   const onSubmit = (values: z.infer<typeof mutationSchema>) => {
     if (warehouseId && pd) {
-      const currentWarehouseId = Number(hashids.decode(warehouseId));
+      const currentWarehouseId = Number(hashids.decode(warehouseId))
       const mutation = {
         ...values,
         sizeId: Number(values.sizeId),
@@ -77,22 +73,25 @@ const MutationForm = () => {
         senderWarehouseId: currentWarehouseId,
         senderName: String(adminName),
         quantity: Number(values.quantity),
-      };
-      createMutation.mutate(mutation);
+      }
+      createMutation.mutate(mutation)
     }
-  };
+  }
   useEffect(() => {
     if (createMutation.isSuccess) {
       toast({
         title: "Mutation Created",
         description: "Successfully create mutation",
         duration: 3000,
-      });
+      })
     }
-  }, [createMutation.isSuccess, toast]);
+  }, [createMutation.isSuccess, toast])
 
   return (
     <>
+      <Helmet>
+        <title>Dashboard | Mutation Form</title>
+      </Helmet>
       <span className="flex text-sm mb-8">
         <Link
           to={`/dashboard/product/?page=1&warehouse=${warehouseId}`}
@@ -178,7 +177,7 @@ const MutationForm = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default MutationForm;
+export default MutationForm
