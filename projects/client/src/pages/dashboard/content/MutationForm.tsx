@@ -21,6 +21,7 @@ import { useProduct } from "@/hooks/useProduct"
 import ProductSizeSelect from "../components/warehouse/ProductSizeSelect"
 import CurrentWarehouseDetail from "../components/warehouse/CurrentWarehouseDetail"
 import Hashids from "hashids"
+import { Helmet } from "react-helmet"
 const hashids = new Hashids("TOTEN", 10)
 
 const mutationSchema = z.object({
@@ -88,6 +89,9 @@ const MutationForm = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Dashboard | Mutation Form</title>
+      </Helmet>
       <span className="flex text-sm mb-8">
         <Link
           to={`/dashboard/product/?page=1&warehouse=${warehouseId}`}
