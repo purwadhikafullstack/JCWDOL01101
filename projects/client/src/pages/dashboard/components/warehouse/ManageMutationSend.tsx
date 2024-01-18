@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   Table,
   TableBody,
@@ -6,16 +6,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import MutationAction from "./MutationAction";
-import { getDate } from "@/lib/utils";
-import ChangeOrderButton from "../ChangeOrderButton";
-import { Mutation } from "@/hooks/useMutation";
+} from "@/components/ui/table"
+import MutationAction from "./MutationAction"
+import { getDate } from "@/lib/utils"
+import ChangeOrderButton from "../ChangeOrderButton"
+import { Mutation } from "@/hooks/useMutation"
 
 function ManageMutationSend({
   data,
 }: {
-  data: { mutations: Mutation[]; totalPages: number };
+  data: { mutations: Mutation[]; totalPages: number }
 }) {
   return (
     <Table>
@@ -68,7 +68,9 @@ function ManageMutationSend({
                 <TableCell className="capitalize font-medium text-center">
                   {mutation.productMutation.name}
                 </TableCell>
-                <TableCell>{mutation.sizeMutation.label}</TableCell>
+                <TableCell className="text-center">
+                  {mutation.sizeMutation.label}
+                </TableCell>
                 <TableCell className="text-center">
                   {mutation.quantity}
                 </TableCell>
@@ -101,7 +103,7 @@ function ManageMutationSend({
         )}
       </TableBody>
     </Table>
-  );
+  )
 }
 
-export default ManageMutationSend;
+export default ManageMutationSend

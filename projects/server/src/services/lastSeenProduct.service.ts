@@ -3,7 +3,6 @@ import { LastSeenProductDto } from '@/dtos/lastSeenProuct.dto';
 import { HttpException } from '@/exceptions/HttpException';
 import { LastSeenProducts } from '@/interfaces';
 import { ImageModel, InventoryModel, ProductModel, ReviewModel, SizeModel, WishlistModel } from '@/models';
-import { Op } from 'sequelize';
 import { Service } from 'typedi';
 
 @Service()

@@ -18,6 +18,7 @@ export async function readNewestProducts(externalId: string | undefined): Promis
       {
         model: ImageModel,
         as: 'productImage',
+        required: true,
       },
       {
         model: CategoryModel,

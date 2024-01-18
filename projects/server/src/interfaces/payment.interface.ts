@@ -5,5 +5,5 @@ export interface Payment {
   virtualAccount: string;
   status: string;
   paymentDate: Date;
-  expiredDate:Date;
+  expiredDate: Date;
 }

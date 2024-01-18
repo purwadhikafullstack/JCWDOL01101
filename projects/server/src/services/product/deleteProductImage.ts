@@ -15,7 +15,10 @@ export async function deleteProductImage(imageId: number): Promise<Image> {
     }
   });
   const images: Image[] = await DB.Image.findAll({ where: { productId: findProductImage.productId } });
-  if (!images || images.length === 0) throw new HttpException(409, 'No image');
-  await DB.Product.update({ primaryImage: images[0].image }, { where: { id: findProductImage.productId } });
+  if (images && images.length > 0) {
+    await DB.Product.update({ primaryImage: images[0].image }, { where: { id: findProductImage.productId } });
+  } else {
+    await DB.Product.update({ primaryImage: null }, { where: { id: findProductImage.productId } });
+  }
   return findProductImage;
 }

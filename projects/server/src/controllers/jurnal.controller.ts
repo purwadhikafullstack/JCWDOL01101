@@ -20,7 +20,7 @@ export class JurnalController {
         to: new Date(String(to)),
         from: new Date(String(from)),
       });
-      
+
       res.status(200).json({
         data: jurnals,
         message: 'get.jurnals',

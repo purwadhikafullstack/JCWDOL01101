@@ -1,7 +1,6 @@
 import { DB } from '@/database';
 import { Product, User } from '@/interfaces';
 import { ImageModel, InventoryModel, ReviewModel, SizeModel, WishlistModel } from '@/models';
-import { HttpException } from '@/exceptions/HttpException';
 import { Op } from 'sequelize';
 
 export async function readProductsByCategory(productId: number, categoryId: number, externalId: string, limit: number): Promise<Product[]> {
@@ -22,6 +21,7 @@ export async function readProductsByCategory(productId: number, categoryId: numb
       {
         model: ImageModel,
         as: 'productImage',
+        required: true,
       },
       {
         model: InventoryModel,

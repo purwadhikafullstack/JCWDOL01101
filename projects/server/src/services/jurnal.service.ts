@@ -27,13 +27,9 @@ export class JurnalService {
     const role = findUser.role;
     const where =
       role === 'ADMIN'
-        ? {
-            ...(warehouse && warehouse !== 'ALL' && { id: Number(warehouse) }),
-          }
+        ? { ...(warehouse && warehouse !== 'ALL' && { id: Number(warehouse) }) }
         : role === 'WAREHOUSE ADMIN'
-        ? {
-            userId: findUser.id,
-          }
+        ? { userId: findUser.id }
         : {};
     const LIMIT = Number(limit) || 10;
     const offset = (page - 1) * LIMIT;

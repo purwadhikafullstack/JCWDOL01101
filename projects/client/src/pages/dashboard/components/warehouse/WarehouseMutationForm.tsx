@@ -1,50 +1,50 @@
-import React, { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import React, { useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Form } from "@/components/ui/form"
 
-import z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useSearchParams } from "react-router-dom";
-import { Loader2 } from "lucide-react";
-import { useCurrentUser } from "@/hooks/useUser";
-import ProductFormField from "../ProductFormField";
-import { useToast } from "@/components/ui/use-toast";
-import { useUser } from "@clerk/clerk-react";
-import { usePostMutation } from "@/hooks/useMutation";
-import InputProductField from "../warehouse/InputProductField";
-import InputWarehouseField from "./ReceiverWarehouseField";
-import QuantityInput from "../warehouse/QuantityInput";
+import z from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Link, useSearchParams } from "react-router-dom"
+import { Loader2 } from "lucide-react"
+import { useCurrentUser } from "@/hooks/useUser"
+import ProductFormField from "../ProductFormField"
+import { useToast } from "@/components/ui/use-toast"
+import { useUser } from "@clerk/clerk-react"
+import { usePostMutation } from "@/hooks/useMutation"
+import InputProductField from "../warehouse/InputProductField"
+import InputWarehouseField from "./ReceiverWarehouseField"
+import QuantityInput from "../warehouse/QuantityInput"
 const mutationSchema = z.object({
   receiverWarehouseId: z.string().min(1, "You must select warehouse"),
   productId: z.number().min(1, "You must select product"),
   quantity: z.string().min(1, "Product can't be empty"),
-  notes: z.string().optional(),
-});
+  notes: z.string().trim().optional(),
+})
 let emptyValues = {
   receiverWarehouseId: "",
   productId: 0,
   quantity: "",
   notes: "",
-};
+}
 
 const WarehouseMutationForm = () => {
-  const { toast } = useToast();
-  const { user, isSignedIn, isLoaded } = useUser();
+  const { toast } = useToast()
+  const { user, isSignedIn, isLoaded } = useUser()
   const { data: userAdmin } = useCurrentUser({
     externalId: user?.id!,
     enabled: isLoaded && !!isSignedIn,
-  });
-  const [params] = useSearchParams();
-  const warehouseId = params.get("warehouse") || undefined;
+  })
+  const [params] = useSearchParams()
+  const warehouseId = params.get("warehouse") || undefined
 
   const adminName =
-    `${userAdmin?.firstname} ${userAdmin?.lastname}` || userAdmin?.username;
-  const createMutation = usePostMutation();
+    `${userAdmin?.firstname} ${userAdmin?.lastname}` || userAdmin?.username
+  const createMutation = usePostMutation()
   const form = useForm<z.infer<typeof mutationSchema>>({
     resolver: zodResolver(mutationSchema),
     defaultValues: emptyValues,
-  });
+  })
   const onSubmit = (values: z.infer<typeof mutationSchema>) => {
     const mutation = {
       ...values,
@@ -52,20 +52,20 @@ const WarehouseMutationForm = () => {
       senderWarehouseId: Number(userAdmin?.userData.id),
       senderName: String(adminName),
       quantity: Number(values.quantity),
-    };
-    createMutation.mutate(mutation);
-  };
+    }
+    createMutation.mutate(mutation)
+  }
   useEffect(() => {
     if (createMutation.isSuccess) {
       toast({
         title: "Mutation Created",
         description: "Successfully create mutation",
         duration: 3000,
-      });
+      })
     }
-  }, [createMutation.isSuccess, toast]);
+  }, [createMutation.isSuccess, toast])
 
-  const productId = form.watch("productId");
+  const productId = form.watch("productId")
   return (
     <div className="w-full">
       <span className="flex text-sm ">
@@ -118,7 +118,7 @@ const WarehouseMutationForm = () => {
         </Form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default WarehouseMutationForm;
+export default WarehouseMutationForm

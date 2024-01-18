@@ -21,5 +21,5 @@ export interface User {
   imageUrl: string;
   status: Status;
   userCart?: CartModel;
-  userData?:Warehouse;
+  userData?: Warehouse;
 }

@@ -31,6 +31,7 @@ export async function readProductBySlug(slug: string, externalId: string): Promi
       {
         model: ImageModel,
         as: 'productImage',
+        required: true,
       },
       {
         model: InventoryModel,

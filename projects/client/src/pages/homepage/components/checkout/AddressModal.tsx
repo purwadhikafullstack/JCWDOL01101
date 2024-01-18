@@ -135,7 +135,7 @@ function AddressContent({
       >
         {t("checkoutPage.addressModal.main.addAddressBtn")}
       </Button>
-      <div className="space-y-4 overflow-y-auto  max-h-[580px] ">
+      <div className="space-y-4 py-4 overflow-y-auto max-h-[400px]  2xl:max-h-[580px] ">
         {!isLoading ? (
           <>
             {address && address?.length > 0 ? (

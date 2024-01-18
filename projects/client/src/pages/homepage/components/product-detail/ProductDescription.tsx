@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { ProductData } from "@/hooks/useProduct";
 import { cn, formatToIDR } from "@/lib/utils";
 import { Link, useNavigate } from "react-router-dom";
@@ -30,9 +30,9 @@ const ProductDescription = ({ productData }: Props) => {
   const { data: cart } = useCart(user?.id, !!user?.userCart);
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const [quantity, setQuantity] = useState(1);
-  const [error, setError] = useState("");
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const [quantity, setQuantity] = React.useState(1);
+  const [error, setError] = React.useState("");
   const isUserCartProducts =
     (user?.userCart && user?.userCart.cartProducts.length > 0) || false;
   const isProductInCart =
@@ -44,9 +44,9 @@ const ProductDescription = ({ productData }: Props) => {
   const { data: reviewData } = useReviewByProduct(product?.id);
   const cartMutation = useAddCart();
   const toggleWishlist = useToggleWishlist();
-  const [selectedProductSize, setSelectedProductSize] = useState<number | null>(
-    totalStockBySize[0].sizeId ?? null
-  );
+  const [selectedProductSize, setSelectedProductSize] = React.useState<
+    number | null
+  >(totalStockBySize[0].sizeId ?? null);
   const currentSizeStock = totalStockBySize.find(
     (size) => size.sizeId === selectedProductSize
   );
@@ -75,7 +75,7 @@ const ProductDescription = ({ productData }: Props) => {
     }
   }, [cartMutation.isSuccess]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const totalQuantity = (currentProductQtyInCart || 0) + quantity;
     if (quantity <= 0) {
       setError("This product(s) minimum quantity is 1 item(s)");

@@ -19,7 +19,7 @@ export const DotButton = ({ children, ...props }: Props) => {
 export const PrevButton = ({ children, ...props }: Props) => {
   return (
     <button
-      className="absolute top-1/2 left-8 group-hover:-left-3 opacity-0 group-hover:opacity-100  transition-all duration-400 -translate-y-1/2 bg-background p-2 text-muted-foreground shadow-md hover:scale-105 z-40"
+      className="absolute rounded-md top-1/2 left-8 group-hover:-left-3 opacity-0 group-hover:opacity-100  transition-all duration-400 -translate-y-1/2 bg-background/70 backdrop-blur-md p-2 text-primary shadow-md hover:scale-105 z-40"
       type="button"
       {...props}
     >
@@ -32,7 +32,7 @@ export const PrevButton = ({ children, ...props }: Props) => {
 export const NextButton = ({ children, ...props }: Props) => {
   return (
     <button
-      className="absolute top-1/2 right-8 group-hover:-right-3 opacity-0 group-hover:opacity-100  transition-all duration-400 -translate-y-1/2 bg-background p-2 text-muted-foreground shadow-md hover:scale-105 z-40"
+      className="absolute rounded-md top-1/2 right-8 group-hover:-right-3 opacity-0 group-hover:opacity-100  transition-all duration-400 -translate-y-1/2 bg-background/70 backdrop-blur-md p-2 text-primary shadow-md hover:scale-105 z-40"
       type="button"
       {...props}
     >
