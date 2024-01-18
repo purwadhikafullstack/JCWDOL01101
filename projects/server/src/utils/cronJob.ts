@@ -3,7 +3,8 @@ import { Op } from 'sequelize';
 import { DB } from '@/database';
 
 const changeStatusIn7Days = async (from: string, to: string) => {
-  const sevenDaysAgo = new Date(new Date().getDate() - 7);
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   const isDelivery = await DB.Order.findAndCountAll({
     where: {
       status: from,
