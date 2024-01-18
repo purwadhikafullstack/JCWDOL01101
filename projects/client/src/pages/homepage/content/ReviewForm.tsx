@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { baseURL } from "@/service";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
@@ -27,10 +27,11 @@ const reviewSchema = z.object({
   rating: z.number().min(1, " "),
   name: z
     .string()
+    .trim()
     .min(1, "please enter a nickname")
     .max(20, "max 20 character for nickname"),
-  title: z.string().min(1, "summarize your review"),
-  comment: z.string().min(50, "please write a comment."),
+  title: z.string().trim().min(1, "summarize your review"),
+  comment: z.string().trim().min(50, "please write a comment."),
   tos: z
     .boolean()
     .default(false)
@@ -47,8 +48,8 @@ const ReviewForm = () => {
   const { slug } = useParams();
   const { data: pd } = useProduct(slug || "");
 
-  const [rating, setRating] = useState(0);
-  const [modal, setModal] = useState(false);
+  const [rating, setRating] = React.useState(0);
+  const [modal, setModal] = React.useState(false);
   const reviewMutation = usePostReview();
   const form = useForm<z.infer<typeof reviewSchema>>({
     resolver: zodResolver(reviewSchema),
@@ -60,7 +61,7 @@ const ReviewForm = () => {
     },
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (reviewMutation.isSuccess) {
       form.reset({
         rating,

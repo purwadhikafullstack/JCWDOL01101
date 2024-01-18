@@ -12,10 +12,6 @@ import { Loader2 } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { useDebounce } from "use-debounce";
-export type Coordinates = {
-  latitude: number;
-  langitude: number;
-};
 
 const EditCityField = () => {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -24,6 +20,12 @@ const EditCityField = () => {
   const [search, setSearch] = useState(form.getValues("cityName"));
   const [debounceSearch] = useDebounce(search, 500);
   const { data: cities, isLoading: citiesLoading } = useCity(debounceSearch);
+
+  React.useEffect(() => {
+    if (form.getValues("cityName")) {
+      setSearch(form.getValues("cityName"));
+    }
+  }, [form.getValues("cityName")]);
 
   useOutsideClick(ref, () => {
     setShow(false);
@@ -41,6 +43,7 @@ const EditCityField = () => {
             <div ref={ref}>
               <div className="flex gap-2 items-center">
                 <Input
+                  autoComplete="off"
                   id="city"
                   {...field}
                   value={search}

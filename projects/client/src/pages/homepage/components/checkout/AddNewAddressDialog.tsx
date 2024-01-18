@@ -29,8 +29,8 @@ export const addressSchema = z.object({
   formatPhone: z.string().min(9, "required").max(15),
   label: z.string().trim().min(3, "required").max(15, "max label length is 15"),
   cityId: z.string().min(1, "required"),
-  cityName: z.string().min(3, "required"),
-  address: z.string().min(3, "required"),
+  cityName: z.string().trim().min(3, "required"),
+  address: z.string().trim().min(3, "required"),
   notes: z.string().trim().optional(),
   isMain: z.boolean().default(false),
 })
