@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
 import { Link } from "react-router-dom";
@@ -79,7 +79,7 @@ const NavDropdown = ({
       {children && (
         <div
           className={cn(
-            "absolute z-50 scale-y-0 group-hover:scale-y-100 origin-top left-0  translate-y-0 w-max transition-all duration-200 bg-background shadow-md p-2 rounded-lg",
+            "absolute z-50 scale-y-0 group-hover:scale-y-100 origin-top left-0  translate-y-0 w-max transition-all duration-200 bg-background  shadow-md p-2 rounded-lg",
             profile
               ? "-translate-x-[86%] left-1/2"
               : "-translate-x-[86%] lg:-translate-x-1/2",

@@ -21,7 +21,7 @@ const EditImageForm = ({ error }: { error: string | null }) => {
         </p>
       </div>
       <div className="col-span-2">
-        <div className="w-full gap-2 border rounded-lg p-4 grid grid-cols-5">
+        <div className="w-full gap-2 border rounded-lg p-4 grid grid-cols-2 lg:grid-cols-5">
           <EditProductImage index={0} />
           <EditProductImage index={1} />
           <EditProductImage index={2} />

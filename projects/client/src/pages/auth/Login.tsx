@@ -19,8 +19,8 @@ import { Link, Location, useLocation, useNavigate } from "react-router-dom";
 import z from "zod";
 
 const loginSchema = z.object({
-  email: z.string().email().min(2),
-  password: z.string().min(2, {
+  email: z.string().trim().email().min(2),
+  password: z.string().trim().min(2, {
     message: "Password must contain at least 8 character(s)",
   }),
 });
@@ -88,7 +88,7 @@ const Login = () => {
     }
   };
   return (
-    <main className="flex justify-center items-center  mt-24">
+    <main className="flex justify-center items-center py-20">
       <div className="relative w-[350px] lg:w-[540px] mx-auto">
         <div className="z-10 border rounded-lg p-4 px-8 bg-background shadow-sm">
           <img

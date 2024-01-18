@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, Ref, forwardRef } from "react";
+import React from "react";
 import { Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import { baseURL } from "@/service";
@@ -12,11 +12,11 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/opacity.css";
 import { useUser } from "@clerk/clerk-react";
 
-interface ProductCardProps extends HTMLAttributes<HTMLDivElement> {
+interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
   product: Product;
 }
-const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
-  ({ product, ...props }, ref: Ref<HTMLDivElement>) => {
+const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
+  ({ product }, ref: React.Ref<HTMLDivElement>) => {
     const { isSignedIn } = useUser();
     const navigate = useNavigate();
     const wishlistMutation = useToggleWishlist();

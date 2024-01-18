@@ -85,7 +85,9 @@ const User = () => {
                       <TableRow key={user.id}>
                         <TableCell className="w-[80px]">{i + 1}</TableCell>
                         <TableCell className="font-medium text-center">
-                          {user.firstname} {user.lastname}
+                          {user.firstname
+                            ? `${user.firstname} ${user.lastname}`
+                            : user.email}
                         </TableCell>
                         <TableCell className="text-center">
                           {user.status}

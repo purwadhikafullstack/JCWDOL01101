@@ -112,7 +112,7 @@ const DashboardSidebar = () => {
               variant: "ghost",
             },
             {
-              title: "Reports",
+              title: "Stock Reports",
               icon: ClipboardList,
               link: "/dashboard/report",
               variant: "ghost",

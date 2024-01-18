@@ -21,6 +21,7 @@ export async function readProductsByCategory(productId: number, categoryId: numb
       {
         model: ImageModel,
         as: 'productImage',
+        required: true,
       },
       {
         model: InventoryModel,

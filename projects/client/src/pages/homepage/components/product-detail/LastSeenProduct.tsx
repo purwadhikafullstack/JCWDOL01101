@@ -64,7 +64,7 @@ const LastSeenProduct = ({ userId, productId }: RecommendedProductProps) => {
               scrollPrev();
             }}
             className={cn(
-              "absolute top-1/3 -translate-y-1/3 left-0 z-10 hidden lg:block opacity-0 translate-x-3 group-hover:opacity-100 group-hover:translate-x-0 transition-all ",
+              "absolute top-1/3 -translate-y-1/3 left-0 z-10 hidden bg-background/60 hover:bg-background/70 hover:scale-105 text-primary backdrop-blur-md lg:block opacity-0 translate-x-3 group-hover:opacity-100 group-hover:translate-x-0 transition-all ",
               prevBtnDisabled && "group-hover:opacity-50"
             )}
           >
@@ -89,7 +89,7 @@ const LastSeenProduct = ({ userId, productId }: RecommendedProductProps) => {
               scrollNext();
             }}
             className={cn(
-              "absolute top-1/3 -translate-y-1/3 right-0 hidden lg:block opacity-0 -translate-x-3 group-hover:opacity-100 group-hover:translate-x-0 transition-all ",
+              "absolute top-1/3 -translate-y-1/3 right-0 hidden bg-background/60 hover:bg-background/70 hover:scale-105 text-primary lg:block opacity-0 -translate-x-3 group-hover:opacity-100 group-hover:translate-x-0 transition-all ",
               nextBtnDisabled && "group-hover:opacity-50"
             )}
           >

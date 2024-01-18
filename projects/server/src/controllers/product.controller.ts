@@ -1,4 +1,3 @@
-import { ProductDto } from '@/dtos/product.dto';
 import { OrderDetails, Status } from '@/interfaces';
 import { Image } from '@/interfaces/image.interface';
 import { Inventory } from '@/interfaces/inventory.interface';
@@ -129,13 +128,12 @@ export class ProductController {
   public createProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { product } = req.body;
-      const parseProduct: ProductDto = JSON.parse(product);
       const files = req.files as Express.Multer.File[];
       const productData: Product = await this.product.createProduct(files, {
-        ...parseProduct,
-        categoryId: Number(parseProduct.categoryId),
-        price: Number(parseProduct.price),
-        weight: Number(parseProduct.weight),
+        ...product,
+        categoryId: Number(product.categoryId),
+        price: Number(product.price),
+        weight: Number(product.weight),
       });
 
       res.status(200).json({
@@ -151,14 +149,13 @@ export class ProductController {
     try {
       const slug = String(req.params.slug);
       const product = req.body.product;
-      const parseProduct: ProductDto = JSON.parse(product);
       const currentImage = JSON.parse(req.body.currentImage);
       const files = req.files as Express.Multer.File[];
       const updatedProduct = await this.product.updateProduct(slug, currentImage, files, {
-        ...parseProduct,
-        categoryId: Number(parseProduct.categoryId),
-        price: Number(parseProduct.price),
-        weight: Number(parseProduct.weight),
+        ...product,
+        categoryId: Number(product.categoryId),
+        price: Number(product.price),
+        weight: Number(product.weight),
       });
 
       res.status(200).json({

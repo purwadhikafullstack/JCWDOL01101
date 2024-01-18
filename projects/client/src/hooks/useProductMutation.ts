@@ -20,7 +20,7 @@ export const useProductMutation = () => {
     onError: (error) => {
       if (error instanceof AxiosError) {
         toast({
-          title: "Opps!, Something went Wrong",
+          title: "Opps, Something went Wrong",
           description: error.response?.data.message,
           variant: "destructive",
         });
@@ -48,7 +48,7 @@ export const useEditProduct = (slug: string) => {
     onError: (error) => {
       if (error instanceof AxiosError) {
         toast({
-          title: "Opps!, Something went Wrong",
+          title: "Opps, Something went Wrong",
           description: error.response?.data.message,
           variant: "destructive",
         });
@@ -116,13 +116,14 @@ export const useChangeStatusInventory = () => {
   return productMutation;
 };
 
-export const useDeleteProductImage = (imageId: number, slug?: string) => {
+export const useDeleteProductImage = () => {
   const queryClient = useQueryClient();
   const productMutation = useMutation({
-    mutationFn: async () => service.delete(`/products/images/${imageId}`),
+    mutationFn: async ({ imageId }: { imageId: number }) =>
+      service.delete(`/products/images/${imageId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
-      queryClient.invalidateQueries({ queryKey: ["product", slug] });
+      queryClient.invalidateQueries({ queryKey: ["product"] });
     },
   });
 

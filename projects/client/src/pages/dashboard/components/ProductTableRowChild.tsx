@@ -15,7 +15,7 @@ const ProductTableRowChild = ({ inventories }: Props) => {
       <TableCell>
         <p className="text-muted-foreground line-clamp-1">{inv.product.name}</p>
       </TableCell>
-      <TableCell>{inv.sizes.label}</TableCell>
+      <TableCell className="text-center">{inv.sizes.label}</TableCell>
       <TableCell className="text-end">
         <p className="text-muted-foreground line-clamp-1">
           {formatToIDR(inv.product.price)}

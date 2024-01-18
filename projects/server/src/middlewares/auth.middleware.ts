@@ -1,4 +1,4 @@
-import { ClerkExpressRequireAuth, RequireAuthProp } from '@clerk/clerk-sdk-node';
+import { RequireAuthProp } from '@clerk/clerk-sdk-node';
 import { NextFunction, Request, Response } from 'express';
 import { UserService } from '@/services/user.service';
 import Container from 'typedi';
@@ -15,8 +15,6 @@ export class AuthMiddleware {
       next(error);
     }
   };
-
-  public ClerkAuth = ClerkExpressRequireAuth();
 
   public AdminAuth = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {

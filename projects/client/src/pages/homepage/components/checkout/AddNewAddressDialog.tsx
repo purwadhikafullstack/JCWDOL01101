@@ -45,10 +45,6 @@ const emptyValues = {
   isMain: false,
 }
 
-export type Coordinates = {
-  latitude: number
-  langitude: number
-}
 const AddNewAddressDialog = ({
   userId,
   open,

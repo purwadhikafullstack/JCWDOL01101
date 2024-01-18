@@ -49,9 +49,7 @@ const ForgotPassword: NextPage = () => {
           } else if (result.status === "complete") {
             setActive({ session: result.createdSessionId });
             setComplete(true);
-          } else {
-            console.log(result);
-          }
+          } 
         })
         .catch((err) => console.error("error", err.errors[0].longMessage));
     }
@@ -73,17 +71,20 @@ const ForgotPassword: NextPage = () => {
         <span className="absolute top-0 left-0 pl-8 pt-12 font-bold text-primary lg:hidden">
           当店 | Toten
         </span>
-        <span className="absolute top-0 right-0 pr-8 pt-10 ">
-          <Link
-            to="/login"
-            className={buttonVariants({
-              variant: "ghost",
-              className: "text-primary hover:text-primary/80",
-            })}
-          >
-            Login
-          </Link>
-        </span>
+        {!complete && (
+          <span className="absolute top-0 right-0 pr-8 pt-10 ">
+            <Link
+              to="/login"
+              className={buttonVariants({
+                variant: "ghost",
+                className: "text-primary hover:text-primary/80",
+              })}
+            >
+              Login
+            </Link>
+          </span>
+        )}
+
         <div className="w-full lg:w-[400px]">
           <img
             className="mx-auto lg:hidden"
@@ -99,11 +100,14 @@ const ForgotPassword: NextPage = () => {
                 <input
                   type="email"
                   placeholder="e.g john@doe.com"
-                  className="w-full border border-gray-300 text-black rounded px-3 py-2 "
+                  className=" mt-5 w-full border border-gray-300 text-black rounded px-3 py-2 "
                   required
                 />
+                <p className="text-slate-400 text-sm">
+                  Please Enter your Email
+                </p>
 
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full mt-5">
                   {" "}
                   Submit
                 </Button>
@@ -113,37 +117,34 @@ const ForgotPassword: NextPage = () => {
               <>
                 <input
                   type="password"
-                  className="w-full border border-gray-300 text-black rounded px-3 py-2 "
+                  className=" mt-5 w-full border border-gray-300 text-black rounded px-3 py-2 "
                   placeholder="New Password"
                   required
                 />
                 <input
                   type="text"
-                  className="w-full border border-gray-300 text-black rounded px-3 py-2 "
+                  className=" mt-5 w-full border border-gray-300 text-black rounded px-3 py-2 "
                   placeholder="Verification Code"
                   required
                 />
-                <p className="text-slate-400 text-sm">
+                <p className="text-slate-400 text-sm ">
                   Check Your Email for Verification Code
                 </p>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full  mt-5">
                   {" "}
                   Submit
                 </Button>
               </>
             )}
             {complete && (
-              <div className="ml-8 text-center">
+              <div className="text-center">
                 You successfully changed your password.
-                <span className=" ml-20 flex w-full mt-2">
-                <Link
-                  to="/forgot"
-                  className="text-primary hover:underline"
-                >
-                  {" "}
-                  Click Here to Homepage{" "}
-                </Link>
-              </span>
+                <span className=" ml-28 flex w-full mt-2">
+                  <Link to="/" className="text-primary hover:underline">
+                    {" "}
+                    Click Here to Homepage{" "}
+                  </Link>
+                </span>
               </div>
             )}
 
