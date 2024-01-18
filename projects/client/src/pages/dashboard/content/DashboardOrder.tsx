@@ -18,19 +18,23 @@ import { useCurrentUser } from "@/hooks/useUser"
 import { getAllOrders } from "@/hooks/useOrder"
 import OrderTable from "../components/OrderTable"
 import { cn } from "@/lib/utils"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { addDays, format, subDays } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
 import { DateRange } from "react-day-picker"
 
 const DashboardOrder = () => {
-  const { user, isSignedIn, isLoaded } = useUser();
+  const { user, isSignedIn, isLoaded } = useUser()
   const { data: userAdmin } = useCurrentUser({
     externalId: user?.id!,
     enabled: isLoaded && !!isSignedIn,
-  });
-  const ROLE = userAdmin?.role || "CUSTOMER";
+  })
+  const ROLE = userAdmin?.role || "CUSTOMER"
   const [searchParams, setSearchParams] = useSearchParams({
     page: "1",
   })
@@ -39,10 +43,10 @@ const DashboardOrder = () => {
   const [debounceSearch] = useDebounce(searchTerm, 1000)
 
   const [date, setDate] = React.useState<DateRange | undefined>({
-    from: subDays(new Date(),30),
+    from: subDays(new Date(), 30),
     to: new Date(),
-  });
-  
+  })
+
   const { data: warehouses } = useGetWarehouse(ROLE === "ADMIN")
   const { data, isLoading } = getAllOrders({
     page: currentPage,
@@ -51,23 +55,20 @@ const DashboardOrder = () => {
     order: searchParams.get("order") || "",
     limit: 10,
     warehouse:
-      userAdmin?.userData?.name ||
-      searchParams.get("warehouse") ||
-      (warehouses && warehouses[0].name) ||
-      "",
+      userAdmin?.userData?.name || searchParams.get("warehouse") || "All",
     status: searchParams.get("status") || "",
-    to:   date?.to,
-    from:  date?.from,
+    to: date?.to,
+    from: date?.from,
   })
 
   const handleSelectDate = (e: DateRange | undefined) => {
-    setDate(e);
+    setDate(e)
     setSearchParams((params) => {
-      params.set("from", String(e?.from));
-      params.set("to", String(e?.to));
-      return params;
-    });
-  };
+      params.set("from", String(e?.from))
+      params.set("to", String(e?.to))
+      return params
+    })
+  }
 
   return (
     <div className="flex flex-col p-2 w-full">
@@ -79,9 +80,9 @@ const DashboardOrder = () => {
               value={searchTerm}
               onChange={(e) => {
                 setSearchParams((params) => {
-                  params.set("s", e.target.value);
-                  return params;
-                });
+                  params.set("s", e.target.value)
+                  return params
+                })
               }}
               className=" w-full pl-10"
               placeholder="search order..."
@@ -91,9 +92,9 @@ const DashboardOrder = () => {
             <Select
               onValueChange={(value) => {
                 setSearchParams((params) => {
-                  params.set("status", value);
-                  return params;
-                });
+                  params.set("status", value)
+                  return params
+                })
               }}
             >
               <SelectTrigger className="w-[150px]">
@@ -111,41 +112,41 @@ const DashboardOrder = () => {
             </Select>
           </div>
           <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  id="date"
-                  variant={"outline"}
-                  className={cn(
-                    "w-[300px] justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date?.from ? (
-                    date.to ? (
-                      <>
-                        {format(date.from, "LLL dd, y")}-{" "}
-                        {format(date.to, "LLL dd, y")}
-                      </>
-                    ) : (
-                      format(date.from, "LLL dd, y")
-                    )
+            <PopoverTrigger asChild>
+              <Button
+                id="date"
+                variant={"outline"}
+                className={cn(
+                  "w-[300px] justify-start text-left font-normal",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {date?.from ? (
+                  date.to ? (
+                    <>
+                      {format(date.from, "LLL dd, y")}-{" "}
+                      {format(date.to, "LLL dd, y")}
+                    </>
                   ) : (
-                    <span>Pick a date</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  initialFocus
-                  mode="range"
-                  defaultMonth={date?.from}
-                  selected={date}
-                  onSelect={handleSelectDate}
-                  numberOfMonths={2}
-                />
-              </PopoverContent>
-            </Popover>
+                    format(date.from, "LLL dd, y")
+                  )
+                ) : (
+                  <span>Pick a date</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                initialFocus
+                mode="range"
+                defaultMonth={date?.from}
+                selected={date}
+                onSelect={handleSelectDate}
+                numberOfMonths={2}
+              />
+            </PopoverContent>
+          </Popover>
         </div>
         <div
           className={cn(
@@ -158,9 +159,9 @@ const DashboardOrder = () => {
               defaultValue="All"
               onValueChange={(value) => {
                 setSearchParams((params) => {
-                  params.set("warehouse", value);
-                  return params;
-                });
+                  params.set("warehouse", value)
+                  return params
+                })
               }}
             >
               <SelectTrigger>
@@ -205,7 +206,7 @@ const DashboardOrder = () => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DashboardOrder;
+export default DashboardOrder

@@ -17,9 +17,9 @@ import { User } from "@/context/UserContext"
 
 export const adminEditSchema = z.object({
   role: z.string().min(1, "Role cannot be empty"),
-  username: z.string().min(1, "firstname cannot be empty"),
-  firstname: z.string().min(1, "firstname cannot be empty"),
-  lastname: z.string(),
+  username: z.string().trim().min(1, "username cannot be empty"),
+  firstname: z.string().trim().min(1, "firstname cannot be empty"),
+  lastname: z.string().trim().min(1, "lastname must over 1 word").optional(),
   email: z.string().min(1, "Role cannot be empty").email(),
   status: z.string().min(1, "Status cannot be empty"),
   password: z.string().optional(),

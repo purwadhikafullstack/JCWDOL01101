@@ -27,6 +27,7 @@ export class OrderMutationService {
       await verifyStock(orderDetails, currentWarehouse, transaction);
       await this.inventory.orderStock(findOrder, orderDetails, currentWarehouse, transaction);
       await DB.Order.update({ status: 'PROCESS' }, { where: { id: orderId }, transaction });
+      await transaction.commit();
     } catch (error) {
       await transaction.rollback();
       throw error;

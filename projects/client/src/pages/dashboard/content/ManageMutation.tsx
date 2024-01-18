@@ -1,40 +1,40 @@
-import React from "react";
-import { SearchIcon, MapPin } from "lucide-react";
+import React from "react"
+import { SearchIcon, MapPin } from "lucide-react"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { useSearchParams } from "react-router-dom";
-import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton";
-import { useDebounce } from "use-debounce";
-import TablePagination from "../components/TablePagination";
-import { useUser } from "@clerk/clerk-react";
-import { useGetWarehouse } from "@/hooks/useWarehouse";
-import { useGetMutation } from "@/hooks/useMutation";
-import { useCurrentUser } from "@/hooks/useUser";
-import ManageMutationSend from "../components/warehouse/ManageMutationSend";
-import ManageMutationReceive from "../components/warehouse/ManageMutationReceive";
-import { cn } from "@/lib/utils";
+} from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { useSearchParams } from "react-router-dom"
+import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton"
+import { useDebounce } from "use-debounce"
+import TablePagination from "../components/TablePagination"
+import { useUser } from "@clerk/clerk-react"
+import { useGetWarehouse } from "@/hooks/useWarehouse"
+import { useGetMutation } from "@/hooks/useMutation"
+import { useCurrentUser } from "@/hooks/useUser"
+import ManageMutationSend from "../components/warehouse/ManageMutationSend"
+import ManageMutationReceive from "../components/warehouse/ManageMutationReceive"
+import { cn } from "@/lib/utils"
 
 function ManageMutation() {
-  const { user, isSignedIn, isLoaded } = useUser();
+  const { user, isSignedIn, isLoaded } = useUser()
   const { data: userAdmin } = useCurrentUser({
     externalId: user?.id!,
     enabled: isLoaded && !!isSignedIn,
-  });
-  const ROLE = userAdmin?.role || "CUSTOMER";
+  })
+  const ROLE = userAdmin?.role || "CUSTOMER"
   const [searchParams, setSearchParams] = useSearchParams({
     page: "1",
-  });
-  const currentPage = Number(searchParams.get("page"));
-  const searchTerm = searchParams.get("s") || "";
-  const [debounceSearch] = useDebounce(searchTerm, 1000);
+  })
+  const currentPage = Number(searchParams.get("page"))
+  const searchTerm = searchParams.get("s") || ""
+  const [debounceSearch] = useDebounce(searchTerm, 1000)
 
-  const { data: warehouses } = useGetWarehouse(ROLE === "ADMIN");
+  const { data: warehouses } = useGetWarehouse(ROLE === "ADMIN")
   const { data, isLoading } = useGetMutation({
     page: currentPage,
     s: debounceSearch,
@@ -42,11 +42,9 @@ function ManageMutation() {
     order: searchParams.get("order") || "",
     limit: 10,
     warehouse:
-      userAdmin?.userData?.name ||
-      searchParams.get("warehouse") ||
-      (warehouses && warehouses[0].name)!,
+      userAdmin?.userData?.name || searchParams.get("warehouse") || "All",
     manage: searchParams.get("manage") || "SEND",
-  });
+  })
   return (
     <div className="flex flex-col p-2 w-full">
       <div className="flex justify-between items-center w-full">
@@ -57,9 +55,9 @@ function ManageMutation() {
               value={searchTerm}
               onChange={(e) => {
                 setSearchParams((params) => {
-                  params.set("s", e.target.value);
-                  return params;
-                });
+                  params.set("s", e.target.value)
+                  return params
+                })
               }}
               className=" w-full pl-10"
               placeholder="search product ..."
@@ -70,9 +68,9 @@ function ManageMutation() {
               defaultValue={"SEND"}
               onValueChange={(value) => {
                 setSearchParams((params) => {
-                  params.set("manage", value);
-                  return params;
-                });
+                  params.set("manage", value)
+                  return params
+                })
               }}
             >
               <SelectTrigger>
@@ -91,9 +89,9 @@ function ManageMutation() {
               defaultValue="All"
               onValueChange={(value) => {
                 setSearchParams((params) => {
-                  params.set("warehouse", value);
-                  return params;
-                });
+                  params.set("warehouse", value)
+                  return params
+                })
               }}
             >
               <SelectTrigger>
@@ -144,7 +142,7 @@ function ManageMutation() {
         />
       </div>
     </div>
-  );
+  )
 }
 
-export default ManageMutation;
+export default ManageMutation
