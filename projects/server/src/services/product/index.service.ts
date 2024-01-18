@@ -1,7 +1,7 @@
 import { ProductDto } from '@/dtos/product.dto';
 import { Service } from 'typedi';
 import { createProduct } from './createProduct';
-import { Inventory, Image, Product, Status, GetFilterProduct, Review, Order, OrderDetails } from '@/interfaces';
+import { Inventory, Image, Product, Status, GetFilterProduct, OrderDetails } from '@/interfaces';
 import { deleteProductImage } from './deleteProductImage';
 import { readProducts } from './readProducts';
 import { ProductQuery } from '@/controllers/product.controller';

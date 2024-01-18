@@ -43,7 +43,7 @@ type EditAdmin = {
   role: string;
   username: string;
   firstname: string;
-  lastname: string;
+  lastname?: string;
   email: string;
   status: string;
   password?: string;

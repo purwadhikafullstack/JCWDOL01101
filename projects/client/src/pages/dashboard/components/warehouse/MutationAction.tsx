@@ -15,7 +15,7 @@ import RejectAction from "./RejectAction"
 import { z } from "zod"
 import AcceptAction from "./AcceptAction"
 export const mutationActionSchema = z.object({
-  notes: z.string().optional(),
+  notes: z.string().trim().optional(),
 })
 type Action = {
   mutationId: number
