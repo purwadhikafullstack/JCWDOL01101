@@ -12,21 +12,15 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   product: Product;
   index: number;
-  collapseId: number | null;
-  handleCollapse: (id: number | null) => void;
 }
 
-const ProductTableRow = ({
-  product,
-  index,
-  collapseId,
-  handleCollapse,
-}: Props) => {
-  const open = index === collapseId;
+const ProductTableRow = ({ product, index }: Props) => {
+  const [openCollapsible, setOpenCollapsible] = React.useState(false);
   const totalStock = product.inventory.reduce(
     (curr, prev) => curr + prev.stock,
     0
@@ -36,24 +30,25 @@ const ProductTableRow = ({
     0
   );
 
-  const ref = React.useRef<HTMLTableCellElement | null>(null);
+  const ref = React.useRef<any | null>(null);
 
   useOutsideClick(ref, () => {
-    if (open) {
-      handleCollapse(null);
-    }
+    setOpenCollapsible(false);
   });
 
   return (
     <>
       <Collapsible
-        open={open}
-        onOpenChange={() => handleCollapse(index)}
+        open={openCollapsible}
+        onOpenChange={(value) => {
+          setOpenCollapsible(value);
+        }}
         asChild
       >
         <>
           <TableRow
-            data-collapsed={open}
+            ref={ref}
+            data-collapsed={openCollapsible}
             className="data-[collapsed=true]:bg-muted"
           >
             <TableCell className="w-[80px]">
@@ -76,21 +71,19 @@ const ProductTableRow = ({
             <TableCell>
               <p className="line-clamp-1 w-[200px]">{product.name}</p>
             </TableCell>
-            <TableCell ref={ref}>
+            <TableCell>
               <CollapsibleTrigger asChild>
-                <div className="flex items-center justify-between cursor-pointer h-10">
-                  <p className="line-clamp-1 w-[80px] select-none">
+                <button className="flex items-center justify-between cursor-pointer h-10">
+                  <p className="line-clamp-1 w-[60px] mr-4 select-none">
                     {product.inventory.map((inv) => inv.sizes.label).join(", ")}
                   </p>
-                  <span>
-                    <ChevronUp
-                      className={cn(
-                        "w-4 h-4 transition-all duration-200 text-muted-foreground",
-                        !open && "rotate-180"
-                      )}
-                    />
-                  </span>
-                </div>
+                  <ChevronUp
+                    className={cn(
+                      "w-4 h-4 transition-all duration-200 text-muted-foreground",
+                      !openCollapsible && "rotate-180"
+                    )}
+                  />
+                </button>
               </CollapsibleTrigger>
             </TableCell>
             <TableCell className="text-end">
@@ -126,9 +119,7 @@ const ProductTableRow = ({
           </TableRow>
           <CollapsibleContent asChild>
             {product.inventory.length > 0 && (
-              <>
-                <ProductTableRowChild inventories={product.inventory} />
-              </>
+              <ProductTableRowChild inventories={product.inventory} />
             )}
           </CollapsibleContent>
         </>

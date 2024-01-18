@@ -20,6 +20,6 @@ export interface GetFilterOrder {
   externalId: string;
   warehouse: string;
   status: string | string[];
-  to:Date;
-  from:Date;
+  to: Date;
+  from: Date;
 }

@@ -8,7 +8,7 @@ export class PaymentDetailsModel extends Model<Payment> implements Payment {
   public virtualAccount: string;
   public status: string;
   public paymentDate: Date;
-  public expiredDate:Date;
+  public expiredDate: Date;
 }
 
 export default function (sequelize: Sequelize): typeof PaymentDetailsModel {

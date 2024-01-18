@@ -6,7 +6,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { DotButton, NextButton, PrevButton } from "./MainCarouselArrow";
+import { NextButton, PrevButton } from "./MainCarouselArrow";
 
 const carouselImages = [
   "/carousel/banner-1.png",
@@ -33,7 +33,7 @@ const MainCarousel = () => {
       <CarouselContent>
         {carouselImages.map((image, index) => (
           <CarouselItem key={index} className="cursor-pointer">
-            <img src={image} alt={`carousel-${index}`} />
+            <img className="rounded-lg" src={image} alt={`carousel-${index}`} />
           </CarouselItem>
         ))}
       </CarouselContent>

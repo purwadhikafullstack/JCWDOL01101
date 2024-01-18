@@ -21,7 +21,6 @@ export class CheckoutController {
     } catch (err) {
       next(err);
     }
-
   };
 
   public getAllSelectedCartProduct = async (req: Request, res: Response, next: NextFunction) => {

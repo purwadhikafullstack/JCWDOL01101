@@ -35,13 +35,6 @@ export class JurnalService {
             userId: findUser.id,
           }
         : {};
-    const date = new Date();
-    let firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-    let lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-    if (from && to) {
-      firstDayOfMonth = new Date(from);
-      lastDayOfMonth = new Date(to);
-    }
     const LIMIT = Number(limit) || 10;
     const offset = (page - 1) * LIMIT;
     const options: FindOptions<Jurnal> = {

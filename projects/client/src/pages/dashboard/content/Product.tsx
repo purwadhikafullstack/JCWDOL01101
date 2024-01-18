@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { Loader2, Plus } from "lucide-react";
 import {
@@ -32,7 +32,7 @@ const Product = () => {
     enabled: isLoaded && !!isSignedIn,
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (ROLE === "WAREHOUSE ADMIN" && curentUser) {
       setSearchParams((params) => {
         const hashId = hashids.encode(curentUser.userData.id);
@@ -54,7 +54,7 @@ const Product = () => {
   const { data: warehouses } = useGetWarehouse(ROLE === "ADMIN");
   const warehouseId = searchParams.get("warehouse");
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (
       !warehouseId &&
       ROLE === "ADMIN" &&
@@ -82,14 +82,9 @@ const Product = () => {
   });
 
   const clearImage = useBoundStore((state) => state.clearImage);
-  useEffect(() => {
+  React.useEffect(() => {
     clearImage();
   }, []);
-
-  const [collapseId, setCollapseId] = React.useState<null | number>(null);
-  const handleCollapse = (id: number | null) => {
-    setCollapseId(id === collapseId ? null : id);
-  };
 
   return (
     <>
@@ -149,8 +144,6 @@ const Product = () => {
                     <>
                       {data.products.map((product, index) => (
                         <ProductTableRow
-                          collapseId={collapseId}
-                          handleCollapse={handleCollapse}
                           key={index}
                           product={product}
                           index={index}

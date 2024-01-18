@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
 import { DB } from '@/database';
 import { OrderDetails } from '@/interfaces';
-import { InventoryModel, OrderModel, ProductModel } from '@/models';
+import { OrderModel, ProductModel } from '@/models';
 
 export async function readHighestSoldProducts(limit: number): Promise<OrderDetails[]> {
   limit = limit || 3;
