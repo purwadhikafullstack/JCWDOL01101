@@ -74,7 +74,7 @@ export class OrderService {
         {
           model: PaymentDetailsModel,
           as: 'paymentDetails',
-          attributes: ['virtualAccount', 'paymentDate', 'method','expiredDate'],
+          attributes: ['virtualAccount', 'paymentDate', 'method', 'expiredDate'],
         },
       ],
       order: [['createdAt', 'DESC']],
@@ -93,18 +93,14 @@ export class OrderService {
     return { orders: findOrder, totalPages };
   }
 
-  public async getAllOrder({
-    page,
-    s,
-    order,
-    limit,
-    filter,
-    externalId,
-    warehouse,
-    status,
-    to,
-    from,
-  }: GetFilterOrder): Promise<{ orders: Order[]; totalPages: number; totalSuccess: number; totalPending:number; totalFailed:number; totalOngoing:number }> {
+  public async getAllOrder({ page, s, order, limit, filter, externalId, warehouse, status, to, from }: GetFilterOrder): Promise<{
+    orders: Order[];
+    totalPages: number;
+    totalSuccess: number;
+    totalPending: number;
+    totalFailed: number;
+    totalOngoing: number;
+  }> {
     const findUser: User = await DB.User.findOne({ where: { externalId } });
     if (!findUser) throw new HttpException(409, "user doesn't exist");
     let findWarehouse;
@@ -200,8 +196,8 @@ export class OrderService {
       else if (order.status === 'REJECTED') totalRejected += order.totalPrice;
       else if (order.status === 'DELIVERED' || order.status === 'SHIPPED' || order.status === 'WAITING' || order.status === 'PROCESS')
         totalOngoing += order.totalPrice;
-      totalFailed = totalCanceled+totalRejected
     });
+    totalFailed = totalCanceled + totalRejected;
 
     return { totalPages: totalPages, orders: allOrder, totalSuccess, totalPending, totalFailed, totalOngoing };
   }
