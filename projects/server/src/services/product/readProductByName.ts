@@ -15,6 +15,7 @@ export async function readProductsByName(s: string): Promise<Product[]> {
       {
         model: ImageModel,
         as: 'productImage',
+        required: true,
       },
       {
         model: InventoryModel,

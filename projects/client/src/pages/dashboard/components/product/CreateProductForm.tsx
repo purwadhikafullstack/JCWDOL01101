@@ -69,7 +69,10 @@ const CreateProductForm = () => {
         formData.append("images", file);
       }
     });
-    formData.set("product", JSON.stringify({ ...values }));
+    formData.set(
+      "product",
+      JSON.stringify({ ...values, categoryId: Number(values.categoryId) })
+    );
     productMutation.mutate(formData);
   };
 

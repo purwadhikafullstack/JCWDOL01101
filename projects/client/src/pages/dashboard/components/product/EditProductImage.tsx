@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useDeleteProductImage } from "@/hooks/useProductMutation";
 import { useBoundStore } from "@/store/client/useStore";
@@ -18,12 +17,12 @@ const EditProductImage = ({ index }: { index: number }) => {
   if (!slug) {
     return;
   }
-  const deleteProductImage = useDeleteProductImage(imageId!, slug);
-  useEffect(() => {
-    if (imageId && slug) {
-      deleteProductImage.mutate();
-    }
-  }, [imageId, slug]);
+  const deleteProductImage = useDeleteProductImage();
+  // useEffect(() => {
+  //   if (imageId && slug) {
+  //     deleteProductImage.mutate();
+  //   }
+  // }, [imageId, slug]);
 
   const [error, setError] = useState("");
   const [imageKey, setImageKey] = useState(0);
@@ -117,8 +116,9 @@ const EditProductImage = ({ index }: { index: number }) => {
       {images[index] && images[index]?.url && images[index]?.imageId && (
         <Button
           onClick={() => {
-            if (images[index]?.imageId) {
+            if (images[index]?.imageId && slug) {
               setImageId(images[index]?.imageId!);
+              deleteProductImage.mutate({ imageId: images[index]?.imageId! });
             }
             setEditImageForm(null, index);
             setImageKey(imageKey + 1);

@@ -107,16 +107,18 @@ const EditProductForm = () => {
       form.setValue("size", Array.from(size));
       form.setValue("weight", product.weight);
       form.setValue("description", product.description);
-      product.productImage.forEach(({ image, id }, i) => {
-        setEditImageForm(
-          {
-            imageId: id,
-            file: null,
-            url: `${baseURL}/images/${image}`,
-          },
-          i
-        );
-      });
+      if (product.productImage.length > 0) {
+        product.productImage.forEach(({ image, id }, i) => {
+          setEditImageForm(
+            {
+              imageId: id,
+              file: null,
+              url: `${baseURL}/images/${image}`,
+            },
+            i
+          );
+        });
+      }
     }
   }, [pd]);
 

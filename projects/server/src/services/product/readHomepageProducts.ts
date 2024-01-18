@@ -38,6 +38,7 @@ export async function readHomepageProducts({ page, f, category, size, pmin, pmax
       {
         model: ImageModel,
         as: 'productImage',
+        required: true,
       },
       {
         model: ReviewModel,
