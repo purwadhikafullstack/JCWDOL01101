@@ -196,8 +196,8 @@ export class OrderService {
       else if (order.status === 'REJECTED') totalRejected += order.totalPrice;
       else if (order.status === 'DELIVERED' || order.status === 'SHIPPED' || order.status === 'WAITING' || order.status === 'PROCESS')
         totalOngoing += order.totalPrice;
-      totalFailed = totalCanceled + totalRejected;
     });
+    totalFailed = totalCanceled + totalRejected;
 
     return { totalPages: totalPages, orders: allOrder, totalSuccess, totalPending, totalFailed, totalOngoing };
   }
