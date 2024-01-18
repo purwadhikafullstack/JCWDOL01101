@@ -75,7 +75,6 @@ export class OrderService {
           model: PaymentDetailsModel,
           as: 'paymentDetails',
           attributes: ['virtualAccount', 'paymentDate', 'method', 'expiredDate'],
-          attributes: ['virtualAccount', 'paymentDate', 'method', 'expiredDate'],
         },
       ],
       order: [['createdAt', 'DESC']],
