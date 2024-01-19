@@ -9,6 +9,43 @@ export class OrderController {
   public order = Container.get(OrderService);
   public orderMutation = Container.get(OrderMutationService);
 
+  public getKpi = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
+    try {
+      const overview = await this.order.getKpi();
+
+      res.status(200).json({ data: overview, message: 'get.overview' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getRevenue = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
+    try {
+      const revenue = await this.order.getRevenue();
+      res.status(200).json({ data: revenue, message: 'get.revenue' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getTopCategory = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
+    try {
+      const topCategory = await this.order.getTopCategory();
+      res.status(200).json({ data: topCategory, message: 'get.topCategory' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getHighestSellingProduct = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
+    try {
+      const highestSeller = await this.order.getHighestSellingProduct();
+      res.status(200).json({ data: highestSeller, message: 'get.highestSeller' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   public getOrder = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const userId = Number(req.params.userId);

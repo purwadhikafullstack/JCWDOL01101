@@ -1,7 +1,7 @@
 import { Address } from './address.interface';
 import { Cart } from './cart.interface';
 import { CartProduct } from './cartProduct.interface';
-import { Category } from './category.interface';
+import { Category, TopCategory } from './category.interface';
 import { City } from './city.interface';
 import { Image } from './image.interface';
 import { Inventory } from './inventory.interface';
@@ -58,6 +58,7 @@ export type {
   Cart,
   CartProduct,
   Category,
+  TopCategory,
   City,
   Image,
   Inventory,
