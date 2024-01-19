@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Home, LogOut, MapPin, Settings } from "lucide-react";
 import { useUserContext } from "@/context/UserContext";
-import { Separator } from "@/components/ui/separator";
 
 const DashboardNavbar = () => {
   const { signOut } = useClerk();
@@ -24,8 +23,8 @@ const DashboardNavbar = () => {
           <div className="flex items-center gap-4">
             {user.role !== "ADMIN" && (
               <span className="flex items-center text-sm text-muted-foreground">
-                <MapPin className="w-4 h-4 mr-2" /> {user.userData.name},{" "}
-                {user.userData.warehouseAddress?.cityWarehouse?.cityName}
+                <MapPin className="w-4 h-4 mr-2" /> {user.warehouse.name},{" "}
+                {user.warehouse.warehouseAddress?.cityWarehouse?.cityName}
               </span>
             )}
             <DropdownMenu>

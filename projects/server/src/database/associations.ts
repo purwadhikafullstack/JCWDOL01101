@@ -44,8 +44,8 @@ export default function () {
   DB.Province.hasMany(DB.City, { foreignKey: 'provinceId', as: 'cities' });
   DB.City.belongsTo(DB.Province, { foreignKey: 'provinceId', as: 'cityProvince' });
 
-  DB.User.hasOne(DB.Warehouses, { foreignKey: 'userId', as: 'userData' });
-  DB.Warehouses.belongsTo(DB.User, { foreignKey: 'userId', as: 'userData' });
+  DB.User.hasOne(DB.Warehouses, { foreignKey: 'userId', as: 'warehouse' });
+  DB.Warehouses.belongsTo(DB.User, { foreignKey: 'userId', as: 'warehouse' });
 
   DB.Categories.hasOne(DB.Product, { foreignKey: 'categoryId', as: 'productCategory' });
   DB.Product.belongsTo(DB.Categories, { foreignKey: 'categoryId', as: 'productCategory' });

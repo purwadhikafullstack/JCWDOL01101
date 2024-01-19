@@ -19,7 +19,7 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
   userCart: Cart;
-  userData: Warehouse;
+  warehouse: Warehouse;
 }
 
 export interface Cart {

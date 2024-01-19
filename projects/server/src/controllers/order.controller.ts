@@ -11,7 +11,8 @@ export class OrderController {
 
   public getKpi = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
-      const overview = await this.order.getKpi();
+      const externalId = req.auth.userId;
+      const overview = await this.order.getKpi(externalId);
 
       res.status(200).json({ data: overview, message: 'get.overview' });
     } catch (error) {
@@ -21,7 +22,8 @@ export class OrderController {
 
   public getRevenue = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
-      const revenue = await this.order.getRevenue();
+      const externalId = req.auth.userId;
+      const revenue = await this.order.getRevenue(externalId);
       res.status(200).json({ data: revenue, message: 'get.revenue' });
     } catch (error) {
       next(error);
@@ -30,7 +32,8 @@ export class OrderController {
 
   public getTopCategory = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
-      const topCategory = await this.order.getTopCategory();
+      const externalId = req.auth.userId;
+      const topCategory = await this.order.getTopCategory(externalId);
       res.status(200).json({ data: topCategory, message: 'get.topCategory' });
     } catch (error) {
       next(error);
@@ -39,7 +42,8 @@ export class OrderController {
 
   public getHighestSellingProduct = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
-      const highestSeller = await this.order.getHighestSellingProduct();
+      const externalId = req.auth.userId;
+      const highestSeller = await this.order.getHighestSellingProduct(externalId);
       res.status(200).json({ data: highestSeller, message: 'get.highestSeller' });
     } catch (error) {
       next(error);

@@ -21,7 +21,7 @@ export class JurnalService {
   }: GetFilterJurnal): Promise<{ jurnals: Jurnal[]; totalPages: number; totalAddition: number; totalReduction: number; finalStock: number }> {
     const findUser: User = await DB.User.findOne({
       where: { externalId, status: 'ACTIVE' },
-      include: [{ model: DB.Warehouses, as: 'userData', attributes: ['id'] }],
+      include: [{ model: DB.Warehouses, as: 'warehouse', attributes: ['id'] }],
     });
     if (!findUser) throw new HttpException(409, "user doesn't exist");
     const role = findUser.role;
@@ -48,7 +48,7 @@ export class JurnalService {
           attributes: ['stock'],
           where: {
             ...(role === 'WAREHOUSE ADMIN' && {
-              warehouseId: findUser.userData.id,
+              warehouseId: findUser.warehouse.id,
             }),
           },
           include: [
@@ -101,7 +101,7 @@ export class JurnalService {
           attributes: ['stock'],
           where: {
             ...(role === 'WAREHOUSE ADMIN' && {
-              warehouseId: findUser.userData.id,
+              warehouseId: findUser.warehouse.id,
             }),
           },
           include: [

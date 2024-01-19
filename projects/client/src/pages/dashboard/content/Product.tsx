@@ -35,7 +35,7 @@ const Product = () => {
   React.useEffect(() => {
     if (ROLE === "WAREHOUSE ADMIN" && curentUser) {
       setSearchParams((params) => {
-        const hashId = hashids.encode(curentUser.userData.id);
+        const hashId = hashids.encode(curentUser.warehouse.id);
         params.set("warehouse", hashId);
         return params;
       });

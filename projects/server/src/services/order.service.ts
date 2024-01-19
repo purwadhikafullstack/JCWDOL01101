@@ -1,35 +1,71 @@
 import { DB } from '@/database';
 import { Service } from 'typedi';
-import { GetFilterOrder, Order } from '@/interfaces/order.interface';
-import { User } from '@/interfaces/user.interface';
+import { User, Order, Category, Product, TopCategory } from '@/interfaces';
 import { HttpException } from '@/exceptions/HttpException';
-import { FindOptions, Op } from 'sequelize';
+import { FindOptions, Op, WhereOptions } from 'sequelize';
 import { OrderDetailsModel } from '@/models/orderDetails.model';
 import { WarehouseModel } from '@/models/warehouse.model';
 import { UserModel } from '@/models/user.model';
 import { ImageModel, InventoryModel, ProductModel } from '@/models';
 import { PaymentDetailsModel } from '@/models/paymentDetails.model';
-import { Category, Product, TopCategory } from '@/interfaces';
+import { GetFilterOrder } from '@/interfaces/order.interface';
 
 @Service()
 export class OrderService {
-  public async getKpi(): Promise<any> {
+  private async getUserWithExternalId(externalId: string): Promise<User> {
+    const user: User = await DB.User.findOne({
+      where: {
+        externalId,
+        status: 'ACTIVE',
+      },
+      include: [
+        {
+          model: WarehouseModel,
+          as: 'warehouse',
+          attributes: ['id'],
+        },
+      ],
+    });
+    if (!user) {
+      throw new HttpException(404, 'User not found');
+    }
+    return user;
+  }
+  public async getKpi(externalId: string): Promise<any> {
+    const user = await this.getUserWithExternalId(externalId);
+    const role = user.role;
     const date = new Date();
     const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
     const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
     const firstDayOfLastMonth = new Date(date.getFullYear(), date.getMonth() - 1, 1);
     const lastDayOfLastMonth = new Date(date.getFullYear(), date.getMonth(), 0);
+    const thisMonthWhere: WhereOptions<Order> = {
+      status: {
+        [Op.or]: ['SUCCESS', 'DELIVERED'],
+      },
+      deletedAt: null,
+      createdAt: {
+        [Op.between]: [firstDayOfMonth, lastDayOfMonth],
+      },
+    };
+    const lastMonthWhere: WhereOptions<Order> = {
+      status: {
+        [Op.or]: ['SUCCESS', 'DELIVERED'],
+      },
+      deletedAt: null,
+      createdAt: {
+        [Op.between]: [firstDayOfLastMonth, lastDayOfLastMonth],
+      },
+    };
+
+    if (role === 'WAREHOUSE ADMIN') {
+      thisMonthWhere.warehouseId = user.warehouse.id;
+      lastMonthWhere.warehouseId = user.warehouse.id;
+    }
+
     const [thisMonthOrders, lastMonthOrders]: [Order[], Order[]] = await Promise.all([
       DB.Order.findAll({
-        where: {
-          status: {
-            [Op.or]: ['SUCCESS', 'DELIVERED'],
-          },
-          deletedAt: null,
-          createdAt: {
-            [Op.between]: [firstDayOfMonth, lastDayOfMonth],
-          },
-        },
+        where: thisMonthWhere,
         include: [
           {
             model: OrderDetailsModel,
@@ -38,15 +74,7 @@ export class OrderService {
         ],
       }),
       DB.Order.findAll({
-        where: {
-          status: {
-            [Op.or]: ['SUCCESS', 'DELIVERED'],
-          },
-          deletedAt: null,
-          createdAt: {
-            [Op.between]: [firstDayOfLastMonth, lastDayOfLastMonth],
-          },
-        },
+        where: lastMonthWhere,
         include: [
           {
             model: OrderDetailsModel,
@@ -77,10 +105,14 @@ export class OrderService {
       totalSuccessOrdersLastMonth > 0 ? ((totalSuccessOrdersThisMonth - totalSuccessOrdersLastMonth) / totalSuccessOrdersLastMonth) * 100 : 0;
     const [deliveredOrSuccessOrdersThisMonth, deliveredOrSuccessOrdersLastMonth, totalOrdersThisMonth, totalOrdersLastMonth] = await Promise.all([
       await DB.Order.count({
+        where: thisMonthWhere,
+      }),
+      await DB.Order.count({
+        where: lastMonthWhere,
+      }),
+      await DB.Order.count({
         where: {
-          status: {
-            [Op.or]: ['SUCCESS', 'DELIVERED'],
-          },
+          ...(role === 'WAREHOUSE ADMIN' && { warehouseId: user.warehouse.id }),
           createdAt: {
             [Op.between]: [firstDayOfMonth, lastDayOfMonth],
           },
@@ -89,25 +121,7 @@ export class OrderService {
       }),
       await DB.Order.count({
         where: {
-          status: {
-            [Op.or]: ['SUCCESS', 'DELIVERED'],
-          },
-          createdAt: {
-            [Op.between]: [firstDayOfLastMonth, lastDayOfLastMonth],
-          },
-          deletedAt: null,
-        },
-      }),
-      await DB.Order.count({
-        where: {
-          createdAt: {
-            [Op.between]: [firstDayOfMonth, lastDayOfMonth],
-          },
-          deletedAt: null,
-        },
-      }),
-      await DB.Order.count({
-        where: {
+          ...(role === 'WAREHOUSE ADMIN' && { warehouseId: user.warehouse.id }),
           createdAt: {
             [Op.between]: [firstDayOfLastMonth, lastDayOfLastMonth],
           },
@@ -145,11 +159,13 @@ export class OrderService {
     };
   }
 
-  public async getRevenue(): Promise<any> {
+  public async getRevenue(externalId: string): Promise<any> {
+    const user = await this.getUserWithExternalId(externalId);
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
     const orders = await DB.Order.findAll({
       where: {
+        ...(user.role === 'WAREHOUSE ADMIN' && { warehouseId: user.warehouse.id }),
         status: {
           [Op.or]: ['SUCCESS', 'DELIVERED'],
         },
@@ -170,7 +186,8 @@ export class OrderService {
     return orders;
   }
 
-  public async getTopCategory(): Promise<TopCategory[]> {
+  public async getTopCategory(externalId: string): Promise<TopCategory[]> {
+    const user = await this.getUserWithExternalId(externalId);
     const opts: FindOptions<Category> = {
       paranoid: true,
       include: [
@@ -187,6 +204,7 @@ export class OrderService {
               attributes: ['id', 'sold'],
               where: {
                 status: 'ACTIVE',
+                ...(user.role === 'WAREHOUSE ADMIN' && { warehouseId: user.warehouse.id }),
               },
             },
           ],
@@ -225,7 +243,8 @@ export class OrderService {
     return top3;
   }
 
-  public async getHighestSellingProduct(): Promise<Product[]> {
+  public async getHighestSellingProduct(externalId: string): Promise<Product[]> {
+    const user = await this.getUserWithExternalId(externalId);
     const products: Product[] = await DB.Product.findAll({
       limit: 5,
       where: {
@@ -243,6 +262,10 @@ export class OrderService {
           attributes: ['stock', 'sold'],
           where: {
             status: 'ACTIVE',
+            sold: {
+              [Op.gt]: 0,
+            },
+            ...(user.role === 'WAREHOUSE ADMIN' && { warehouseId: user.warehouse.id }),
           },
         },
       ],

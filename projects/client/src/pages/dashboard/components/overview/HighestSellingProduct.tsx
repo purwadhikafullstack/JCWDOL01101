@@ -41,12 +41,12 @@ const HighestSellingProduct = () => {
               <TableCell>
                 <div className="flex items-center justify-end">
                   {product.inventory.reduce((a, b) => a + b.stock, 0) > 0 ? (
-                    <span className="text-green-500 bg-green-100 px-2 py-1 rounded-full flex items-center w-max">
+                    <span className="text-green-500 bg-green-100 dark:bg-green-50/10 px-2 py-1 rounded-full flex items-center w-max">
                       <span className="inline-block w-2 h-2 mr-1 bg-green-500 rounded-full" />
                       In Stock
                     </span>
                   ) : (
-                    <span className="text-red-500 bg-red-100 px-2 py-1 rounded-full flex items-center w-max">
+                    <span className="text-red-500 bg-red-100 dark:bg-red-50/10 px-2 py-1 rounded-full flex items-center w-max">
                       <span className="inline-block w-2 h-2 mr-1 bg-red-500 rounded-full" />
                       Out of Stock
                     </span>
