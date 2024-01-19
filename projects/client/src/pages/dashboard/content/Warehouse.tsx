@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import React, { useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Plus } from "lucide-react"
 import {
   Table,
   TableBody,
@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/table"
 import {
   Dialog,
   DialogContent,
@@ -16,181 +16,182 @@ import {
   DialogTrigger,
   DialogClose,
   DialogFooter,
-} from "@/components/ui/dialog";
-import service from "@/service";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/dialog"
+import service from "@/service"
+import { Input } from "@/components/ui/input"
+import { Helmet } from "react-helmet"
 
 type WarehouseAddressType = {
-  id: number;
-  addressDetail: string;
-  cityId: string;
-  provinceId: number;
-  cityWarehouse?: CityType;
-};
+  id: number
+  addressDetail: string
+  cityId: string
+  provinceId: number
+  cityWarehouse?: CityType
+}
 
 type WarehouseType = {
-  id: number;
-  name: string;
-  capacity: number;
-  addressId: number;
-  userId: number;
-  warehouseAddress?: WarehouseAddressType;
-};
+  id: number
+  name: string
+  capacity: number
+  addressId: number
+  userId: number
+  warehouseAddress?: WarehouseAddressType
+}
 
 type CityType = {
-  cityId: string;
-  cityName: string;
-  provinceId: string;
-  postal_code: number;
-  cityProvince?: ProvinceType;
-};
+  cityId: string
+  cityName: string
+  provinceId: string
+  postal_code: number
+  cityProvince?: ProvinceType
+}
 
 type ProvinceType = {
-  provinceId: string;
-  province: string;
-};
+  provinceId: string
+  province: string
+}
 
 const Warehouse = () => {
-  const [warehouses, setWarehouses] = useState<WarehouseType[]>([]);
+  const [warehouses, setWarehouses] = useState<WarehouseType[]>([])
   const [newWarehouse, setNewWarehouse] = useState({
     name: "",
     capacity: 0,
     addressDetail: "",
-  });
+  })
   const [editWarehouse, setEditWarehouse] = useState({
     id: 0,
     name: "",
     capacity: 0,
     addressId: 0,
-  });
-  const [isEditing, setIsEditing] = useState(false);
+  })
+  const [isEditing, setIsEditing] = useState(false)
 
-  const [cities, setCities] = useState<CityType[]>([]);
-  const [provinces, setProvinces] = useState<ProvinceType[]>([]);
-  const [selectedCity, setSelectedCity] = useState<CityType | null>(null);
+  const [cities, setCities] = useState<CityType[]>([])
+  const [provinces, setProvinces] = useState<ProvinceType[]>([])
+  const [selectedCity, setSelectedCity] = useState<CityType | null>(null)
   const [selectedProvince, setSelectedProvince] = useState<ProvinceType | null>(
     null
-  );
+  )
   const [editAddress, setEditAddress] = useState({
     addressDetail: "",
-  });
+  })
 
   useEffect(() => {
     service
       .get("/warehouses")
       .then((response) => {
         if (Array.isArray(response.data.data)) {
-          setWarehouses(response.data.data);
+          setWarehouses(response.data.data)
         } else {
-          console.error("Data is not an array:", response.data.data);
+          console.error("Data is not an array:", response.data.data)
         }
       })
       .catch((error) => {
-        console.error("There was an error!", error);
-      });
+        console.error("There was an error!", error)
+      })
 
     service
       .get("/cities")
       .then((response) => {
         if (Array.isArray(response.data.data)) {
-          setCities(response.data.data);
+          setCities(response.data.data)
         } else {
-          console.error("Data is not an array:", response.data.data);
+          console.error("Data is not an array:", response.data.data)
         }
       })
       .catch((error) => {
-        console.error("There was an error!", error);
-      });
+        console.error("There was an error!", error)
+      })
 
     service
       .get("/provinces")
       .then((response) => {
         if (Array.isArray(response.data.data)) {
-          setProvinces(response.data.data);
+          setProvinces(response.data.data)
         } else {
-          console.error("Data is not an array:", response.data.data);
+          console.error("Data is not an array:", response.data.data)
         }
       })
       .catch((error) => {
-        console.error("There was an error!", error);
-      });
-  }, []);
+        console.error("There was an error!", error)
+      })
+  }, [])
 
   const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const city = cities.find(
       (city) => city.cityId === String(event.target.value)
-    );
+    )
     if (city) {
-      setSelectedCity(city);
+      setSelectedCity(city)
       const province = provinces.find(
         (province) => province.provinceId === city.provinceId
-      );
+      )
       if (province) {
-        setSelectedProvince(province);
+        setSelectedProvince(province)
       } else {
-        setSelectedProvince(null);
+        setSelectedProvince(null)
       }
     } else {
-      setSelectedCity(null);
-      setSelectedProvince(null);
+      setSelectedCity(null)
+      setSelectedProvince(null)
     }
-  };
+  }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewWarehouse({
       ...newWarehouse,
       [event.target.name]: event.target.value,
-    });
-  };
+    })
+  }
 
   const handleAddWarehouse = () => {
     const addressData = {
       cityId: selectedCity?.cityId,
       provinceId: selectedProvince?.provinceId,
       addressDetail: newWarehouse.addressDetail,
-    };
+    }
 
     service
       .post("/warehouseAddresses", addressData)
       .then((response) => {
-        const newAddressId = response.data.data.id;
+        const newAddressId = response.data.data.id
         const warehouseData = {
           ...newWarehouse,
           warehouseAddressId: newAddressId,
-        };
+        }
 
         service
           .post("/warehouses", warehouseData)
           .then((response) => {
-            setWarehouses([...warehouses, response.data]);
+            setWarehouses([...warehouses, response.data])
           })
           .catch((error) => {
-            console.error("There was an error!", error);
-          });
+            console.error("There was an error!", error)
+          })
       })
       .catch((error) => {
-        console.error("There was an error!", error);
-      });
-  };
+        console.error("There was an error!", error)
+      })
+  }
 
   const handleEditWarehouse = (warehouse: WarehouseType) => {
-    setEditWarehouse(warehouse);
+    setEditWarehouse(warehouse)
     setEditAddress({
       addressDetail: warehouse.warehouseAddress?.addressDetail || "",
-    });
-    setSelectedCity(warehouse.warehouseAddress?.cityWarehouse || null);
+    })
+    setSelectedCity(warehouse.warehouseAddress?.cityWarehouse || null)
     setSelectedProvince(
       warehouse.warehouseAddress?.cityWarehouse?.cityProvince || null
-    );
-    setIsEditing(true);
-  };
+    )
+    setIsEditing(true)
+  }
 
   const handleUpdateWarehouse = () => {
     const addressData = {
       cityId: selectedCity?.cityId,
       provinceId: selectedProvince?.provinceId,
       addressDetail: editAddress.addressDetail,
-    };
+    }
 
     service
       .put(`/warehouseAddresses/${editWarehouse.id}`, addressData)
@@ -198,7 +199,7 @@ const Warehouse = () => {
         const warehouseData = {
           ...editWarehouse,
           addressId: response.data.id,
-        };
+        }
 
         service
           .put(`/warehouses/${editWarehouse.id}`, warehouseData)
@@ -207,22 +208,22 @@ const Warehouse = () => {
               warehouses.map((warehouse) =>
                 warehouse.id === response.data.id ? response.data : warehouse
               )
-            );
-            setIsEditing(false);
+            )
+            setIsEditing(false)
           })
           .catch((error) => {
-            console.error("There was an error!", error);
-          });
+            console.error("There was an error!", error)
+          })
       })
       .catch((error) => {
-        console.error("There was an error!", error);
-      });
-  };
+        console.error("There was an error!", error)
+      })
+  }
 
   const handleDeleteWarehouse = (id: number) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete Warehouse?"
-    );
+    )
     if (confirmDelete) {
       service
         .delete(`/warehouses/${id}`)
@@ -231,23 +232,26 @@ const Warehouse = () => {
             .get("/warehouses")
             .then((response) => {
               if (Array.isArray(response.data.data)) {
-                setWarehouses(response.data.data);
+                setWarehouses(response.data.data)
               } else {
-                console.error("Data is not an array:", response.data.data);
+                console.error("Data is not an array:", response.data.data)
               }
             })
             .catch((error) => {
-              console.error("There was an error!", error);
-            });
+              console.error("There was an error!", error)
+            })
         })
         .catch((error) => {
-          console.error("There was an error!", error);
-        });
+          console.error("There was an error!", error)
+        })
     }
-  };
+  }
 
   return (
     <div className="flex flex-col p-2 w-full">
+      <Helmet>
+        <title>Dashboard | Warehouses</title>
+      </Helmet>
       <Dialog>
         <DialogTrigger asChild>
           <Button className="self-end">
@@ -464,7 +468,7 @@ const Warehouse = () => {
         </Table>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Warehouse;
+export default Warehouse

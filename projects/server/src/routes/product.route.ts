@@ -1,6 +1,6 @@
 import { ProductController } from '@/controllers/product.controller';
 import { Routes } from '@/interfaces/routes.interface';
-import { ProductValidationMiddleware, ValidationMiddleware, isProductExist } from '@/middlewares/validation.middleware';
+import { ProductValidationMiddleware, isProductExist } from '@/middlewares/validation.middleware';
 import { upload } from '@/services/multer.service';
 import { ClerkExpressWithAuth } from '@clerk/clerk-sdk-node';
 import { Router } from 'express';
