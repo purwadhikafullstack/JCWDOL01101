@@ -1,7 +1,6 @@
 import React from "react";
 
 import {
-  LayoutDashboard,
   Shirt,
   Users,
   Warehouse,
@@ -9,11 +8,11 @@ import {
   ClipboardList,
   FileText,
   Layers,
-  ListPlus,
   HelpCircle,
   Settings,
   Tag,
   Home,
+  BarChartBig,
 } from "lucide-react";
 import { useUser } from "@clerk/clerk-react";
 import { Separator } from "@/components/ui/separator";
@@ -31,7 +30,7 @@ const DashboardSidebar = () => {
           links={[
             {
               title: "Overview",
-              icon: LayoutDashboard,
+              icon: BarChartBig,
               link: "/dashboard",
               variant: "ghost",
             },

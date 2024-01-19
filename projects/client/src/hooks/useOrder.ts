@@ -45,6 +45,77 @@ type Params = {
   limit?: number;
 };
 
+type OverviewType = {
+  kpi: {
+    title: string;
+    metric: number;
+    delta: number;
+  }[];
+};
+
+export const useGetOverviewKpi = () => {
+  const { getToken } = useAuth();
+  const query = useQuery<OverviewType>({
+    queryKey: ["overview/kpi"],
+    queryFn: async () => {
+      const res = await service.get("/orders/overview/kpi", {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+      return res.data.data;
+    },
+  });
+
+  return query;
+};
+
+export const useGetOverviewRevenue = () => {
+  const { getToken } = useAuth();
+  const query = useQuery({
+    queryKey: ["overview/revenue"],
+    queryFn: async () => {
+      const res = await service.get("/orders/overview/revenue", {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+      return res.data.data;
+    },
+  });
+
+  return query;
+};
+
+export const useGetOverviewTopCategory = () => {
+  const { getToken } = useAuth();
+  const query = useQuery<{ title: string; total: number }[]>({
+    queryKey: ["overview/top-category"],
+    queryFn: async () => {
+      const res = await service.get("/orders/overview/top-category", {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+      return res.data.data;
+    },
+  });
+
+  return query;
+};
+
+export const useGetOverviewHigestSellingProduct = () => {
+  const { getToken } = useAuth();
+  const query = useQuery<Product[]>({
+    queryKey: ["overview/highest-selling-product"],
+    queryFn: async () => {
+      const res = await service.get(
+        "/orders/overview/highest-selling-product",
+        {
+          headers: { Authorization: `Bearer ${await getToken()}` },
+        }
+      );
+      return res.data.data;
+    },
+  });
+
+  return query;
+};
+
 export const useCurrentUserOrders = ({ status, page, q, limit }: Params) => {
   const { getToken } = useAuth();
   const query = useQuery<{ orders: Order[]; totalPages: number }>({

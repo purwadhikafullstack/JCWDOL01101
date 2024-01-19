@@ -32,7 +32,7 @@ export class WarehouseService {
         },
         {
           model: DB.User,
-          as: 'userData',
+          as: 'warehouse',
           attributes: ['username'],
         },
       ],

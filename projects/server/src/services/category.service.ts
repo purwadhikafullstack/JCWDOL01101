@@ -32,8 +32,7 @@ export class CategoryService {
       opts.order = [
         [
           DB.Sequelize.literal(`(
-       SELECT SUM(inventory.sold)
-      FROM products AS product
+       SELECT SUM(inventory.sold) FROM products AS product
       INNER JOIN inventories AS inventory ON product.id = inventory.product_id
       WHERE product.category_id = CategoryModel.id
       )`),

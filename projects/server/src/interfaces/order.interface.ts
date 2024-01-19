@@ -1,3 +1,5 @@
+import { OrderDetails } from './orderDetails.interface';
+
 export interface Order {
   id?: number;
   warehouseId?: number;
@@ -9,6 +11,7 @@ export interface Order {
   deletedAt: Date;
   createdAt?: Date;
   updatedAt?: Date;
+  orderDetails?: OrderDetails[];
 }
 
 export interface GetFilterOrder {

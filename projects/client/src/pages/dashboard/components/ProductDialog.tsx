@@ -39,7 +39,10 @@ const ProductDialog = ({ product }: { product: Product }) => {
   return (
     <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost">
+        <Button
+          disabled={!isInventoryActive && ROLE !== "ADMIN"}
+          variant="ghost"
+        >
           <DotsHorizontalIcon />
         </Button>
       </DropdownMenuTrigger>

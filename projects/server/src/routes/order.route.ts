@@ -16,6 +16,10 @@ export class OrderRoute implements Routes {
     this.router.get(`${this.path}/:userId`, ClerkExpressRequireAuth(), this.order.getOrder);
     this.router.get(`${this.path}/allow-review/:productId`, ClerkExpressRequireAuth(), this.order.getAllowOrders);
     this.router.get(`${this.path}`, ClerkExpressRequireAuth(), this.order.getOrders);
+    this.router.get(`${this.path}/overview/kpi`, ClerkExpressRequireAuth(), this.order.getKpi);
+    this.router.get(`${this.path}/overview/revenue`, ClerkExpressRequireAuth(), this.order.getRevenue);
+    this.router.get(`${this.path}/overview/top-category`, ClerkExpressRequireAuth(), this.order.getTopCategory);
+    this.router.get(`${this.path}/overview/highest-selling-product`, ClerkExpressRequireAuth(), this.order.getHighestSellingProduct);
     this.router.patch(`${this.path}/admin-accept/:orderId`, ClerkExpressRequireAuth(), this.order.adminAcceptOrder);
     this.router.patch(`${this.path}/admin-reject/:orderId`, ClerkExpressRequireAuth(), this.order.adminRejectOrder);
     this.router.patch(`${this.path}/admin-send/:orderId`, ClerkExpressRequireAuth(), this.order.adminSendOrder);

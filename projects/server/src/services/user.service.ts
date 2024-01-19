@@ -86,7 +86,7 @@ export class UserService {
         },
         {
           model: WarehouseModel,
-          as: 'userData',
+          as: 'warehouse',
           include: [
             {
               model: WarehouseAddressModel,
