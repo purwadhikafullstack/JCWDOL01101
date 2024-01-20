@@ -5,7 +5,7 @@ import { InventoryModel, ImageModel, SizeModel, WishlistModel, ReviewModel } fro
 import { Op, FindOptions } from 'sequelize';
 import { queryStringToArray } from './queryStringToArray';
 
-export async function readHomepageProducts({ page, f, category, size, pmin, pmax, externalId }: ProductQuery): Promise<Product[]> {
+export async function readHomepageProducts({ page, f, category, size, pmin, pmax, externalId, limit }: ProductQuery): Promise<Product[]> {
   let findUser: User | null = null;
   if (externalId) {
     findUser = await DB.User.findOne({ where: { externalId, status: 'ACTIVE' } });
@@ -30,10 +30,10 @@ export async function readHomepageProducts({ page, f, category, size, pmin, pmax
   if (findCategory) {
     where.categoryId = findCategory.id;
   }
-
+  const LIMIT = limit || 10;
   const options: FindOptions = {
-    offset: (Number(page) - 1) * 12,
-    limit: 12,
+    limit: Number(LIMIT),
+    offset: (Number(page) - 1) * Number(LIMIT),
     include: [
       {
         model: ImageModel,

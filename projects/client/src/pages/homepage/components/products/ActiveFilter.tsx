@@ -33,6 +33,7 @@ const ActiveFilter = () => {
                     params.delete("size");
                     params.delete("pmin");
                     params.delete("pmax");
+                    params.delete("category");
                     return params;
                   });
                 }}
