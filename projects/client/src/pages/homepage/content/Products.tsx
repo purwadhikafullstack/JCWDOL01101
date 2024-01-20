@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSearchParams } from "react-router-dom";
 import { Product, useProductInfinite } from "@/hooks/useProduct";
-import { useInView } from "react-intersection-observer";
 import ProductCard from "@/pages/homepage/components/ProductCard";
 import NewestProductSekeleton from "@/components/skeleton/NewestProductSekeleton";
 import Filter from "../components/products/Filter";
@@ -9,9 +8,9 @@ import { Helmet } from "react-helmet";
 import FilterModal from "../components/products/FilterModal";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import SelectBy from "../components/products/SelectBy";
+import { Button } from "@/components/ui/button";
 
 const ProductsPage = () => {
-  const { ref, inView } = useInView();
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category") || "";
   const size = searchParams.get("size") || "";
@@ -20,26 +19,15 @@ const ProductsPage = () => {
   const f = searchParams.get("f") || "";
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const {
-    data,
-    isLoading,
-    isSuccess,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-  } = useProductInfinite({
-    f,
-    category,
-    size,
-    pmin,
-    pmax,
-  });
-
-  useEffect(() => {
-    if (inView && hasNextPage) {
-      fetchNextPage();
-    }
-  }, [fetchNextPage, inView, hasNextPage]);
+  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    useProductInfinite({
+      f,
+      category,
+      size,
+      pmin,
+      pmax,
+      limit: 10,
+    });
 
   return (
     <>
@@ -73,32 +61,40 @@ const ProductsPage = () => {
               <NewestProductSekeleton product={5} />
             ) : (
               <>
-                {isSuccess &&
+                {data &&
                   data.pages.map((page) => {
                     return page.length > 0 ? (
-                      page.map((product: Product, i: number) => {
-                        return page.length === i + 1 ? (
-                          <ProductCard
-                            ref={ref}
-                            key={product.id}
-                            product={product}
-                          />
-                        ) : (
-                          <ProductCard key={product.id} product={product} />
-                        );
-                      })
+                      page.map((product: Product, i: number) => (
+                        <ProductCard key={product.id} product={product} />
+                      ))
                     ) : (
-                      <div key={0} className="col-span-5">
+                      <div className="col-span-2 md:col-span-4 lg:col-span-5">
                         <img
-                          className="w-[400px] mx-auto"
+                          className=" w-[300px] md:w-[400px] mx-auto"
                           src="ilus/empty-product.svg"
                           alt="empty product"
                         />
                       </div>
                     );
                   })}
-                {isFetchingNextPage && <NewestProductSekeleton product={5} />}
               </>
+            )}
+          </div>
+
+          <div className="flex justify-center w-full my-4">
+            {hasNextPage && (
+              <Button
+                onClick={() => fetchNextPage()}
+                disabled={!hasNextPage || isFetchingNextPage}
+                variant="outline"
+                className="border-black rounded-none w-max mx-auto md:px-20"
+              >
+                {isFetchingNextPage
+                  ? "Loading more..."
+                  : hasNextPage
+                  ? "Load More"
+                  : "nothing more to load"}
+              </Button>
             )}
           </div>
         </div>

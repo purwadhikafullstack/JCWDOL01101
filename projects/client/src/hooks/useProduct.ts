@@ -139,7 +139,7 @@ export const useProductInfinite = ({
   pmax,
   pmin,
   category,
-  limit = 12,
+  limit,
 }: ProductParams) => {
   const { getToken } = useAuth();
   const fetchProjects = async (page: number) => {

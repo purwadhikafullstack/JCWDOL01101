@@ -14,6 +14,7 @@ export type ProductQuery = {
   pmin: string;
   category: string;
   externalId: string;
+  limit: number;
 };
 export class ProductController {
   product = Container.get(ProductService);
