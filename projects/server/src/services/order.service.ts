@@ -385,7 +385,7 @@ export class OrderService {
       },
       order: [['createdAt', 'DESC']],
       ...(order && {
-        order: filter === 'user' ? [[{ model: UserModel, as: 'userOrder' }, 'firstname', order]] : [[filter, order]],
+        order: filter === 'user' ? [[{ model: UserModel, as: 'userOrder' }, 'email', order]] : [[filter, order]],
       }),
       include: [
         {
@@ -396,7 +396,7 @@ export class OrderService {
         {
           model: UserModel,
           as: 'userOrder',
-          attributes: ['firstname', 'lastname'],
+          attributes: ['email'],
         },
       ],
     };

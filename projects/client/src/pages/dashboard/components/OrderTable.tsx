@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   Table,
   TableBody,
@@ -6,17 +6,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { getDate, formatToIDR } from "@/lib/utils";
-import ChangeOrderButton from "./ChangeOrderButton";
-import { Order } from "@/hooks/useOrder";
-import OrderAction from "./order/OrderAction";
+} from "@/components/ui/table"
+import { getDate, formatToIDR } from "@/lib/utils"
+import ChangeOrderButton from "./ChangeOrderButton"
+import { Order } from "@/hooks/useOrder"
+import OrderAction from "./order/OrderAction"
 
 function OrderTable({
   data,
 }: {
-  data: { orders: Order[]; totalPages: number; totalSuccess:number; totalPending:number; totalFailed:number;  totalOngoing:number  
-  };
+  data: {
+    orders: Order[]
+    totalPages: number
+    totalSuccess: number
+    totalPending: number
+    totalFailed: number
+    totalOngoing: number
+  }
 }) {
   return (
     <>
@@ -78,7 +84,7 @@ function OrderTable({
                     {order.warehouseOrder.name}
                   </TableCell>
                   <TableCell className="text-center">
-                    {order.userOrder.firstname} {order.userOrder.lastname}
+                    {order.userOrder.email}
                   </TableCell>
                   <TableCell className="text-center">
                     {formatToIDR(order.totalPrice)}
@@ -106,7 +112,7 @@ function OrderTable({
         </TableBody>
       </Table>
     </>
-  );
+  )
 }
 
-export default OrderTable;
+export default OrderTable
