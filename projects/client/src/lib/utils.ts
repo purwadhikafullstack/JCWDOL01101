@@ -1,7 +1,6 @@
 import service from "@/service";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { useState } from "react";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -22,6 +21,17 @@ export function convertToK(currencyValue: number): string {
   if (currencyValue >= 1000) {
     const valueInK = currencyValue / 1000;
     return `${valueInK}K`;
+  } else {
+    return currencyValue.toString();
+  }
+}
+
+export function convertToJt(number: number | string): string {
+  const numericValue = number.toString().replace(/\D/g, "");
+  const currencyValue = Number(numericValue);
+  if (currencyValue >= 1000000) {
+    const valueInJt = Math.round(currencyValue / 1000000);
+    return `${valueInJt}jt`;
   } else {
     return currencyValue.toString();
   }

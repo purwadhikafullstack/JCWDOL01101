@@ -10,7 +10,7 @@ import {
   Area,
 } from "recharts";
 import { format } from "date-fns";
-import { convertToK } from "@/lib/utils";
+import { convertToJt } from "@/lib/utils";
 import TopCategory from "./TopCategory";
 
 const CustomizedAxisTick = (props: any) => {
@@ -36,7 +36,7 @@ const CustomizedYAxisTick = (props: any) => {
   return (
     <g transform={`translate(${x},${y})`}>
       <text x={0} y={0} dy={16} textAnchor="end" fill="#666">
-        {convertToK(payload.value)}
+        {convertToJt(payload.value)}
       </text>
     </g>
   );
@@ -49,7 +49,7 @@ const CustomTooltip: React.FC<any> = ({ active, payload, label }) => {
         <p className="text-muted-foreground">
           {format(new Date(2024, label - 1), "MMM")}
         </p>
-        <p className="text-primary">{convertToK(payload[0].value)}</p>
+        <p className="text-primary">{convertToJt(payload[0].value)}</p>
       </div>
     );
   }
