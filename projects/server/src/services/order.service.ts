@@ -216,7 +216,7 @@ export class OrderService {
       return acc;
     }, {});
 
-    let topCategory: TopCategory[] = Object.entries(categoryTotals).map(([title, total]: [string, number]) => ({ title, total }));
+    const topCategory: TopCategory[] = Object.entries(categoryTotals).map(([title, total]: [string, number]) => ({ title, total }));
 
     topCategory.sort((a, b) => {
       if (a.title === 'Others') return 1;
@@ -383,6 +383,7 @@ export class OrderService {
           [Op.between]: [new Date(from), new Date(to)],
         },
       },
+      order: [['createdAt', 'DESC']],
       ...(order && {
         order: filter === 'user' ? [[{ model: UserModel, as: 'userOrder' }, 'firstname', order]] : [[filter, order]],
       }),
