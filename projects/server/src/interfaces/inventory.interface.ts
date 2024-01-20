@@ -1,4 +1,4 @@
-import { Status } from '.';
+import { Product, Status } from '.';
 
 export interface Inventory {
   id?: number;
@@ -9,6 +9,7 @@ export interface Inventory {
   sold: number;
   status: Status;
   totalStock?: number;
+  product?: Product;
 }
 
 export interface AddStock {

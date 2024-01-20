@@ -69,7 +69,7 @@ export const addressValidationMiddleware = () => {
       .isLength({ min: 4, max: 50 })
       .withMessage('recepient must be between 4 and 50 characters'),
     body('phone').exists().withMessage('phone is required').isLength({ min: 9, max: 15 }).withMessage('phone must be between 9 and 15 characters'),
-    body('label').exists().withMessage('label is required').isLength({ min: 4, max: 15 }).withMessage('label must be between 3 and 15 characters'),
+    body('label').exists().withMessage('label is required').isLength({ min: 3, max: 15 }).withMessage('label must be between 3 and 15 characters'),
     body('cityId').exists().withMessage('cityId is required').isString().trim(),
     body('address').exists().withMessage('address is required').trim().isLength({ min: 3 }).withMessage('address must be at least 4 characters'),
     body('notes').optional(),

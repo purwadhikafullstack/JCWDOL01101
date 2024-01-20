@@ -1,12 +1,12 @@
 import { DB } from '@/database';
 import { Service } from 'typedi';
-import { User, Order, Category, Product, TopCategory } from '@/interfaces';
+import { User, Order, Category, Product, TopCategory, Inventory } from '@/interfaces';
 import { HttpException } from '@/exceptions/HttpException';
 import { FindOptions, Op, WhereOptions } from 'sequelize';
 import { OrderDetailsModel } from '@/models/orderDetails.model';
 import { WarehouseModel } from '@/models/warehouse.model';
 import { UserModel } from '@/models/user.model';
-import { ImageModel, InventoryModel, ProductModel } from '@/models';
+import { CategoryModel, ImageModel, InventoryModel, ProductModel } from '@/models';
 import { PaymentDetailsModel } from '@/models/paymentDetails.model';
 import { GetFilterOrder } from '@/interfaces/order.interface';
 
@@ -188,56 +188,44 @@ export class OrderService {
 
   public async getTopCategory(externalId: string): Promise<TopCategory[]> {
     const user = await this.getUserWithExternalId(externalId);
-    const opts: FindOptions<Category> = {
-      paranoid: true,
+    const inventory: Inventory[] = await DB.Inventories.findAll({
+      where: {
+        ...(user.role === 'WAREHOUSE ADMIN' && { warehouseId: user.warehouse.id }),
+        sold: {
+          [Op.gt]: 0,
+        },
+      },
       include: [
         {
           model: ProductModel,
-          as: 'productCategory',
-          where: {
-            status: 'ACTIVE',
-          },
+          as: 'product',
+          where: {},
           include: [
             {
-              model: InventoryModel,
-              as: 'inventory',
-              attributes: ['id', 'sold'],
-              where: {
-                status: 'ACTIVE',
-                ...(user.role === 'WAREHOUSE ADMIN' && { warehouseId: user.warehouse.id }),
-              },
+              model: CategoryModel,
+              as: 'productCategory',
             },
           ],
         },
       ],
-    };
-    const allCategory: Category[] = await DB.Categories.findAll(opts);
-    let topCategory = allCategory.map(category => {
-      let totalSold = category.productCategory ? category.productCategory.inventory.reduce((acc, { sold }) => acc + sold, 0) : 0;
-      return {
-        title: totalSold <= 100 ? 'Others' : category.name,
-        total: totalSold,
-      };
     });
 
-    topCategory = topCategory.reduce((acc: TopCategory[], category) => {
-      const index = acc.findIndex(item => item.title === category.title);
-      if (index !== -1) {
-        acc[index].total += category.total;
-      } else {
-        acc.push(category);
-      }
+    const categoryTotals = inventory.reduce((acc, inv) => {
+      const categoryName = inv.product.productCategory.name;
+      acc[categoryName] = (acc[categoryName] || 0) + inv.sold;
       return acc;
-    }, []);
+    }, {});
 
-    const sortedTopCategory = topCategory.sort((a, b) => {
+    let topCategory: TopCategory[] = Object.entries(categoryTotals).map(([title, total]: [string, number]) => ({ title, total }));
+
+    topCategory.sort((a, b) => {
       if (a.title === 'Others') return 1;
       if (b.title === 'Others') return -1;
       return b.total - a.total;
     });
 
-    const top3 = sortedTopCategory.slice(0, 3);
-    const othersTotal = sortedTopCategory.slice(3).reduce((acc, category) => acc + category.total, 0);
+    const top3 = topCategory.slice(0, 3);
+    const othersTotal = topCategory.slice(3).reduce((acc, category) => acc + category.total, 0);
     top3.push({ title: 'Others', total: othersTotal });
 
     return top3;

@@ -40,7 +40,7 @@ const Checkout = () => {
   useEffect(() => {
     if (
       selectedCartProducts &&
-      selectedCartProducts.weightTotal >= WEIGHT_LIMIT
+      selectedCartProducts.weightTotal > WEIGHT_LIMIT
     ) {
       return navigate("/cart");
     }

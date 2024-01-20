@@ -74,10 +74,10 @@ export class ProductController {
   public getHigestSellProducts = async (req: WithAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const limit = Number(req.query.limit);
-      const products: OrderDetails[] = await this.product.getHighestSoldProducts(limit);
+      const products: Product[] = await this.product.getHighestSoldProducts(limit);
       res.status(200).json({
         data: products,
-        message: 'get.highest',
+        message: 'get.highestProducts',
       });
     } catch (err) {
       next(err);

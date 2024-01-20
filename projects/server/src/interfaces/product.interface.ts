@@ -1,4 +1,4 @@
-import { Inventory, Status } from '.';
+import { Category, Inventory, Status } from '.';
 
 export interface Product {
   id?: number;
@@ -16,4 +16,5 @@ export interface Product {
   updateAt?: Date;
   averageRating?: number;
   inventory?: Inventory[];
+  productCategory?: Category;
 }
