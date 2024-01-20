@@ -56,7 +56,7 @@ export class ProductService {
     return readNewestProducts(externalId);
   }
 
-  public async getHighestSoldProducts(limit: number): Promise<OrderDetails[]> {
+  public async getHighestSoldProducts(limit: number): Promise<Product[]> {
     return readHighestSoldProducts(limit);
   }
 

@@ -193,7 +193,7 @@ export const useNewestProducts = () => {
 
 export const useHighestSellProducts = (limit = 3) => {
   const { getToken } = useAuth();
-  const products = useQuery<OrderDetails[]>({
+  const products = useQuery<Product[]>({
     queryKey: ["highest-sell", limit],
     queryFn: async () => {
       const res = await service.get(`/products/highest-sell`, {

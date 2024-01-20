@@ -35,12 +35,6 @@ const DashboardSidebar = () => {
               variant: "ghost",
             },
             {
-              title: "Warehouses",
-              icon: Warehouse,
-              link: "/dashboard/warehouse",
-              variant: "ghost",
-            },
-            {
               title: "Mutations",
               icon: FileText,
               link: "/dashboard/manage-mutation",
@@ -53,6 +47,12 @@ const DashboardSidebar = () => {
             <Separator />
             <Nav
               links={[
+                {
+                  title: "Warehouses",
+                  icon: Warehouse,
+                  link: "/dashboard/warehouse",
+                  variant: "ghost",
+                },
                 {
                   title: "Users",
                   icon: Users,

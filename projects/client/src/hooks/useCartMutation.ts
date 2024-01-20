@@ -19,6 +19,7 @@ export const useAddCart = () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["cart-product"] });
       queryClient.invalidateQueries({ queryKey: ["product"] });
+      queryClient.invalidateQueries({ queryKey: ["selected-cart"] });
     },
   });
   return cartMutation;

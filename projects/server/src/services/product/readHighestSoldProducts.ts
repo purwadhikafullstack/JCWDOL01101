@@ -1,39 +1,40 @@
-import { Op } from 'sequelize';
 import { DB } from '@/database';
-import { OrderDetails } from '@/interfaces';
-import { OrderModel, ProductModel } from '@/models';
+import { Product } from '@/interfaces';
+import { ImageModel, InventoryModel } from '@/models';
 
-export async function readHighestSoldProducts(limit: number): Promise<OrderDetails[]> {
+export async function readHighestSoldProducts(limit: number): Promise<Product[]> {
   limit = limit || 3;
-  const date = new Date();
-  const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-  const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
-  const highestSoldProduct: OrderDetails[] = await DB.OrderDetails.findAll({
+  const products: Product[] = await DB.Product.findAll({
     limit,
-    attributes: ['productId', [DB.sequelize.fn('SUM', DB.sequelize.col('quantity')), 'totalQuantity']],
     where: {
-      createdAt: {
-        [Op.between]: [firstDayOfMonth, lastDayOfMonth],
-      },
+      status: 'ACTIVE',
     },
     include: [
       {
-        model: ProductModel,
-        as: 'product',
+        model: ImageModel,
+        as: 'productImage',
+        required: true,
       },
       {
-        model: OrderModel,
-        as: 'order',
+        model: InventoryModel,
+        as: 'inventory',
+        attributes: ['stock', 'sold'],
         where: {
-          status: 'DELIVERED',
+          status: 'ACTIVE',
         },
-        attributes: [],
       },
     ],
-    group: ['productId', 'product.id'],
-    order: [[DB.sequelize.literal('totalQuantity'), 'DESC']],
+    order: [
+      [
+        DB.sequelize.literal(`(
+      SELECT SUM(inventory.sold) FROM inventories AS inventory
+      WHERE inventory.product_id = ProductModel.id AND inventory.status = 'ACTIVE'
+    )`),
+        'DESC',
+      ],
+    ],
   });
 
-  return highestSoldProduct;
+  return products;
 }
