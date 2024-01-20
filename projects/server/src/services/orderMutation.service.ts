@@ -82,7 +82,9 @@ export class OrderMutationService {
     const findOrder: Order = await DB.Order.findOne({
       where: {
         userId: findUser.id,
-        status: 'DELIVERED',
+        status: {
+          [DB.Sequelize.Op.or]: ['DELIVERED', 'SUCCESS'],
+        },
       },
       include: [
         {
