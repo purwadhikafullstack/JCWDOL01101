@@ -1,6 +1,6 @@
 import { DB } from '@/database';
 import { Service } from 'typedi';
-import { User, Order, Category, Product, TopCategory, Inventory } from '@/interfaces';
+import { User, Order, Product, TopCategory, Inventory } from '@/interfaces';
 import { HttpException } from '@/exceptions/HttpException';
 import { FindOptions, Op, WhereOptions } from 'sequelize';
 import { OrderDetailsModel } from '@/models/orderDetails.model';
