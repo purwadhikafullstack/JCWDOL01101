@@ -21,10 +21,13 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
     const navigate = useNavigate();
     const wishlistMutation = useToggleWishlist();
     const sizes = product.inventory.map((inv) => inv.sizes).flat() as Size[];
-    const averateRating = product.productReviews.reduce(
-      (acc, review) => acc + review.rating,
-      0
-    );
+    const averateRating =
+      product.productReviews.length > 0
+        ? product.productReviews.reduce(
+            (acc, review) => acc + review.rating,
+            0
+          ) / product.productReviews.length
+        : 0;
 
     const { low, high } = sizes.reduce(
       (acc, size) => {
@@ -100,10 +103,7 @@ const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
                 </p>
               </span>
               {product.productReviews.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <ReviewStar rating={averateRating} />
-                  <span>({averateRating || 0})</span>
-                </div>
+                <ReviewStar rating={averateRating} />
               )}
             </div>
           </div>
