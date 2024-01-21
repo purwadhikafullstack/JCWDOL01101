@@ -398,6 +398,17 @@ export class OrderService {
           as: 'userOrder',
           attributes: ['firstname', 'lastname'],
         },
+        {
+          model: OrderDetailsModel,
+          as: 'orderDetails',
+          include: [
+            {
+              model: ProductModel,
+              as: 'product',
+              attributes: ['name','primaryImage'],
+            },
+          ],
+        },
       ],
     };
 
@@ -408,6 +419,7 @@ export class OrderService {
           { '$warehouseOrder.name$': { [Op.like]: `%${s}%` } },
           { '$userOrder.firstname$': { [Op.like]: `%${s}%` } },
           { '$userOrder.lastname$': { [Op.like]: `%${s}%` } },
+          // { '$orderDetails.product.name$': { [Op.like]: `%${s}%` } },
         ],
       };
     }
@@ -445,11 +457,34 @@ export class OrderService {
           as: 'userOrder',
           attributes: ['firstname', 'lastname'],
         },
+        {
+          model: OrderDetailsModel,
+          as: 'orderDetails',
+          include: [
+            {
+              model: ProductModel,
+              as: 'product',
+              attributes: ['name','primaryImage'],
+            },
+          ],
+        },
       ],
     };
-    const allOrderCcount = await DB.Order.findAll(optionsCount);
 
-    allOrderCcount.forEach(order => {
+    if (s) {
+      optionsCount.where = {
+        [Op.or]: [
+          { invoice: { [Op.like]: `%${s}%` } },
+          { '$warehouseOrder.name$': { [Op.like]: `%${s}%` } },
+          { '$userOrder.firstname$': { [Op.like]: `%${s}%` } },
+          { '$userOrder.lastname$': { [Op.like]: `%${s}%` } },
+          // { '$orderDetails.product.name$': { [Op.like]: `%${s}%` } },
+        ],
+      };
+    }
+    const allOrderCount = await DB.Order.findAll(optionsCount);
+
+    allOrderCount.forEach(order => {
       if (order.status === 'SUCCESS') totalSuccess += order.totalPrice;
       else if (order.status === 'PENDING') totalPending += order.totalPrice;
       else if (order.status === 'CANCELED') totalCanceled += order.totalPrice;

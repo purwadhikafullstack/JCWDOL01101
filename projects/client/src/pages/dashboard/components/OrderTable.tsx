@@ -11,11 +11,19 @@ import { getDate, formatToIDR } from "@/lib/utils";
 import ChangeOrderButton from "./ChangeOrderButton";
 import { Order } from "@/hooks/useOrder";
 import OrderAction from "./order/OrderAction";
+import OrderProduct from "@/pages/homepage/components/order/OrderProduct";
+import { baseURL } from "@/service";
 
 function OrderTable({
   data,
 }: {
-  data: { orders: Order[]; totalPages: number; totalSuccess:number; totalPending:number; totalFailed:number;  totalOngoing:number  
+  data: {
+    orders: Order[];
+    totalPages: number;
+    totalSuccess: number;
+    totalPending: number;
+    totalFailed: number;
+    totalOngoing: number;
   };
 }) {
   return (
@@ -63,6 +71,7 @@ function OrderTable({
               <ChangeOrderButton paramKey="createdAt" name="Order Date" />
             </TableHead>
             <TableHead className="text-center">Action</TableHead>
+            <TableHead className="text-center">Order Details</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -92,6 +101,23 @@ function OrderTable({
                   </TableCell>
                   <TableCell className="text-center">
                     <OrderAction order={order} />
+                  </TableCell>
+                  <TableCell>
+                    {order.orderDetails.map((orderDetail) => (
+                      <div className="flex gap-2">
+                        <img
+                          src={`${baseURL}/images/${orderDetail.product.primaryImage}`}
+                          className="w-20 h-20 object-cover object-top"
+                        />
+
+                        <div>
+                          <p>{orderDetail.product.name}</p>
+                          <p>
+                            {orderDetail.quantity}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </TableCell>
                 </TableRow>
               ))}
