@@ -99,6 +99,7 @@ export class MutationService {
         ...(s && { name: { [Op.like]: `%${s}%` } }),
         ...(manage === 'RECEIVE' && { status: { [Op.not]: 'CANCELED' } }),
       },
+      order: [['createdAt', 'DESC']],
       ...(order && {
         order: filter === 'product' ? [[{ model: ProductModel, as: 'productMutation' }, 'name', order]] : [[filter, order]],
       }),
