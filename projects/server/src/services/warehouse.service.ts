@@ -2,7 +2,7 @@ import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
 import { Warehouse } from '@/interfaces/warehouse.interface';
 import { Location, findClosestWarehouse } from '@/utils/closestWarehouse';
-import { Service } from 'typedi';
+import { Service } from 'typedi'
 
 @Service()
 export class WarehouseService {
