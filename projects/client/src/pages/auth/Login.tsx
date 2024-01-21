@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -88,128 +89,130 @@ const Login = () => {
     }
   };
   return (
-    <main className="flex justify-center items-center py-20">
-      <div className="relative w-[350px] lg:w-[540px] mx-auto">
-        <div className="z-10 border rounded-lg p-4 px-8 bg-background shadow-sm">
-          <img
-            className="w-full mx-auto"
-            src="/ilus/campaign.svg"
-            alt="sign-in ilustration"
-          />
-          <Button
-            onClick={() => signInWithGoogle()}
-            className="w-full"
-            variant="outline"
-          >
-            Login with Google
-          </Button>
-          <div className="relative my-4">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
-          </div>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4 mt-6"
+    <ThemeProvider>
+      <main className="flex justify-center items-center py-20">
+        <div className="relative w-[350px] lg:w-[540px] mx-auto">
+          <div className="z-10 border rounded-lg p-4 px-8 bg-background shadow-sm">
+            <img
+              className="w-full mx-auto"
+              src="/ilus/campaign.svg"
+              alt="sign-in ilustration"
+            />
+            <Button
+              onClick={() => signInWithGoogle()}
+              className="w-full"
+              variant="outline"
             >
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="email">Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="name@example.com"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="password">Password</FormLabel>
-                    <FormControl>
-                      <div className="flex relative">
+              Login with Google
+            </Button>
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4 mt-6"
+              >
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="email">Email</FormLabel>
+                      <FormControl>
                         <Input
-                          type={passwordVisible.pwd ? "string" : "password"}
-                          id="password"
+                          type="email"
+                          placeholder="name@example.com"
                           {...field}
                         />
-                        {passwordVisible.pwd ? (
-                          <EyeIcon
-                            onClick={() =>
-                              setPasswordVisible({
-                                ...passwordVisible,
-                                pwd: false,
-                              })
-                            }
-                            className="absolute hover:text-primary right-3 top-1/2 h-5 w-5 cursor-pointer -translate-y-1/2 text-muted-foreground peer-focus:text-primary"
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="password">Password</FormLabel>
+                      <FormControl>
+                        <div className="flex relative">
+                          <Input
+                            type={passwordVisible.pwd ? "string" : "password"}
+                            id="password"
+                            {...field}
                           />
-                        ) : (
-                          <EyeClosedIcon
-                            onClick={() =>
-                              setPasswordVisible({
-                                ...passwordVisible,
-                                pwd: true,
-                              })
-                            }
-                            className="absolute hover:text-primary right-3 top-1/2 h-5 w-5 cursor-pointer -translate-y-1/2 text-muted-foreground peer-focus:text-primary"
-                          />
-                        )}
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                    <FormDescription>{error}</FormDescription>
-                  </FormItem>
-                )}
-              />
-              <span className="flex w-full justify-end items-end mt-2">
-                <Link
-                  to="/forgot"
-                  className="ml-2  text-primary hover:underline"
-                >
-                  {" "}
-                  Forgot Password?{" "}
-                </Link>
-              </span>
+                          {passwordVisible.pwd ? (
+                            <EyeIcon
+                              onClick={() =>
+                                setPasswordVisible({
+                                  ...passwordVisible,
+                                  pwd: false,
+                                })
+                              }
+                              className="absolute hover:text-primary right-3 top-1/2 h-5 w-5 cursor-pointer -translate-y-1/2 text-muted-foreground peer-focus:text-primary"
+                            />
+                          ) : (
+                            <EyeClosedIcon
+                              onClick={() =>
+                                setPasswordVisible({
+                                  ...passwordVisible,
+                                  pwd: true,
+                                })
+                              }
+                              className="absolute hover:text-primary right-3 top-1/2 h-5 w-5 cursor-pointer -translate-y-1/2 text-muted-foreground peer-focus:text-primary"
+                            />
+                          )}
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                      <FormDescription>{error}</FormDescription>
+                    </FormItem>
+                  )}
+                />
+                <span className="flex w-full justify-end items-end mt-2">
+                  <Link
+                    to="/forgot"
+                    className="ml-2  text-primary hover:underline"
+                  >
+                    {" "}
+                    Forgot Password?{" "}
+                  </Link>
+                </span>
 
-              <Button className="w-full" type="submit">
-                Login
-              </Button>
-              <span className="flex w-full justify-center items-center mt-2">
-                Don't have an account ?{" "}
-                <Link
-                  to="/register"
-                  className="ml-2  text-primary hover:underline"
-                >
-                  Register
-                </Link>{" "}
-              </span>
-            </form>
-          </Form>
+                <Button className="w-full" type="submit">
+                  Login
+                </Button>
+                <span className="flex w-full justify-center items-center mt-2">
+                  Don't have an account ?{" "}
+                  <Link
+                    to="/register"
+                    className="ml-2  text-primary hover:underline"
+                  >
+                    Register
+                  </Link>{" "}
+                </span>
+              </form>
+            </Form>
+          </div>
+          <div className=" w-[380px] lg:w-[900px] absolute transform top-0 left-1/2  -translate-x-1/2  -z-10">
+            <img
+              className="w-full h-full"
+              src="/ilus/laptop.svg"
+              alt="laptop ilus"
+            />
+          </div>
         </div>
-        <div className=" w-[380px] lg:w-[900px] absolute transform top-0 left-1/2  -translate-x-1/2  -z-10">
-          <img
-            className="w-full h-full"
-            src="/ilus/laptop.svg"
-            alt="laptop ilus"
-          />
-        </div>
-      </div>
-    </main>
+      </main>
+    </ThemeProvider>
   );
 };
 
