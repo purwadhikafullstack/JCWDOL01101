@@ -183,7 +183,7 @@ const Report = () => {
             )}
           </div>
         </div>
-        <div className="border rounded-md mt-2">
+        <div className="mt-2">
           {isLoading ? (
             <ProductsPageSkeleton />
           ) : (

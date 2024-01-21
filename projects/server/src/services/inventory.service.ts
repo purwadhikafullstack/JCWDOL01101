@@ -151,11 +151,11 @@ export class InventoryService {
     for (const orderDetail of orderDetails) {
       const currentInventory = await DB.Inventories.findOne({
         where: { productId: orderDetail.productId, sizeId: orderDetail.sizeId, warehouseId: currentWarehouse.id },
+        transaction,
       });
       const oldQty = currentInventory.stock;
       currentInventory.stock -= orderDetail.quantity;
       currentInventory.sold += orderDetail.quantity;
-      if (currentInventory.stock < 0) throw new HttpException(409, `Not enough stock for product ${orderDetail.productId}`);
       await Promise.all([
         currentInventory.save({ transaction }),
         DB.Jurnal.create(
@@ -177,6 +177,7 @@ export class InventoryService {
     for (const orderDetail of orderDetails) {
       const currentInventory = await DB.Inventories.findOne({
         where: { productId: orderDetail.productId, sizeId: orderDetail.sizeId, warehouseId: currentWarehouse.id },
+        transaction,
       });
       if (!currentInventory) throw new HttpException(409, `Product ${orderDetail.productId} not found`);
       const oldQty = currentInventory.stock;
