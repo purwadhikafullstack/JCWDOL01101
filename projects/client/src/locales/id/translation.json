@@ -157,7 +157,7 @@
     "main": "Utama",
     "shipping": "Alamat Pengiriman",
     "addressBtn": "Pilih Alamat Lain",
-    "emptyAddressBtn": "Buat Alamat Baru",
+    "emptyAddressBtn": "Pilih atau Buat Alamat Baru",
     "addressError": {
       "header": "Ups, Anda tidak memiliki alamat?",
       "sub": "Jangan khawatir, Anda bisa membuatnya!"
@@ -191,7 +191,7 @@
       "shippingAddress": "Alamat Pengiriman",
       "total": "Total",
       "payBtn": "Bayar",
-      "loading": "menyiapkan tautan pembayaran...",
+      "loading": "menyiapkan pembayaran...",
       "outOfStockError": "Mohon maaf, barang ini sedang habis. Kami sedang berusaha untuk menambah stoknya segera.",
       "outOfStockLink": "Pilih produk lain",
       "exitModal": {
@@ -228,7 +228,13 @@
         "notes": "Catatan untuk kurir (opsional)",
         "notesDesc": "Warna rumah, standar, pesan khusus, dll.",
         "makeMain": "Jadikan alamat utama",
-        "tos": "Saya setuju dengan <1>Syarat & Ketentuan</1> dan <1>Kebijakan Privasi</1> pengaturan alamat di Toten.",
+        "tos": {
+          "tos1": "Saya menyetujui",
+          "tos2": "Syarat & Ketentuan",
+          "tos3": "dan",
+          "tos4": "Kebijakan Privasi",
+          "tos5": "pengaturan alamat di Toten."
+        },
         "submitBtn": "Kirim"
       },
       "modify": {

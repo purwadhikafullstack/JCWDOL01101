@@ -43,26 +43,34 @@ async function getAllWarehouse(): Promise<Warehouse[]> {
   return warehouses;
 }
 
-export async function verifyStock(orderDetails: OrderDetails[], currentWarehouse: Warehouse, transaction: Transaction) {
-  for (const orderDetail of orderDetails) {
-    const currentInventory = await DB.Inventories.findOne({
-      where: { productId: orderDetail.productId, sizeId: orderDetail.sizeId, warehouseId: currentWarehouse.id },
-    });
-    if (orderDetail.quantity > currentInventory.stock) {
-      const QtyLeft = orderDetail.quantity - currentInventory.stock;
-      await findWarehousesAndDistributeStock(QtyLeft, orderDetail, currentWarehouse, transaction);
+export async function verifyStock(orderDetails: OrderDetails[], currentWarehouse: Warehouse) {
+  const transaction = await DB.sequelize.transaction();
+  try {
+    for (const orderDetail of orderDetails) {
+      const currentInventory = await DB.Inventories.findOne({
+        where: { productId: orderDetail.productId, sizeId: orderDetail.sizeId, warehouseId: currentWarehouse.id },
+        transaction,
+      });
+      if (orderDetail.quantity > currentInventory.stock) {
+        await findWarehousesAndDistributeStock(orderDetail.quantity - currentInventory.stock, orderDetail, currentWarehouse, transaction);
+      }
     }
+    const updatedCurrentWarehouse: Warehouse = await DB.Warehouses.findOne({
+      where: { id: currentWarehouse.id },
+      transaction,
+      include: [
+        {
+          model: InventoryModel,
+          as: 'inventories',
+        },
+      ],
+    });
+    await transaction.commit();
+    return updatedCurrentWarehouse;
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
   }
-  const updatedCurrentWarehouse: Warehouse = await DB.Warehouses.findOne({
-    where: { id: currentWarehouse.id },
-    include: [
-      {
-        model: InventoryModel,
-        as: 'inventories',
-      },
-    ],
-  });
-  return updatedCurrentWarehouse;
 }
 
 export async function findClosestWarehouse(targetLocation: Location): Promise<Warehouse | null> {
@@ -97,11 +105,13 @@ async function findWarehousesAndDistributeStock(QtyLeft: number, orderDetail: Or
   const closestWarehouses = await getClosestWarehouses(currentWarehouse);
   const currentInventory = await DB.Inventories.findOne({
     where: { productId: orderDetail.productId, sizeId: orderDetail.sizeId, warehouseId: currentWarehouse.id },
+    transaction,
   });
   for (const warehouse of closestWarehouses) {
     if (warehouse.id === currentWarehouse.id) continue;
     const inventory = await DB.Inventories.findOne({
       where: { productId: orderDetail.productId, sizeId: orderDetail.sizeId, warehouseId: warehouse.id },
+      transaction,
     });
     if (!inventory || inventory.stock === 0) continue;
     const transferQuantity = Math.min(inventory.stock, remainingQuantity);

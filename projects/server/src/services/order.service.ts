@@ -418,10 +418,7 @@ export class OrderService {
 
     let totalSuccess = 0;
     let totalPending = 0;
-    let totalCanceled = 0;
-    let totalRejected = 0;
     let totalOngoing = 0;
-    let totalFailed = 0;
 
     const optionsCount: FindOptions<Order> = {
       where: {
@@ -452,13 +449,15 @@ export class OrderService {
     allOrderCcount.forEach(order => {
       if (order.status === 'SUCCESS') totalSuccess += order.totalPrice;
       else if (order.status === 'PENDING') totalPending += order.totalPrice;
-      else if (order.status === 'CANCELED') totalCanceled += order.totalPrice;
-      else if (order.status === 'REJECTED') totalRejected += order.totalPrice;
       else if (order.status === 'DELIVERED' || order.status === 'SHIPPED' || order.status === 'WAITING' || order.status === 'PROCESS')
         totalOngoing += order.totalPrice;
     });
-    totalFailed = totalCanceled + totalRejected;
+    const totalFailed: Order[] = await DB.Order.findAll({
+      where: {
+        status: ['CANCELED', 'REJECTED', 'FAILED'],
+      },
+    });
 
-    return { totalPages: totalPages, orders: allOrder, totalSuccess, totalPending, totalFailed, totalOngoing };
+    return { totalPages: totalPages, orders: allOrder, totalSuccess, totalPending, totalFailed: totalFailed.length, totalOngoing };
   }
 }

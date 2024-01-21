@@ -1,5 +1,5 @@
-import { useGetOverviewRevenue } from "@/hooks/useOrder";
-import React from "react";
+import { useGetOverviewRevenue } from "@/hooks/useOrder"
+import React from "react"
 import {
   XAxis,
   YAxis,
@@ -8,13 +8,13 @@ import {
   ResponsiveContainer,
   AreaChart,
   Area,
-} from "recharts";
-import { format } from "date-fns";
-import { convertToJt } from "@/lib/utils";
-import TopCategory from "./TopCategory";
+} from "recharts"
+import { format } from "date-fns"
+import { convertToJt, convertToK } from "@/lib/utils"
+import TopCategory from "./TopCategory"
 
 const CustomizedAxisTick = (props: any) => {
-  const { x, y, payload } = props;
+  const { x, y, payload } = props
   return (
     <g transform={`translate(${x},${y})`}>
       <text
@@ -28,19 +28,21 @@ const CustomizedAxisTick = (props: any) => {
         {format(new Date(2024, payload.value - 1), "MMM")}
       </text>
     </g>
-  );
-};
+  )
+}
 
 const CustomizedYAxisTick = (props: any) => {
-  const { x, y, payload } = props;
+  const { x, y, payload } = props
   return (
     <g transform={`translate(${x},${y})`}>
       <text x={0} y={0} dy={16} textAnchor="end" fill="#666">
-        {convertToJt(payload.value)}
+        {Number(payload.value) > 1_000_000
+          ? convertToJt(payload.value)
+          : convertToK(payload.value)}
       </text>
     </g>
-  );
-};
+  )
+}
 
 const CustomTooltip: React.FC<any> = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -49,15 +51,19 @@ const CustomTooltip: React.FC<any> = ({ active, payload, label }) => {
         <p className="text-muted-foreground">
           {format(new Date(2024, label - 1), "MMM")}
         </p>
-        <p className="text-primary">{convertToJt(payload[0].value)}</p>
+        <p className="text-primary">
+          {Number(payload[0].value) > 1_000_000
+            ? convertToJt(payload[0].value)
+            : convertToK(payload[0].value)}
+        </p>
       </div>
-    );
+    )
   }
 
-  return null;
-};
+  return null
+}
 const Revenue = () => {
-  const { data: revenue } = useGetOverviewRevenue();
+  const { data: revenue } = useGetOverviewRevenue()
   return (
     <div className="grid grid-cols-4 gap-4">
       <div className="col-span-3 border rounded-lg shadow-sm p-4">
@@ -100,7 +106,7 @@ const Revenue = () => {
       </div>
       <TopCategory />
     </div>
-  );
-};
+  )
+}
 
-export default Revenue;
+export default Revenue

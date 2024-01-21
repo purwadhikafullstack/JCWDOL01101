@@ -1,23 +1,23 @@
-import * as React from "react";
+import * as React from "react"
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2 } from "lucide-react";
-import LabelField from "@/components/input/LabelField";
-import CityField from "@/components/input/CityField";
-import RecepientField from "@/components/input/RecepientField";
-import AddressField from "@/components/input/AddressField";
-import NotesField from "@/components/input/NotesField";
-import MainCheckboxField from "@/components/input/MainCheckboxField";
-import PhoneField from "@/components/input/PhoneField";
-import { Trans, useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Loader2 } from "lucide-react"
+import LabelField from "@/components/input/LabelField"
+import CityField from "@/components/input/CityField"
+import RecepientField from "@/components/input/RecepientField"
+import AddressField from "@/components/input/AddressField"
+import NotesField from "@/components/input/NotesField"
+import MainCheckboxField from "@/components/input/MainCheckboxField"
+import PhoneField from "@/components/input/PhoneField"
+import { Trans, useTranslation } from "react-i18next"
 
 type AddAddressForm = {
-  isPending: boolean;
-};
+  isPending: boolean
+}
 const AddAddressForm = ({ isPending }: AddAddressForm) => {
-  const { t } = useTranslation();
-  const [tos, setTos] = React.useState(false);
+  const { t } = useTranslation()
+  const [tos, setTos] = React.useState(false)
 
   return (
     <>
@@ -30,12 +30,14 @@ const AddAddressForm = ({ isPending }: AddAddressForm) => {
       <MainCheckboxField />
       <div className="flex items-center gap-2 text-xs">
         <Checkbox checked={tos} onCheckedChange={(state) => setTos(!!state)} />
-
         <label>
-          <Trans i18nKey="checkoutPage.addressModal.add.tos">
-            I agree to the <b>Terms & Conditions</b> and <b>Privacy Policy</b>{" "}
-            address settings in Toten.
-          </Trans>
+          <div className="flex flex-wrap gap-1">
+            {t("checkoutPage.addressModal.add.tos.tos1")}
+            <b>{t("checkoutPage.addressModal.add.tos.tos2")}</b>
+            {t("checkoutPage.addressModal.add.tos.tos3")}
+            <b>{t("checkoutPage.addressModal.add.tos.tos4")}</b>
+            {t("checkoutPage.addressModal.add.tos.tos5")}
+          </div>
         </label>
       </div>
       <div className="flex w-full justify-center">
@@ -49,7 +51,7 @@ const AddAddressForm = ({ isPending }: AddAddressForm) => {
         </Button>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default AddAddressForm;
+export default AddAddressForm
