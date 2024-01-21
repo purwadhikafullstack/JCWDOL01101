@@ -398,17 +398,6 @@ export class OrderService {
           as: 'userOrder',
           attributes: ['firstname', 'lastname'],
         },
-        {
-          model: OrderDetailsModel,
-          as: 'orderDetails',
-          include: [
-            {
-              model: ProductModel,
-              as: 'product',
-              attributes: ['name','primaryImage'],
-            },
-          ],
-        },
       ],
     };
 
