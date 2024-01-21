@@ -89,10 +89,26 @@ export async function readHomepageProducts({ page, f, category, size, pmin, pmax
       options.order = [['price', 'DESC']];
       break;
     case 'hs':
-      options.order = [[{ model: InventoryModel, as: 'inventory' }, 'sold', 'DESC']];
+      options.order = [
+        [
+          DB.sequelize.literal(`(
+      SELECT SUM(inventory.sold) FROM inventories AS inventory
+      WHERE inventory.product_id = ProductModel.id AND inventory.status = 'ACTIVE'
+    )`),
+          'DESC',
+        ],
+      ];
       break;
     case 'rating':
-      options.order = [[{ model: ReviewModel, as: 'productReviews' }, 'rating', 'DESC']];
+      options.order = [
+        [
+          DB.sequelize.literal(`(
+      SELECT AVG(productReviews.rating) FROM reviews AS productReviews
+      WHERE productReviews.product_id = ProductModel.id AND productReviews.status = 'ACTIVE'
+    )`),
+          'DESC',
+        ],
+      ];
       break;
     default:
       options.order = [['createdAt', 'DESC']];

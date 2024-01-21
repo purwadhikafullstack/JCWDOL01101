@@ -87,7 +87,7 @@ const ProductsPage = () => {
                 onClick={() => fetchNextPage()}
                 disabled={!hasNextPage || isFetchingNextPage}
                 variant="outline"
-                className="border-black rounded-none w-max mx-auto md:px-20"
+                className="border-black dark:border-border rounded-none w-max mx-auto md:px-20"
               >
                 {isFetchingNextPage
                   ? "Loading more..."
