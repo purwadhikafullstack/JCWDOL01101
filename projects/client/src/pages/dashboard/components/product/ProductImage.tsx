@@ -29,7 +29,7 @@ const ProductImage = ({ index }: { index: number }) => {
                 /^image\/(jpeg|png)$/,
                 "Only accepting .jpg, .jpeg, and png"
               ),
-            size: z.number().max(5 * 1024 * 1024, "File too big"),
+            size: z.number().max(1 * 1024 * 1024, "File too big"),
           });
 
           const fileData = { name, type, size };
