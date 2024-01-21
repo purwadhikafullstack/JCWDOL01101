@@ -50,7 +50,7 @@ function OrderTable({
           <TableRow>
             <TableHead className="w-[80px]">#</TableHead>
             <TableHead className="text-center">
-                <ChangeOrderButton paramKey="invoice" name="Invoice" />
+              <ChangeOrderButton paramKey="invoice" name="Invoice" />
             </TableHead>
             <TableHead className="text-center">
               <ChangeOrderButton paramKey="warehouseId" name="Warehouse" />
@@ -99,9 +99,7 @@ function OrderTable({
                   <TableCell className="text-center">
                     {getDate(order.createdAt!.toLocaleString())}
                   </TableCell>
-                  <TableCell className="text-center">
-                    <OrderAction order={order} />
-                  </TableCell>
+                  <OrderAction order={order} />
                 </TableRow>
               ))}
             </>
