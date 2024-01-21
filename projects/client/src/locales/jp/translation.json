@@ -103,7 +103,7 @@
     }
   },
   "wishlistPage": {
-    "successRemoveModal": "成功！ 1 つの商品がウィッシュリストから削除されました",
+    "successRemoveModal": "ウィッシュリストが削除されました",
     "product": "製品",
     "emptyStock": "近日中に再入荷します。",
     "addBtn": "カートに追加",

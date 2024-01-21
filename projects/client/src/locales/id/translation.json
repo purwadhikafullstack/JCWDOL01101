@@ -103,7 +103,7 @@
     }
   },
   "wishlistPage": {
-    "successRemoveModal": "Success! satu item telah dihapus dari daftar wishlist Anda",
+    "successRemoveModal": "Wishlist telah dihapus",
     "product": "Produk",
     "emptyStock": "Kami akan mengisi ulang stok segera.",
     "addBtn": "TAMBAH KE KERANJANG",

@@ -21,7 +21,7 @@ const RemoveItemsDialog = ({ cartId }: { cartId: number }) => {
     if (deleteAllCart.isSuccess) {
       toast(
         () => (
-          <span className="bg-black text-background">
+          <span className="bg-black text-background dark:text-foreground">
             your items has been removed
           </span>
         ),
@@ -59,6 +59,7 @@ const RemoveItemsDialog = ({ cartId }: { cartId: number }) => {
                 deleteAllCart.mutate();
                 deleteAllCart.mutate();
               }}
+              className="ml-2"
             >
               {deleteAllCart.isPending ? (
                 <Loader className="animate-spin h-4 w-4" />

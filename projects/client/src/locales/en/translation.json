@@ -103,7 +103,7 @@
     }
   },
   "wishlistPage": {
-    "successRemoveModal": "Success! One item has been removed from your wishlist",
+    "successRemoveModal": "Wishlist has been removed",
     "product": "Product",
     "emptyStock": "We'll be restocking soon.",
     "addBtn": "ADD TO CART",
