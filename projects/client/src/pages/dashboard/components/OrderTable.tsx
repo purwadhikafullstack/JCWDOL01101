@@ -71,7 +71,6 @@ function OrderTable({
               <ChangeOrderButton paramKey="createdAt" name="Order Date" />
             </TableHead>
             <TableHead className="text-center">Action</TableHead>
-            <TableHead className="text-center">Order Details</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
