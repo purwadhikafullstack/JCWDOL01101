@@ -50,7 +50,7 @@ function OrderTable({
           <TableRow>
             <TableHead className="w-[80px]">#</TableHead>
             <TableHead className="text-center">
-              <ChangeOrderButton paramKey="invoice" name="Invoice" />
+                <ChangeOrderButton paramKey="invoice" name="Invoice" />
             </TableHead>
             <TableHead className="text-center">
               <ChangeOrderButton paramKey="warehouseId" name="Warehouse" />
@@ -101,23 +101,6 @@ function OrderTable({
                   </TableCell>
                   <TableCell className="text-center">
                     <OrderAction order={order} />
-                  </TableCell>
-                  <TableCell>
-                    {order.orderDetails.map((orderDetail) => (
-                      <div className="flex gap-2">
-                        <img
-                          src={`${baseURL}/images/${orderDetail.product.primaryImage}`}
-                          className="w-20 h-20 object-cover object-top"
-                        />
-
-                        <div>
-                          <p>{orderDetail.product.name}</p>
-                          <p>
-                            {orderDetail.quantity}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
                   </TableCell>
                 </TableRow>
               ))}

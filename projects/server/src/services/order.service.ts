@@ -419,7 +419,6 @@ export class OrderService {
           { '$warehouseOrder.name$': { [Op.like]: `%${s}%` } },
           { '$userOrder.firstname$': { [Op.like]: `%${s}%` } },
           { '$userOrder.lastname$': { [Op.like]: `%${s}%` } },
-          // { '$orderDetails.product.name$': { [Op.like]: `%${s}%` } },
         ],
       };
     }
@@ -457,17 +456,6 @@ export class OrderService {
           as: 'userOrder',
           attributes: ['firstname', 'lastname'],
         },
-        {
-          model: OrderDetailsModel,
-          as: 'orderDetails',
-          include: [
-            {
-              model: ProductModel,
-              as: 'product',
-              attributes: ['name','primaryImage'],
-            },
-          ],
-        },
       ],
     };
 
@@ -478,7 +466,6 @@ export class OrderService {
           { '$warehouseOrder.name$': { [Op.like]: `%${s}%` } },
           { '$userOrder.firstname$': { [Op.like]: `%${s}%` } },
           { '$userOrder.lastname$': { [Op.like]: `%${s}%` } },
-          // { '$orderDetails.product.name$': { [Op.like]: `%${s}%` } },
         ],
       };
     }
