@@ -13,7 +13,7 @@ export interface Order {
   createdAt: Date;
   deletedAt: Date;
   warehouseOrder: { name: string };
-  userOrder: { firstname: string; lastname: string };
+  userOrder: { email: string; };
   orderDetails: OrderDetails[];
   paymentDetails: Payment;
 }

@@ -4,10 +4,10 @@ import ProductModel from './product.model';
 import UserModel from './user.model';
 
 export class WishlistModel extends Model<Wishlist> implements Wishlist {
-  public id?: number;
-  public userId: number;
-  public productId: number;
-  public deletedAt: Date | null;
+  declare id?: number;
+  declare userId: number;
+  declare productId: number;
+  declare deletedAt: Date | null;
 }
 
 export default function (sequelize: Sequelize): typeof WishlistModel {

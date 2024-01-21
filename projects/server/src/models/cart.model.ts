@@ -3,12 +3,12 @@ import { Cart } from '@/interfaces/cart.interface';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class CartModel extends Model<Cart> implements Cart {
-  public id?: number;
-  public userId: number;
-  public status: Status;
+  declare id?: number;
+  declare userId: number;
+  declare status: Status;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
 
 export default function (sequelize: Sequelize): typeof CartModel {

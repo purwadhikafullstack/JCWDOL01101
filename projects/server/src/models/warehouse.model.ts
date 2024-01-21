@@ -2,14 +2,14 @@ import { Sequelize, DataTypes, Model } from 'sequelize';
 import { Warehouse } from '@/interfaces/warehouse.interface';
 
 export class WarehouseModel extends Model<Warehouse> implements Warehouse {
-  public id: number;
-  public name: string;
-  public capacity: number;
-  public warehouseAddressId?: number;
-  public userId?: number;
+  declare id: number;
+  declare name: string;
+  declare capacity: number;
+  declare warehouseAddressId?: number;
+  declare userId?: number;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
 
 export default function (sequelize: Sequelize): typeof WarehouseModel {

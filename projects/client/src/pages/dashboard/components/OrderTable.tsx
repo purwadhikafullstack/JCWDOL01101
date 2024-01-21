@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   Table,
   TableBody,
@@ -87,7 +87,7 @@ function OrderTable({
                     {order.warehouseOrder.name}
                   </TableCell>
                   <TableCell className="text-center">
-                    {order.userOrder.firstname} {order.userOrder.lastname}
+                    {order.userOrder.email}
                   </TableCell>
                   <TableCell className="text-center">
                     {formatToIDR(order.totalPrice)}
@@ -113,7 +113,7 @@ function OrderTable({
         </TableBody>
       </Table>
     </>
-  );
+  )
 }
 
-export default OrderTable;
+export default OrderTable

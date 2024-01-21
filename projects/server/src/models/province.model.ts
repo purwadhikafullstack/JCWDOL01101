@@ -2,8 +2,8 @@ import { Province } from '@/interfaces/province.interface';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class ProvinceModel extends Model<Province> implements Province {
-  public provinceId: string;
-  public province: string;
+  declare provinceId: string;
+  declare province: string;
 }
 
 export default function (sequelize: Sequelize): typeof ProvinceModel {

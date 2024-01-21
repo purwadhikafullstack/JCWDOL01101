@@ -2,9 +2,9 @@ import { Image } from '@/interfaces/image.interface';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class ImageModel extends Model<Image> implements Image {
-  public id?: number;
-  public productId?: number;
-  public image: string;
+  declare id?: number;
+  declare productId?: number;
+  declare image: string;
 }
 
 export default function (sequelize: Sequelize): typeof ImageModel {
