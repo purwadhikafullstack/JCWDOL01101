@@ -2,7 +2,7 @@ import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
 import { Warehouse } from '@/interfaces/warehouse.interface';
 import { Location, findClosestWarehouse } from '@/utils/closestWarehouse';
-import { Service } from 'typedi';
+import { Service } from 'typedi'
 
 @Service()
 export class WarehouseService {
@@ -94,18 +94,15 @@ export class WarehouseService {
     const transaction = await DB.sequelize.transaction();
     try {
       const { name } = warehouseData;
-      const warehouse = await DB.Warehouses.findOne({ where: { name }, attributes: ['id'], transaction });
+      const warehouse = await DB.Warehouses.findOne({ where: { name }, attributes: ['id'],transaction });
       if (warehouse) throw new HttpException(409, 'Warehouse already exists');
-  
-      const previousWarehouse = await DB.Warehouses.findOne({ order: [['createdAt', 'DESC']], attributes: ['id'], transaction });
-      const createWarehouseData: Warehouse = await DB.Warehouses.create({ ...warehouseData }, { transaction });
+      const previousWarehouse = await DB.Warehouses.findOne({ order: [['createdAt', 'DESC']], attributes: ['id'],transaction });
+      const createWarehouseData: Warehouse = await DB.Warehouses.create({ ...warehouseData },{transaction});
       if (previousWarehouse) {
-        const existingInventory = await DB.Inventories.findAll({ where: { warehouseId: previousWarehouse.id }, transaction });
-        const existingProductIds = new Set(existingInventory.map(inv => inv.productId));
-        const newInventoryData = existingInventory.filter(inv => !existingProductIds.has(inv.productId))
-          .map(inv => ({ warehouseId: createWarehouseData.id, productId: inv.productId, sizeId: inv.sizeId }));
-        if (newInventoryData.length > 0) {
-          await DB.Inventories.bulkCreate(newInventoryData, { ignoreDuplicates: true, transaction });
+        const existingInventory = await DB.Inventories.findAll({ where: { warehouseId: previousWarehouse.id },  transaction  });
+        const inventoryData = existingInventory.map(inv => ({ warehouseId: createWarehouseData.id, productId: inv.productId, sizeId: inv.sizeId }));
+        if (inventoryData.length > 0) {
+          await DB.Inventories.bulkCreate(inventoryData, { transaction });
         }
       }
       await transaction.commit();
@@ -115,8 +112,6 @@ export class WarehouseService {
       throw new HttpException(500, 'Something went wrong');
     }
   }
-  
-
   public async updateWarehouse(warehouseId: number, warehouseData: Warehouse): Promise<Warehouse> {
     const findWarehouse: Warehouse = await DB.Warehouses.findByPk(warehouseId);
     if (!findWarehouse) throw new HttpException(409, "Warehouse doesn't exist");
