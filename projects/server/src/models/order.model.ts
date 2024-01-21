@@ -2,17 +2,17 @@ import { Order } from '@/interfaces/order.interface';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class OrderModel extends Model<Order> implements Order {
-  public id?: number;
-  public userId: number;
-  public warehouseId?: number;
-  public invoice: string;
-  public totalPrice: number;
-  public shippingFee: number;
-  public status: string;
-  public deletedAt: Date;
+  declare id?: number;
+  declare userId: number;
+  declare warehouseId?: number;
+  declare invoice: string;
+  declare totalPrice: number;
+  declare shippingFee: number;
+  declare status: string;
+  declare deletedAt: Date;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
 
 export default function (sequelize: Sequelize): typeof OrderModel {

@@ -2,13 +2,13 @@ import { Jurnal } from '@/interfaces/jurnal.interface';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class JurnalModel extends Model<Jurnal> implements Jurnal {
-  public id?: number;
-  public inventoryId?: number;
-  public oldQty: number;
-  public qtyChange: number;
-  public newQty: number;
-  public type: '1' | '0';
-  public notes?: string;
+  declare id?: number;
+  declare inventoryId?: number;
+  declare oldQty: number;
+  declare qtyChange: number;
+  declare newQty: number;
+  declare type: '1' | '0';
+  declare notes?: string;
 }
 
 export default function (sequelize: Sequelize): typeof JurnalModel {

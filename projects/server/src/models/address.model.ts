@@ -2,18 +2,18 @@ import { Address } from '@/interfaces/address.interface';
 import { DataTypes, Model, Op, Sequelize } from 'sequelize';
 
 export class AddressModel extends Model<Address> implements Address {
-  public id?: number;
-  public recepient: string;
-  public phone: string;
-  public label: string;
-  public lat: number;
-  public lng: number;
-  public cityId: string;
-  public address: string;
-  public isMain: boolean;
-  public isActive: boolean;
-  public deletedAt: Date;
-  public notes?: string;
+  declare id?: number;
+  declare recepient: string;
+  declare phone: string;
+  declare label: string;
+  declare lat: number;
+  declare lng: number;
+  declare cityId: string;
+  declare address: string;
+  declare isMain: boolean;
+  declare isActive: boolean;
+  declare deletedAt: Date;
+  declare notes?: string;
 }
 
 export default function (sequelize: Sequelize): typeof AddressModel {

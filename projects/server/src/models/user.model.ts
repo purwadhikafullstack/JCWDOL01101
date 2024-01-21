@@ -3,15 +3,15 @@ import { Role, Status } from '@/interfaces';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class UserModel extends Model<User> implements User {
-  public id?: number;
-  public role: Role;
-  public externalId: string;
-  public username: string;
-  public firstname: string;
-  public lastname: string;
-  public imageUrl: string;
-  public email: string;
-  public status: Status;
+  declare id?: number;
+  declare role: Role;
+  declare externalId: string;
+  declare username: string;
+  declare firstname: string;
+  declare lastname: string;
+  declare imageUrl: string;
+  declare email: string;
+  declare status: Status;
 }
 
 export default function (sequelize: Sequelize): typeof UserModel {

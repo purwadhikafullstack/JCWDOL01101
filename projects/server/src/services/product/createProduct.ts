@@ -10,12 +10,10 @@ export async function createProduct(files: Express.Multer.File[], productData: P
     .toLocaleLowerCase()
     .replace(/[^a-z\s]/g, '')
     .replace(/\s+/g, '-');
-  const [product, created] = await DB.Product.findOrCreate({
-    where: { name },
-    defaults: { ...productData, slug },
-  });
-  if (!created) throw new HttpException(409, 'Product already exist');
+  const created = await DB.Product.findOne({ where: { slug } });
+  if (created) throw new HttpException(409, `Product with slug ${slug} already exist`);
 
+  const product = await DB.Product.create({ ...productData, slug });
   const imageData = files.map(file => ({ image: file.filename, productId: product.id }));
   const images: Image[] = await DB.Image.bulkCreate(imageData);
 

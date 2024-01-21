@@ -2,16 +2,16 @@ import { Sequelize, DataTypes, Model } from 'sequelize';
 import { WarehouseAddress } from '@/interfaces/warehouseAddress.interface';
 
 export class WarehouseAddressModel extends Model<WarehouseAddress> implements WarehouseAddress {
-  public id: number;
-  public addressDetail: string;
-  public cityId: string;
-  public provinceId: string;
-  public longitude: number;
-  public latitude: number;
-  public isActive: boolean;
+  declare id: number;
+  declare addressDetail: string;
+  declare cityId: string;
+  declare provinceId: string;
+  declare longitude: number;
+  declare latitude: number;
+  declare isActive: boolean;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
 
 export default function (sequelize: Sequelize): typeof WarehouseAddressModel {

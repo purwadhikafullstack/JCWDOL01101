@@ -2,13 +2,13 @@ import { LastSeenProducts } from '@/interfaces/lastSeenProducts.interface';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class LastSeenProductModel extends Model<LastSeenProducts> implements LastSeenProducts {
-  public id: number;
-  public productId: number;
-  public userId: number;
-  public timestamp: Date;
+  declare id: number;
+  declare productId: number;
+  declare userId: number;
+  declare timestamp: Date;
 
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
 
 export default function (sequelize: Sequelize): typeof LastSeenProductModel {

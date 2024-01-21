@@ -3,14 +3,14 @@ import { Review } from '@/interfaces/review.interface';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class ReviewModel extends Model<Review> implements Review {
-  public id?: number;
-  public productId?: number;
-  public userId: number;
-  public rating: number;
-  public nickname: string;
-  public title: string;
-  public status: Status;
-  public comment: string;
+  declare id?: number;
+  declare productId?: number;
+  declare userId: number;
+  declare rating: number;
+  declare nickname: string;
+  declare title: string;
+  declare status: Status;
+  declare comment: string;
 }
 
 export default function (sequelize: Sequelize): typeof ReviewModel {

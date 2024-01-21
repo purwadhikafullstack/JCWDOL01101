@@ -2,12 +2,12 @@ import { City } from '@/interfaces/city.interface';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class CityModel extends Model<City> implements City {
-  public cityId: string;
-  public provinceId: string;
-  public province: string;
-  public cityName: string;
-  public postalCode: string;
-  public type: string;
+  declare cityId: string;
+  declare provinceId: string;
+  declare province: string;
+  declare cityName: string;
+  declare postalCode: string;
+  declare type: string;
 }
 
 export default function (sequelize: Sequelize): typeof CityModel {

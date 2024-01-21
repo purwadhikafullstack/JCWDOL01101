@@ -2,9 +2,9 @@ import { Size } from '@/interfaces/size.interface';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class SizeModel extends Model<Size> implements Size {
-  public id: number;
-  public label: string;
-  public value: number;
+  declare id: number;
+  declare label: string;
+  declare value: number;
 }
 
 export default function (sequelize: Sequelize): typeof SizeModel {

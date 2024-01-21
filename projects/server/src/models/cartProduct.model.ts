@@ -6,14 +6,14 @@ import SizeModel from './size.model';
 import { Status } from '@/interfaces';
 
 export class CartProductModel extends Model<CartProduct> implements CartProduct {
-  public id?: number;
-  public cartId: number;
-  public sizeId: number;
-  public productId: number;
-  public quantity: number;
-  public status: Status;
-  public price: number;
-  public selected: boolean;
+  declare id?: number;
+  declare cartId: number;
+  declare sizeId: number;
+  declare productId: number;
+  declare quantity: number;
+  declare status: Status;
+  declare price: number;
+  declare selected: boolean;
 }
 
 export default function (sequelize: Sequelize): typeof CartProductModel {

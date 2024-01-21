@@ -2,14 +2,14 @@ import { Sequelize, DataTypes, Model } from 'sequelize';
 import { Category } from '@/interfaces/category.interface';
 
 export class CategoryModel extends Model<Category> implements Category {
-  public id: number;
-  public name: string;
-  public slug: string;
-  public image: string;
-  public deletedAt: Date | null;
+  declare id: number;
+  declare name: string;
+  declare slug: string;
+  declare image: string;
+  declare deletedAt: Date | null;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
 
 export default function (sequelize: Sequelize): typeof CategoryModel {
