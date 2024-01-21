@@ -103,9 +103,7 @@ function OrderTable({
                   <TableCell className="text-center">
                     {getDate(order.createdAt!.toLocaleString())}
                   </TableCell>
-                  <TableCell className="text-center">
-                    <OrderAction order={order} />
-                  </TableCell>
+                  <OrderAction order={order} />
                 </TableRow>
               ))}
             </>

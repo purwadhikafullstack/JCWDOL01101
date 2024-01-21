@@ -2,17 +2,17 @@ import { Mutation } from '@/interfaces/mutation.interface';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class MutationModel extends Model<Mutation> implements Mutation {
-  public id?: number;
-  public senderWarehouseId?: number;
-  public receiverWarehouseId?: number;
-  public senderName: string;
-  public receiverName?: string;
-  public productId?: number;
-  public sizeId: number;
-  public quantity: number;
-  public senderNotes?: string;
-  public receiverNotes?: string;
-  public status: 'ONGOING' | 'COMPLETED' | 'REJECTED' | 'CANCELED';
+  declare id?: number;
+  declare senderWarehouseId?: number;
+  declare receiverWarehouseId?: number;
+  declare senderName: string;
+  declare receiverName?: string;
+  declare productId?: number;
+  declare sizeId: number;
+  declare quantity: number;
+  declare senderNotes?: string;
+  declare receiverNotes?: string;
+  declare status: 'ONGOING' | 'COMPLETED' | 'REJECTED' | 'CANCELED';
 }
 
 export default function (sequelize: Sequelize): typeof MutationModel {

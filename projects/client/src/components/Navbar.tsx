@@ -7,7 +7,7 @@ import NavCart from "./NavCart";
 import { useUser } from "@clerk/clerk-react";
 import { Button, buttonVariants } from "./ui/button";
 import NavDropdown from "./NavDropdown";
-import { ChevronDown, MapPin, Menu, User2, Weight } from "lucide-react";
+import { ChevronDown, MapPin, Menu, User2 } from "lucide-react";
 import { useActiveAddress } from "@/hooks/useAddress";
 import SelectAddressDialog from "./SelectAddressDialog";
 import NavWishlist from "./NavWishlist";

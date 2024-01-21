@@ -6,16 +6,16 @@ import WarehouseModel from './warehouse.model';
 import { Status } from '@/interfaces';
 
 export class InventoryModel extends Model<Inventory> implements Inventory {
-  public id: number;
-  public sizeId: number;
-  public warehouseId: number;
-  public productId: number;
-  public stock: number;
-  public sold: number;
-  public status: Status;
+  declare id: number;
+  declare sizeId: number;
+  declare warehouseId: number;
+  declare productId: number;
+  declare stock: number;
+  declare sold: number;
+  declare status: Status;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
 
 export default function (sequelize: Sequelize): typeof InventoryModel {

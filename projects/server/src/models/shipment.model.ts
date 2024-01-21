@@ -2,12 +2,12 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 import { Shipment } from '@/interfaces/shipment.interface';
 
 export class ShipmentModel extends Model<Shipment> implements Shipment {
-  public id?: number;
-  public orderId?: number;
-  public status: string;
-  public fee: number;
-  public courier: string;
-  public etd: string;
+  declare id?: number;
+  declare orderId?: number;
+  declare status: string;
+  declare fee: number;
+  declare courier: string;
+  declare etd: string;
 }
 
 export default function (sequelize: Sequelize): typeof ShipmentModel {

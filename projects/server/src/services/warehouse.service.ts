@@ -1,9 +1,8 @@
 import { DB } from '@/database';
 import { HttpException } from '@/exceptions/HttpException';
-import { Product } from '@/interfaces/product.interface';
 import { Warehouse } from '@/interfaces/warehouse.interface';
 import { Location, findClosestWarehouse } from '@/utils/closestWarehouse';
-import { Service } from 'typedi';
+import { Service } from 'typedi'
 
 @Service()
 export class WarehouseService {
@@ -92,34 +91,27 @@ export class WarehouseService {
   }
 
   public async createWarehouse(warehouseData: Warehouse): Promise<Warehouse> {
-    const findWarehouse: Warehouse = await DB.Warehouses.findOne({ where: { name: warehouseData.name } });
-    if (findWarehouse) throw new HttpException(409, 'Warehouse already exist');
-
-    const createWarehouseData: Warehouse = await DB.Warehouses.create({ ...warehouseData });
-    const findProduct: Product[] = await DB.Product.findAll({
-      where: {
-        status: 'ACTIVE',
-      },
-    });
-
-    if (findProduct && findProduct.length > 0) {
-      const productIds = findProduct.map(p => p.id);
-      const inventory = await DB.Inventories.findAll({ where: { productId: productIds } });
-      const uniqueSizeIds = new Set();
-
-      const uniqueInventory = inventory.filter(inv => {
-        if (!uniqueSizeIds.has(inv.sizeId)) {
-          uniqueSizeIds.add(inv.sizeId);
-          return true;
+    const transaction = await DB.sequelize.transaction();
+    try {
+      const { name } = warehouseData;
+      const warehouse = await DB.Warehouses.findOne({ where: { name }, attributes: ['id'],transaction });
+      if (warehouse) throw new HttpException(409, 'Warehouse already exists');
+      const previousWarehouse = await DB.Warehouses.findOne({ order: [['createdAt', 'DESC']], attributes: ['id'],transaction });
+      const createWarehouseData: Warehouse = await DB.Warehouses.create({ ...warehouseData },{transaction});
+      if (previousWarehouse) {
+        const existingInventory = await DB.Inventories.findAll({ where: { warehouseId: previousWarehouse.id },  transaction  });
+        const inventoryData = existingInventory.map(inv => ({ warehouseId: createWarehouseData.id, productId: inv.productId, sizeId: inv.sizeId }));
+        if (inventoryData.length > 0) {
+          await DB.Inventories.bulkCreate(inventoryData, { transaction });
         }
-        return false;
-      });
-      const inventoryData = uniqueInventory.map(inv => ({ warehouseId: createWarehouseData.id, productId: inv.productId, sizeId: inv.sizeId }));
-      await DB.Inventories.bulkCreate(inventoryData);
+      }
+      await transaction.commit();
+      return createWarehouseData;
+    } catch (err) {
+      await transaction.rollback();
+      throw new HttpException(500, 'Something went wrong');
     }
-    return createWarehouseData;
   }
-
   public async updateWarehouse(warehouseId: number, warehouseData: Warehouse): Promise<Warehouse> {
     const findWarehouse: Warehouse = await DB.Warehouses.findByPk(warehouseId);
     if (!findWarehouse) throw new HttpException(409, "Warehouse doesn't exist");

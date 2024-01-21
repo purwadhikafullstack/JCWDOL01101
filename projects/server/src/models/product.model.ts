@@ -3,18 +3,18 @@ import { Product } from '@/interfaces/product.interface';
 import { DataTypes, Model, Sequelize } from 'sequelize';
 
 export class ProductModel extends Model<Product> implements Product {
-  public id?: number;
-  public categoryId?: number;
-  public name: string;
-  public price: number;
-  public weight: number;
-  public description: string;
-  public status: Status;
-  public primaryImage: string;
-  public slug: string;
+  declare id?: number;
+  declare categoryId?: number;
+  declare name: string;
+  declare price: number;
+  declare weight: number;
+  declare description: string;
+  declare status: Status;
+  declare primaryImage: string;
+  declare slug: string;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
 
 export default function (sequelize: Sequelize): typeof ProductModel {

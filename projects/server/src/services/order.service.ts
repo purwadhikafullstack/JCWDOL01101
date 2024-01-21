@@ -444,9 +444,20 @@ export class OrderService {
         },
       ],
     };
-    const allOrderCcount = await DB.Order.findAll(optionsCount);
 
-    allOrderCcount.forEach(order => {
+    if (s) {
+      optionsCount.where = {
+        [Op.or]: [
+          { invoice: { [Op.like]: `%${s}%` } },
+          { '$warehouseOrder.name$': { [Op.like]: `%${s}%` } },
+          { '$userOrder.firstname$': { [Op.like]: `%${s}%` } },
+          { '$userOrder.lastname$': { [Op.like]: `%${s}%` } },
+        ],
+      };
+    }
+    const allOrderCount = await DB.Order.findAll(optionsCount);
+
+    allOrderCount.forEach(order => {
       if (order.status === 'SUCCESS') totalSuccess += order.totalPrice;
       else if (order.status === 'PENDING') totalPending += order.totalPrice;
       else if (order.status === 'DELIVERED' || order.status === 'SHIPPED' || order.status === 'WAITING' || order.status === 'PROCESS')
