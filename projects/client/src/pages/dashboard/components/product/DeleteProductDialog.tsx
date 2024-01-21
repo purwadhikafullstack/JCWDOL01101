@@ -22,10 +22,9 @@ import {
 import Hashids from "hashids";
 
 type Props = {
-  dropdownChange: (open: boolean) => void;
   product: Product;
 };
-const DeleteProductDialog = ({ product, dropdownChange }: Props) => {
+const DeleteProductDialog = ({ product }: Props) => {
   const hashids = new Hashids("TOTEN", 10);
   const [open, setOpen] = React.useState(false);
   const [params] = useSearchParams();
@@ -53,14 +52,12 @@ const DeleteProductDialog = ({ product, dropdownChange }: Props) => {
   };
   React.useEffect(() => {
     if (deleteProduct.isSuccess) {
-      dropdownChange(false);
       setOpen(false);
     }
   }, [deleteProduct.isSuccess]);
 
   React.useEffect(() => {
     if (deleteProductInventory.isSuccess) {
-      dropdownChange(false);
       setOpen(false);
     }
   }, [deleteProductInventory.isSuccess]);
@@ -70,7 +67,6 @@ const DeleteProductDialog = ({ product, dropdownChange }: Props) => {
       open={open}
       onOpenChange={(state) => {
         setOpen(state);
-        dropdownChange(state);
       }}
     >
       <DialogTrigger className="w-full" asChild>

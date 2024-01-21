@@ -18,9 +18,8 @@ import { Button } from "@/components/ui/button";
 
 type Props = {
   product: Product;
-  dropdownChange: (open: boolean) => void;
 };
-const RestoreDropdownDialog = ({ product, dropdownChange }: Props) => {
+const RestoreDropdownDialog = ({ product }: Props) => {
   const [open, setOpen] = React.useState(false);
   const [params] = useSearchParams();
   const status = (String(params.get("status")) as STATUS) || "";
@@ -40,7 +39,6 @@ const RestoreDropdownDialog = ({ product, dropdownChange }: Props) => {
 
   React.useEffect(() => {
     if (changeStatusMutation.isSuccess) {
-      dropdownChange(false);
       setOpen(false);
     }
   }, [changeStatusMutation.isSuccess]);
@@ -49,7 +47,6 @@ const RestoreDropdownDialog = ({ product, dropdownChange }: Props) => {
       open={open}
       onOpenChange={(state) => {
         setOpen(state);
-        dropdownChange(state);
       }}
     >
       <DialogTrigger asChild>

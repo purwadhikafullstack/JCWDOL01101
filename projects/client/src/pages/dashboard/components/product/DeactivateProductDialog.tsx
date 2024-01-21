@@ -16,11 +16,10 @@ import { Button } from "@/components/ui/button";
 import { EyeOff, Loader2 } from "lucide-react";
 import Hashids from "hashids";
 type Props = {
-  dropdownChange: (open: boolean) => void;
   product: Product;
 };
 
-const DeactivateProductDialog = ({ product, dropdownChange }: Props) => {
+const DeactivateProductDialog = ({ product }: Props) => {
   const hashids = new Hashids("TOTEN", 10);
   const [open, setOpen] = React.useState(false);
   const [params] = useSearchParams();
@@ -39,7 +38,6 @@ const DeactivateProductDialog = ({ product, dropdownChange }: Props) => {
   React.useEffect(() => {
     if (changeProductInventory.isSuccess) {
       setOpen(false);
-      dropdownChange(false);
     }
   }, [changeProductInventory.isSuccess]);
   return (
@@ -47,7 +45,6 @@ const DeactivateProductDialog = ({ product, dropdownChange }: Props) => {
       open={open}
       onOpenChange={(state) => {
         setOpen(state);
-        dropdownChange(state);
       }}
     >
       <DialogTrigger asChild>
