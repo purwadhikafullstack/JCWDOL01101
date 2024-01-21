@@ -1,4 +1,3 @@
-import { Order } from "@/hooks/useOrder";
 import { Product } from "@/hooks/useProduct";
 import { formatToIDR } from "@/lib/utils";
 import { baseURL } from "@/service";

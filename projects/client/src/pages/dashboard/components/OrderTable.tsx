@@ -6,23 +6,25 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { getDate, formatToIDR } from "@/lib/utils"
-import ChangeOrderButton from "./ChangeOrderButton"
-import { Order } from "@/hooks/useOrder"
-import OrderAction from "./order/OrderAction"
+} from "@/components/ui/table";
+import { getDate, formatToIDR } from "@/lib/utils";
+import ChangeOrderButton from "./ChangeOrderButton";
+import { Order } from "@/hooks/useOrder";
+import OrderAction from "./order/OrderAction";
+import OrderProduct from "@/pages/homepage/components/order/OrderProduct";
+import { baseURL } from "@/service";
 
 function OrderTable({
   data,
 }: {
   data: {
-    orders: Order[]
-    totalPages: number
-    totalSuccess: number
-    totalPending: number
-    totalFailed: number
-    totalOngoing: number
-  }
+    orders: Order[];
+    totalPages: number;
+    totalSuccess: number;
+    totalPending: number;
+    totalFailed: number;
+    totalOngoing: number;
+  };
 }) {
   return (
     <>
@@ -96,9 +98,7 @@ function OrderTable({
                   <TableCell className="text-center">
                     {getDate(order.createdAt!.toLocaleString())}
                   </TableCell>
-                  <TableCell className="text-center">
-                    <OrderAction order={order} />
-                  </TableCell>
+                  <OrderAction order={order} />
                 </TableRow>
               ))}
             </>
