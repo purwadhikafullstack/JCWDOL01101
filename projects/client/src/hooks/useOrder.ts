@@ -2,6 +2,7 @@ import service from "@/service";
 import { useAuth } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
 import { Product } from "./useProduct";
+import { Size } from "./useSize";
 export interface Order {
   id: number;
   warehouseId: number;
@@ -26,6 +27,7 @@ export interface OrderDetails {
   quantity: number;
   price: number;
   product: Product;
+  size: Size;
 }
 
 export interface Payment {
@@ -151,6 +153,28 @@ export const useOrders = (userId: number | undefined) => {
   });
 
   return query;
+};
+
+type orderDetailsPage = {
+  OrderDetails: OrderDetails[];
+  totalPrice: number;
+  shippingFee: number;
+  invoice: string;
+}
+export const useOrderDetails = (orderId: number) => {
+  const { getToken } = useAuth();
+  const { data, isLoading } = useQuery<orderDetailsPage>({
+    queryKey: ["order-details", orderId],
+    queryFn: async () => {
+      const res = await service.get(`/orders/details/${orderId}`, {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+      return res.data.data;
+    },
+    enabled: !!orderId,
+  });
+
+  return { data, isLoading };
 };
 
 type orderOptions = {

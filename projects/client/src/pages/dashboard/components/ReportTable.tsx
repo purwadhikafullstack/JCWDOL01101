@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   Table,
   TableBody,
@@ -6,25 +6,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import ChangeOrderButton from "./ChangeOrderButton";
-import { Jurnal } from "@/hooks/useJurnal";
-import { format } from "date-fns";
-import { BadgeDollarSign, Boxes, CircleDollarSign, LogIn, LogOut } from "lucide-react";
-import { formatToIDR } from "@/lib/utils";
+} from "@/components/ui/table"
+import ChangeOrderButton from "./ChangeOrderButton"
+import { Jurnal } from "@/hooks/useJurnal"
+import { format } from "date-fns"
+import { Boxes, LogIn, LogOut } from "lucide-react"
+import { formatToIDR } from "@/lib/utils"
 
 function ReportTable({
   data,
 }: {
   data: {
-    jurnals: Jurnal[];
-    totalPages: number;
-    totalAddition: number;
-    totalReduction: number;
-    finalStock: number;
-    totalProductValue:number;
-    productValue:number;
-  };
+    jurnals: Jurnal[]
+    totalPages: number
+    totalAddition: number
+    totalReduction: number
+    finalStock: number
+  }
 }) {
   return (
     <>
@@ -42,23 +40,6 @@ function ReportTable({
               <div>
                 <p className="text-muted-foreground">{stat.title}</p>
                 <p className="font-bold text-xl">{stat.value} pcs</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="flex gap-4 justify-between py-4">
-        {[
-          { title: "Income Value", icon: CircleDollarSign, value: data.totalProductValue }
-        ].map((stat) => (
-          <div className="flex bg-background border rounded-lg p-4 shadow-sm flex-col w-full items-start">
-            <div className="flex items-center gap-4">
-              <span className="rounded-md p-2 inline-block">
-                <stat.icon className="w-8 h-8 text-primary" />
-              </span>
-              <div>
-                <p className="text-muted-foreground">{stat.title}</p>
-                <p className="font-bold text-xl">{formatToIDR(stat.value)}</p>
               </div>
             </div>
           </div>
@@ -118,7 +99,9 @@ function ReportTable({
                     {format(new Date(jurnal.createdAt), "Pp")}
                   </TableCell>
                   <TableCell className="text-center">
-                    {formatToIDR(jurnal.productValue ? `${jurnal.productValue}` : "-")}
+                    {formatToIDR(
+                      jurnal.productValue ? `${jurnal.productValue}` : "-"
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -133,7 +116,7 @@ function ReportTable({
         </TableBody>
       </Table>
     </>
-  );
+  )
 }
 
-export default ReportTable;
+export default ReportTable
