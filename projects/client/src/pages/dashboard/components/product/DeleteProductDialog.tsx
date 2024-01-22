@@ -20,11 +20,13 @@ import {
   useChangeStatusInventory,
 } from "@/hooks/useProductMutation";
 import Hashids from "hashids";
+import { useToast } from "@/components/ui/use-toast";
 
 type Props = {
   product: Product;
 };
 const DeleteProductDialog = ({ product }: Props) => {
+  const { toast } = useToast();
   const hashids = new Hashids("TOTEN", 10);
   const [open, setOpen] = React.useState(false);
   const [params] = useSearchParams();
@@ -53,14 +55,24 @@ const DeleteProductDialog = ({ product }: Props) => {
   React.useEffect(() => {
     if (deleteProduct.isSuccess) {
       setOpen(false);
+      toast({
+        title: "Product Deleted",
+        description: "Successfully deleted product on all warehouse",
+        duration: 2000,
+      });
     }
   }, [deleteProduct.isSuccess]);
 
   React.useEffect(() => {
-    if (deleteProductInventory.isSuccess) {
+    if (deleteProductInventory.isSuccess && warehouse) {
       setOpen(false);
+      toast({
+        title: "Product Deleted",
+        description: `Successfully deleted product on ${warehouse.name}`,
+        duration: 2000,
+      });
     }
-  }, [deleteProductInventory.isSuccess]);
+  }, [deleteProductInventory.isSuccess, warehouse]);
 
   return (
     <Dialog

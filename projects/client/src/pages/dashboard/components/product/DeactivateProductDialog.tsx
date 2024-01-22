@@ -15,11 +15,13 @@ import { Product } from "@/hooks/useProduct";
 import { Button } from "@/components/ui/button";
 import { EyeOff, Loader2 } from "lucide-react";
 import Hashids from "hashids";
+import { useToast } from "@/components/ui/use-toast";
 type Props = {
   product: Product;
 };
 
 const DeactivateProductDialog = ({ product }: Props) => {
+  const { toast } = useToast();
   const hashids = new Hashids("TOTEN", 10);
   const [open, setOpen] = React.useState(false);
   const [params] = useSearchParams();
@@ -38,6 +40,11 @@ const DeactivateProductDialog = ({ product }: Props) => {
   React.useEffect(() => {
     if (changeProductInventory.isSuccess) {
       setOpen(false);
+      toast({
+        title: "Product Deactivated",
+        description: "Successfully deactivated product",
+        duration: 2000,
+      });
     }
   }, [changeProductInventory.isSuccess]);
   return (
