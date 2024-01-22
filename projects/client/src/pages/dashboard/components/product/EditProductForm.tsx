@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -49,13 +49,13 @@ const EditProductForm = () => {
   const { slug } = useParams();
   const isEditing = !!slug;
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!slug) {
       navigate("/dashboard/product");
     }
   }, [slug, navigate]);
 
-  const [button, setButton] = useState("");
+  const [button, setButton] = React.useState("");
   const { data: pd } = useProduct(slug || "");
   const editImages = useBoundStore((state) => state.editImages);
   const clearImage = useBoundStore((state) => state.clearImage);
@@ -63,7 +63,7 @@ const EditProductForm = () => {
     (state) => state.setPayloadImageLength
   );
   const setEditImageForm = useBoundStore((state) => state.setEditImageForm);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
   const editMutation = useEditProduct(slug || "");
 
   const form = useForm<z.infer<typeof productSchema>>({
@@ -93,7 +93,7 @@ const EditProductForm = () => {
     editMutation.mutate(formData);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (pd && pd.product) {
       const { product } = pd;
       form.setValue("name", product.name);
@@ -144,7 +144,7 @@ const EditProductForm = () => {
     }
   }, [pd]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (editMutation.status === "success") {
       toast({
         title: "Product Edited",
@@ -188,6 +188,7 @@ const EditProductForm = () => {
                 name="name"
                 label="Product Name"
                 description=""
+                isAlreadySold={pd ? pd.totalSold > 0 : false}
               />
               <SelectFormField />
               <EditImageForm error={error} />

@@ -17,7 +17,7 @@ const EditImageForm = ({ error }: { error: string | null }) => {
           </Badge>
         </FormLabel>
         <p className="text-xs mt-2 text-muted-foreground max-w-[200px] ">
-          Format gambar .jpg .jpeg .png dan dan maksimal file size 1MB.
+          Allowed image format: .jpg, .jpeg, .png. Max file size: 1MB.
         </p>
       </div>
       <div className="col-span-2">

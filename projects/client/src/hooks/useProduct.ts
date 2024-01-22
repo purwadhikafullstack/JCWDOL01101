@@ -4,7 +4,6 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Size } from "./useSize";
 import { Review } from "./useReview";
 import { Warehouse } from "./useWarehouse";
-import { OrderDetails } from "./interfaces/Order";
 import Hashids from "hashids";
 
 export interface Product {

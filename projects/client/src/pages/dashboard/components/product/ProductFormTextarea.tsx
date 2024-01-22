@@ -33,13 +33,12 @@ const ProductFormTextarea = ({ maxLength = 2000 }: { maxLength?: number }) => {
                     }}
                   />
                   <FormDescription>
-                    Tulis deskripsi produkmu min. 80 karakter agar pembeli
-                    semakin mudah mengerti.
+                    Write your product description min. 80 characters so that
+                    buyers can easily understand.
                   </FormDescription>
 
-                  <span className="self-end text-xs text-muted-foreground">{`${
-                    form.getValues("description").length
-                  }/${maxLength}`}</span>
+                  <span className="self-end text-xs text-muted-foreground">{`${form.getValues("description").length
+                    }/${maxLength}`}</span>
                 </div>
               </FormControl>
               <FormMessage />

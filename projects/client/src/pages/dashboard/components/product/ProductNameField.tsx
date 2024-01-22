@@ -11,22 +11,27 @@ import { Input } from "@/components/ui/input";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 
+type Props = {
+  name: string;
+  label: string;
+  description: string;
+  maxLength?: number;
+  isAlreadySold?: boolean | undefined;
+}
+
 const ProductNameField = ({
   name,
   label,
   description,
   maxLength = 70,
-}: {
-  name: string;
-  label: string;
-  description: string;
-  maxLength?: number;
-}) => {
+  isAlreadySold,
+}: Props) => {
   const form = useFormContext();
   return (
     <FormField
       control={form.control}
       name={name}
+      disabled={isAlreadySold}
       render={({ field }) => (
         <FormItem>
           <div className="w-ful grid grid-cols-3">
@@ -41,7 +46,7 @@ const ProductNameField = ({
                 </Badge>
               </FormLabel>
               <p className="text-xs mt-2 text-muted-foreground max-w-[200px] ">
-                Nama <b>tidak bisa diubah</b> setelah produk terjual, ya.
+                Name <b>cannot be changed</b> after the product is sold.
               </p>
             </div>
             <div className="col-span-2">
@@ -55,10 +60,13 @@ const ProductNameField = ({
                       e.target.value = e.target.value.slice(0, maxLength);
                     }}
                   />
+                  {
+                    !isAlreadySold && (
+                      <span className="self-end text-xs text-muted-foreground">{`${form.getValues("name").length
+                        }/${maxLength}`}</span>
 
-                  <span className="self-end text-xs text-muted-foreground">{`${
-                    form.getValues("name").length
-                  }/${maxLength}`}</span>
+                    )
+                  }
                 </div>
               </FormControl>
               <FormDescription>{description}</FormDescription>
