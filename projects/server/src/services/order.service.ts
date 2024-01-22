@@ -398,6 +398,21 @@ export class OrderService {
           as: 'userOrder',
           attributes: ['email'],
         },
+        // {
+        //   model:OrderDetailsModel,
+        //   as:'orderDetails',
+        // },
+        // {
+        //   model: OrderDetailsModel,
+        //   as: 'orderDetails',
+        //   include: [
+        //     {
+        //       model: ProductModel,
+        //       as: 'product',
+        //       attributes: ['name','primaryImage'],
+        //     },
+        //   ],
+        // },
       ],
     };
 

@@ -32,16 +32,16 @@ function OrderTable({
         <p className="font-bold">SALES REPORT</p>
         <div className="flex justify-evenly text-center">
           <div className="flex bg-green-500 border-4 rounded-xl p-2 font-semibold">
-            Success: {formatToIDR(data.totalSuccess)}
+            Success: {formatToIDR(data?.totalSuccess || 0)}
           </div>
           <div className="flex bg-blue-400  p-2 border-4 rounded-xl font-semibold">
-            Pending: {formatToIDR(data.totalPending)}
+            Pending: {formatToIDR(data?.totalPending|| 0)}
           </div>
           <div className="flex bg-yellow-400 p-2 border-4 rounded-xl font-semibold">
-            Ongoing: {formatToIDR(data.totalOngoing)}
+            Ongoing: {formatToIDR(data?.totalOngoing|| 0)}
           </div>
           <div className="flex bg-red-400 p-2 border-4 rounded-xl font-semibold">
-            Failed: {formatToIDR(data.totalFailed)}
+            Failed: {formatToIDR(data?.totalFailed|| 0)}
           </div>
         </div>
       </div>
@@ -71,6 +71,7 @@ function OrderTable({
               <ChangeOrderButton paramKey="createdAt" name="Order Date" />
             </TableHead>
             <TableHead className="text-center">Action</TableHead>
+            {/* <TableHead className="text-center">Order Details</TableHead> */}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -99,6 +100,22 @@ function OrderTable({
                     {getDate(order.createdAt!.toLocaleString())}
                   </TableCell>
                   <OrderAction order={order} />
+                  {/* <TableCell>
+                    {order.orderDetails.map((orderDetail) => (
+                      <div className="flex gap-2">
+                        <img
+                          src={`${baseURL}/images/${orderDetail.product.primaryImage}`}
+                          className="w-20 h-20 object-cover object-top"
+                        />
+                        <div>
+                          <p>{orderDetail.product.name}</p>
+                          <p>
+                            {orderDetail.quantity}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </TableCell> */}
                 </TableRow>
               ))}
             </>
