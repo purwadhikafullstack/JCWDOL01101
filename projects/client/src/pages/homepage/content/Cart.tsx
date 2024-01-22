@@ -32,9 +32,6 @@ const Cart = () => {
     useRecommendedProduct(user?.id);
   const carts = cart?.cart.cartProducts || [];
 
-  const totalQuantity = cart?.totalQuantity || 0;
-  const totalPrice = cart?.totalPrice || 0;
-
   const toggleAllSelectedCart = useToggleAllSelectProduct();
   const [selected, setSelected] = React.useState({
     allTrue: false,

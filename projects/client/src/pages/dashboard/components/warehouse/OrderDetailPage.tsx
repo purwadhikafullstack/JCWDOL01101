@@ -14,16 +14,18 @@ import React from "react"
 
 const OrderDetailPage = ({ orderId }: { orderId: number }) => {
   const { data, isLoading } = useOrderDetails(orderId)
-  const qty =
-    data!.OrderDetails.reduce((sum, order) => sum + order.quantity, 0) || 0
-  const price =
-    data!.OrderDetails.reduce(
-      (sum, order) => sum + order.quantity * order.price,
-      0
-    ) || 0
+  const qty = data
+    ? data.OrderDetails.reduce((sum, order) => sum + order.quantity, 0)
+    : 0
+  const price = data
+    ? data.OrderDetails.reduce(
+        (sum, order) => sum + order.quantity * order.price,
+        0
+      )
+    : 0
   return (
     <Dialog>
-      <DialogTrigger className="hover:text-primary hover:underline">
+      <DialogTrigger className="hover:text-primary underline">
         {data?.invoice}
       </DialogTrigger>
       <DialogContent>

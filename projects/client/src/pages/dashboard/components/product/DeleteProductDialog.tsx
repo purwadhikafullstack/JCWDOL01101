@@ -20,12 +20,13 @@ import {
   useChangeStatusInventory,
 } from "@/hooks/useProductMutation";
 import Hashids from "hashids";
+import { useToast } from "@/components/ui/use-toast";
 
 type Props = {
-  dropdownChange: (open: boolean) => void;
   product: Product;
 };
-const DeleteProductDialog = ({ product, dropdownChange }: Props) => {
+const DeleteProductDialog = ({ product }: Props) => {
+  const { toast } = useToast();
   const hashids = new Hashids("TOTEN", 10);
   const [open, setOpen] = React.useState(false);
   const [params] = useSearchParams();
@@ -53,24 +54,31 @@ const DeleteProductDialog = ({ product, dropdownChange }: Props) => {
   };
   React.useEffect(() => {
     if (deleteProduct.isSuccess) {
-      dropdownChange(false);
       setOpen(false);
+      toast({
+        title: "Product Deleted",
+        description: "Successfully deleted product on all warehouse",
+        duration: 2000,
+      });
     }
   }, [deleteProduct.isSuccess]);
 
   React.useEffect(() => {
-    if (deleteProductInventory.isSuccess) {
-      dropdownChange(false);
+    if (deleteProductInventory.isSuccess && warehouse) {
       setOpen(false);
+      toast({
+        title: "Product Deleted",
+        description: `Successfully deleted product on ${warehouse.name}`,
+        duration: 2000,
+      });
     }
-  }, [deleteProductInventory.isSuccess]);
+  }, [deleteProductInventory.isSuccess, warehouse]);
 
   return (
     <Dialog
       open={open}
       onOpenChange={(state) => {
         setOpen(state);
-        dropdownChange(state);
       }}
     >
       <DialogTrigger className="w-full" asChild>

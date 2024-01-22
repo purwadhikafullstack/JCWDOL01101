@@ -24,7 +24,7 @@ const KPI = [
   },
   {
     icon: <Layers className="w-4 h-4" />,
-    format: (value: number | string) => `${value} orders`,
+    format: (value: number | string) => `${value} order(s)`,
   },
   {
     icon: <Rocket className="w-4 h-4" />,

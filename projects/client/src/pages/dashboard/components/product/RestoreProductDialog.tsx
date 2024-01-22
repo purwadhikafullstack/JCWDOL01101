@@ -14,10 +14,12 @@ import { useChangeAllStatus } from "@/hooks/useProductMutation";
 import { useSearchParams } from "react-router-dom";
 import { STATUS } from "@/hooks/useReviewMutation";
 import Hashids from "hashids";
+import { useToast } from "@/components/ui/use-toast";
 type Props = {
   disabled: boolean;
 };
 const RestoreProductDialog = ({ disabled }: Props) => {
+  const { toast } = useToast();
   const [open, setOpen] = React.useState(false);
   const hashids = new Hashids("TOTEN", 10);
   const [searchParams] = useSearchParams();
@@ -38,6 +40,11 @@ const RestoreProductDialog = ({ disabled }: Props) => {
   React.useEffect(() => {
     if (changeAllStatusMutation.isSuccess) {
       setOpen(false);
+      toast({
+        title: "Product Restore",
+        description: `All product has been restored successfully`,
+        duration: 2000,
+      });
     }
   }, [changeAllStatusMutation.isSuccess]);
 

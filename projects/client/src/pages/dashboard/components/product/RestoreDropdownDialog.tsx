@@ -15,12 +15,13 @@ import { useSearchParams } from "react-router-dom";
 import { STATUS } from "@/hooks/useReviewMutation";
 import { useChangeStatus } from "@/hooks/useProductMutation";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 type Props = {
   product: Product;
-  dropdownChange: (open: boolean) => void;
 };
-const RestoreDropdownDialog = ({ product, dropdownChange }: Props) => {
+const RestoreDropdownDialog = ({ product }: Props) => {
+  const { toast } = useToast();
   const [open, setOpen] = React.useState(false);
   const [params] = useSearchParams();
   const status = (String(params.get("status")) as STATUS) || "";
@@ -40,8 +41,12 @@ const RestoreDropdownDialog = ({ product, dropdownChange }: Props) => {
 
   React.useEffect(() => {
     if (changeStatusMutation.isSuccess) {
-      dropdownChange(false);
       setOpen(false);
+      toast({
+        title: "Product Restore",
+        description: "Successfully restore aproduct",
+        duration: 2000,
+      });
     }
   }, [changeStatusMutation.isSuccess]);
   return (
@@ -49,7 +54,6 @@ const RestoreDropdownDialog = ({ product, dropdownChange }: Props) => {
       open={open}
       onOpenChange={(state) => {
         setOpen(state);
-        dropdownChange(state);
       }}
     >
       <DialogTrigger asChild>

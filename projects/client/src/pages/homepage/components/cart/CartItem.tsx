@@ -102,14 +102,14 @@ const CartItem = ({ hasCart, cartProduct }: CartItemProps) => {
     if (deleteMutation.isSuccess) {
       toast(
         (t) => (
-          <span className="bg-black text-background">
+          <span className="bg-black text-background dark:text-foreground">
             1 item has been deleted
             <button
               onClick={() => {
                 toast.dismiss(t.id);
                 cancelDeleteMutation.mutate(id);
               }}
-              className="ml-2 bg-slate-900 px-2 py-1 rounded-md"
+              className="ml-2 bg-black border  px-2 py-1 rounded-md"
             >
               cancel
             </button>

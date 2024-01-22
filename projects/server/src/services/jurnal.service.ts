@@ -8,17 +8,14 @@ import { FindOptions, Op } from 'sequelize';
 
 @Service()
 export class JurnalService {
-  public async findAllJurnal({
-    page,
-    s,
-    order,
-    limit,
-    filter,
-    externalId,
-    warehouse,
-    to,
-    from,
-  }: GetFilterJurnal): Promise<{ jurnals: Jurnal[]; totalPages: number; totalAddition: number; totalReduction: number; finalStock: number }> {
+  public async findAllJurnal({ page, s, order, limit, filter, externalId, warehouse, to, from }: GetFilterJurnal): Promise<{
+    jurnals: Jurnal[];
+    totalPages: number;
+    totalAddition: number;
+    totalReduction: number;
+    finalStock: number;
+    totalProductValue: number;
+  }> {
     const findUser: User = await DB.User.findOne({
       where: { externalId, status: 'ACTIVE' },
       include: [{ model: DB.Warehouses, as: 'warehouse', attributes: ['id'] }],
@@ -66,7 +63,7 @@ export class JurnalService {
             {
               model: DB.Product,
               as: 'product',
-              attributes: ['name'],
+              attributes: ['name', 'price'],
               where: {
                 ...(s && {
                   name: {
@@ -74,6 +71,13 @@ export class JurnalService {
                   },
                 }),
               },
+              include: [
+                {
+                  model: DB.Categories,
+                  as: 'productCategory',
+                  attributes: ['name'],
+                },
+              ],
             },
           ],
         },
@@ -132,21 +136,30 @@ export class JurnalService {
         },
       ],
     };
-    const allJurnalCcount = await DB.Jurnal.findAll(optionsCount);
+    const allJurnalCount = await DB.Jurnal.findAll(optionsCount);
 
     let totalAddition = 0;
     let totalReduction = 0;
-    allJurnalCcount.forEach(jurnal => {
+    let totalProductValue = 0;
+    for (const jurnal of allJurnalCount) {
       if (jurnal.type === '1') {
         totalAddition += jurnal.qtyChange;
       } else if (jurnal.type === '0') {
         totalReduction += jurnal.qtyChange;
       }
-    });
-
+      if (jurnal.notes.startsWith('Stock out order INV-')) {
+        const inventory = await DB.Inventories.findOne({
+          where: { id: jurnal.inventoryId },
+          include: [{ model: DB.Product, as: 'product' }],
+        });
+        if (inventory && inventory.product) {
+          totalProductValue += inventory.product.price * jurnal.qtyChange;
+        }
+      }
+    }
     const finalStock = totalAddition - totalReduction;
 
-    return { totalPages: totalPages, jurnals: allJurnal, totalAddition, totalReduction, finalStock };
+    return { totalPages: totalPages, jurnals: allJurnal, totalAddition, totalReduction, finalStock, totalProductValue };
   }
 
   public async findJurnalById(jurnalId: number): Promise<Jurnal> {
