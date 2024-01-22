@@ -10,7 +10,7 @@ import {
 import ChangeOrderButton from "./ChangeOrderButton";
 import { Jurnal } from "@/hooks/useJurnal";
 import { format } from "date-fns";
-import { BadgeDollarSign, Boxes, LogIn, LogOut } from "lucide-react";
+import { BadgeDollarSign, Boxes, CircleDollarSign, LogIn, LogOut } from "lucide-react";
 import { formatToIDR } from "@/lib/utils";
 
 function ReportTable({
@@ -49,7 +49,7 @@ function ReportTable({
       </div>
       <div className="flex gap-4 justify-between py-4">
         {[
-          { title: "Income Value", icon: BadgeDollarSign, value: data.totalProductValue }
+          { title: "Income Value", icon: CircleDollarSign, value: data.totalProductValue }
         ].map((stat) => (
           <div className="flex bg-background border rounded-lg p-4 shadow-sm flex-col w-full items-start">
             <div className="flex items-center gap-4">
