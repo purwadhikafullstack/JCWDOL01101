@@ -71,7 +71,6 @@ function OrderTable({
               <ChangeOrderButton paramKey="createdAt" name="Order Date" />
             </TableHead>
             <TableHead className="text-center">Action</TableHead>
-            {/* <TableHead className="text-center">Order Details</TableHead> */}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -100,22 +99,6 @@ function OrderTable({
                     {getDate(order.createdAt!.toLocaleString())}
                   </TableCell>
                   <OrderAction order={order} />
-                  {/* <TableCell>
-                    {order.orderDetails.map((orderDetail) => (
-                      <div className="flex gap-2">
-                        <img
-                          src={`${baseURL}/images/${orderDetail.product.primaryImage}`}
-                          className="w-20 h-20 object-cover object-top"
-                        />
-                        <div>
-                          <p>{orderDetail.product.name}</p>
-                          <p>
-                            {orderDetail.quantity}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </TableCell> */}
                 </TableRow>
               ))}
             </>
