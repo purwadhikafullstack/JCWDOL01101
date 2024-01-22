@@ -22,6 +22,8 @@ const EditProductImage = ({ index }: { index: number }) => {
   const images = useBoundStore((state) => state.editImages);
   const payloadLength = useBoundStore((state) => state.payloadLength);
   const setEditImageForm = useBoundStore((state) => state.setEditImageForm);
+  const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
+
   const onDrop = React.useCallback(
     async (acceptedFiles: File[]) => {
       acceptedFiles.forEach(async (file: File) => {
@@ -37,7 +39,7 @@ const EditProductImage = ({ index }: { index: number }) => {
                 /^image\/(jpeg|png)$/,
                 "Only accepting .jpg, .jpeg, and png"
               ),
-            size: z.number().max(5 * 1024 * 1024, "File too big"),
+            size: z.number().max(1 * 1024 * 1024, "File too big"),
           });
 
           const fileData = { name, type, size };
@@ -48,17 +50,18 @@ const EditProductImage = ({ index }: { index: number }) => {
           reader.onabort = () => setError("file reading was aborted");
           reader.onerror = () => setError("file reading has failed");
 
-          reader.onload = () => {
-            setEditImageForm(
-              {
-                imageId: images[index]?.imageId || null,
-                file,
-                url: reader.result as string,
-              },
-              index
-            );
-          };
+          const fileRead = new Promise((resolve, reject) => {
+            reader.onload = () => {
+              resolve(reader.result);
+            };
+          });
+
           reader.readAsDataURL(file);
+          const result = await fileRead;
+          if (result) {
+            forceUpdate();
+          }
+          setEditImageForm({ file, url: result as string }, index);
         } catch (err) {
           if (err instanceof ZodError) {
             setError(err.errors[0].message);
