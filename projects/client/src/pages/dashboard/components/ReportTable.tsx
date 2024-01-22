@@ -11,6 +11,7 @@ import ChangeOrderButton from "./ChangeOrderButton"
 import { Jurnal } from "@/hooks/useJurnal"
 import { format } from "date-fns"
 import { Boxes, LogIn, LogOut } from "lucide-react"
+import { formatToIDR } from "@/lib/utils"
 
 function ReportTable({
   data,
@@ -50,6 +51,7 @@ function ReportTable({
             <TableHead className="">#</TableHead>
             <TableHead className=" text-center">Warehouse</TableHead>
             <TableHead className=" text-center">Product</TableHead>
+            <TableHead className=" text-center">Category</TableHead>
             <TableHead className=" text-center">Size</TableHead>
             <TableHead className=" text-center">
               <ChangeOrderButton paramKey="newQty" name="newQty" />
@@ -63,6 +65,7 @@ function ReportTable({
             <TableHead className="text-center">type</TableHead>
             <TableHead className="text-center">notes</TableHead>
             <TableHead className="text-center">Date / Time</TableHead>
+            <TableHead className="text-center">Income</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -78,6 +81,9 @@ function ReportTable({
                     {jurnal.jurnal?.product.name}
                   </TableCell>
                   <TableCell className="text-center">
+                    {jurnal.jurnal?.product.productCategory?.name}
+                  </TableCell>
+                  <TableCell className="text-center">
                     {jurnal.jurnal?.sizes.label}
                   </TableCell>
                   <TableCell className="text-center">{jurnal.newQty}</TableCell>
@@ -91,6 +97,11 @@ function ReportTable({
                   <TableCell>{jurnal.notes}</TableCell>
                   <TableCell className="text-center">
                     {format(new Date(jurnal.createdAt), "Pp")}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {formatToIDR(
+                      jurnal.productValue ? `${jurnal.productValue}` : "-"
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

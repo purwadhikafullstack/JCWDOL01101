@@ -12,6 +12,7 @@ import ChangeOrderButton from "./ChangeOrderButton"
 import { Order } from "@/hooks/useOrder"
 import OrderAction from "./order/OrderAction"
 import { Check, History, XCircle } from "lucide-react"
+import OrderDetailPage from "./warehouse/OrderDetailPage"
 
 function OrderTable({
   data,
@@ -85,7 +86,7 @@ function OrderTable({
                 <TableRow key={order.id}>
                   <TableCell className="w-[80px]">{i + 1}</TableCell>
                   <TableCell className="capitalize font-medium text-center">
-                    {order.invoice}
+                    <OrderDetailPage orderId={order.id!} />
                   </TableCell>
                   <TableCell className="text-center">
                     {order.warehouseOrder.name}

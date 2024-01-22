@@ -1,12 +1,12 @@
 import { DB } from '@/database';
 import { Service } from 'typedi';
-import { User, Order, Product, TopCategory, Inventory } from '@/interfaces';
+import { User, Order, Product, TopCategory, Inventory, OrderDetails } from '@/interfaces';
 import { HttpException } from '@/exceptions/HttpException';
 import { FindOptions, Op, WhereOptions } from 'sequelize';
 import { OrderDetailsModel } from '@/models/orderDetails.model';
 import { WarehouseModel } from '@/models/warehouse.model';
 import { UserModel } from '@/models/user.model';
-import { CategoryModel, ImageModel, InventoryModel, ProductModel } from '@/models';
+import { CategoryModel, ImageModel, InventoryModel, ProductModel, SizeModel } from '@/models';
 import { PaymentDetailsModel } from '@/models/paymentDetails.model';
 import { GetFilterOrder } from '@/interfaces/order.interface';
 
@@ -470,5 +470,21 @@ export class OrderService {
     });
 
     return { totalPages: totalPages, orders: allOrder, totalSuccess, totalPending, totalFailed: totalFailed.length, totalOngoing };
+  }
+
+  public async getOrderDetailsByOrderId(
+    orderId: number,
+  ): Promise<{ OrderDetails: OrderDetails[]; totalPrice: number; shippingFee: number; invoice: string }> {
+    const findOrder: Order = await DB.Order.findByPk(orderId);
+    if (!findOrder) throw new HttpException(409, "Order doesn't exist");
+
+    const OrderDetails: OrderDetails[] = await DB.OrderDetails.findAll({
+      where: { orderId: findOrder.id },
+      include: [
+        { model: ProductModel, as: 'product' },
+        { model: SizeModel, as: 'size' },
+      ],
+    });
+    return { OrderDetails, totalPrice: findOrder.totalPrice, shippingFee: findOrder.shippingFee, invoice: findOrder.invoice };
   }
 }
