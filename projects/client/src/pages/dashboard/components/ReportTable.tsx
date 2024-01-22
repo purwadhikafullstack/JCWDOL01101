@@ -10,7 +10,13 @@ import {
 import ChangeOrderButton from "./ChangeOrderButton";
 import { Jurnal } from "@/hooks/useJurnal";
 import { format } from "date-fns";
-import { BadgeDollarSign, Boxes, CircleDollarSign, LogIn, LogOut } from "lucide-react";
+import {
+  BadgeDollarSign,
+  Boxes,
+  CircleDollarSign,
+  LogIn,
+  LogOut,
+} from "lucide-react";
 import { formatToIDR } from "@/lib/utils";
 
 function ReportTable({
@@ -22,8 +28,8 @@ function ReportTable({
     totalAddition: number;
     totalReduction: number;
     finalStock: number;
-    totalProductValue:number;
-    productValue:number;
+    totalProductValue: number;
+    productValue: number;
   };
 }) {
   return (
@@ -46,10 +52,12 @@ function ReportTable({
             </div>
           </div>
         ))}
-      </div>
-      <div className="flex gap-4 justify-between py-4">
         {[
-          { title: "Income Value", icon: CircleDollarSign, value: data.totalProductValue }
+          {
+            title: "Income Value",
+            icon: CircleDollarSign,
+            value: data.totalProductValue,
+          },
         ].map((stat) => (
           <div className="flex bg-background border rounded-lg p-4 shadow-sm flex-col w-full items-start">
             <div className="flex items-center gap-4">
@@ -118,7 +126,9 @@ function ReportTable({
                     {format(new Date(jurnal.createdAt), "Pp")}
                   </TableCell>
                   <TableCell className="text-center">
-                    {formatToIDR(jurnal.productValue ? `${jurnal.productValue}` : "-")}
+                    {formatToIDR(
+                      jurnal.productValue ? `${jurnal.productValue}` : "-"
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
