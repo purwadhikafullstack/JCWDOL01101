@@ -59,6 +59,9 @@ const EditProductForm = () => {
   const { data: pd } = useProduct(slug || "");
   const editImages = useBoundStore((state) => state.editImages);
   const clearImage = useBoundStore((state) => state.clearImage);
+  const setPayloadImageLength = useBoundStore(
+    (state) => state.setPayloadImageLength
+  );
   const setEditImageForm = useBoundStore((state) => state.setEditImageForm);
   const [error, setError] = useState<string | null>(null);
   const editMutation = useEditProduct(slug || "");
@@ -109,6 +112,25 @@ const EditProductForm = () => {
       form.setValue("description", product.description);
       if (product.productImage.length > 0) {
         product.productImage.forEach(({ image, id }, i) => {
+          setEditImageForm(
+            {
+              imageId: id,
+              file: null,
+              url: `${baseURL}/images/${image}`,
+            },
+            i
+          );
+        });
+      }
+    }
+  }, [pd]);
+
+  React.useEffect(() => {
+    if (pd && pd.product) {
+      setPayloadImageLength(pd.product.productImage.length);
+      if (pd.product.productImage.length > 0) {
+        clearImage();
+        pd.product.productImage.forEach(({ image, id }, i) => {
           setEditImageForm(
             {
               imageId: id,
@@ -198,7 +220,7 @@ const EditProductForm = () => {
             {editMutation.isPending && (
               <Loader2 className="mr-2 w-4 h-4 animate-spin" />
             )}
-            Edit
+            Save Changes
           </Button>
         </div>
       </div>

@@ -11,14 +11,17 @@ interface EditImage extends Image {
 
 export interface ImageForm {
   images: Image[] | null[];
+  payloadLength: number;
   editImages: EditImage[] | null[];
   setImageForm: (image: Image | null, index: number) => void;
   setEditImageForm: (image: EditImage | null, index: number) => void;
+  setPayloadImageLength: (length: number) => void;
   clearImage: () => void;
 }
 
 export const createImageFormSlice: StateCreator<ImageForm> = (set) => ({
   images: new Array(5).fill(null),
+  payloadLength: 0,
   editImages: new Array(5).fill(null),
   setImageForm: (image: Image | null, index: number) =>
     set((state) => {
@@ -33,6 +36,10 @@ export const createImageFormSlice: StateCreator<ImageForm> = (set) => ({
         modifyImage[index] = image;
       }
       return { editImages: modifyImage };
+    }),
+  setPayloadImageLength: (length: number) =>
+    set(() => {
+      return { payloadLength: length };
     }),
   clearImage: () =>
     set(() => ({

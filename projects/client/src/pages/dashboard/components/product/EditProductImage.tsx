@@ -1,11 +1,11 @@
-import { Button } from "@/components/ui/button";
+import React from "react";
 import { useDeleteProductImage } from "@/hooks/useProductMutation";
 import { useBoundStore } from "@/store/client/useStore";
-import { Image, Loader2, Trash } from "lucide-react";
-import React, { useCallback, useEffect, useState } from "react";
+import { Image } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { useParams } from "react-router-dom";
 import z, { ZodError } from "zod";
+import DeleteImageDialog from "./DeleteImageDialog";
 export type Image = {
   url: string;
   file: File | undefined;
@@ -13,22 +13,16 @@ export type Image = {
 
 const EditProductImage = ({ index }: { index: number }) => {
   const { slug } = useParams();
-  const [imageId, setImageId] = useState<number | null>(null);
   if (!slug) {
     return;
   }
   const deleteProductImage = useDeleteProductImage();
-  // useEffect(() => {
-  //   if (imageId && slug) {
-  //     deleteProductImage.mutate();
-  //   }
-  // }, [imageId, slug]);
-
-  const [error, setError] = useState("");
-  const [imageKey, setImageKey] = useState(0);
+  const [error, setError] = React.useState("");
+  const [imageKey, setImageKey] = React.useState(0);
   const images = useBoundStore((state) => state.editImages);
+  const payloadLength = useBoundStore((state) => state.payloadLength);
   const setEditImageForm = useBoundStore((state) => state.setEditImageForm);
-  const onDrop = useCallback(
+  const onDrop = React.useCallback(
     async (acceptedFiles: File[]) => {
       acceptedFiles.forEach(async (file: File) => {
         try {
@@ -77,20 +71,17 @@ const EditProductImage = ({ index }: { index: number }) => {
     [images]
   );
 
-  useEffect(() => {
-    if (deleteProductImage.isSuccess) {
-      setEditImageForm(
-        {
-          imageId: null,
-          file: null,
-          url: "",
-        },
-        index
-      );
-    }
-  }, [deleteProductImage.isSuccess]);
-
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+  const handleDeleteImage = () => {
+    if (images[index]?.imageId && slug) {
+      deleteProductImage.mutate({
+        imageId: images[index]?.imageId!,
+      });
+    }
+    setEditImageForm(null, index);
+    setImageKey(imageKey + 1);
+  };
   return (
     <div>
       <div
@@ -114,26 +105,19 @@ const EditProductImage = ({ index }: { index: number }) => {
       <p className="text-xs text-primary">{error}</p>
       <input {...getInputProps()} />
       {images[index] && images[index]?.url && images[index]?.imageId && (
-        <Button
-          onClick={() => {
-            if (images[index]?.imageId && slug) {
-              setImageId(images[index]?.imageId!);
-              deleteProductImage.mutate({ imageId: images[index]?.imageId! });
-            }
-            setEditImageForm(null, index);
-            setImageKey(imageKey + 1);
-          }}
-          type="button"
-          variant="outline"
-          className="w-full text-xs  mt-2 border rounded-md cursor-pointer border-primary text-primary hover:text-primary/80"
-        >
-          {deleteProductImage.isPending ? (
-            <Loader2 className="mr-2 w-4 h-4 animate-spin" />
-          ) : (
-            <Trash className="w-4 h-4 mr-2" />
+        <>
+          <DeleteImageDialog
+            isDisabled={payloadLength <= 1}
+            handleDeleteImage={handleDeleteImage}
+            mutationPending={deleteProductImage.isPending}
+            mutationSuccess={deleteProductImage.isSuccess}
+          />
+          {payloadLength <= 1 && (
+            <p className="text-sm text-primary">
+              Product must have at least 1 image
+            </p>
           )}
-          delete
-        </Button>
+        </>
       )}
     </div>
   );
