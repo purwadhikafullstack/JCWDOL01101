@@ -1,7 +1,7 @@
-import React from "react";
-import ProductImage from "./ProductImage";
-import { FormLabel, FormMessage } from "@/components/ui/form";
-import { Badge } from "@/components/ui/badge";
+import React from "react"
+import ProductImage from "./ProductImage"
+import { FormLabel, FormMessage } from "@/components/ui/form"
+import { Badge } from "@/components/ui/badge"
 
 const ImageForm = ({ error }: { error: string | null }) => {
   return (
@@ -20,7 +20,7 @@ const ImageForm = ({ error }: { error: string | null }) => {
           First image is set to product <b>main image</b>
         </p>
         <p className="text-xs mt-2 text-muted-foreground max-w-[200px] ">
-          Format gambar .jpg .jpeg .png dan dan maksimal file size 5MB.
+          Format gambar .jpg .jpeg .png dan dan maksimal file size 1MB.
         </p>
       </div>
       <div className="col-span-2">
@@ -35,7 +35,7 @@ const ImageForm = ({ error }: { error: string | null }) => {
         <FormMessage />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ImageForm;
+export default ImageForm

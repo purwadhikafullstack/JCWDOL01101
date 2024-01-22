@@ -1,7 +1,7 @@
-import React from "react";
-import { FormLabel, FormMessage } from "@/components/ui/form";
-import { Badge } from "@/components/ui/badge";
-import EditProductImage from "./EditProductImage";
+import React from "react"
+import { FormLabel, FormMessage } from "@/components/ui/form"
+import { Badge } from "@/components/ui/badge"
+import EditProductImage from "./EditProductImage"
 
 const EditImageForm = ({ error }: { error: string | null }) => {
   return (
@@ -17,7 +17,7 @@ const EditImageForm = ({ error }: { error: string | null }) => {
           </Badge>
         </FormLabel>
         <p className="text-xs mt-2 text-muted-foreground max-w-[200px] ">
-          Format gambar .jpg .jpeg .png dan dan maksimal file size 5MB.
+          Format gambar .jpg .jpeg .png dan dan maksimal file size 1MB.
         </p>
       </div>
       <div className="col-span-2">
@@ -32,7 +32,7 @@ const EditImageForm = ({ error }: { error: string | null }) => {
         <FormMessage />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default EditImageForm;
+export default EditImageForm

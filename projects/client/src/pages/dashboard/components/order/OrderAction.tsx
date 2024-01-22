@@ -13,13 +13,13 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import RejectAction from "./RejectAction"
 import AcceptAction from "./AcceptAction"
 import { Order } from "@/hooks/useOrder"
-import { toast } from "@/components/ui/use-toast"
 import SendAction from "./SendAction"
 import CancelAction from "./CancelAction"
 
 const OrderAction = ({ order }: { order: Order }) => {
   const [modal, setModal] = useState("")
   const status = order.status
+  const completed = ["DELIVERED", "SUCCESS", "FAILED", "CANCELED", "REJECTED"]
   return (
     <>
       <TableCell className="text-center">
@@ -27,6 +27,7 @@ const OrderAction = ({ order }: { order: Order }) => {
           <DropdownMenu>
             <DropdownMenuTrigger
               className={buttonVariants({ variant: "ghost" })}
+              disabled={completed.includes(order.status)}
             >
               <DotsHorizontalIcon />
             </DropdownMenuTrigger>
@@ -71,22 +72,7 @@ const OrderAction = ({ order }: { order: Order }) => {
                     </DropdownMenuItem>
                   </DialogTrigger>
                 </>
-              ) : (
-                <>
-                  <DropdownMenuItem
-                    className="w-full cursor-pointer"
-                    onClick={() =>
-                      toast({
-                        title: "Order Completed",
-                        description: "Order already completed",
-                        duration: 3000,
-                      })
-                    }
-                  >
-                    Order Completed
-                  </DropdownMenuItem>
-                </>
-              )}
+              ) : null}
             </DropdownMenuContent>
           </DropdownMenu>
           {modal === "ACCEPT" && (

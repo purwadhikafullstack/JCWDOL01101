@@ -18,7 +18,6 @@ import DeactivateProductDialog from "./product/DeactivateProductDialog";
 import RestoreDropdownDialog from "./product/RestoreDropdownDialog";
 
 const ProductDialog = ({ product }: { product: Product }) => {
-  const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const [params] = useSearchParams();
   const warehouseId = params.get("warehouse") || undefined;
   const { user } = useUser();
@@ -30,14 +29,8 @@ const ProductDialog = ({ product }: { product: Product }) => {
     }
   }
 
-  const handleDropdownChange = (open: boolean) => {
-    if (open === false) {
-      setDropdownOpen(false);
-    }
-  };
-
   return (
-    <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           disabled={!isInventoryActive && ROLE !== "ADMIN"}
@@ -74,22 +67,13 @@ const ProductDialog = ({ product }: { product: Product }) => {
                     </DropdownMenuItem>
                   </Link>
                   <DropdownMenuSeparator />
-                  <DeactivateProductDialog
-                    dropdownChange={handleDropdownChange}
-                    product={product}
-                  />
-                  <DeleteProductDialog
-                    dropdownChange={handleDropdownChange}
-                    product={product}
-                  />
+                  <DeactivateProductDialog product={product} />
+                  <DeleteProductDialog product={product} />
                 </>
               )}
             </>
           ) : (
-            <RestoreDropdownDialog
-              dropdownChange={handleDropdownChange}
-              product={product}
-            />
+            <RestoreDropdownDialog product={product} />
           )}
         </>
       </DropdownMenuContent>

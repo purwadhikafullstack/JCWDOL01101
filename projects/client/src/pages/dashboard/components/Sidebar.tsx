@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 import {
   Shirt,
@@ -13,15 +13,15 @@ import {
   Tag,
   Home,
   BarChartBig,
-} from "lucide-react";
-import { useUser } from "@clerk/clerk-react";
-import { Separator } from "@/components/ui/separator";
-import Nav from "./Nav";
-import SidebarHeader from "./SidebarHeader";
+} from "lucide-react"
+import { useUser } from "@clerk/clerk-react"
+import { Separator } from "@/components/ui/separator"
+import Nav from "./Nav"
+import SidebarHeader from "./SidebarHeader"
 
 const DashboardSidebar = () => {
-  const { user } = useUser();
-  const ROLE = user?.publicMetadata?.role;
+  const { user } = useUser()
+  const ROLE = user?.publicMetadata?.role
   return (
     <div className="p-4 flex w-full h-full flex-col justify-between items-start relative">
       <div className="w-full">
@@ -113,7 +113,7 @@ const DashboardSidebar = () => {
             {
               title: "Stock Reports",
               icon: ClipboardList,
-              link: "/dashboard/report",
+              link: "/dashboard/report?page=1&warehouse=ALL",
               variant: "ghost",
             },
           ]}
@@ -143,7 +143,7 @@ const DashboardSidebar = () => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DashboardSidebar;
+export default DashboardSidebar

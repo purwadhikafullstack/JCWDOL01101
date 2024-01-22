@@ -14,19 +14,32 @@ import CancelAction from "./CancelAction"
 import RejectAction from "./RejectAction"
 import { z } from "zod"
 import AcceptAction from "./AcceptAction"
+import { Mutation } from "@/hooks/useMutation"
+import { toast } from "@/components/ui/use-toast"
 export const mutationActionSchema = z.object({
   notes: z.string().trim().optional(),
 })
 type Action = {
-  mutationId: number
+  mutation: Mutation
   manage: string
 }
-const MutationAction = ({ mutationId, manage }: Action) => {
+const MutationAction = ({ mutation, manage }: Action) => {
   const [modal, setModal] = useState("ACCEPT")
   return (
     <>
       <TableCell className="text-center">
-        {manage === "SEND" ? (
+        {mutation.status !== "ONGOING" ? (
+          <>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                className={buttonVariants({ variant: "ghost" })}
+                disabled={true}
+              >
+                <DotsHorizontalIcon />
+              </DropdownMenuTrigger>
+            </DropdownMenu>
+          </>
+        ) : manage === "SEND" ? (
           <Dialog>
             <DropdownMenu>
               <DropdownMenuTrigger
@@ -42,7 +55,7 @@ const MutationAction = ({ mutationId, manage }: Action) => {
                 </DialogTrigger>
               </DropdownMenuContent>
             </DropdownMenu>
-            <CancelAction mutationId={mutationId} />
+            <CancelAction mutationId={mutation.id!} />
           </Dialog>
         ) : (
           <Dialog>
@@ -72,8 +85,8 @@ const MutationAction = ({ mutationId, manage }: Action) => {
                 </DialogTrigger>
               </DropdownMenuContent>
             </DropdownMenu>
-            {modal === "ACCEPT" && <AcceptAction mutationId={mutationId} />}
-            {modal === "REJECT" && <RejectAction mutationId={mutationId} />}
+            {modal === "ACCEPT" && <AcceptAction mutationId={mutation.id!} />}
+            {modal === "REJECT" && <RejectAction mutationId={mutation.id!} />}
           </Dialog>
         )}
       </TableCell>

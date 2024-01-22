@@ -54,6 +54,7 @@ const LastSeenProduct = ({ userId, productId }: RecommendedProductProps) => {
           setApi={setApi}
           opts={{
             align: "start",
+            loop: true,
           }}
           className="relative group"
         >

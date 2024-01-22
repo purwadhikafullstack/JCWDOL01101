@@ -24,7 +24,7 @@ export class OrderMutationService {
 
     const transaction = await DB.sequelize.transaction();
     try {
-      await verifyStock(orderDetails, currentWarehouse, transaction);
+      await verifyStock(orderDetails, currentWarehouse);
       await this.inventory.orderStock(findOrder, orderDetails, currentWarehouse, transaction);
       await DB.Order.update({ status: 'PROCESS' }, { where: { id: orderId }, transaction });
       await transaction.commit();

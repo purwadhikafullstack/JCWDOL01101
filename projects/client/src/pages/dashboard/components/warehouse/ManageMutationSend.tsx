@@ -90,7 +90,7 @@ function ManageMutationSend({
                 <TableCell className="text-center">
                   {getDate(mutation.createdAt!.toLocaleString())}
                 </TableCell>
-                <MutationAction mutationId={mutation.id!} manage="SEND" />
+                <MutationAction mutation={mutation} manage="SEND" />
               </TableRow>
             ))}
           </>

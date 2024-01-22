@@ -14,6 +14,8 @@ const ProductImage = ({ index }: { index: number }) => {
   const [imageKey, setImageKey] = useState(0);
   const images = useBoundStore((state) => state.images);
   const setImageForm = useBoundStore((state) => state.setImageForm);
+  const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
+
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
       acceptedFiles.forEach(async (file: File) => {
@@ -40,10 +42,18 @@ const ProductImage = ({ index }: { index: number }) => {
           reader.onabort = () => setError("file reading was aborted");
           reader.onerror = () => setError("file reading has failed");
 
-          reader.onload = () => {
-            setImageForm({ file, url: reader.result as string }, index);
-          };
+          const fileRead = new Promise((resolve, reject) => {
+            reader.onload = () => {
+              resolve(reader.result);
+            };
+          });
+
           reader.readAsDataURL(file);
+          const result = await fileRead;
+          if (result) {
+            forceUpdate();
+          }
+          setImageForm({ file, url: result as string }, index);
         } catch (err) {
           if (err instanceof ZodError) {
             setError(err.errors[0].message);
@@ -55,6 +65,7 @@ const ProductImage = ({ index }: { index: number }) => {
     },
     [images]
   );
+
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
   return (
     <div>

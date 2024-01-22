@@ -27,7 +27,7 @@ const WishlistItem = ({ product }: WishlistItemProps) => {
     if (wishlistMutation.isSuccess) {
       toast(
         (to) => (
-          <div className="bg-black text-background  flex gap-2">
+          <div className="bg-black text-background dark:text-foreground  flex items-center gap-2">
             <span className="text-sm">
               {t("wishlistPage.successRemoveModal")}
             </span>
@@ -36,7 +36,7 @@ const WishlistItem = ({ product }: WishlistItemProps) => {
                 toast.dismiss(to.id);
                 toggleWishlist.mutate({ productId: product.id });
               }}
-              className="ml-2 bg-black/50 px-2 py-1 rounded-md"
+              className="ml-2 bg-black border px-2 py-1 rounded-md"
             >
               cancel
             </button>

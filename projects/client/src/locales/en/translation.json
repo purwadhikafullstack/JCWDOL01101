@@ -103,7 +103,7 @@
     }
   },
   "wishlistPage": {
-    "successRemoveModal": "Success! One item has been removed from your wishlist",
+    "successRemoveModal": "Wishlist has been removed",
     "product": "Product",
     "emptyStock": "We'll be restocking soon.",
     "addBtn": "ADD TO CART",
@@ -157,7 +157,7 @@
     "main": "Main",
     "shipping": "Shipping Address",
     "addressBtn": "Choose Other Address",
-    "emptyAddressBtn": "Create New Address",
+    "emptyAddressBtn": "Select or Create New Address",
     "addressError": {
       "header": "Oops, you don't have an address?",
       "sub": "Don't worry, though—you can create one!"
@@ -191,7 +191,7 @@
       "shippingAddress": "Shipping Address",
       "total": "Total",
       "payBtn": "Pay",
-      "loading": "preparing payment link...",
+      "loading": "preparing payment...",
       "outOfStockError": "Apologies, the item is out of stock. We’re working on restocking soon.",
       "outOfStockLink": "Choose other product",
       "exitModal": {
@@ -228,7 +228,13 @@
         "notes": "Notes for courier (optional)",
         "notesDesc": "House colors, standards, special message, etc.",
         "makeMain": "Make it main address",
-        "tos": "I agree to the <1>Terms & Conditions</1> and <1>Privacy Policy</1> address settings in Toten.",
+        "tos": {
+          "tos1": "I agree to the",
+          "tos2": "Terms & Conditions",
+          "tos3": "and",
+          "tos4": "Privacy Policy",
+          "tos5": "address settings in Toten."
+        },
         "submitBtn": "Submit"
       },
       "modify": {

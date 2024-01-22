@@ -1,54 +1,54 @@
-import React from "react";
-import { SearchIcon, MapPin, CalendarIcon } from "lucide-react";
+import React from "react"
+import { SearchIcon, MapPin, CalendarIcon } from "lucide-react"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { useSearchParams } from "react-router-dom";
-import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton";
-import { useDebounce } from "use-debounce";
-import TablePagination from "../components/TablePagination";
-import { useUser } from "@clerk/clerk-react";
-import { useGetWarehouse } from "@/hooks/useWarehouse";
-import { useCurrentUser } from "@/hooks/useUser";
-import { getAllOrders } from "@/hooks/useOrder";
-import OrderTable from "../components/OrderTable";
-import { cn } from "@/lib/utils";
+} from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { useSearchParams } from "react-router-dom"
+import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton"
+import { useDebounce } from "use-debounce"
+import TablePagination from "../components/TablePagination"
+import { useUser } from "@clerk/clerk-react"
+import { useGetWarehouse } from "@/hooks/useWarehouse"
+import { useCurrentUser } from "@/hooks/useUser"
+import { getAllOrders } from "@/hooks/useOrder"
+import OrderTable from "../components/OrderTable"
+import { cn } from "@/lib/utils"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { format, subDays } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import { DateRange } from "react-day-picker";
-import { Helmet } from "react-helmet";
+} from "@/components/ui/popover"
+import { Button } from "@/components/ui/button"
+import { format, subDays } from "date-fns"
+import { Calendar } from "@/components/ui/calendar"
+import { DateRange } from "react-day-picker"
+import { Helmet } from "react-helmet"
 
 const DashboardOrder = () => {
-  const { user, isSignedIn, isLoaded } = useUser();
+  const { user, isSignedIn, isLoaded } = useUser()
   const { data: userAdmin } = useCurrentUser({
     externalId: user?.id!,
     enabled: isLoaded && !!isSignedIn,
-  });
-  const ROLE = userAdmin?.role || "CUSTOMER";
+  })
+  const ROLE = userAdmin?.role || "CUSTOMER"
   const [searchParams, setSearchParams] = useSearchParams({
     page: "1",
-  });
-  const currentPage = Number(searchParams.get("page"));
-  const searchTerm = searchParams.get("s") || "";
-  const [debounceSearch] = useDebounce(searchTerm, 1000);
+  })
+  const currentPage = Number(searchParams.get("page"))
+  const searchTerm = searchParams.get("s") || ""
+  const [debounceSearch] = useDebounce(searchTerm, 1000)
 
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: subDays(new Date(), 30),
     to: new Date(),
-  });
+  })
 
-  const { data: warehouses } = useGetWarehouse(ROLE === "ADMIN");
+  const { data: warehouses } = useGetWarehouse(ROLE === "ADMIN")
   const { data, isLoading } = getAllOrders({
     page: currentPage,
     s: debounceSearch,
@@ -60,16 +60,16 @@ const DashboardOrder = () => {
     status: searchParams.get("status") || "",
     to: date?.to,
     from: date?.from,
-  });
+  })
 
   const handleSelectDate = (e: DateRange | undefined) => {
-    setDate(e);
+    setDate(e)
     setSearchParams((params) => {
-      params.set("from", String(e?.from));
-      params.set("to", String(e?.to));
-      return params;
-    });
-  };
+      params.set("from", String(e?.from))
+      params.set("to", String(e?.to))
+      return params
+    })
+  }
 
   return (
     <>
@@ -85,9 +85,9 @@ const DashboardOrder = () => {
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchParams((params) => {
-                    params.set("s", e.target.value);
-                    return params;
-                  });
+                    params.set("s", e.target.value)
+                    return params
+                  })
                 }}
                 className=" w-full pl-10"
                 placeholder="search order..."
@@ -97,9 +97,9 @@ const DashboardOrder = () => {
               <Select
                 onValueChange={(value) => {
                   setSearchParams((params) => {
-                    params.set("status", value);
-                    return params;
-                  });
+                    params.set("status", value)
+                    return params
+                  })
                 }}
               >
                 <SelectTrigger className="w-[150px]">
@@ -164,9 +164,9 @@ const DashboardOrder = () => {
                 defaultValue="All"
                 onValueChange={(value) => {
                   setSearchParams((params) => {
-                    params.set("warehouse", value);
-                    return params;
-                  });
+                    params.set("warehouse", value)
+                    return params
+                  })
                 }}
               >
                 <SelectTrigger>
@@ -200,7 +200,7 @@ const DashboardOrder = () => {
             )}
           </div>
         </div>
-        <div className="border rounded-md mt-2">
+        <div className="mt-2">
           {isLoading ? <ProductsPageSkeleton /> : <OrderTable data={data!} />}
         </div>
         <div className="flex gap-2 items-center justify-end mt-4">
@@ -212,7 +212,7 @@ const DashboardOrder = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default DashboardOrder;
+export default DashboardOrder

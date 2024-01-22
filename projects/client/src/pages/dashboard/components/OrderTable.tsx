@@ -6,46 +6,51 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { getDate, formatToIDR } from "@/lib/utils";
-import ChangeOrderButton from "./ChangeOrderButton";
-import { Order } from "@/hooks/useOrder";
-import OrderAction from "./order/OrderAction";
-import OrderProduct from "@/pages/homepage/components/order/OrderProduct";
-import { baseURL } from "@/service";
+} from "@/components/ui/table"
+import { getDate, formatToIDR } from "@/lib/utils"
+import ChangeOrderButton from "./ChangeOrderButton"
+import { Order } from "@/hooks/useOrder"
+import OrderAction from "./order/OrderAction"
+import { Check, History, XCircle } from "lucide-react"
 
 function OrderTable({
   data,
 }: {
   data: {
-    orders: Order[];
-    totalPages: number;
-    totalSuccess: number;
-    totalPending: number;
-    totalFailed: number;
-    totalOngoing: number;
-  };
+    orders: Order[]
+    totalPages: number
+    totalSuccess: number
+    totalPending: number
+    totalFailed: number
+    totalOngoing: number
+  }
 }) {
   return (
     <>
-      <div className="border text-center justify-evenly p-1">
-        <p className="font-bold">SALES REPORT</p>
-        <div className="flex justify-evenly text-center">
-          <div className="flex bg-green-500 border-4 rounded-xl p-2 font-semibold">
-            Success: {formatToIDR(data?.totalSuccess || 0)}
+      <div className="flex gap-4 justify-between py-4">
+        {[
+          { title: "Success", icon: Check, value: data.totalSuccess },
+          { title: "Ongoing", icon: History, value: data.totalOngoing },
+          { title: "Failed", icon: XCircle, value: data.totalFailed },
+        ].map((stat) => (
+          <div className="flex bg-background border rounded-lg p-4 shadow-sm flex-col w-full items-start">
+            <div className="flex items-center gap-4">
+              <span className="rounded-md p-2 inline-block">
+                <stat.icon className="w-8 h-8 text-primary" />
+              </span>
+              <div>
+                <p className="text-muted-foreground">{stat.title}</p>
+                <p className="font-bold text-xl">
+                  {stat.title === "Failed"
+                    ? `${stat.value} Order(s)`
+                    : formatToIDR(stat.value)}
+                </p>
+              </div>
+            </div>
           </div>
-          <div className="flex bg-blue-400  p-2 border-4 rounded-xl font-semibold">
-            Pending: {formatToIDR(data?.totalPending|| 0)}
-          </div>
-          <div className="flex bg-yellow-400 p-2 border-4 rounded-xl font-semibold">
-            Ongoing: {formatToIDR(data?.totalOngoing|| 0)}
-          </div>
-          <div className="flex bg-red-400 p-2 border-4 rounded-xl font-semibold">
-            Failed: {formatToIDR(data?.totalFailed|| 0)}
-          </div>
-        </div>
+        ))}
       </div>
-      <Table>
+      <Table className="border rounded-lg">
         <TableHeader>
           <TableRow>
             <TableHead className="w-[80px]">#</TableHead>
