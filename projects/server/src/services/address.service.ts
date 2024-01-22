@@ -61,19 +61,22 @@ export class AddressService {
           attributes: ['cityName', 'province'],
         },
       ],
-      attributes: ['id', 'recepient', 'phone', 'label', 'address', 'notes', 'isMain', 'isActive'],
       order: [['isActive', 'DESC']],
-      where: search
-        ? {
-            [Op.or]: [
-              { recepient: { [Op.like]: `%${search}%` } },
-              { '$city.city_name$': { [Op.like]: `%${search}%` } },
-              { label: { [Op.like]: `%${search}%` } },
-            ],
-          }
-        : { userId: findUser.id },
+      where: { userId: findUser.id },
       raw: true,
     };
+    if (search) {
+      options.where = {
+        [Op.and]: {
+          userId: findUser.id,
+          [Op.or]: [
+            { recepient: { [Op.like]: `%${search}%` } },
+            { '$city.city_name$': { [Op.like]: `%${search}%` } },
+            { label: { [Op.like]: `%${search}%` } },
+          ],
+        },
+      };
+    }
     const findAddress: Address[] = await DB.Address.findAll(options);
 
     return findAddress;
