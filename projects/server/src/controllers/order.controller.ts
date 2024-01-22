@@ -9,6 +9,17 @@ export class OrderController {
   public order = Container.get(OrderService);
   public orderMutation = Container.get(OrderMutationService);
 
+  public getOrderDetailsByOrderId = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const orderId = Number(req.params.orderId);
+      const orderDetails = await this.order.getOrderDetailsByOrderId(orderId);
+
+      res.status(200).json({ data: orderDetails, message: 'get.orderDetails' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   public getKpi = async (req: RequireAuthProp<Request>, res: Response, next: NextFunction) => {
     try {
       const externalId = req.auth.userId;

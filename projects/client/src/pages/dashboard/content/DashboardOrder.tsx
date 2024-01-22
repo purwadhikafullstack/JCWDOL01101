@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { useSearchParams } from "react-router-dom"
-import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton"
+import TablePageSkeleton from "@/components/skeleton/TablePageSkeleton"
 import { useDebounce } from "use-debounce"
 import TablePagination from "../components/TablePagination"
 import { useUser } from "@clerk/clerk-react"
@@ -201,7 +201,7 @@ const DashboardOrder = () => {
           </div>
         </div>
         <div className="mt-2">
-          {isLoading ? <ProductsPageSkeleton /> : <OrderTable data={data!} />}
+          {isLoading ? <TablePageSkeleton /> : <OrderTable data={data!} />}
         </div>
         <div className="flex gap-2 items-center justify-end mt-4">
           <TablePagination

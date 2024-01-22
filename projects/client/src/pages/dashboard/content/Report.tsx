@@ -15,7 +15,7 @@ import { useDebounce } from "use-debounce"
 import { useSearchParams } from "react-router-dom"
 import { useGetWarehouse } from "@/hooks/useWarehouse"
 import TablePagination from "../components/TablePagination"
-import ProductsPageSkeleton from "@/components/skeleton/ProductsPageSkeleton"
+import TablePageSkeleton from "@/components/skeleton/TablePageSkeleton"
 import ReportTable from "../components/ReportTable"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
@@ -185,7 +185,7 @@ const Report = () => {
         </div>
         <div className="mt-2">
           {isLoading ? (
-            <ProductsPageSkeleton />
+            <TablePageSkeleton />
           ) : (
             <ReportTable
               data={{
