@@ -195,6 +195,7 @@ const Report = () => {
                 totalReduction: data?.data.totalReduction || 0,
                 finalStock: data?.data.finalStock || 0,
                 totalProductValue: data?.data.totalProductValue || 0,
+                productValue: data?.data.totalProductValue || 0,
               }}
             />
           )}

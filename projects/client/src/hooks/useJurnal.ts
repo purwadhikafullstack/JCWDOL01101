@@ -112,7 +112,6 @@ export const getAllJurnals = ({
           withCredentials: true,
           headers: { Authorization: `Bearer ${await getToken()}` },
         });
-        let totalProductValue = 0;
         res.data.data.jurnals = res.data.data.jurnals.map((jurnal: Jurnal) => {
           if (
             jurnal.notes.startsWith("Stock out order INV-") &&
@@ -120,12 +119,9 @@ export const getAllJurnals = ({
           ) {
             jurnal.productValue =
               jurnal.jurnal.product.price * jurnal.qtyChange;
-            totalProductValue += jurnal.productValue;
           }
           return jurnal;
         });
-        res.data.data.totalProductValue = totalProductValue;
-
         return res.data;
       } catch (error) {
         console.error(error);

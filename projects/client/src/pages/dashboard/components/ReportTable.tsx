@@ -23,6 +23,7 @@ function ReportTable({
     totalReduction: number;
     finalStock: number;
     totalProductValue:number;
+    productValue:number;
   };
 }) {
   return (
