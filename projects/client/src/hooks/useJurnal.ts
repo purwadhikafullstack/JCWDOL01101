@@ -23,10 +23,15 @@ type SizeType = {
   label: string;
   value: number;
 };
+type CategoryType = {
+  name: string;
+};
 
 type ProductType = {
   productId: number;
   name: string;
+  productCategory?: CategoryType;
+  price: number;
 };
 
 export interface Jurnal {
@@ -39,6 +44,7 @@ export interface Jurnal {
   notes: string;
   createdAt: string;
   jurnal?: InventoryType;
+  productValue?: number;
 }
 
 export const useGetJurnal = (isSuperAdmin: boolean) => {
@@ -83,6 +89,7 @@ export const getAllJurnals = ({
       totalAddition: number;
       totalReduction: number;
       finalStock: number;
+      totalProductValue: number;
     };
   }>({
     queryKey: ["jurnals", page, s, filter, order, warehouse, to, from],
@@ -105,6 +112,20 @@ export const getAllJurnals = ({
           withCredentials: true,
           headers: { Authorization: `Bearer ${await getToken()}` },
         });
+        let totalProductValue = 0;
+        res.data.data.jurnals = res.data.data.jurnals.map((jurnal: Jurnal) => {
+          if (
+            jurnal.notes.startsWith("Stock out order INV-") &&
+            jurnal.jurnal?.product
+          ) {
+            jurnal.productValue =
+              jurnal.jurnal.product.price * jurnal.qtyChange;
+            totalProductValue += jurnal.productValue;
+          }
+          return jurnal;
+        });
+        res.data.data.totalProductValue = totalProductValue;
+
         return res.data;
       } catch (error) {
         console.error(error);
